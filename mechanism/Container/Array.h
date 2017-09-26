@@ -17,8 +17,7 @@
 namespace Container {
 
 template <typename T, size_t Size>
-class Array {
-public:
+struct Array {
 	typedef T value_type;
 	typedef size_t size_type;
 	typedef ptrdiff_t difference_type;
