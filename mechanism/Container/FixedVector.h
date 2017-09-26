@@ -314,13 +314,13 @@ private:
 	}
 
 	template <typename Integer>
-	void insert_dispatch(iterator pos, Integer n, Integer data, true_type)
+	void insert_dispatch(iterator pos, Integer n, Integer data, TrueType)
 	{
 		insert_n(pos, static_cast<size_type>(n), static_cast<value_type>(data));
 	}
 
 	template <typename InputIterator>
-	void insert_dispatch(iterator pos, InputIterator first, InputIterator last, false_type)
+	void insert_dispatch(iterator pos, InputIterator first, InputIterator last, FalseType)
 	{
 		insert_range(pos, first, last);
 	}
