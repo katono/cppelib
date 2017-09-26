@@ -251,36 +251,36 @@ public:
 
 	iterator insert(iterator pos, const value_type& data)
 	{
-		DBC_ASSERT(begin() <= pos && pos <= end());
+		DBC_ASSERT((begin() <= pos) && (pos <= end()));
 		insert_n(pos, 1U, data);
 		return pos;
 	}
 
 	void insert(iterator pos, size_type n, const value_type& data)
 	{
-		DBC_ASSERT(begin() <= pos && pos <= end());
+		DBC_ASSERT((begin() <= pos) && (pos <= end()));
 		insert_n(pos, n, data);
 	}
 
 	template <typename InputIterator>
 	void insert(iterator pos, InputIterator first, InputIterator last)
 	{
-		DBC_ASSERT(begin() <= pos && pos <= end());
+		DBC_ASSERT((begin() <= pos) && (pos <= end()));
 		typedef typename IsInteger<InputIterator>::Integral Integral;
 		insert_dispatch(pos, first, last, Integral());
 	}
 
 	iterator erase(iterator pos)
 	{
-		DBC_ASSERT(begin() <= pos && pos < end());
+		DBC_ASSERT((begin() <= pos) && (pos < end()));
 		return erase(pos, pos + 1);
 	}
 
 	iterator erase(iterator first, iterator last)
 	{
 		DBC_ASSERT(first < last);
-		DBC_ASSERT(begin() <= first && first < end());
-		DBC_ASSERT(begin() <= last && last <= end());
+		DBC_ASSERT((begin() <= first) && (first < end()));
+		DBC_ASSERT((begin() <= last) && (last <= end()));
 		const difference_type n = last - first;
 		move_forward(last, end(), n);
 		m_end -= n;
