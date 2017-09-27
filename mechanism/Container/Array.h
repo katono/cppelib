@@ -8,7 +8,7 @@
 #include "ContainerException.h"
 
 #ifdef DESIGN_BY_CONTRACT
-#include "DesignByContract/Assertion.h"
+#include <DesignByContract/Assertion.h>
 #else
 #include <assert.h>
 #define DBC_ASSERT(x) assert(x)
@@ -159,9 +159,9 @@ struct Array {
 	void swap(Array& other)
 	{
 		for (size_type i = 0U; i < size(); ++i) {
-			const value_type tmp = at(i);
-			at(i) = other.at(i);
-			other.at(i) = tmp;
+			const value_type tmp = operator[](i);
+			operator[](i) = other[i];
+			other[i] = tmp;
 		}
 	}
 };

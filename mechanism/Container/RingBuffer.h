@@ -10,7 +10,7 @@
 #include "private/TypeTraits.h"
 
 #ifdef DESIGN_BY_CONTRACT
-#include "DesignByContract/Assertion.h"
+#include <DesignByContract/Assertion.h>
 #else
 #include <assert.h>
 #define DBC_ASSERT(x) assert(x)
@@ -178,8 +178,8 @@ private:
 	RB *m_rb;
 	size_type m_idx;
 
-	RingBuffer_iterator(RB* rb, size_type idx)
-	: m_rb(rb), m_idx(idx)
+	RingBuffer_iterator(RB* r, size_type idx)
+	: m_rb(r), m_idx(idx)
 	{
 		DBC_ASSERT(m_rb != 0);
 		DBC_ASSERT(m_idx < BufSize);
