@@ -9,23 +9,23 @@
 #define DBC_ASSERT(x)\
 	(x) ? \
 		(void)0 :\
-		throw DesignByContract::Exception(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")")
+		throw DesignByContract::Error(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")")
 
 #define DBC_PRE(x)\
 	(x) ? \
 		(void)0 :\
-		throw DesignByContract::Exception(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Pre-condition failed (" #x ")")
+		throw DesignByContract::Error(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Pre-condition failed (" #x ")")
 
 #define DBC_POST(x)\
 	(x) ? \
 		(void)0 :\
-		throw DesignByContract::Exception(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Post-condition failed (" #x ")")
+		throw DesignByContract::Error(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Post-condition failed (" #x ")")
 
 namespace DesignByContract {
 
-class Exception : public std::exception {
+class Error : public std::exception {
 public:
-	Exception(const char* msg) : m_msg(msg) {}
+	Error(const char* msg) : m_msg(msg) {}
 	const char* what() const throw()
 	{
 		return m_msg;
