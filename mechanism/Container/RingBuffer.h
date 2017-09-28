@@ -476,6 +476,9 @@ public:
 
 	void swap(RingBuffer& other)
 	{
+		if (this == &other) {
+			return;
+		}
 		m_buf.swap(other.m_buf);
 
 		size_type tmp_begin = m_begin;

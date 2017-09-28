@@ -158,6 +158,9 @@ struct Array {
 
 	void swap(Array& other)
 	{
+		if (this == &other) {
+			return;
+		}
 		for (size_type i = 0U; i < size(); ++i) {
 			const value_type tmp = operator[](i);
 			operator[](i) = other[i];

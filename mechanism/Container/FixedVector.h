@@ -289,6 +289,9 @@ public:
 
 	void swap(FixedVector& other)
 	{
+		if (this == &other) {
+			return;
+		}
 		m_buf.swap(other.m_buf);
 		size_type tmp = m_end;
 		m_end = other.m_end;
