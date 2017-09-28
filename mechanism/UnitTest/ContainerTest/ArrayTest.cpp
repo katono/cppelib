@@ -240,6 +240,15 @@ TEST(ArrayTest, swap)
 	}
 }
 
+TEST(ArrayTest, swap_same)
+{
+	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	a.swap(a);
+	for (size_t i = 0; i < a.size(); ++i) {
+		LONGS_EQUAL(i, a.at(i));
+	}
+}
+
 TEST(ArrayTest, swap_nonmember)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -248,6 +257,15 @@ TEST(ArrayTest, swap_nonmember)
 	for (size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(a.size() - i - 1, a.at(i));
 		LONGS_EQUAL(i, b.at(i));
+	}
+}
+
+TEST(ArrayTest, swap_nonmember_same)
+{
+	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	swap(a, a);
+	for (size_t i = 0; i < a.size(); ++i) {
+		LONGS_EQUAL(i, a.at(i));
 	}
 }
 

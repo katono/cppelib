@@ -780,6 +780,16 @@ TEST(FixedVectorTest, swap)
 	}
 }
 
+TEST(FixedVectorTest, swap_same)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	x.swap(x);
+	for (size_t i = 0; i < x.size(); ++i) {
+		LONGS_EQUAL(i, x.at(i));
+	}
+}
+
 TEST(FixedVectorTest, swap_nonmember)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -790,6 +800,16 @@ TEST(FixedVectorTest, swap_nonmember)
 	for (size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x.size() - i - 1, x.at(i));
 		LONGS_EQUAL(i, y.at(i));
+	}
+}
+
+TEST(FixedVectorTest, swap_nonmember_same)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	swap(x, x);
+	for (size_t i = 0; i < x.size(); ++i) {
+		LONGS_EQUAL(i, x.at(i));
 	}
 }
 
