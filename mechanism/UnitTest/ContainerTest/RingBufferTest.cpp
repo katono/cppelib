@@ -1223,6 +1223,26 @@ TEST(RingBufferTest, iterator_operator_arrow)
 
 	it->a = 10;
 	LONGS_EQUAL(10, it->a);
+
+	RingBuffer<A, SIZE>::const_iterator cit = it;
+	LONGS_EQUAL(10, cit->a);
+	STRCMP_EQUAL("foo", cit->b);
+}
+
+TEST(RingBufferTest, iterator_operator_asterisk)
+{
+	A a = {1, "foo"};
+	RingBuffer<A, SIZE> x(1, a);
+	RingBuffer<A, SIZE>::iterator it = x.begin();
+	LONGS_EQUAL(1, (*it).a);
+	STRCMP_EQUAL("foo", (*it).b);
+
+	(*it).a = 10;
+	LONGS_EQUAL(10, (*it).a);
+
+	RingBuffer<A, SIZE>::const_iterator cit = it;
+	LONGS_EQUAL(10, (*cit).a);
+	STRCMP_EQUAL("foo", (*cit).b);
 }
 
 TEST(RingBufferTest, iterator_operator_bracket_read)
