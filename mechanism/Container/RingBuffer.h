@@ -21,14 +21,14 @@ namespace Container {
 template <typename T, size_t MaxSize>
 class RingBuffer;
 
-template <typename T, typename Ref, typename Ptr, typename RB, size_t MaxSize>
+template <typename T, typename Ref, typename Ptr, typename RBPtr, size_t MaxSize>
 class RingBuffer_iterator {
 public:
 	typedef T value_type;
 	typedef size_t size_type;
 	typedef ptrdiff_t difference_type;
-	typedef RingBuffer_iterator<T, T&, T*, RB, MaxSize> iterator;
-	typedef RingBuffer_iterator<T, const T&, const T*, RB, MaxSize> const_iterator;
+	typedef RingBuffer_iterator<T, T&, T*, RingBuffer<T, MaxSize>*, MaxSize> iterator;
+	typedef RingBuffer_iterator<T, const T&, const T*, const RingBuffer<T, MaxSize>*, MaxSize> const_iterator;
 	typedef Ref reference;
 	typedef const Ref const_reference;
 	typedef Ptr pointer;
@@ -38,6 +38,8 @@ public:
 #endif
 
 	RingBuffer_iterator() : m_rb(0), m_idx(0U) {}
+
+	RingBuffer_iterator(const iterator& x) : m_rb(x.m_rb), m_idx(x.m_idx) {}
 
 	RingBuffer_iterator& operator+=(difference_type n)
 	{
@@ -173,12 +175,15 @@ private:
 	template <typename U, size_t N>
 	friend class RingBuffer;
 
+	template <typename U, typename RefX, typename PtrX, typename RBPtrX, size_t N>
+	friend class RingBuffer_iterator;
+
 	static const size_type BufSize = MaxSize + 1U;
 
-	RB *m_rb;
+	RBPtr m_rb;
 	size_type m_idx;
 
-	RingBuffer_iterator(RB* r, size_type idx)
+	RingBuffer_iterator(RBPtr r, size_type idx)
 	: m_rb(r), m_idx(idx)
 	{
 		DBC_ASSERT(m_rb != 0);
@@ -186,9 +191,9 @@ private:
 	}
 };
 
-template <typename T, typename Ref, typename Ptr, typename RB, size_t MaxSize>
-RingBuffer_iterator<T, Ref, Ptr, RB, MaxSize>
-operator+(ptrdiff_t n, const RingBuffer_iterator<T, Ref, Ptr, RB, MaxSize>& x)
+template <typename T, typename Ref, typename Ptr, typename RBPtr, size_t MaxSize>
+RingBuffer_iterator<T, Ref, Ptr, RBPtr, MaxSize>
+operator+(ptrdiff_t n, const RingBuffer_iterator<T, Ref, Ptr, RBPtr, MaxSize>& x)
 {
 	return x + n;
 }
@@ -199,8 +204,8 @@ public:
 	typedef T value_type;
 	typedef size_t size_type;
 	typedef ptrdiff_t difference_type;
-	typedef RingBuffer_iterator<T, T&, T*, RingBuffer, MaxSize> iterator;
-	typedef RingBuffer_iterator<T, const T&, const T*, const RingBuffer, MaxSize> const_iterator;
+	typedef RingBuffer_iterator<T, T&, T*, RingBuffer*, MaxSize> iterator;
+	typedef RingBuffer_iterator<T, const T&, const T*, const RingBuffer*, MaxSize> const_iterator;
 	typedef value_type& reference;
 	typedef const value_type& const_reference;
 	typedef value_type* pointer;
@@ -293,22 +298,22 @@ public:
 
 	iterator begin()
 	{
-		return RingBuffer_iterator<value_type, reference, pointer, RingBuffer, MaxSize>(this, m_begin);
+		return RingBuffer_iterator<value_type, reference, pointer, RingBuffer*, MaxSize>(this, m_begin);
 	}
 
 	const_iterator begin() const
 	{
-		return RingBuffer_iterator<value_type, const_reference, const_pointer, const RingBuffer, MaxSize>(this, m_begin);
+		return RingBuffer_iterator<value_type, const_reference, const_pointer, const RingBuffer*, MaxSize>(this, m_begin);
 	}
 
 	iterator end()
 	{
-		return RingBuffer_iterator<value_type, reference, pointer, RingBuffer, MaxSize>(this, m_end);
+		return RingBuffer_iterator<value_type, reference, pointer, RingBuffer*, MaxSize>(this, m_end);
 	}
 
 	const_iterator end() const
 	{
-		return RingBuffer_iterator<value_type, const_reference, const_pointer, const RingBuffer, MaxSize>(this, m_end);
+		return RingBuffer_iterator<value_type, const_reference, const_pointer, const RingBuffer*, MaxSize>(this, m_end);
 	}
 
 #ifndef NO_STD_ITERATOR
@@ -491,7 +496,7 @@ public:
 	}
 
 private:
-	template <typename U, typename Ref, typename Ptr, typename RB, size_t N>
+	template <typename U, typename Ref, typename Ptr, typename RBPtr, size_t N>
 	friend class RingBuffer_iterator;
 
 	template <typename U, size_t N>
