@@ -298,22 +298,22 @@ public:
 
 	iterator begin()
 	{
-		return RingBuffer_iterator<value_type, reference, pointer, RingBuffer*, MaxSize>(this, m_begin);
+		return iterator(this, m_begin);
 	}
 
 	const_iterator begin() const
 	{
-		return RingBuffer_iterator<value_type, const_reference, const_pointer, const RingBuffer*, MaxSize>(this, m_begin);
+		return const_iterator(this, m_begin);
 	}
 
 	iterator end()
 	{
-		return RingBuffer_iterator<value_type, reference, pointer, RingBuffer*, MaxSize>(this, m_end);
+		return iterator(this, m_end);
 	}
 
 	const_iterator end() const
 	{
-		return RingBuffer_iterator<value_type, const_reference, const_pointer, const RingBuffer*, MaxSize>(this, m_end);
+		return const_iterator(this, m_end);
 	}
 
 #ifndef NO_STD_ITERATOR
