@@ -27,6 +27,10 @@ TEST_GROUP(RingBufferTest) {
 	{
 		return StringFromFormat("%p", (void *)&*value);
 	}
+	SimpleString StringFrom(RingBuffer<int, SIZE>::const_iterator value)
+	{
+		return StringFromFormat("%p", (void *)&*value);
+	}
 };
 
 TEST(RingBufferTest, size_0)
@@ -1053,6 +1057,26 @@ TEST(RingBufferTest, operator_notequal_false)
 	CHECK_FALSE(x != y);
 }
 
+TEST(RingBufferTest, iterator_copy_ctor)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	RingBuffer<int, SIZE>::iterator it = x.begin();
+	RingBuffer<int, SIZE>::iterator it2(it);
+	CHECK_EQUAL(it, it2);
+	RingBuffer<int, SIZE>::iterator it3;
+	it3 = it;
+	CHECK_EQUAL(it, it3);
+
+	const RingBuffer<int, SIZE>& y = x;
+	RingBuffer<int, SIZE>::const_iterator cit = y.begin();
+	RingBuffer<int, SIZE>::const_iterator it4(it);
+	CHECK_EQUAL(cit, it4);
+	RingBuffer<int, SIZE>::const_iterator it5;
+	it5 = it;
+	CHECK_EQUAL(cit, it5);
+}
+
 TEST(RingBufferTest, iterator_operator_plusequal)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -1224,7 +1248,7 @@ TEST(RingBufferTest, iterator_operator_arrow)
 	it->a = 10;
 	LONGS_EQUAL(10, it->a);
 
-	RingBuffer<A, SIZE>::const_iterator cit = it;
+	RingBuffer<A, SIZE>::const_iterator cit(it);
 	LONGS_EQUAL(10, cit->a);
 	STRCMP_EQUAL("foo", cit->b);
 }
@@ -1240,7 +1264,7 @@ TEST(RingBufferTest, iterator_operator_asterisk)
 	(*it).a = 10;
 	LONGS_EQUAL(10, (*it).a);
 
-	RingBuffer<A, SIZE>::const_iterator cit = it;
+	RingBuffer<A, SIZE>::const_iterator cit(it);
 	LONGS_EQUAL(10, (*cit).a);
 	STRCMP_EQUAL("foo", (*cit).b);
 }
