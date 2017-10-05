@@ -1295,15 +1295,23 @@ TEST(RingBufferTest, iterator_operator_equal_true)
 	RingBuffer<int, SIZE> x(SIZE);
 	RingBuffer<int, SIZE>::iterator it = x.begin();
 	RingBuffer<int, SIZE>::iterator it2 = x.begin();
+	RingBuffer<int, SIZE>::const_iterator cit(it);
 	CHECK_TRUE(it == it2);
+	CHECK_TRUE(cit == it);
+	// CHECK_TRUE(it == cit); // compile error
 
 	it = x.begin() + 5;
 	it2 = x.begin() + 5;
 	CHECK_TRUE(it == it2);
+	cit = it;
+	CHECK_TRUE(cit == it);
 
 	it = x.end();
 	it2 = x.end();
 	CHECK_TRUE(it == it2);
+	cit = it;
+	CHECK_TRUE(cit == it);
+
 }
 
 TEST(RingBufferTest, iterator_operator_equal_false)
