@@ -91,7 +91,7 @@ TEST(ListTest, empty_false)
 {
 	MyList x;
 	MyListItem a(100);
-	x.push_back(&a);
+	x.push_back(a);
 	CHECK(!x.empty());
 }
 
@@ -99,17 +99,17 @@ TEST(ListTest, push_back)
 {
 	MyList x;
 	MyListItem a(100);
-	x.push_back(&a);
+	x.push_back(a);
 	LONGS_EQUAL(1, x.size());
 	LONGS_EQUAL(100, x.back().m_value);
 
 	MyListItem b(200);
-	x.push_back(&b);
+	x.push_back(b);
 	LONGS_EQUAL(2, x.size());
 	LONGS_EQUAL(200, x.back().m_value);
 
 	MyListItem c(300);
-	x.push_back(&c);
+	x.push_back(c);
 	LONGS_EQUAL(3, x.size());
 	LONGS_EQUAL(300, x.back().m_value);
 }
@@ -121,7 +121,7 @@ TEST(ListTest, push_back_pop_front)
 
 	for (size_t i = 0; i < a.size(); ++i) {
 		a[i].m_value = i;
-		x.push_back(&a[i]);
+		x.push_back(a[i]);
 	}
 	LONGS_EQUAL(a.size(), x.size());
 
@@ -139,17 +139,17 @@ TEST(ListTest, push_front)
 {
 	MyList x;
 	MyListItem a(100);
-	x.push_front(&a);
+	x.push_front(a);
 	LONGS_EQUAL(1, x.size());
 	LONGS_EQUAL(100, x.front().m_value);
 
 	MyListItem b(200);
-	x.push_front(&b);
+	x.push_front(b);
 	LONGS_EQUAL(2, x.size());
 	LONGS_EQUAL(200, x.front().m_value);
 
 	MyListItem c(300);
-	x.push_front(&c);
+	x.push_front(c);
 	LONGS_EQUAL(3, x.size());
 	LONGS_EQUAL(300, x.front().m_value);
 }
@@ -161,7 +161,7 @@ TEST(ListTest, push_front_pop_back)
 
 	for (size_t i = 0; i < a.size(); ++i) {
 		a[i].m_value = i;
-		x.push_front(&a[i]);
+		x.push_front(a[i]);
 	}
 	LONGS_EQUAL(a.size(), x.size());
 
@@ -180,28 +180,28 @@ TEST(ListTest, insert)
 	MyList x;
 	MyList::iterator it;
 	MyListItem a(100);
-	it = x.insert(x.end(), &a);
+	it = x.insert(x.end(), a);
 	CHECK_EQUAL(x.begin(), it);
 	POINTERS_EQUAL(&a, &*it);
 	LONGS_EQUAL(100, it->m_value);
 	LONGS_EQUAL(1, x.size());
 
 	MyListItem b(200);
-	it = x.insert(x.begin(), &b);
+	it = x.insert(x.begin(), b);
 	CHECK_EQUAL(x.begin(), it);
 	POINTERS_EQUAL(&b, &*it);
 	LONGS_EQUAL(200, it->m_value);
 	LONGS_EQUAL(2, x.size());
 
 	MyListItem c(300);
-	it = x.insert(++x.begin(), &c);
+	it = x.insert(++x.begin(), c);
 	CHECK_EQUAL(++x.begin(), it);
 	POINTERS_EQUAL(&c, &*it);
 	LONGS_EQUAL(300, it->m_value);
 	LONGS_EQUAL(3, x.size());
 
 	MyListItem d(400);
-	it = x.insert(x.end(), &d);
+	it = x.insert(x.end(), d);
 	CHECK_EQUAL(--x.end(), it);
 	POINTERS_EQUAL(&d, &*it);
 	LONGS_EQUAL(400, it->m_value);
@@ -217,10 +217,10 @@ TEST(ListTest, erase)
 	MyListItem b(200);
 	MyListItem c(300);
 	MyListItem d(400);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
-	x.push_back(&d);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
+	x.push_back(d);
 
 	it = x.erase(++x.begin());
 	LONGS_EQUAL(3, x.size());
@@ -247,10 +247,10 @@ TEST(ListTest, begin_end)
 	MyListItem b(1);
 	MyListItem c(2);
 	MyListItem d(3);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
-	x.push_back(&d);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
+	x.push_back(d);
 
 	size_t i = 0;
 	for (MyList::iterator it = x.begin(); it != x.end(); ++it, ++i) {
@@ -266,10 +266,10 @@ TEST(ListTest, begin_end_const)
 	MyListItem b(1);
 	MyListItem c(2);
 	MyListItem d(3);
-	z.push_back(&a);
-	z.push_back(&b);
-	z.push_back(&c);
-	z.push_back(&d);
+	z.push_back(a);
+	z.push_back(b);
+	z.push_back(c);
+	z.push_back(d);
 	const MyList& x = z;
 
 	size_t i = 0;
@@ -285,11 +285,11 @@ TEST(ListTest, front_read)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	LONGS_EQUAL(100, x.front().m_value);
-	LONGS_EQUAL(&a, &x.front());
+	POINTERS_EQUAL(&a, &x.front());
 }
 
 TEST(ListTest, front_read_const)
@@ -298,12 +298,12 @@ TEST(ListTest, front_read_const)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	z.push_back(&a);
-	z.push_back(&b);
-	z.push_back(&c);
+	z.push_back(a);
+	z.push_back(b);
+	z.push_back(c);
 	const MyList& x = z;
 	LONGS_EQUAL(100, x.front().m_value);
-	LONGS_EQUAL(&a, &x.front());
+	POINTERS_EQUAL(&a, &x.front());
 }
 
 TEST(ListTest, front_write)
@@ -312,12 +312,12 @@ TEST(ListTest, front_write)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	x.front().m_value = 200;
 	LONGS_EQUAL(200, x.front().m_value);
-	LONGS_EQUAL(&a, &x.front());
+	POINTERS_EQUAL(&a, &x.front());
 }
 
 TEST(ListTest, back_read)
@@ -326,11 +326,11 @@ TEST(ListTest, back_read)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	LONGS_EQUAL(300, x.back().m_value);
-	LONGS_EQUAL(&c, &x.back());
+	POINTERS_EQUAL(&c, &x.back());
 }
 
 TEST(ListTest, back_read_const)
@@ -339,12 +339,12 @@ TEST(ListTest, back_read_const)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	z.push_back(&a);
-	z.push_back(&b);
-	z.push_back(&c);
+	z.push_back(a);
+	z.push_back(b);
+	z.push_back(c);
 	const MyList& x = z;
 	LONGS_EQUAL(300, x.back().m_value);
-	LONGS_EQUAL(&c, &x.back());
+	POINTERS_EQUAL(&c, &x.back());
 }
 
 TEST(ListTest, back_write)
@@ -353,12 +353,12 @@ TEST(ListTest, back_write)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	x.back().m_value = 200;
 	LONGS_EQUAL(200, x.back().m_value);
-	LONGS_EQUAL(&c, &x.back());
+	POINTERS_EQUAL(&c, &x.back());
 }
 
 TEST(ListTest, splice_all)
@@ -367,15 +367,15 @@ TEST(ListTest, splice_all)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList y;
 	MyListItem d(400);
 	MyListItem e(500);
-	y.push_back(&d);
-	y.push_back(&e);
+	y.push_back(d);
+	y.push_back(e);
 
 	x.splice(x.begin(), y);
 	LONGS_EQUAL(5, x.size());
@@ -396,15 +396,15 @@ TEST(ListTest, splice_all2)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList y;
 	MyListItem d(400);
 	MyListItem e(500);
-	y.push_back(&d);
-	y.push_back(&e);
+	y.push_back(d);
+	y.push_back(e);
 
 	MyList z;
 	z.splice(z.end(), x);
@@ -440,9 +440,9 @@ TEST(ListTest, splice_all_empty)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList y;
 	x.splice(x.end(), y);
@@ -458,15 +458,15 @@ TEST(ListTest, splice_iter)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList y;
 	MyListItem d(400);
 	MyListItem e(500);
-	y.push_back(&d);
-	y.push_back(&e);
+	y.push_back(d);
+	y.push_back(e);
 
 	x.splice(x.end(), y, y.begin());
 	LONGS_EQUAL(4, x.size());
@@ -485,9 +485,9 @@ TEST(ListTest, splice_iter_self)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	x.splice(x.begin(), x, ++x.begin());
 	LONGS_EQUAL(3, x.size());
@@ -509,9 +509,9 @@ TEST(ListTest, splice_iter_self_do_nothing)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	x.splice(x.begin(), x, x.begin());
 	LONGS_EQUAL(3, x.size());
@@ -525,9 +525,9 @@ TEST(ListTest, splice_iter_self_do_nothing2)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	x.splice(x.end(), x, --x.end());
 	LONGS_EQUAL(3, x.size());
@@ -541,15 +541,15 @@ TEST(ListTest, splice_range)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList y;
 	MyListItem d(400);
 	MyListItem e(500);
-	y.push_back(&d);
-	y.push_back(&e);
+	y.push_back(d);
+	y.push_back(e);
 
 	x.splice(x.end(), y, y.begin(), ++y.begin());
 	LONGS_EQUAL(4, x.size());
@@ -591,15 +591,15 @@ TEST(ListTest, splice_range_first_equal_last)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList y;
 	MyListItem d(400);
 	MyListItem e(500);
-	y.push_back(&d);
-	y.push_back(&e);
+	y.push_back(d);
+	y.push_back(e);
 
 	x.splice(x.end(), y, y.begin(), y.begin());
 	LONGS_EQUAL(3, x.size());
@@ -620,11 +620,11 @@ TEST(ListTest, splice_range_self)
 	MyListItem c(300);
 	MyListItem d(400);
 	MyListItem e(500);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
-	x.push_back(&d);
-	x.push_back(&e);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
+	x.push_back(d);
+	x.push_back(e);
 
 	x.splice(x.begin(), x, ++x.begin(), x.end());
 	LONGS_EQUAL(5, x.size());
@@ -658,9 +658,9 @@ TEST(ListTest, splice_range_self_do_nothing)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	x.splice(x.end(), x, x.begin(), x.end());
 	LONGS_EQUAL(3, x.size());
@@ -675,15 +675,15 @@ TEST(ListTest, swap)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList y;
 	MyListItem d(400);
 	MyListItem e(500);
-	y.push_back(&d);
-	y.push_back(&e);
+	y.push_back(d);
+	y.push_back(e);
 
 	x.swap(y);
 	LONGS_EQUAL(2, x.size());
@@ -716,9 +716,9 @@ TEST(ListTest, swap_same)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	x.swap(x);
 	LONGS_EQUAL(3, x.size());
@@ -737,15 +737,15 @@ TEST(ListTest, swap_nonmember)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList y;
 	MyListItem d(400);
 	MyListItem e(500);
-	y.push_back(&d);
-	y.push_back(&e);
+	y.push_back(d);
+	y.push_back(e);
 
 	swap(x, y);
 	LONGS_EQUAL(2, x.size());
@@ -778,9 +778,9 @@ TEST(ListTest, swap_nonmember_same)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	swap(x, x);
 	LONGS_EQUAL(3, x.size());
@@ -799,9 +799,9 @@ TEST(ListTest, iterator_copy_ctor)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	MyList::iterator it = x.begin();
 	MyList::iterator it2(it);
 	CHECK_EQUAL(it, it2);
@@ -824,9 +824,9 @@ TEST(ListTest, iterator_operator_incremant)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	MyList::iterator it = x.begin();
 	MyList::iterator it2 = ++it;
 	LONGS_EQUAL(200, it2->m_value);
@@ -841,9 +841,9 @@ TEST(ListTest, iterator_operator_decremant)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	MyList::iterator it = x.end();
 	MyList::iterator it2 = --it;
 	LONGS_EQUAL(300, it2->m_value);
@@ -858,9 +858,9 @@ TEST(ListTest, iterator_operator_arrow)
 	MyListItem a(100);
 	DerivedItem1 b(200);
 	DerivedItem2 c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList::iterator it = x.begin();
 	STRCMP_EQUAL("MyListItem", it->name());
@@ -885,9 +885,9 @@ TEST(ListTest, iterator_operator_asterisk)
 	MyListItem a(100);
 	DerivedItem1 b(200);
 	DerivedItem2 c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 
 	MyList::iterator it = x.begin();
 	STRCMP_EQUAL("MyListItem", (*it).name());
@@ -912,9 +912,9 @@ TEST(ListTest, iterator_operator_equal_true)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	MyList::iterator it = x.begin();
 	MyList::iterator it2 = x.begin();
 	MyList::const_iterator cit(it);
@@ -942,9 +942,9 @@ TEST(ListTest, iterator_operator_equal_false)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	MyList::iterator it = x.begin();
 	MyList::iterator it2 = ++x.begin();
 	CHECK_FALSE(it == it2);
@@ -956,9 +956,9 @@ TEST(ListTest, iterator_operator_notequal_true)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	MyList::iterator it = x.begin();
 	MyList::iterator it2 = ++x.begin();
 	CHECK_TRUE(it != it2);
@@ -974,9 +974,9 @@ TEST(ListTest, iterator_operator_notequal_false)
 	MyListItem a(100);
 	MyListItem b(200);
 	MyListItem c(300);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
 	MyList::iterator it = x.begin();
 	MyList::iterator it2 = x.begin();
 	CHECK_FALSE(it != it2);
@@ -992,14 +992,15 @@ TEST(ListTest, new_delete)
 	MyListItem* a = new MyListItem(100);
 	MyListItem* b = new DerivedItem1(200);
 	MyListItem* c = new DerivedItem2(300);
-	x->push_back(a);
-	x->push_back(b);
-	x->push_back(c);
+	x->push_back(*a);
+	x->push_back(*b);
+	x->push_back(*c);
 	LONGS_EQUAL(3, x->size());
 	while (!x->empty()) {
-		MyListItem* tmp = &x->front();
+		MyListItem& tmp = x->front();
 		x->pop_front();
-		delete tmp;
+		tmp.name();
+		delete &tmp;
 	}
 	delete x;
 }
@@ -1012,10 +1013,10 @@ TEST(ListTest, rbegin_rend)
 	MyListItem b(1);
 	MyListItem c(2);
 	MyListItem d(3);
-	x.push_back(&a);
-	x.push_back(&b);
-	x.push_back(&c);
-	x.push_back(&d);
+	x.push_back(a);
+	x.push_back(b);
+	x.push_back(c);
+	x.push_back(d);
 
 	size_t i = 3;
 	for (MyList::reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
@@ -1031,10 +1032,10 @@ TEST(ListTest, rbegin_rend_const)
 	MyListItem b(1);
 	MyListItem c(2);
 	MyListItem d(3);
-	z.push_back(&a);
-	z.push_back(&b);
-	z.push_back(&c);
-	z.push_back(&d);
+	z.push_back(a);
+	z.push_back(b);
+	z.push_back(c);
+	z.push_back(d);
 	const MyList& x = z;
 
 	size_t i = 3;
