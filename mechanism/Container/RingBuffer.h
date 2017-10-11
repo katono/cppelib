@@ -37,14 +37,14 @@ public:
 
 	RingBuffer_iterator& operator+=(difference_type n)
 	{
-		DBC_ASSERT(m_rb != 0);
-		DBC_ASSERT((m_rb->begin() <= *this) && (*this <= m_rb->end()));
+		DBC_PRE(m_rb != 0);
+		DBC_PRE((m_rb->begin() <= *this) && (*this <= m_rb->end()));
 		if (n < 0) {
 			return operator-=(-n);
 		}
 
 		const size_type un = static_cast<size_type>(n);
-		DBC_ASSERT((*this - m_rb->begin()) + un < BufSize);
+		DBC_PRE((*this - m_rb->begin()) + un < BufSize);
 		m_idx = m_rb->next_idx(m_idx, un);
 		DBC_ASSERT((m_rb->begin() <= *this) && (*this <= m_rb->end()));
 		return *this;
@@ -58,14 +58,14 @@ public:
 
 	RingBuffer_iterator& operator-=(difference_type n)
 	{
-		DBC_ASSERT(m_rb != 0);
-		DBC_ASSERT((m_rb->begin() <= *this) && (*this <= m_rb->end()));
+		DBC_PRE(m_rb != 0);
+		DBC_PRE((m_rb->begin() <= *this) && (*this <= m_rb->end()));
 		if (n < 0) {
 			return operator+=(-n);
 		}
+		DBC_PRE((*this - m_rb->begin()) >= n);
 
 		const size_type un = static_cast<size_type>(n);
-		DBC_ASSERT((*this - m_rb->begin()) >= n);
 		m_idx = m_rb->prev_idx(m_idx, un);
 		DBC_ASSERT((m_rb->begin() <= *this) && (*this <= m_rb->end()));
 		return *this;
@@ -73,10 +73,10 @@ public:
 
 	difference_type operator-(const RingBuffer_iterator& x) const
 	{
-		DBC_ASSERT(m_rb != 0);
-		DBC_ASSERT(m_rb == x.m_rb);
-		DBC_ASSERT((m_rb->begin() <= *this) && (*this <= m_rb->end()));
-		DBC_ASSERT((x.m_rb->begin() <= x) && (x <= x.m_rb->end()));
+		DBC_PRE(m_rb != 0);
+		DBC_PRE(m_rb == x.m_rb);
+		DBC_PRE((m_rb->begin() <= *this) && (*this <= m_rb->end()));
+		DBC_PRE((x.m_rb->begin() <= x) && (x <= x.m_rb->end()));
 		if (*this >= x) {
 			return static_cast<difference_type>(m_rb->distance(x.m_idx, m_idx));
 		}
@@ -115,13 +115,13 @@ public:
 
 	reference operator*() const
 	{
-		DBC_ASSERT(m_rb != 0);
+		DBC_PRE(m_rb != 0);
 		return m_rb->m_buf[m_idx];
 	}
 
 	pointer operator->() const
 	{
-		DBC_ASSERT(m_rb != 0);
+		DBC_PRE(m_rb != 0);
 		return &m_rb->m_buf[m_idx];
 	}
 
@@ -132,7 +132,7 @@ public:
 
 	bool operator==(const RingBuffer_iterator& x) const
 	{
-		DBC_ASSERT(m_rb == x.m_rb);
+		DBC_PRE(m_rb == x.m_rb);
 		return m_idx == x.m_idx;
 	}
 
@@ -143,8 +143,8 @@ public:
 
 	bool operator<(const RingBuffer_iterator& x) const
 	{
-		DBC_ASSERT(m_rb != 0);
-		DBC_ASSERT(m_rb == x.m_rb);
+		DBC_PRE(m_rb != 0);
+		DBC_PRE(m_rb == x.m_rb);
 		return
 			m_rb->distance(m_rb->m_begin, m_idx) <
 			m_rb->distance(x.m_rb->m_begin, x.m_idx);
@@ -177,12 +177,7 @@ private:
 	RBPtr m_rb;
 	size_type m_idx;
 
-	RingBuffer_iterator(RBPtr r, size_type idx)
-	: m_rb(r), m_idx(idx)
-	{
-		DBC_ASSERT(m_rb != 0);
-		DBC_ASSERT(m_idx < BufSize);
-	}
+	RingBuffer_iterator(RBPtr rb, size_type idx) : m_rb(rb), m_idx(idx) {}
 };
 
 template <typename T, typename Ref, typename Ptr, typename RBPtr, size_t MaxSize>
@@ -264,13 +259,13 @@ public:
 
 	reference operator[](size_type idx)
 	{
-		DBC_ASSERT(idx < size());
+		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
 	const_reference operator[](size_type idx) const
 	{
-		DBC_ASSERT(idx < size());
+		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
@@ -334,25 +329,25 @@ public:
 
 	reference front()
 	{
-		DBC_ASSERT(!empty());
+		DBC_PRE(!empty());
 		return *begin();
 	}
 
 	const_reference front() const
 	{
-		DBC_ASSERT(!empty());
+		DBC_PRE(!empty());
 		return *begin();
 	}
 
 	reference back()
 	{
-		DBC_ASSERT(!empty());
+		DBC_PRE(!empty());
 		return *(end() - 1);
 	}
 
 	const_reference back() const
 	{
-		DBC_ASSERT(!empty());
+		DBC_PRE(!empty());
 		return *(end() - 1);
 	}
 
@@ -383,7 +378,7 @@ public:
 
 	void pop_back()
 	{
-		DBC_ASSERT(!empty());
+		DBC_PRE(!empty());
 		m_end = prev_idx(m_end);
 	}
 
@@ -398,7 +393,7 @@ public:
 
 	void pop_front()
 	{
-		DBC_ASSERT(!empty());
+		DBC_PRE(!empty());
 		m_begin = next_idx(m_begin);
 	}
 
@@ -433,35 +428,35 @@ public:
 
 	iterator insert(iterator pos, const value_type& data)
 	{
-		DBC_ASSERT((begin() <= pos) && (pos <= end()));
+		DBC_PRE((begin() <= pos) && (pos <= end()));
 		return insert_n(pos, 1U, data);
 	}
 
 	void insert(iterator pos, size_type n, const value_type& data)
 	{
-		DBC_ASSERT((begin() <= pos) && (pos <= end()));
+		DBC_PRE((begin() <= pos) && (pos <= end()));
 		insert_n(pos, n, data);
 	}
 
 	template <typename InputIterator>
 	void insert(iterator pos, InputIterator first, InputIterator last)
 	{
-		DBC_ASSERT((begin() <= pos) && (pos <= end()));
+		DBC_PRE((begin() <= pos) && (pos <= end()));
 		typedef typename IsInteger<InputIterator>::Integral Integral;
 		insert_dispatch(pos, first, last, Integral());
 	}
 
 	iterator erase(iterator pos)
 	{
-		DBC_ASSERT((begin() <= pos) && (pos < end()));
+		DBC_PRE((begin() <= pos) && (pos < end()));
 		return erase(pos, pos + 1);
 	}
 
 	iterator erase(iterator first, iterator last)
 	{
-		DBC_ASSERT(first < last);
-		DBC_ASSERT((begin() <= first) && (first < end()));
-		DBC_ASSERT((begin() <= last) && (last <= end()));
+		DBC_PRE(first < last);
+		DBC_PRE((begin() <= first) && (first < end()));
+		DBC_PRE((begin() <= last) && (last <= end()));
 		const size_type n = static_cast<size_type>(last - first);
 		if ((first - begin()) >= (end() - last)) {
 			move_forward(last.m_idx, m_end, n);

@@ -45,13 +45,13 @@ struct Array {
 
 	reference operator[](size_type idx)
 	{
-		DBC_ASSERT(idx < size());
+		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
 	const_reference operator[](size_type idx) const
 	{
-		DBC_ASSERT(idx < size());
+		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
