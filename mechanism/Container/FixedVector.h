@@ -8,13 +8,7 @@
 #include "Array.h"
 #include "ContainerException.h"
 #include "private/TypeTraits.h"
-
-#ifdef DESIGN_BY_CONTRACT
-#include <DesignByContract/Assertion.h>
-#else
-#include <assert.h>
-#define DBC_ASSERT(x) assert(x)
-#endif
+#include "DesignByContract/Assertion.h"
 
 namespace Container {
 
