@@ -30,13 +30,13 @@ public:
 #endif
 
 private:
-	Array<value_type, MaxSize> m_buf;
+	Array<T, MaxSize> m_buf;
 	size_type m_end;
 
 public:
 	FixedVector() : m_end(0U) {}
 
-	FixedVector(size_type n, const value_type& data = value_type())
+	FixedVector(size_type n, const T& data = T())
 	: m_end(0U)
 	{
 		assign(n, data);
@@ -183,7 +183,7 @@ public:
 		return *(end() - 1);
 	}
 
-	void resize(size_type n, const value_type& data = value_type())
+	void resize(size_type n, const T& data = T())
 	{
 		if (size() >= n) {
 			m_end = n;
@@ -199,7 +199,7 @@ public:
 		m_end = n;
 	}
 
-	void push_back(const value_type& data)
+	void push_back(const T& data)
 	{
 		if (full()) {
 			throw BadAlloc();
@@ -214,7 +214,7 @@ public:
 		--m_end;
 	}
 
-	void assign(size_type n, const value_type& data)
+	void assign(size_type n, const T& data)
 	{
 		if (max_size() < n) {
 			throw BadAlloc();
@@ -243,14 +243,14 @@ public:
 		}
 	}
 
-	iterator insert(iterator pos, const value_type& data)
+	iterator insert(iterator pos, const T& data)
 	{
 		DBC_PRE((begin() <= pos) && (pos <= end()));
 		insert_n(pos, 1U, data);
 		return pos;
 	}
 
-	void insert(iterator pos, size_type n, const value_type& data)
+	void insert(iterator pos, size_type n, const T& data)
 	{
 		DBC_PRE((begin() <= pos) && (pos <= end()));
 		insert_n(pos, n, data);
@@ -313,7 +313,7 @@ private:
 	template <typename Integer>
 	void insert_dispatch(iterator pos, Integer n, Integer data, TrueType)
 	{
-		insert_n(pos, static_cast<size_type>(n), static_cast<value_type>(data));
+		insert_n(pos, static_cast<size_type>(n), static_cast<T>(data));
 	}
 
 	template <typename InputIterator>
@@ -322,7 +322,7 @@ private:
 		insert_range(pos, first, last);
 	}
 
-	void insert_n(iterator pos, size_type n, const value_type& data)
+	void insert_n(iterator pos, size_type n, const T& data)
 	{
 		if (available_size() < n) {
 			throw BadAlloc();

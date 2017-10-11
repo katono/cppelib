@@ -207,7 +207,7 @@ public:
 		return *--end();
 	}
 
-	void push_back(value_type& data)
+	void push_back(T& data)
 	{
 		insert(end(), data);
 	}
@@ -218,7 +218,7 @@ public:
 		erase(--end());
 	}
 
-	void push_front(value_type& data)
+	void push_front(T& data)
 	{
 		insert(begin(), data);
 	}
@@ -229,7 +229,7 @@ public:
 		erase(begin());
 	}
 
-	iterator insert(iterator pos, value_type& data)
+	iterator insert(iterator pos, T& data)
 	{
 		DBC_PRE(pos.m_item != 0);
 		data.m_nextListItem = pos.m_item;

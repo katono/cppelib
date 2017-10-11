@@ -207,14 +207,14 @@ public:
 private:
 	static const size_type BufSize = MaxSize + 1U;
 
-	Array<value_type, BufSize> m_buf;
+	Array<T, BufSize> m_buf;
 	size_type m_begin;
 	size_type m_end;
 
 public:
 	RingBuffer() : m_begin(0U), m_end(0U) {}
 
-	RingBuffer(size_type n, const value_type& data = value_type())
+	RingBuffer(size_type n, const T& data = T())
 	: m_begin(0U), m_end(0U)
 	{
 		assign(n, data);
@@ -351,7 +351,7 @@ public:
 		return *(end() - 1);
 	}
 
-	void resize(size_type n, const value_type& data = value_type())
+	void resize(size_type n, const T& data = T())
 	{
 		if (size() >= n) {
 			m_end = prev_idx(m_end, size() - n);
@@ -367,7 +367,7 @@ public:
 		}
 	}
 
-	void push_back(const value_type& data)
+	void push_back(const T& data)
 	{
 		if (full()) {
 			throw BadAlloc();
@@ -382,7 +382,7 @@ public:
 		m_end = prev_idx(m_end);
 	}
 
-	void push_front(const value_type& data)
+	void push_front(const T& data)
 	{
 		if (full()) {
 			throw BadAlloc();
@@ -397,7 +397,7 @@ public:
 		m_begin = next_idx(m_begin);
 	}
 
-	void assign(size_type n, const value_type& data)
+	void assign(size_type n, const T& data)
 	{
 		if (max_size() < n) {
 			throw BadAlloc();
@@ -426,13 +426,13 @@ public:
 		}
 	}
 
-	iterator insert(iterator pos, const value_type& data)
+	iterator insert(iterator pos, const T& data)
 	{
 		DBC_PRE((begin() <= pos) && (pos <= end()));
 		return insert_n(pos, 1U, data);
 	}
 
-	void insert(iterator pos, size_type n, const value_type& data)
+	void insert(iterator pos, size_type n, const T& data)
 	{
 		DBC_PRE((begin() <= pos) && (pos <= end()));
 		insert_n(pos, n, data);
@@ -533,7 +533,7 @@ private:
 	template <typename Integer>
 	void insert_dispatch(iterator pos, Integer n, Integer data, TrueType)
 	{
-		insert_n(pos, static_cast<size_type>(n), static_cast<value_type>(data));
+		insert_n(pos, static_cast<size_type>(n), static_cast<T>(data));
 	}
 
 	template <typename InputIterator>
@@ -542,7 +542,7 @@ private:
 		insert_range(pos, first, last);
 	}
 
-	iterator insert_n(iterator pos, size_type n, const value_type& data)
+	iterator insert_n(iterator pos, size_type n, const T& data)
 	{
 		if (available_size() < n) {
 			throw BadAlloc();

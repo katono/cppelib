@@ -26,7 +26,7 @@ struct Array {
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 #endif
 
-	value_type m_buf[Size];
+	T m_buf[Size];
 
 	size_type size() const
 	{
@@ -143,7 +143,7 @@ struct Array {
 		return *(end() - 1);
 	}
 
-	void fill(const value_type& data)
+	void fill(const T& data)
 	{
 		for (iterator i = begin(); i < end(); ++i) {
 			*i = data;
@@ -156,7 +156,7 @@ struct Array {
 			return;
 		}
 		for (size_type i = 0U; i < size(); ++i) {
-			const value_type tmp = operator[](i);
+			const T tmp = operator[](i);
 			operator[](i) = other[i];
 			other[i] = tmp;
 		}
