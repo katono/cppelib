@@ -88,6 +88,19 @@ TEST(ArrayTest, operator_bracket_write)
 	LONGS_EQUAL(10, a[9]);
 }
 
+TEST(ArrayTest, operator_bracket_precondition_failed)
+{
+	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	try {
+		a[SIZE];
+	}
+	catch (const std::exception& e) {
+		STRCMP_CONTAINS("Pre-condition failed", e.what());
+		return;
+	}
+	FAIL("failed");
+}
+
 TEST(ArrayTest, at_read)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
