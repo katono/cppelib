@@ -1070,11 +1070,11 @@ TEST(RingBufferTest, iterator_copy_ctor)
 
 	const RingBuffer<int, SIZE>& y = x;
 	RingBuffer<int, SIZE>::const_iterator cit = y.begin();
-	RingBuffer<int, SIZE>::const_iterator it4(it);
-	CHECK_EQUAL(cit, it4);
-	RingBuffer<int, SIZE>::const_iterator it5;
-	it5 = it;
-	CHECK_EQUAL(cit, it5);
+	RingBuffer<int, SIZE>::const_iterator cit2(it);
+	CHECK_EQUAL(cit, cit2);
+	RingBuffer<int, SIZE>::const_iterator cit3;
+	cit3 = it;
+	CHECK_EQUAL(cit, cit3);
 }
 
 TEST(RingBufferTest, iterator_operator_plusequal)
