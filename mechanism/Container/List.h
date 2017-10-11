@@ -275,7 +275,6 @@ public:
 
 	void splice(iterator pos, List& x, iterator first, iterator last)
 	{
-		(void)x;
 		DBC_PRE(pos.m_item != 0);
 		DBC_PRE(first.m_item != 0);
 		DBC_PRE(last.m_item != 0);
