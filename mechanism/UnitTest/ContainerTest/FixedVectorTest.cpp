@@ -867,6 +867,400 @@ TEST(FixedVectorTest, operator_notequal_false)
 	CHECK_FALSE(x != y);
 }
 
+TEST(FixedVectorTest, iterator_copy_ctor)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2(it);
+	CHECK_EQUAL(it, it2);
+	FixedVector<int, SIZE>::iterator it3;
+	it3 = it;
+	CHECK_EQUAL(it, it3);
+
+	const FixedVector<int, SIZE>& y = x;
+	FixedVector<int, SIZE>::const_iterator cit = y.begin();
+	FixedVector<int, SIZE>::const_iterator cit2(it);
+	CHECK_EQUAL(cit, cit2);
+	FixedVector<int, SIZE>::const_iterator cit3;
+	cit3 = it;
+	CHECK_EQUAL(cit, cit3);
+}
+
+TEST(FixedVectorTest, iterator_operator_plusequal)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator i = it += 5;
+	LONGS_EQUAL(5, *it);
+	CHECK_EQUAL(x.begin() + 5, it);
+	CHECK_EQUAL(it, i);
+}
+
+TEST(FixedVectorTest, iterator_operator_plusequal_0)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	it += 0;
+	LONGS_EQUAL(0, *it);
+	CHECK_EQUAL(x.begin(), it);
+}
+
+TEST(FixedVectorTest, iterator_operator_plusequal_max)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	it += SIZE;
+	CHECK_EQUAL(x.end(), it);
+}
+
+TEST(FixedVectorTest, iterator_operator_plusequal_minus)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.end();
+	FixedVector<int, SIZE>::iterator i = it += -1;
+	LONGS_EQUAL(9, *it);
+	CHECK_EQUAL(x.begin() + 9, it);
+	CHECK_EQUAL(it, i);
+}
+
+TEST(FixedVectorTest, iterator_operator_plusequal_minus_max)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.end();
+	it += -static_cast<ptrdiff_t>(SIZE);
+	LONGS_EQUAL(0, *it);
+	CHECK_EQUAL(x.begin(), it);
+}
+
+TEST(FixedVectorTest, iterator_operator_plus)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin() + 5;
+	LONGS_EQUAL(5, *it);
+}
+
+TEST(FixedVectorTest, iterator_operator_plus_nonmember)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = 5 + x.begin();
+	LONGS_EQUAL(5, *it);
+	LONGS_EQUAL(1, *(-4 + it));
+}
+
+TEST(FixedVectorTest, iterator_operator_incremant)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator i = ++it;
+	LONGS_EQUAL(1, *it);
+	LONGS_EQUAL(1, *i);
+
+	FixedVector<int, SIZE>::iterator j = it++;
+	LONGS_EQUAL(2, *it);
+	LONGS_EQUAL(1, *j);
+}
+
+TEST(FixedVectorTest, iterator_operator_minusqual)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.end();
+	FixedVector<int, SIZE>::iterator i = it -= 5;
+	LONGS_EQUAL(5, *it);
+	CHECK_EQUAL(x.end() - 5, it);
+	CHECK_EQUAL(it, i);
+}
+
+TEST(FixedVectorTest, iterator_operator_minusequal_0)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	it -= 0;
+	LONGS_EQUAL(0, *it);
+	CHECK_EQUAL(x.begin(), it);
+}
+
+TEST(FixedVectorTest, iterator_operator_minusqual_max)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.end();
+	it -= SIZE;
+	LONGS_EQUAL(0, *it);
+	CHECK_EQUAL(x.begin(), it);
+}
+
+TEST(FixedVectorTest, iterator_operator_minusequal_minus)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator i = it -= -1;
+	LONGS_EQUAL(1, *it);
+	CHECK_EQUAL(x.begin() + 1, it);
+	CHECK_EQUAL(it, i);
+}
+
+TEST(FixedVectorTest, iterator_operator_minusequal_minus_max)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	it -= -static_cast<ptrdiff_t>(SIZE);
+	CHECK_EQUAL(x.end(), it);
+}
+
+TEST(FixedVectorTest, iterator_operator_minus)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.end() - 5;
+	LONGS_EQUAL(5, *it);
+}
+
+TEST(FixedVectorTest, iterator_operator_decremant)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.end();
+	FixedVector<int, SIZE>::iterator i = --it;
+	LONGS_EQUAL(9, *it);
+	LONGS_EQUAL(9, *i);
+
+	FixedVector<int, SIZE>::iterator j = it--;
+	LONGS_EQUAL(8, *it);
+	LONGS_EQUAL(9, *j);
+}
+
+struct A {
+	int a;
+	const char* b;
+};
+
+TEST(FixedVectorTest, iterator_operator_arrow)
+{
+	A a = {1, "foo"};
+	FixedVector<A, SIZE> x(1, a);
+	FixedVector<A, SIZE>::iterator it = x.begin();
+	LONGS_EQUAL(1, it->a);
+	STRCMP_EQUAL("foo", it->b);
+
+	it->a = 10;
+	LONGS_EQUAL(10, it->a);
+
+	FixedVector<A, SIZE>::const_iterator cit(it);
+	LONGS_EQUAL(10, cit->a);
+	STRCMP_EQUAL("foo", cit->b);
+}
+
+TEST(FixedVectorTest, iterator_operator_asterisk)
+{
+	A a = {1, "foo"};
+	FixedVector<A, SIZE> x(1, a);
+	FixedVector<A, SIZE>::iterator it = x.begin();
+	LONGS_EQUAL(1, (*it).a);
+	STRCMP_EQUAL("foo", (*it).b);
+
+	(*it).a = 10;
+	LONGS_EQUAL(10, (*it).a);
+
+	FixedVector<A, SIZE>::const_iterator cit(it);
+	LONGS_EQUAL(10, (*cit).a);
+	STRCMP_EQUAL("foo", (*cit).b);
+}
+
+TEST(FixedVectorTest, iterator_operator_bracket_read)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	FixedVector<int, SIZE> x(a.begin(), a.end());
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	LONGS_EQUAL(0, it[0]);
+	LONGS_EQUAL(5, it[5]);
+	LONGS_EQUAL(9, it[9]);
+}
+
+TEST(FixedVectorTest, iterator_operator_bracket_write)
+{
+	FixedVector<int, SIZE> x(10);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	it[0] = 100;
+	LONGS_EQUAL(100, it[0]);
+
+	it[9] = 10;
+	LONGS_EQUAL(10, it[9]);
+}
+
+TEST(FixedVectorTest, iterator_operator_equal_true)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.begin();
+	FixedVector<int, SIZE>::const_iterator cit(it);
+	CHECK_TRUE(it == it2);
+	CHECK_TRUE(cit == it);
+	CHECK_TRUE(it == cit);
+
+	it = x.begin() + 5;
+	it2 = x.begin() + 5;
+	CHECK_TRUE(it == it2);
+	cit = it;
+	CHECK_TRUE(cit == it);
+
+	it = x.end();
+	it2 = x.end();
+	CHECK_TRUE(it == it2);
+	cit = it;
+	CHECK_TRUE(cit == it);
+
+}
+
+TEST(FixedVectorTest, iterator_operator_equal_false)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.begin() + 1;
+	CHECK_FALSE(it == it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_notequal_true)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.begin() + 1;
+	CHECK_TRUE(it != it2);
+
+	it = x.begin();
+	it2 = x.end();
+	CHECK_TRUE(it != it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_notequal_false)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.begin();
+	CHECK_FALSE(it != it2);
+
+	it = x.end();
+	it2 = x.end();
+	CHECK_FALSE(it != it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_less_true)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.end();
+	CHECK_TRUE(it < it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_less_false)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.begin();
+	CHECK_FALSE(it < it2);
+
+	it = x.end();
+	it2 = x.end();
+	CHECK_FALSE(it < it2);
+
+	it = x.end();
+	it2 = x.begin();
+	CHECK_FALSE(it < it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_greater_true)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.end();
+	FixedVector<int, SIZE>::iterator it2 = x.begin();
+	CHECK_TRUE(it > it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_greater_false)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.begin();
+	CHECK_FALSE(it > it2);
+
+	it = x.end();
+	it2 = x.end();
+	CHECK_FALSE(it > it2);
+
+	it = x.begin();
+	it2 = x.end();
+	CHECK_FALSE(it > it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_lessequal_true)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.end();
+	CHECK_TRUE(it <= it2);
+
+	it = x.begin();
+	it2 = x.begin();
+	CHECK_TRUE(it <= it2);
+
+	it = x.end();
+	it2 = x.end();
+	CHECK_TRUE(it <= it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_lessequal_false)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.end();
+	FixedVector<int, SIZE>::iterator it2 = x.begin();
+	CHECK_FALSE(it <= it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_greaterequal_true)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.end();
+	FixedVector<int, SIZE>::iterator it2 = x.begin();
+	CHECK_TRUE(it >= it2);
+
+	it = x.begin();
+	it2 = x.begin();
+	CHECK_TRUE(it >= it2);
+
+	it = x.end();
+	it2 = x.end();
+	CHECK_TRUE(it >= it2);
+}
+
+TEST(FixedVectorTest, iterator_operator_greaterequal_false)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.end();
+	CHECK_FALSE(it >= it2);
+}
+
+TEST(FixedVectorTest, iterator_difference)
+{
+	FixedVector<int, SIZE> x(SIZE);
+	FixedVector<int, SIZE>::iterator it = x.begin();
+	FixedVector<int, SIZE>::iterator it2 = x.end();
+	LONGS_EQUAL(SIZE, it2 - it);
+	LONGS_EQUAL(-static_cast<ptrdiff_t>(SIZE), it - it2);
+}
+
 TEST(FixedVectorTest, new_delete)
 {
 	FixedVector<int, SIZE>* x = new FixedVector<int, SIZE>(SIZE);
