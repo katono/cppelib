@@ -44,7 +44,7 @@ TEST(AssertionTest, assert_false)
 		DBC_ASSERT(a);
 	}
 	catch (const std::exception& e) {
-		printf("%s\n", e.what());
+		STRCMP_CONTAINS("Assertion failed", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -68,7 +68,7 @@ TEST(AssertionTest, precondition_failed)
 		t.foo(0);
 	}
 	catch (const std::exception& e) {
-		printf("%s\n", e.what());
+		STRCMP_CONTAINS("Pre-condition failed", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -93,7 +93,7 @@ TEST(AssertionTest, postcondition_failed)
 		t.bar();
 	}
 	catch (const std::exception& e) {
-		printf("%s\n", e.what());
+		STRCMP_CONTAINS("Post-condition failed", e.what());
 		return;
 	}
 	FAIL("failed");
