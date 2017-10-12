@@ -9,7 +9,7 @@
 
 namespace Container {
 
-class ListItem {
+struct ListItem {
 private:
 	ListItem* m_nextListItem;
 	ListItem* m_prevListItem;
@@ -33,7 +33,6 @@ public:
 	typedef const Ref const_reference;
 	typedef Ptr pointer;
 	typedef const Ptr const_pointer;
-	typedef ListItemPtr ListItemPointer;
 #ifndef NO_STD_ITERATOR
 	typedef std::bidirectional_iterator_tag iterator_category;
 #endif
@@ -99,9 +98,9 @@ private:
 	template <typename U, typename RefX, typename PtrX, typename ListItemPtrX>
 	friend class List_iterator;
 
-	ListItemPointer m_item;
+	ListItemPtr m_item;
 
-	List_iterator(ListItemPointer item) : m_item(item) {}
+	List_iterator(ListItemPtr item) : m_item(item) {}
 };
 
 template <typename T>
