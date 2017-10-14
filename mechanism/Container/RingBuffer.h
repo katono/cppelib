@@ -35,6 +35,13 @@ public:
 
 	RingBuffer_iterator(const iterator& x) : m_rb(x.m_rb), m_idx(x.m_idx) {}
 
+	RingBuffer_iterator& operator=(const iterator& x)
+	{
+		m_rb = x.m_rb;
+		m_idx = x.m_idx;
+		return *this;
+	}
+
 	RingBuffer_iterator& operator+=(difference_type n)
 	{
 		DBC_PRE(m_rb != 0);

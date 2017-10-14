@@ -41,6 +41,12 @@ public:
 
 	List_iterator(const iterator& x) : m_item(x.m_item) {}
 
+	List_iterator& operator=(const iterator& x)
+	{
+		m_item = x.m_item;
+		return *this;
+	}
+
 	List_iterator& operator++()
 	{
 		DBC_PRE(m_item != 0);
