@@ -7,7 +7,7 @@ namespace Container {
 
 class OutOfRange : public std::exception {
 public:
-	OutOfRange(const char* msg) : m_msg(msg) {}
+	explicit OutOfRange(const char* msg) : m_msg(msg) {}
 	const char* what() const throw()
 	{
 		return m_msg;

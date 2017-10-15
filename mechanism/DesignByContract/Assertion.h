@@ -25,7 +25,7 @@ namespace DesignByContract {
 
 class Error : public std::exception {
 public:
-	Error(const char* msg) : m_msg(msg) {}
+	explicit Error(const char* msg) : m_msg(msg) {}
 	const char* what() const throw()
 	{
 		return m_msg;

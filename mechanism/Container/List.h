@@ -106,7 +106,7 @@ private:
 
 	ListItemPtr m_item;
 
-	List_iterator(ListItemPtr item) : m_item(item) {}
+	explicit List_iterator(ListItemPtr item) : m_item(item) {}
 };
 
 template <typename T>
