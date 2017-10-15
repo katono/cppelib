@@ -9,7 +9,7 @@
 
 namespace Container {
 
-struct ListItem {
+class ListItem {
 private:
 	ListItem* m_nextListItem;
 	ListItem* m_prevListItem;
@@ -19,6 +19,9 @@ private:
 
 	template <typename T>
 	friend class List;
+
+protected:
+	ListItem() : m_nextListItem(0), m_prevListItem(0) {}
 };
 
 template <typename T, typename Ref, typename Ptr, typename ListItemPtr>
