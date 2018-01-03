@@ -1,10 +1,9 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
-#include "WindowsOSWrapper/WindowsThread.h"
+#include "OSWrapper/Thread.h"
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "DesignByContract/Assertion.h"
-#include <set>
 #include <mutex>
 #include <stdexcept>
 
