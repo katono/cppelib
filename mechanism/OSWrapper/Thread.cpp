@@ -2,7 +2,7 @@
 #include "ThreadFactory.h"
 #include "DesignByContract/Assertion.h"
 
-using namespace OSWrapper;
+namespace OSWrapper {
 
 ThreadFactory* Thread::m_factory = 0;
 
@@ -11,16 +11,16 @@ void Thread::setFactory(ThreadFactory* factory)
 	m_factory = factory;
 }
 
-Thread* Thread::create(Runnable* r, size_t stackSize, Priority prio/*= InheritPriority*/, const char* name/*= ""*/)
+Thread* Thread::create(Runnable* r, size_t stackSize/*= 0*/, int priority/*= InheritPriority*/, const char* name/*= ""*/)
 {
 	DBC_PRE(m_factory);
-	return m_factory->create(r, stackSize, prio, name);
+	return m_factory->create(r, stackSize, priority, name);
 }
 
-Thread* Thread::create(size_t stackSize, Priority prio/*= InheritPriority*/, const char* name/*= ""*/)
+Thread* Thread::create(size_t stackSize/*= 0*/, int priority/*= InheritPriority*/, const char* name/*= ""*/)
 {
 	DBC_PRE(m_factory);
-	return m_factory->create(0, stackSize, prio, name);
+	return m_factory->create(0, stackSize, priority, name);
 }
 
 void Thread::destroy(Thread* t)
@@ -54,3 +54,16 @@ Thread* Thread::getCurrentThread()
 	return m_factory->getCurrentThread();
 }
 
+int Thread::getPriorityMax()
+{
+	DBC_PRE(m_factory);
+	return m_factory->getPriorityMax();
+}
+
+int Thread::getPriorityMin()
+{
+	DBC_PRE(m_factory);
+	return m_factory->getPriorityMin();
+}
+
+}

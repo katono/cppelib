@@ -17,10 +17,16 @@ public:
 
 class TestThread : public Thread {
 public:
-	TestThread(Runnable* r, size_t stackSize, Thread::Priority prio, const char* name)
-	: m_runnable(r), m_stackSize(stackSize), m_priority(prio), m_name(name)
+	TestThread(Runnable* r, size_t stackSize, int priority, const char* name)
+	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name)
 	, m_finished(false)
 	{
+		if (stackSize == 0) {
+			m_stackSize = 1024;
+		}
+		if (priority == Thread::InheritPriority) {
+			m_priority = (Thread::getPriorityMax() + Thread::getPriorityMin()) / 2;
+		}
 	}
 
 	~TestThread()
@@ -58,11 +64,11 @@ public:
 	{
 		return m_name;
 	}
-	void setPriority(Priority prio)
+	void setPriority(int priority)
 	{
-		m_priority = prio;
+		m_priority = priority;
 	}
-	Priority getPriority() const
+	int getPriority() const
 	{
 		return m_priority;
 	}
@@ -74,7 +80,7 @@ public:
 private:
 	Runnable* m_runnable;
 	size_t m_stackSize;
-	Priority m_priority;
+	int m_priority;
 	const char* m_name;
 
 	bool m_finished;
@@ -89,15 +95,16 @@ public:
 		return !m_threadSet.empty();
 	}
 private:
-	Thread* create(Runnable* r, size_t stackSize, Thread::Priority prio, const char* name)
+	Thread* create(Runnable* r, size_t stackSize, int priority, const char* name)
 	{
-		Thread* t = new TestThread(r, stackSize, prio, name);
+		Thread* t = new TestThread(r, stackSize, priority, name);
 		m_threadSet.insert(t);
 		return t;
 	}
 	void destroy(Thread* t)
 	{
-		m_threadSet.erase(t);
+		size_t count = m_threadSet.erase(t);
+		LONGS_EQUAL(1, count);
 		delete t;
 	}
 	void exit()
@@ -116,16 +123,27 @@ private:
 	{
 		return (Thread*) mock().actualCall("getCurrentThread").onObject(this).returnPointerValue();
 	}
+	int getPriorityMax() const
+	{
+		return 10;
+	}
+	int getPriorityMin() const
+	{
+		return 0;
+	}
+
 };
 
 TEST_GROUP(ThreadTest) {
 	TestThreadFactory testFactory;
 	TestRunnable testRun;
 	Thread* thread;
+	int normalPriority;
 
 	void setup()
 	{
 		Thread::setFactory(&testFactory);
+		normalPriority = (Thread::getPriorityMax() + Thread::getPriorityMin()) / 2;
 	}
 	void teardown()
 	{
@@ -138,16 +156,21 @@ TEST_GROUP(ThreadTest) {
 
 TEST(ThreadTest, create_destroy)
 {
-	thread = Thread::create(&testRun, 4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 	CHECK(thread);
 	Thread::destroy(thread);
 }
 
 TEST(ThreadTest, create_destroy_no_runnable)
 {
-	thread = Thread::create(4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(4096, normalPriority, "TestThread");
 	CHECK(thread);
 	Thread::destroy(thread);
+}
+
+TEST(ThreadTest, destroy_nullptr)
+{
+	Thread::destroy(0);
 }
 
 TEST(ThreadTest, exit)
@@ -170,7 +193,7 @@ TEST(ThreadTest, yield)
 
 TEST(ThreadTest, getCurrentThread)
 {
-	thread = Thread::create(&testRun, 4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 	Thread* t = Thread::getCurrentThread();
 	CHECK_EQUAL(thread, t);
@@ -179,7 +202,7 @@ TEST(ThreadTest, getCurrentThread)
 
 TEST(ThreadTest, start)
 {
-	thread = Thread::create(&testRun, 4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 	mock().expectOneCall("run").onObject(&testRun);
 	thread->start();
 	Thread::destroy(thread);
@@ -187,7 +210,7 @@ TEST(ThreadTest, start)
 
 TEST(ThreadTest, start_exception)
 {
-	thread = Thread::create(4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(4096, normalPriority, "TestThread");
 	try {
 		thread->start();
 	}
@@ -201,7 +224,7 @@ TEST(ThreadTest, start_exception)
 
 TEST(ThreadTest, start_runnable)
 {
-	thread = Thread::create(4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(4096, normalPriority, "TestThread");
 	mock().expectOneCall("run").onObject(&testRun);
 	thread->start(&testRun);
 	Thread::destroy(thread);
@@ -209,7 +232,7 @@ TEST(ThreadTest, start_runnable)
 
 TEST(ThreadTest, start_other_runnable)
 {
-	thread = Thread::create(&testRun, 4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 	TestRunnable r;
 	mock().expectOneCall("run").onObject(&r);
 	thread->start(&r);
@@ -218,7 +241,7 @@ TEST(ThreadTest, start_other_runnable)
 
 TEST(ThreadTest, start_join_isFinished)
 {
-	thread = Thread::create(&testRun, 4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 	mock().expectOneCall("run").onObject(&testRun);
 	thread->start();
 
@@ -232,7 +255,7 @@ TEST(ThreadTest, start_join_isFinished)
 
 TEST(ThreadTest, name)
 {
-	thread = Thread::create(&testRun, 4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 
 	STRCMP_EQUAL("TestThread", thread->getName());
 	thread->setName("foo");
@@ -242,19 +265,41 @@ TEST(ThreadTest, name)
 
 TEST(ThreadTest, priority)
 {
-	thread = Thread::create(&testRun, 4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 
-	LONGS_EQUAL(Thread::NormalPriority, thread->getPriority());
-	thread->setPriority(Thread::LowPriority);
-	LONGS_EQUAL(Thread::LowPriority, thread->getPriority());
+	LONGS_EQUAL(normalPriority, thread->getPriority());
+	thread->setPriority(normalPriority + 1);
+	LONGS_EQUAL(normalPriority + 1, thread->getPriority());
 	Thread::destroy(thread);
 }
 
 TEST(ThreadTest, stackSize)
 {
-	thread = Thread::create(&testRun, 4096, Thread::NormalPriority, "TestThread");
+	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 
 	LONGS_EQUAL(4096, thread->getStackSize());
+	Thread::destroy(thread);
+}
+
+TEST(ThreadTest, create_only_runnable)
+{
+	thread = Thread::create(&testRun);
+
+	LONGS_EQUAL(1024, thread->getStackSize());
+	LONGS_EQUAL(normalPriority, thread->getPriority());
+	STRCMP_EQUAL("", thread->getName());
+
+	Thread::destroy(thread);
+}
+
+TEST(ThreadTest, create_no_param)
+{
+	thread = Thread::create();
+
+	LONGS_EQUAL(1024, thread->getStackSize());
+	LONGS_EQUAL(normalPriority, thread->getPriority());
+	STRCMP_EQUAL("", thread->getName());
+
 	Thread::destroy(thread);
 }
 

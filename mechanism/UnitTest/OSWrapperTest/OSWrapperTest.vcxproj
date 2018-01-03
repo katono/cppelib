@@ -62,8 +62,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\cpputest-3.8\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>CppUTestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\cpputest-3.8\lib;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>CppUTestd.lib;OSWrapper.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(TargetPath)</Command>
@@ -92,13 +92,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\OSWrapper\Thread.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="ThreadTest.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\OSWrapper\Thread.h" />
-    <ClInclude Include="..\..\OSWrapper\ThreadFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
