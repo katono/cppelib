@@ -11,13 +11,13 @@ void Thread::setFactory(ThreadFactory* factory)
 	m_factory = factory;
 }
 
-Thread* Thread::create(Runnable* r, size_t stackSize/*= 0*/, int priority/*= InheritPriority*/, const char* name/*= ""*/)
+Thread* Thread::create(Runnable* r, size_t stackSize/*= 0U*/, int priority/*= InheritPriority*/, const char* name/*= ""*/)
 {
 	DBC_PRE(m_factory);
 	return m_factory->create(r, stackSize, priority, name);
 }
 
-Thread* Thread::create(size_t stackSize/*= 0*/, int priority/*= InheritPriority*/, const char* name/*= ""*/)
+Thread* Thread::create(size_t stackSize/*= 0U*/, int priority/*= InheritPriority*/, const char* name/*= ""*/)
 {
 	DBC_PRE(m_factory);
 	return m_factory->create(0, stackSize, priority, name);

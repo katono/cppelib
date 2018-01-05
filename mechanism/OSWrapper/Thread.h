@@ -17,8 +17,8 @@ public:
 
 	static void setFactory(ThreadFactory* factory);
 
-	static Thread* create(Runnable* r, size_t stackSize = 0, int priority = InheritPriority, const char* name = "");
-	static Thread* create(size_t stackSize = 0, int priority = InheritPriority, const char* name = "");
+	static Thread* create(Runnable* r, size_t stackSize = 0U, int priority = InheritPriority, const char* name = "");
+	static Thread* create(size_t stackSize = 0U, int priority = InheritPriority, const char* name = "");
 	static void destroy(Thread* t);
 	static void exit();
 	static void sleep(unsigned long millis);

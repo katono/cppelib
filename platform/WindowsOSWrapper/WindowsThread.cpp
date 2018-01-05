@@ -38,7 +38,7 @@ void WindowsThread::threadEntry(WindowsThread* t)
 
 void WindowsThread::threadLoop()
 {
-	while (1) {
+	while (true) {
 		{
 			std::unique_lock<std::mutex> lock(m_mutex);
 			while (!m_started) {
@@ -60,7 +60,7 @@ void WindowsThread::threadLoop()
 void WindowsThread::threadMain()
 {
 	try {
-		if (m_runnable) {
+		if (m_runnable != 0) {
 			m_runnable->run();
 		}
 	}
@@ -171,8 +171,8 @@ int WindowsThread::getPriority() const
 
 size_t WindowsThread::getStackSize() const
 {
-	if (m_stackSize == 0) {
-		return 1024 * 1024;
+	if (m_stackSize == 0U) {
+		return 1024U * 1024U;
 	}
 	return m_stackSize;
 }
