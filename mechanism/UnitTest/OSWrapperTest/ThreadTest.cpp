@@ -76,6 +76,11 @@ public:
 	{
 		return m_stackSize;
 	}
+	void* getNativeHandle()
+	{
+		return (void*) 1234;
+	}
+
 
 private:
 	Runnable* m_runnable;
@@ -299,6 +304,15 @@ TEST(ThreadTest, create_no_param)
 	LONGS_EQUAL(1024, thread->getStackSize());
 	LONGS_EQUAL(normalPriority, thread->getPriority());
 	STRCMP_EQUAL("", thread->getName());
+
+	Thread::destroy(thread);
+}
+
+TEST(ThreadTest, getNativeHandle)
+{
+	thread = Thread::create();
+
+	LONGS_EQUAL(1234, (int)thread->getNativeHandle());
 
 	Thread::destroy(thread);
 }

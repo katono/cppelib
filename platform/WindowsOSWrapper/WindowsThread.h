@@ -41,6 +41,7 @@ public:
 	virtual void setPriority(int priority);
 	virtual int getPriority() const;
 	virtual size_t getStackSize() const;
+	virtual void* getNativeHandle();
 	void beginThread();
 	void endThread();
 	std::thread::id getId() const

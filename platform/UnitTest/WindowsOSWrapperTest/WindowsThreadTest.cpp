@@ -6,6 +6,7 @@
 #include "DesignByContract/Assertion.h"
 #include <mutex>
 #include <stdexcept>
+#include <windows.h>
 
 using namespace OSWrapper;
 using namespace WindowsOSWrapper;
@@ -173,6 +174,26 @@ TEST(WindowsThreadTest, priority)
 	const int prio = (Thread::getPriorityMax() + Thread::getPriorityMin()) / 2;
 	thread->setPriority(prio);
 	LONGS_EQUAL(prio, thread->getPriority());
+	Thread::destroy(thread);
+}
+
+class NativeHandleTestRunnable : public Runnable {
+public:
+	void run()
+	{
+		std::lock_guard<std::mutex> lock(s_mutex);
+		Thread* t = Thread::getCurrentThread();
+		LONGS_EQUAL(GetCurrentThreadId(), GetThreadId((HANDLE)t->getNativeHandle()));
+	}
+};
+
+TEST(WindowsThreadTest, getNativeHandle)
+{
+	NativeHandleTestRunnable runnable;
+	thread = Thread::create(&runnable);
+	thread->start();
+
+	thread->join();
 	Thread::destroy(thread);
 }
 

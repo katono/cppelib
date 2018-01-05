@@ -177,6 +177,12 @@ size_t WindowsThread::getStackSize() const
 	return m_stackSize;
 }
 
+void* WindowsThread::getNativeHandle()
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	return m_thread.native_handle();
+}
+
 int WindowsThread::getPriorityMax()
 {
 	return static_cast<int>(m_prioList.size()) - 1;
