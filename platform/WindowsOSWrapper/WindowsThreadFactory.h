@@ -2,7 +2,7 @@
 #define WINDOWS_OS_WRAPPER_WINDOWS_THREAD_FACTORY_H_INCLUDED
 
 #include "OSWrapper/ThreadFactory.h"
-#include "WindowsThread.h"
+#include "private/WindowsThread.h"
 #include <unordered_map>
 #include <thread>
 #include <mutex>

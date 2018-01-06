@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WindowsThread.cpp" />
+    <ClCompile Include="private\WindowsThread.cpp" />
     <ClCompile Include="WindowsThreadFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WindowsThread.h" />
+    <ClInclude Include="private\WindowsThread.h" />
     <ClInclude Include="WindowsThreadFactory.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
