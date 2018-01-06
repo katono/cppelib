@@ -19,12 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Mutex.h" />
+    <ClInclude Include="MutexFactory.h" />
     <ClInclude Include="Runnable.h" />
     <ClInclude Include="Thread.h" />
     <ClInclude Include="ThreadFactory.h" />
+    <ClInclude Include="Timeout.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="Timeout.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
