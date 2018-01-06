@@ -1,4 +1,5 @@
 #include "WindowsThread.h"
+#include "OSWrapper/Runnable.h"
 #include <exception>
 #include <windows.h>
 #include <process.h>

@@ -2,10 +2,10 @@
 #define OS_WRAPPER_THREAD_H_INCLUDED
 
 #include <stddef.h>
-#include "Runnable.h"
 
 namespace OSWrapper {
 
+class Runnable;
 class ThreadFactory;
 
 class Thread {
