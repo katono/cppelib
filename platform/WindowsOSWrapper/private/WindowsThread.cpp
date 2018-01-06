@@ -3,7 +3,7 @@
 #include <exception>
 #include <windows.h>
 #include <process.h>
-#include <stdio.h>
+#include <iostream>
 
 namespace WindowsOSWrapper {
 
@@ -69,10 +69,10 @@ void WindowsThread::threadMain()
 		// do nothing
 	}
 	catch (const std::exception& e) {
-		printf("%s\n", e.what());
+		std::cout << e.what() << std::endl;
 	}
 	catch (...) {
-		printf("Unknown Exception\n");
+		std::cout << "Unknown Exception" << std::endl;
 	}
 }
 
