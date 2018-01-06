@@ -10,8 +10,7 @@ WindowsThreadFactory::WindowsThreadFactory()
 
 {
 	m_mainThread.setPriority(OSWrapper::Thread::InheritPriority);
-	const std::thread::id id = std::this_thread::get_id();
-	m_threadIdMap.insert(std::make_pair(id, &m_mainThread));
+	m_threadIdMap.insert(std::make_pair(std::this_thread::get_id(), &m_mainThread));
 }
 
 OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, size_t stackSize, int priority, const char* name)
