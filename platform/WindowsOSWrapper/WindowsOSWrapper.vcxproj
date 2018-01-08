@@ -19,11 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="private\WindowsMutex.cpp" />
     <ClCompile Include="private\WindowsThread.cpp" />
+    <ClCompile Include="WindowsMutexFactory.cpp" />
     <ClCompile Include="WindowsThreadFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="private\WindowsMutex.h" />
     <ClInclude Include="private\WindowsThread.h" />
+    <ClInclude Include="WindowsMutexFactory.h" />
     <ClInclude Include="WindowsThreadFactory.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
