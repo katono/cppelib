@@ -13,9 +13,20 @@ public:
 	: m_priorityCeilingOrInherit(priorityCeilingOrInherit) {}
 	~TestMutex() {}
 
-	Mutex::Error lock(Timeout tmout/*= Timeout::FOREVER*/)
+	Mutex::Error lock()
 	{
-		return (Mutex::Error) mock().actualCall("lock").withParameter("tmout", tmout).onObject(this).returnIntValueOrDefault(Mutex::OK);
+		return (Mutex::Error) mock().actualCall("lock").onObject(this).returnIntValueOrDefault(Mutex::OK);
+	}
+
+	Mutex::Error tryLock()
+	{
+		return (Mutex::Error) mock().actualCall("tryLock").onObject(this).returnIntValueOrDefault(Mutex::OK);
+	}
+
+	Mutex::Error tryLockFor(Timeout tmout)
+	{
+		return (Mutex::Error) mock().actualCall("tryLockFor").withParameter("tmout", tmout)
+			.onObject(this).returnIntValueOrDefault(Mutex::OK);
 	}
 
 	Mutex::Error unlock()
@@ -81,7 +92,7 @@ TEST(MutexTest, destroy_nullptr)
 TEST(MutexTest, lock)
 {
 	mutex = Mutex::create();
-	mock().expectOneCall("lock").onObject(mutex).withParameter("tmout", Timeout::FOREVER).andReturnValue(Mutex::OK);
+	mock().expectOneCall("lock").onObject(mutex).andReturnValue(Mutex::OK);
 
 	Mutex::Error err = mutex->lock();
 	LONGS_EQUAL(Mutex::OK, err);
@@ -89,23 +100,23 @@ TEST(MutexTest, lock)
 	Mutex::destroy(mutex);
 }
 
-TEST(MutexTest, lock_polling)
+TEST(MutexTest, tryLock)
 {
 	mutex = Mutex::create();
-	mock().expectOneCall("lock").onObject(mutex).withParameter("tmout", Timeout::POLLING).andReturnValue(Mutex::OK);
+	mock().expectOneCall("tryLock").onObject(mutex).andReturnValue(Mutex::OK);
 
-	Mutex::Error err = mutex->lock(Timeout::POLLING);
+	Mutex::Error err = mutex->tryLock();
 	LONGS_EQUAL(Mutex::OK, err);
 
 	Mutex::destroy(mutex);
 }
 
-TEST(MutexTest, lock_timeout)
+TEST(MutexTest, tryLockFor)
 {
 	mutex = Mutex::create();
-	mock().expectOneCall("lock").onObject(mutex).withParameter("tmout", Timeout(100)).andReturnValue(Mutex::TimedOut);
+	mock().expectOneCall("tryLockFor").onObject(mutex).withParameter("tmout", Timeout(100)).andReturnValue(Mutex::TimedOut);
 
-	Mutex::Error err = mutex->lock(Timeout(100));
+	Mutex::Error err = mutex->tryLockFor(Timeout(100));
 	LONGS_EQUAL(Mutex::TimedOut, err);
 
 	Mutex::destroy(mutex);
@@ -114,8 +125,8 @@ TEST(MutexTest, lock_timeout)
 TEST(MutexTest, lock_recursive_err)
 {
 	mutex = Mutex::create();
-	mock().expectOneCall("lock").onObject(mutex).withParameter("tmout", Timeout::FOREVER).andReturnValue(Mutex::OK);
-	mock().expectOneCall("lock").onObject(mutex).withParameter("tmout", Timeout::FOREVER).andReturnValue(Mutex::LockedRecursively);
+	mock().expectOneCall("lock").onObject(mutex).andReturnValue(Mutex::OK);
+	mock().expectOneCall("lock").onObject(mutex).andReturnValue(Mutex::LockedRecursively);
 
 	Mutex::Error err = mutex->lock();
 	LONGS_EQUAL(Mutex::OK, err);
@@ -129,7 +140,7 @@ TEST(MutexTest, lock_recursive_err)
 TEST(MutexTest, unlock)
 {
 	mutex = Mutex::create();
-	mock().expectOneCall("lock").onObject(mutex).withParameter("tmout", Timeout::FOREVER).andReturnValue(Mutex::OK);
+	mock().expectOneCall("lock").onObject(mutex).andReturnValue(Mutex::OK);
 	mock().expectOneCall("unlock").onObject(mutex).andReturnValue(Mutex::OK);
 
 	Mutex::Error err = mutex->lock();

@@ -25,7 +25,9 @@ public:
 	static Mutex* create(int priorityCeiling);
 	static void destroy(Mutex* m);
 
-	virtual Error lock(Timeout tmout = Timeout::FOREVER) = 0;
+	virtual Error lock() = 0;
+	virtual Error tryLock() = 0;
+	virtual Error tryLockFor(Timeout tmout) = 0;
 	virtual Error unlock() = 0;
 
 private:
