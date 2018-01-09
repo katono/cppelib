@@ -163,3 +163,16 @@ TEST(MutexTest, unlock_not_locked)
 	Mutex::destroy(mutex);
 }
 
+TEST(MutexTest, LockGuard)
+{
+	mutex = Mutex::create();
+	mock().expectOneCall("lock").onObject(mutex).andReturnValue(Mutex::OK);
+	mock().expectOneCall("unlock").onObject(mutex).andReturnValue(Mutex::OK);
+
+	{
+		LockGuard lock(mutex);
+	}
+
+	Mutex::destroy(mutex);
+}
+
