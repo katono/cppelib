@@ -6,7 +6,6 @@
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "OSWrapper/Mutex.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
-#include "OSHelper/LockGuard.h"
 #include "DesignByContract/Assertion.h"
 #include <stdexcept>
 #include <windows.h>
@@ -128,7 +127,7 @@ class FibonacciTestRunnableLockGuard : public FibonacciTestRunnable {
 public:
 	void run()
 	{
-		OSHelper::LockGuard lock(s_mutex);
+		LockGuard lock(s_mutex);
 		fibonacci();
 	}
 };

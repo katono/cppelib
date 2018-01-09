@@ -30,4 +30,20 @@ void Mutex::destroy(Mutex* m)
 	}
 }
 
+
+LockGuard::LockGuard(Mutex* m)
+: m_mutex(m)
+{
+	if (m_mutex != 0) {
+		m_mutex->lock();
+	}
+}
+
+LockGuard::~LockGuard()
+{
+	if (m_mutex != 0) {
+		m_mutex->unlock();
+	}
+}
+
 }

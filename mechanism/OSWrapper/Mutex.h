@@ -34,6 +34,18 @@ private:
 	static MutexFactory* m_factory;
 };
 
+class LockGuard {
+public:
+	explicit LockGuard(Mutex* m);
+	~LockGuard();
+
+private:
+	Mutex* m_mutex;
+
+	LockGuard(const LockGuard&);
+	LockGuard& operator=(const LockGuard&);
+};
+
 }
 
 #endif // OS_WRAPPER_MUTEX_H_INCLUDED
