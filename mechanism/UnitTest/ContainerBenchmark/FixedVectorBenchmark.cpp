@@ -4,8 +4,8 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <time.h>
 #ifdef _WIN32
 #include <windows.h>
@@ -24,7 +24,7 @@ TEST_GROUP(FixedVectorBenchmark) {
 	{
 		static bool first = true;
 		if (first) {
-			srand((unsigned int) time(0));
+			std::srand((unsigned int) time(0));
 			first = false;
 		}
 		x.clear();
@@ -33,7 +33,7 @@ TEST_GROUP(FixedVectorBenchmark) {
 	}
 	void teardown()
 	{
-		printf("\n\n");
+		std::printf("\n\n");
 	}
 	unsigned long get_msec(void)
 	{
@@ -54,13 +54,13 @@ TEST(FixedVectorBenchmark, push_back_pop_back)
 	for (std::size_t i = 0; i < SIZE; ++i) {
 		x.push_back(i);
 	}
-	printf("FixedVector::push_back, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("FixedVector::push_back, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	for (std::size_t i = 0; i < SIZE; ++i) {
 		y.push_back(i);
 	}
-	printf("std::vector::push_back, %ld, %ld ms\n", y.size(), get_msec() - t);
+	std::printf("std::vector::push_back, %ld, %ld ms\n", y.size(), get_msec() - t);
 
 	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
@@ -70,20 +70,20 @@ TEST(FixedVectorBenchmark, push_back_pop_back)
 	while (!x.empty()) {
 		x.pop_back();
 	}
-	printf("FixedVector::pop_back, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("FixedVector::pop_back, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	while (!y.empty()) {
 		y.pop_back();
 	}
-	printf("std::vector::pop_back, %ld, %ld ms\n", y.size(), get_msec() - t);
+	std::printf("std::vector::pop_back, %ld, %ld ms\n", y.size(), get_msec() - t);
 
 }
 
 TEST(FixedVectorBenchmark, sort)
 {
 	for (std::size_t i = 0; i < SORT_SIZE; ++i) {
-		const int tmp = rand();
+		const int tmp = std::rand();
 		x.push_back(tmp);
 		y.push_back(tmp);
 	}
@@ -91,11 +91,11 @@ TEST(FixedVectorBenchmark, sort)
 	unsigned long t;
 	t = get_msec();
 	std::sort(x.begin(), x.end());
-	printf("sort FixedVector, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("sort FixedVector, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	std::sort(y.begin(), y.end());
-	printf("sort std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
+	std::printf("sort std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
 
 	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
@@ -103,11 +103,11 @@ TEST(FixedVectorBenchmark, sort)
 
 	t = get_msec();
 	std::sort(x.begin(), x.end());
-	printf("sort 2 FixedVector, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("sort 2 FixedVector, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	std::sort(y.begin(), y.end());
-	printf("sort 2 std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
+	std::printf("sort 2 std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
 
 	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
@@ -115,11 +115,11 @@ TEST(FixedVectorBenchmark, sort)
 
 	t = get_msec();
 	std::sort(x.begin(), x.end(), std::greater<int>());
-	printf("sort greater FixedVector, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("sort greater FixedVector, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	std::sort(y.begin(), y.end(), std::greater<int>());
-	printf("sort greater std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
+	std::printf("sort greater std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
 
 	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);

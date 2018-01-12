@@ -1,6 +1,5 @@
 #include "CppUTest/TestHarness.h"
 #include "DesignByContract/Assertion.h"
-#include <stdio.h>
 #include <string>
 
 

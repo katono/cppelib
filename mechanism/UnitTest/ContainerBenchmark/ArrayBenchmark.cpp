@@ -3,7 +3,7 @@
 #include "Container/Array.h"
 #include <algorithm>
 #include <functional>
-#include <stdio.h>
+#include <cstdio>
 #include <time.h>
 #ifdef _WIN32
 #include <windows.h>
@@ -22,7 +22,7 @@ TEST_GROUP(ArrayBenchmark) {
 	}
 	void teardown()
 	{
-		printf("\n\n");
+		std::printf("\n\n");
 	}
 	unsigned long get_msec(void)
 	{
@@ -43,12 +43,12 @@ TEST(ArrayBenchmark, benchmark)
 	for (std::size_t i = 0; i < x.size(); ++i) {
 		x[i] = i;
 	}
-	printf("Array::operator[], %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("Array::operator[], %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	for (std::size_t i = 0; i < sizeof y / sizeof y[0]; ++i) {
 		y[i] = i;
 	}
-	printf("C array [], %ld, %ld ms\n", SIZE, get_msec() - t);
+	std::printf("C array [], %ld, %ld ms\n", SIZE, get_msec() - t);
 }
 

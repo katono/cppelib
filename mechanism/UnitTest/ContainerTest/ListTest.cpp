@@ -1,7 +1,7 @@
 #include "CppUTest/TestHarness.h"
 #include "Container/List.h"
 #include "Container/Array.h"
-#include <stdio.h>
+#include <cstdio>
 
 using namespace Container;
 
@@ -53,16 +53,16 @@ TEST_GROUP(ListTest) {
 
 	void printList(const char* name, MyList& x)
 	{
-		printf("%s: term[%p], begin:", name, (void*)&*x.end());
+		std::printf("%s: term[%p], begin:", name, (void*)&*x.end());
 		for (MyList::iterator it = x.begin(); it != x.end(); ++it) {
-			printf("%p[%d] -> ", (void*)&*it, it->m_value);
+			std::printf("%p[%d] -> ", (void*)&*it, it->m_value);
 		}
-		printf("end, rbegin:");
+		std::printf("end, rbegin:");
 		for (MyList::iterator it = x.end(); it != x.begin();) {
 			--it;
-			printf("%p[%d] -> ", (void*)&*it, it->m_value);
+			std::printf("%p[%d] -> ", (void*)&*it, it->m_value);
 		}
-		printf("rend\n");
+		std::printf("rend\n");
 	}
 
 	SimpleString StringFrom(MyList::iterator value)
