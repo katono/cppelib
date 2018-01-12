@@ -4,6 +4,8 @@
 
 namespace OSWrapper {
 
+const int Thread::InheritPriority = -1;
+
 ThreadFactory* Thread::m_factory = 0;
 
 void Thread::setFactory(ThreadFactory* factory)

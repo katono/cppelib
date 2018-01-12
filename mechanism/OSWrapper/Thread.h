@@ -10,9 +10,8 @@ class ThreadFactory;
 
 class Thread {
 public:
-	enum {
-		InheritPriority = -1
-	};
+	static const int InheritPriority;
+
 	virtual ~Thread() {}
 
 	static void setFactory(ThreadFactory* factory);
