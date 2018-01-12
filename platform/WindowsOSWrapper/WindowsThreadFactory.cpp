@@ -13,7 +13,7 @@ WindowsThreadFactory::WindowsThreadFactory()
 	m_threadIdMap.insert(std::make_pair(std::this_thread::get_id(), &m_mainThread));
 }
 
-OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, size_t stackSize, int priority, const char* name)
+OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
 {
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);

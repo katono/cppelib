@@ -18,7 +18,7 @@ public:
 
 class TestThread : public Thread {
 public:
-	TestThread(Runnable* r, size_t stackSize, int priority, const char* name)
+	TestThread(Runnable* r, std::size_t stackSize, int priority, const char* name)
 	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name)
 	, m_finished(false)
 	{
@@ -73,7 +73,7 @@ public:
 	{
 		return m_priority;
 	}
-	size_t getStackSize() const
+	std::size_t getStackSize() const
 	{
 		return m_stackSize;
 	}
@@ -85,7 +85,7 @@ public:
 
 private:
 	Runnable* m_runnable;
-	size_t m_stackSize;
+	std::size_t m_stackSize;
 	int m_priority;
 	const char* m_name;
 
@@ -101,7 +101,7 @@ public:
 		return !m_threadSet.empty();
 	}
 private:
-	Thread* create(Runnable* r, size_t stackSize, int priority, const char* name)
+	Thread* create(Runnable* r, std::size_t stackSize, int priority, const char* name)
 	{
 		Thread* t = new TestThread(r, stackSize, priority, name);
 		m_threadSet.insert(t);
@@ -109,7 +109,7 @@ private:
 	}
 	void destroy(Thread* t)
 	{
-		size_t count = m_threadSet.erase(t);
+		std::size_t count = m_threadSet.erase(t);
 		LONGS_EQUAL(1, count);
 		delete t;
 	}

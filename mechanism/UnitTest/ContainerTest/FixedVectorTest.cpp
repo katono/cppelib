@@ -14,7 +14,7 @@
 using namespace Container;
 
 TEST_GROUP(FixedVectorTest) {
-	static const size_t SIZE = 10;
+	static const std::size_t SIZE = 10;
 	void setup()
 	{
 	}
@@ -933,7 +933,7 @@ TEST(FixedVectorTest, iterator_operator_plusequal_minus_max)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	FixedVector<int, SIZE> x(a.begin(), a.end());
 	FixedVector<int, SIZE>::iterator it = x.end();
-	it += -static_cast<ptrdiff_t>(SIZE);
+	it += -static_cast<std::ptrdiff_t>(SIZE);
 	LONGS_EQUAL(0, *it);
 	CHECK_EQUAL(x.begin(), it);
 }
@@ -1016,7 +1016,7 @@ TEST(FixedVectorTest, iterator_operator_minusequal_minus_max)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	FixedVector<int, SIZE> x(a.begin(), a.end());
 	FixedVector<int, SIZE>::iterator it = x.begin();
-	it -= -static_cast<ptrdiff_t>(SIZE);
+	it -= -static_cast<std::ptrdiff_t>(SIZE);
 	CHECK_EQUAL(x.end(), it);
 }
 
@@ -1258,7 +1258,7 @@ TEST(FixedVectorTest, iterator_difference)
 	FixedVector<int, SIZE>::iterator it = x.begin();
 	FixedVector<int, SIZE>::iterator it2 = x.end();
 	LONGS_EQUAL(SIZE, it2 - it);
-	LONGS_EQUAL(-static_cast<ptrdiff_t>(SIZE), it - it2);
+	LONGS_EQUAL(-static_cast<std::ptrdiff_t>(SIZE), it - it2);
 }
 
 TEST(FixedVectorTest, new_delete)

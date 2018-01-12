@@ -15,7 +15,7 @@ public:
 	virtual ~WindowsThreadFactory() {}
 
 private:
-	virtual OSWrapper::Thread* create(OSWrapper::Runnable* r, size_t stackSize, int priority, const char* name);
+	virtual OSWrapper::Thread* create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name);
 	virtual void destroy(OSWrapper::Thread* t);
 	virtual void exit();
 	virtual void sleep(unsigned long millis);

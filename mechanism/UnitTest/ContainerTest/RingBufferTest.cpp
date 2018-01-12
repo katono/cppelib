@@ -15,7 +15,7 @@ using namespace Container;
 
 
 TEST_GROUP(RingBufferTest) {
-	static const size_t SIZE = 10;
+	static const std::size_t SIZE = 10;
 	void setup()
 	{
 	}
@@ -174,7 +174,7 @@ TEST(RingBufferTest, begin_end)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	size_t i = 0;
+	std::size_t i = 0;
 	for (RingBuffer<int, SIZE>::iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -184,7 +184,7 @@ TEST(RingBufferTest, begin_end_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const RingBuffer<int, SIZE> x(a.begin(), a.end());
-	size_t i = 0;
+	std::size_t i = 0;
 	for (RingBuffer<int, SIZE>::const_iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -257,7 +257,7 @@ TEST(RingBufferTest, ctor_range)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -282,7 +282,7 @@ TEST(RingBufferTest, copy_ctor)
 	const RingBuffer<int, SIZE> x(b);
 	LONGS_EQUAL(SIZE, b.size());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(a[i], b[i]);
 		LONGS_EQUAL(b[i], x[i]);
 	}
@@ -295,7 +295,7 @@ TEST(RingBufferTest, operator_assign)
 	RingBuffer<int, SIZE> x;
 	x = b;
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(b[i], x[i]);
 	}
 }
@@ -312,7 +312,7 @@ TEST(RingBufferTest, resize_make_longer)
 	RingBuffer<int, SIZE> x(5);
 	x.resize(8, 100);
 	LONGS_EQUAL(8, x.size());
-	size_t i;
+	std::size_t i;
 	for (i = 0; i < 5; ++i) {
 		LONGS_EQUAL(0, x[i]);
 	}
@@ -353,7 +353,7 @@ TEST(RingBufferTest, push_back)
 TEST(RingBufferTest, push_back_pop_front)
 {
 	RingBuffer<int, SIZE> x;
-	for (size_t i = 0; i < SIZE * 100; ++i) {
+	for (std::size_t i = 0; i < SIZE * 100; ++i) {
 		x.push_back(i);
 		LONGS_EQUAL(i, x.front());
 		x.pop_front();
@@ -407,7 +407,7 @@ TEST(RingBufferTest, push_front)
 TEST(RingBufferTest, push_front_pop_back)
 {
 	RingBuffer<int, SIZE> x;
-	for (size_t i = 0; i < SIZE * 100; ++i) {
+	for (std::size_t i = 0; i < SIZE * 100; ++i) {
 		x.push_front(i);
 		LONGS_EQUAL(i, x.back());
 		x.pop_back();
@@ -471,7 +471,7 @@ TEST(RingBufferTest, assign_range)
 	RingBuffer<int, SIZE> x;
 	x.assign(a.begin(), a.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -482,7 +482,7 @@ TEST(RingBufferTest, assign_range_c_array)
 	RingBuffer<int, SIZE> x;
 	x.assign(&a[0], &a[SIZE]);
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -494,7 +494,7 @@ TEST(RingBufferTest, assign_range_FixedVector_iter)
 	RingBuffer<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -506,7 +506,7 @@ TEST(RingBufferTest, assign_range_RingBuffer_iter)
 	RingBuffer<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -519,7 +519,7 @@ TEST(RingBufferTest, assign_range_deque_iter)
 	RingBuffer<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -531,7 +531,7 @@ TEST(RingBufferTest, assign_range_list_iter)
 	RingBuffer<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -796,7 +796,7 @@ TEST(RingBufferTest, insert_range_c_array)
 	RingBuffer<int, SIZE> x;
 	x.insert(x.end(), &a[0], &a[SIZE]);
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -808,7 +808,7 @@ TEST(RingBufferTest, insert_range_FixedVector_iter)
 	RingBuffer<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -820,7 +820,7 @@ TEST(RingBufferTest, insert_range_RingBuffer_iter)
 	RingBuffer<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -833,7 +833,7 @@ TEST(RingBufferTest, insert_range_deque_iter)
 	RingBuffer<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -845,7 +845,7 @@ TEST(RingBufferTest, insert_range_list_iter)
 	RingBuffer<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -964,7 +964,7 @@ TEST(RingBufferTest, swap)
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
 	RingBuffer<int, SIZE> y(b.begin(), b.end());
 	x.swap(y);
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x.size() - i - 1, x.at(i));
 		LONGS_EQUAL(i, y.at(i));
 	}
@@ -975,7 +975,7 @@ TEST(RingBufferTest, swap_same)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
 	x.swap(x);
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
 	}
 }
@@ -987,7 +987,7 @@ TEST(RingBufferTest, swap_nonmember)
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
 	RingBuffer<int, SIZE> y(b.begin(), b.end());
 	swap(x, y);
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x.size() - i - 1, x.at(i));
 		LONGS_EQUAL(i, y.at(i));
 	}
@@ -998,7 +998,7 @@ TEST(RingBufferTest, swap_nonmember_same)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
 	swap(x, x);
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
 	}
 }
@@ -1123,7 +1123,7 @@ TEST(RingBufferTest, iterator_operator_plusequal_minus_max)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
 	RingBuffer<int, SIZE>::iterator it = x.end();
-	it += -static_cast<ptrdiff_t>(SIZE);
+	it += -static_cast<std::ptrdiff_t>(SIZE);
 	LONGS_EQUAL(0, *it);
 	CHECK_EQUAL(x.begin(), it);
 }
@@ -1206,7 +1206,7 @@ TEST(RingBufferTest, iterator_operator_minusequal_minus_max)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
 	RingBuffer<int, SIZE>::iterator it = x.begin();
-	it -= -static_cast<ptrdiff_t>(SIZE);
+	it -= -static_cast<std::ptrdiff_t>(SIZE);
 	CHECK_EQUAL(x.end(), it);
 }
 
@@ -1482,7 +1482,7 @@ TEST(RingBufferTest, iterator_difference)
 	RingBuffer<int, SIZE>::iterator it = x.begin();
 	RingBuffer<int, SIZE>::iterator it2 = x.end();
 	LONGS_EQUAL(SIZE, it2 - it);
-	LONGS_EQUAL(-static_cast<ptrdiff_t>(SIZE), it - it2);
+	LONGS_EQUAL(-static_cast<std::ptrdiff_t>(SIZE), it - it2);
 }
 
 TEST(RingBufferTest, iterator_difference2)
@@ -1496,7 +1496,7 @@ TEST(RingBufferTest, iterator_difference2)
 	RingBuffer<int, SIZE>::iterator it = x.begin();
 	RingBuffer<int, SIZE>::iterator it2 = x.end();
 	LONGS_EQUAL(SIZE, it2 - it);
-	LONGS_EQUAL(-static_cast<ptrdiff_t>(SIZE), it - it2);
+	LONGS_EQUAL(-static_cast<std::ptrdiff_t>(SIZE), it - it2);
 }
 
 TEST(RingBufferTest, new_delete)
@@ -1512,12 +1512,12 @@ TEST(RingBufferTest, algo_sort)
 	const Array<int, SIZE> a = {1, 7, 0, 2, 5, 3, 9, 4, 6, 8};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
 	std::sort(x.begin(), x.end());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
 	}
 
 	std::sort(x.begin(), x.end(), std::greater<int>());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(SIZE - i - 1, x.at(i));
 	}
 }
@@ -1528,7 +1528,7 @@ TEST(RingBufferTest, algo_copy)
 	RingBuffer<int, SIZE> x;
 	std::copy(a.begin(), a.end(), std::back_inserter(x));
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
 	}
 }
@@ -1553,7 +1553,7 @@ TEST(RingBufferTest, rbegin_rend)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	size_t i = SIZE - 1;
+	std::size_t i = SIZE - 1;
 	for (RingBuffer<int, SIZE>::reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -1563,7 +1563,7 @@ TEST(RingBufferTest, rbegin_rend_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const RingBuffer<int, SIZE> x(a.begin(), a.end());
-	size_t i = SIZE - 1;
+	std::size_t i = SIZE - 1;
 	for (RingBuffer<int, SIZE>::const_reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}

@@ -8,7 +8,7 @@
 using namespace Container;
 
 TEST_GROUP(ArrayTest) {
-	static const size_t SIZE = 10;
+	static const std::size_t SIZE = 10;
 	void setup()
 	{
 	}
@@ -20,7 +20,7 @@ TEST_GROUP(ArrayTest) {
 TEST(ArrayTest, init0)
 {
 	Array<int, SIZE> a = {0};
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(0, a.at(i));
 	}
 }
@@ -29,7 +29,7 @@ TEST(ArrayTest, copy_ctor)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	Array<int, SIZE> b(a);
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(a[i], b[i]);
 	}
 }
@@ -39,7 +39,7 @@ TEST(ArrayTest, operator_assign)
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	Array<int, SIZE> b;
 	b = a;
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(a[i], b[i]);
 	}
 }
@@ -180,7 +180,7 @@ TEST(ArrayTest, data_write)
 TEST(ArrayTest, begin_end)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	size_t i = 0;
+	std::size_t i = 0;
 	for (Array<int, SIZE>::iterator it = a.begin(); it != a.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -189,7 +189,7 @@ TEST(ArrayTest, begin_end)
 TEST(ArrayTest, begin_end_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	size_t i = 0;
+	std::size_t i = 0;
 	for (Array<int, SIZE>::const_iterator it = a.begin(); it != a.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -237,7 +237,7 @@ TEST(ArrayTest, fill)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	a.fill(100);
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(100, a.at(i));
 	}
 }
@@ -247,7 +247,7 @@ TEST(ArrayTest, swap)
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	Array<int, SIZE> b = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 	a.swap(b);
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(a.size() - i - 1, a.at(i));
 		LONGS_EQUAL(i, b.at(i));
 	}
@@ -257,7 +257,7 @@ TEST(ArrayTest, swap_same)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	a.swap(a);
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(i, a.at(i));
 	}
 }
@@ -267,7 +267,7 @@ TEST(ArrayTest, swap_nonmember)
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	Array<int, SIZE> b = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 	swap(a, b);
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(a.size() - i - 1, a.at(i));
 		LONGS_EQUAL(i, b.at(i));
 	}
@@ -277,7 +277,7 @@ TEST(ArrayTest, swap_nonmember_same)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	swap(a, a);
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(i, a.at(i));
 	}
 }
@@ -322,12 +322,12 @@ TEST(ArrayTest, algo_sort)
 {
 	Array<int, SIZE> a = {1, 7, 0, 2, 5, 3, 9, 4, 6, 8};
 	std::sort(a.begin(), a.end());
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(i, a.at(i));
 	}
 
 	std::sort(a.begin(), a.end(), std::greater<int>());
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		LONGS_EQUAL(SIZE - i - 1, a.at(i));
 	}
 }
@@ -337,7 +337,7 @@ TEST(ArrayTest, algo_sort)
 TEST(ArrayTest, rbegin_rend)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	size_t i = SIZE - 1;
+	std::size_t i = SIZE - 1;
 	for (Array<int, SIZE>::reverse_iterator it = a.rbegin(); it != a.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -346,7 +346,7 @@ TEST(ArrayTest, rbegin_rend)
 TEST(ArrayTest, rbegin_rend_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	size_t i = SIZE - 1;
+	std::size_t i = SIZE - 1;
 	for (Array<int, SIZE>::const_reverse_iterator it = a.rbegin(); it != a.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}

@@ -59,7 +59,7 @@ TEST(BitPatternTest, set_reset_all)
 TEST(BitPatternTest, set_reset_bit)
 {
 	BitPattern<uint32_t> b;
-	for (size_t i = 0; i < 32; i++) {
+	for (std::size_t i = 0; i < 32; i++) {
 		b.set(i);
 		LONGS_EQUAL((1 << i), b.data());
 		b.reset(i);
@@ -113,7 +113,7 @@ TEST(BitPatternTest, flip_all)
 TEST(BitPatternTest, flip_bit)
 {
 	BitPattern<uint32_t> b;
-	for (size_t i = 0; i < 32; i++) {
+	for (std::size_t i = 0; i < 32; i++) {
 		b.flip(i);
 		LONGS_EQUAL((1 << i), b.data());
 		b.flip(i);
@@ -199,7 +199,7 @@ TEST(BitPatternTest, operator_xor_equal_return_this)
 TEST(BitPatternTest, operator_left_right_shift_equal)
 {
 	BitPattern<uint32_t> b(0x1);
-	for (size_t i = 0; i < 32; i++) {
+	for (std::size_t i = 0; i < 32; i++) {
 		b <<= i;
 		LONGS_EQUAL((1 << i), b.data());
 		b >>= i;
@@ -219,7 +219,7 @@ TEST(BitPatternTest, operator_left_right_shift_equal_return_this)
 TEST(BitPatternTest, operator_left_right_shift)
 {
 	BitPattern<uint32_t> a(0x1);
-	for (size_t i = 0; i < 32; i++) {
+	for (std::size_t i = 0; i < 32; i++) {
 		BitPattern<uint32_t> b = a << i;
 		LONGS_EQUAL((1 << i), b.data());
 		BitPattern<uint32_t> c = b >> i;

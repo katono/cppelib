@@ -33,7 +33,7 @@ public:
 
 TEST_GROUP(ListTest) {
 	typedef List<MyListItem> MyList;
-	static const size_t MAXSIZE = 100;
+	static const std::size_t MAXSIZE = 100;
 	typedef Array<MyListItem*, MAXSIZE> CheckArray;
 
 	void setup()
@@ -45,7 +45,7 @@ TEST_GROUP(ListTest) {
 
 	void checkList(const CheckArray& expected, MyList& x)
 	{
-		size_t i = 0;
+		std::size_t i = 0;
 		for (MyList::iterator it = x.begin(); it != x.end(); ++it, ++i) {
 			POINTERS_EQUAL(expected[i], &*it);
 		}
@@ -119,7 +119,7 @@ TEST(ListTest, push_back_pop_front)
 	MyList x;
 	Array<MyListItem, 10> a;
 
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		a[i].m_value = i;
 		x.push_back(a[i]);
 	}
@@ -159,7 +159,7 @@ TEST(ListTest, push_front_pop_back)
 	MyList x;
 	Array<MyListItem, 10> a;
 
-	for (size_t i = 0; i < a.size(); ++i) {
+	for (std::size_t i = 0; i < a.size(); ++i) {
 		a[i].m_value = i;
 		x.push_front(a[i]);
 	}
@@ -252,7 +252,7 @@ TEST(ListTest, begin_end)
 	x.push_back(c);
 	x.push_back(d);
 
-	size_t i = 0;
+	std::size_t i = 0;
 	for (MyList::iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(i, (*it).m_value);
 		LONGS_EQUAL(i, it->m_value);
@@ -272,7 +272,7 @@ TEST(ListTest, begin_end_const)
 	z.push_back(d);
 	const MyList& x = z;
 
-	size_t i = 0;
+	std::size_t i = 0;
 	for (MyList::const_iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(i, (*it).m_value);
 		LONGS_EQUAL(i, it->m_value);
@@ -1018,7 +1018,7 @@ TEST(ListTest, rbegin_rend)
 	x.push_back(c);
 	x.push_back(d);
 
-	size_t i = 3;
+	std::size_t i = 3;
 	for (MyList::reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(i, (*it).m_value);
 		LONGS_EQUAL(i, it->m_value);
@@ -1038,7 +1038,7 @@ TEST(ListTest, rbegin_rend_const)
 	z.push_back(d);
 	const MyList& x = z;
 
-	size_t i = 3;
+	std::size_t i = 3;
 	for (MyList::const_reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(i, (*it).m_value);
 		LONGS_EQUAL(i, it->m_value);

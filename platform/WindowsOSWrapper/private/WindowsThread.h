@@ -12,7 +12,7 @@ namespace WindowsOSWrapper {
 class WindowsThread : public OSWrapper::Thread {
 private:
 	OSWrapper::Runnable* m_runnable;
-	size_t m_stackSize;
+	std::size_t m_stackSize;
 	int m_priority;
 	const char* m_name;
 
@@ -30,7 +30,7 @@ private:
 	void threadMain();
 
 public:
-	WindowsThread(OSWrapper::Runnable* r, size_t stackSize, int priority, const char* name);
+	WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name);
 	virtual ~WindowsThread();
 	virtual void start();
 	virtual void start(OSWrapper::Runnable* r);
@@ -40,7 +40,7 @@ public:
 	virtual const char* getName() const;
 	virtual void setPriority(int priority);
 	virtual int getPriority() const;
-	virtual size_t getStackSize() const;
+	virtual std::size_t getStackSize() const;
 	virtual void* getNativeHandle();
 	void beginThread();
 	void endThread();

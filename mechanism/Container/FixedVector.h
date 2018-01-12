@@ -1,7 +1,7 @@
 #ifndef CONTAINER_FIXED_VECTOR_H_INCLUDED
 #define CONTAINER_FIXED_VECTOR_H_INCLUDED
 
-#include <stddef.h>
+#include <cstddef>
 #ifndef NO_STD_ITERATOR
 #include <iterator>
 #endif
@@ -12,12 +12,12 @@
 
 namespace Container {
 
-template <typename T, size_t MaxSize>
+template <typename T, std::size_t MaxSize>
 class FixedVector {
 public:
 	typedef T value_type;
-	typedef size_t size_type;
-	typedef ptrdiff_t difference_type;
+	typedef std::size_t size_type;
+	typedef std::ptrdiff_t difference_type;
 	typedef value_type* iterator;
 	typedef const value_type* const_iterator;
 	typedef value_type& reference;
@@ -293,7 +293,7 @@ public:
 	}
 
 private:
-	template <typename U, size_t N>
+	template <typename U, std::size_t N>
 	friend bool operator==(const FixedVector<U, N>& x, const FixedVector<U, N>& y);
 
 	void move_backward(iterator first, iterator last, difference_type n)
@@ -358,13 +358,13 @@ private:
 
 };
 
-template <typename T, size_t MaxSize>
+template <typename T, std::size_t MaxSize>
 bool operator==(const FixedVector<T, MaxSize>& x, const FixedVector<T, MaxSize>& y)
 {
 	if (x.size() != y.size()) {
 		return false;
 	}
-	for (size_t i = 0U; i < x.size(); ++i) {
+	for (std::size_t i = 0U; i < x.size(); ++i) {
 		if (!(x[i] == y[i])) {
 			return false;
 		}
@@ -372,13 +372,13 @@ bool operator==(const FixedVector<T, MaxSize>& x, const FixedVector<T, MaxSize>&
 	return true;
 }
 
-template <typename T, size_t MaxSize>
+template <typename T, std::size_t MaxSize>
 bool operator!=(const FixedVector<T, MaxSize>& x, const FixedVector<T, MaxSize>& y)
 {
 	return !(x == y);
 }
 
-template <typename T, size_t MaxSize>
+template <typename T, std::size_t MaxSize>
 void swap(FixedVector<T, MaxSize>& x, FixedVector<T, MaxSize>& y)
 {
 	x.swap(y);

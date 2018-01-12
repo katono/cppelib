@@ -1,7 +1,7 @@
 #ifndef OS_WRAPPER_THREAD_FACTORY_H_INCLUDED
 #define OS_WRAPPER_THREAD_FACTORY_H_INCLUDED
 
-#include <stddef.h>
+#include <cstddef>
 
 namespace OSWrapper {
 
@@ -11,7 +11,7 @@ class Thread;
 class ThreadFactory {
 public:
 	virtual ~ThreadFactory() {}
-	virtual Thread* create(Runnable* r, size_t stackSize, int priority, const char* name) = 0;
+	virtual Thread* create(Runnable* r, std::size_t stackSize, int priority, const char* name) = 0;
 	virtual void destroy(Thread* t) = 0;
 	virtual void exit() = 0;
 	virtual void sleep(unsigned long millis) = 0;

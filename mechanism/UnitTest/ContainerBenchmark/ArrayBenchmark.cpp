@@ -14,7 +14,7 @@
 using namespace Container;
 
 TEST_GROUP(ArrayBenchmark) {
-	static const size_t SIZE = 1000000;
+	static const std::size_t SIZE = 1000000;
 	Array<int, SIZE> x;
 	int y[SIZE];
 	void setup()
@@ -40,13 +40,13 @@ TEST(ArrayBenchmark, benchmark)
 {
 	unsigned long t;
 	t = get_msec();
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		x[i] = i;
 	}
 	printf("Array::operator[], %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
-	for (size_t i = 0; i < sizeof y / sizeof y[0]; ++i) {
+	for (std::size_t i = 0; i < sizeof y / sizeof y[0]; ++i) {
 		y[i] = i;
 	}
 	printf("C array [], %ld, %ld ms\n", SIZE, get_msec() - t);

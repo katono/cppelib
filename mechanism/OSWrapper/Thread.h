@@ -1,7 +1,7 @@
 #ifndef OS_WRAPPER_THREAD_H_INCLUDED
 #define OS_WRAPPER_THREAD_H_INCLUDED
 
-#include <stddef.h>
+#include <cstddef>
 
 namespace OSWrapper {
 
@@ -17,8 +17,8 @@ public:
 
 	static void setFactory(ThreadFactory* factory);
 
-	static Thread* create(Runnable* r, size_t stackSize = 0U, int priority = InheritPriority, const char* name = "");
-	static Thread* create(size_t stackSize = 0U, int priority = InheritPriority, const char* name = "");
+	static Thread* create(Runnable* r, std::size_t stackSize = 0U, int priority = InheritPriority, const char* name = "");
+	static Thread* create(std::size_t stackSize = 0U, int priority = InheritPriority, const char* name = "");
 	static void destroy(Thread* t);
 	static void exit();
 	static void sleep(unsigned long millis);
@@ -36,7 +36,7 @@ public:
 	virtual const char* getName() const = 0;
 	virtual void setPriority(int priority) = 0;
 	virtual int getPriority() const = 0;
-	virtual size_t getStackSize() const = 0;
+	virtual std::size_t getStackSize() const = 0;
 	virtual void* getNativeHandle() = 0;
 
 private:

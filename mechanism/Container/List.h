@@ -1,7 +1,7 @@
 #ifndef CONTAINER_LIST_H_INCLUDED
 #define CONTAINER_LIST_H_INCLUDED
 
-#include <stddef.h>
+#include <cstddef>
 #ifndef NO_STD_ITERATOR
 #include <iterator>
 #endif
@@ -28,8 +28,8 @@ template <typename T, typename Ref, typename Ptr, typename ListItemPtr>
 class List_iterator {
 public:
 	typedef T value_type;
-	typedef size_t size_type;
-	typedef ptrdiff_t difference_type;
+	typedef std::size_t size_type;
+	typedef std::ptrdiff_t difference_type;
 	typedef List_iterator<T, T&, T*, ListItem*> iterator;
 	typedef List_iterator<T, const T&, const T*, const ListItem*> const_iterator;
 	typedef Ref reference;
@@ -116,8 +116,8 @@ template <typename T>
 class List {
 public:
 	typedef T value_type;
-	typedef size_t size_type;
-	typedef ptrdiff_t difference_type;
+	typedef std::size_t size_type;
+	typedef std::ptrdiff_t difference_type;
 	typedef List_iterator<T, T&, T*, ListItem*> iterator;
 	typedef List_iterator<T, const T&, const T*, const ListItem*> const_iterator;
 	typedef value_type& reference;

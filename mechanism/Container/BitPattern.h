@@ -1,7 +1,7 @@
 #ifndef CONTAINER_BIT_PATTERN_H_INCLUDED
 #define CONTAINER_BIT_PATTERN_H_INCLUDED
 
-#include <stddef.h>
+#include <cstddef>
 #include "DesignByContract/Assertion.h"
 
 namespace Container {
@@ -15,7 +15,7 @@ public:
 	BitPattern() : m_data(0U) {}
 	explicit BitPattern(T pattern) : m_data(pattern) {}
 
-	size_t size() const
+	std::size_t size() const
 	{
 		return sizeof m_data * 8U;
 	}
@@ -26,7 +26,7 @@ public:
 		return *this;
 	}
 
-	BitPattern& set(size_t pos)
+	BitPattern& set(std::size_t pos)
 	{
 		DBC_PRE(pos < (sizeof m_data * 8U));
 		m_data |= (1 << pos);
@@ -39,7 +39,7 @@ public:
 		return *this;
 	}
 
-	BitPattern& reset(size_t pos)
+	BitPattern& reset(std::size_t pos)
 	{
 		DBC_PRE(pos < (sizeof m_data * 8U));
 		m_data &= ~(1 << pos);
@@ -52,7 +52,7 @@ public:
 		return *this;
 	}
 
-	BitPattern& flip(size_t pos)
+	BitPattern& flip(std::size_t pos)
 	{
 		DBC_PRE(pos < (sizeof m_data * 8U));
 		m_data ^= (1 << pos);
@@ -82,24 +82,24 @@ public:
 		return *this;
 	}
 
-	BitPattern& operator<<=(size_t pos)
+	BitPattern& operator<<=(std::size_t pos)
 	{
 		m_data <<= pos;
 		return *this;
 	}
 
-	BitPattern& operator>>=(size_t pos)
+	BitPattern& operator>>=(std::size_t pos)
 	{
 		m_data >>= pos;
 		return *this;
 	}
 
-	BitPattern operator<<(size_t pos) const
+	BitPattern operator<<(std::size_t pos) const
 	{
 		return BitPattern(*this) <<= pos;
 	}
 
-	BitPattern operator>>(size_t pos) const
+	BitPattern operator>>(std::size_t pos) const
 	{
 		return BitPattern(*this) >>= pos;
 	}
@@ -119,7 +119,7 @@ public:
 		return m_data;
 	}
 
-	bool test(size_t pos) const
+	bool test(std::size_t pos) const
 	{
 		DBC_PRE(pos < (sizeof m_data * 8U));
 		return (m_data & (1 << pos)) != 0U;

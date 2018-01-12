@@ -16,8 +16,8 @@
 using namespace Container;
 
 TEST_GROUP(FixedVectorBenchmark) {
-	static const size_t SIZE = 1000000;
-	static const size_t SORT_SIZE = 100000;
+	static const std::size_t SIZE = 1000000;
+	static const std::size_t SORT_SIZE = 100000;
 	FixedVector<int, SIZE> x;
 	std::vector<int> y;
 	void setup()
@@ -51,18 +51,18 @@ TEST(FixedVectorBenchmark, push_back_pop_back)
 {
 	unsigned long t;
 	t = get_msec();
-	for (size_t i = 0; i < SIZE; ++i) {
+	for (std::size_t i = 0; i < SIZE; ++i) {
 		x.push_back(i);
 	}
 	printf("FixedVector::push_back, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
-	for (size_t i = 0; i < SIZE; ++i) {
+	for (std::size_t i = 0; i < SIZE; ++i) {
 		y.push_back(i);
 	}
 	printf("std::vector::push_back, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 
@@ -82,7 +82,7 @@ TEST(FixedVectorBenchmark, push_back_pop_back)
 
 TEST(FixedVectorBenchmark, sort)
 {
-	for (size_t i = 0; i < SORT_SIZE; ++i) {
+	for (std::size_t i = 0; i < SORT_SIZE; ++i) {
 		const int tmp = rand();
 		x.push_back(tmp);
 		y.push_back(tmp);
@@ -97,7 +97,7 @@ TEST(FixedVectorBenchmark, sort)
 	std::sort(y.begin(), y.end());
 	printf("sort std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 
@@ -109,7 +109,7 @@ TEST(FixedVectorBenchmark, sort)
 	std::sort(y.begin(), y.end());
 	printf("sort 2 std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 
@@ -121,7 +121,7 @@ TEST(FixedVectorBenchmark, sort)
 	std::sort(y.begin(), y.end(), std::greater<int>());
 	printf("sort greater std::vector, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 }

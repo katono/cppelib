@@ -16,8 +16,8 @@
 using namespace Container;
 
 TEST_GROUP(RingBufferBenchmark) {
-	static const size_t SIZE = 1000000;
-	static const size_t SORT_SIZE = 100000;
+	static const std::size_t SIZE = 1000000;
+	static const std::size_t SORT_SIZE = 100000;
 	RingBuffer<int, SIZE> x;
 	std::deque<int> y;
 	void setup()
@@ -55,18 +55,18 @@ TEST(RingBufferBenchmark, push_back_pop_back)
 {
 	unsigned long t;
 	t = get_msec();
-	for (size_t i = 0; i < SIZE; ++i) {
+	for (std::size_t i = 0; i < SIZE; ++i) {
 		x.push_back(i);
 	}
 	printf("RingBuffer::push_back, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
-	for (size_t i = 0; i < SIZE; ++i) {
+	for (std::size_t i = 0; i < SIZE; ++i) {
 		y.push_back(i);
 	}
 	printf("std::deque::push_back, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 
@@ -88,18 +88,18 @@ TEST(RingBufferBenchmark, push_front_pop_front)
 {
 	unsigned long t;
 	t = get_msec();
-	for (size_t i = 0; i < SIZE; ++i) {
+	for (std::size_t i = 0; i < SIZE; ++i) {
 		x.push_front(i);
 	}
 	printf("RingBuffer::push_front, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
-	for (size_t i = 0; i < SIZE; ++i) {
+	for (std::size_t i = 0; i < SIZE; ++i) {
 		y.push_front(i);
 	}
 	printf("std::deque::push_front, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 
@@ -119,7 +119,7 @@ TEST(RingBufferBenchmark, push_front_pop_front)
 
 TEST(RingBufferBenchmark, sort)
 {
-	for (size_t i = 0; i < SORT_SIZE; ++i) {
+	for (std::size_t i = 0; i < SORT_SIZE; ++i) {
 		const int tmp = rand();
 		x.push_back(tmp);
 		y.push_back(tmp);
@@ -134,7 +134,7 @@ TEST(RingBufferBenchmark, sort)
 	std::sort(y.begin(), y.end());
 	printf("sort std::deque, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 
@@ -146,7 +146,7 @@ TEST(RingBufferBenchmark, sort)
 	std::sort(y.begin(), y.end());
 	printf("sort 2 std::deque, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 
@@ -158,7 +158,7 @@ TEST(RingBufferBenchmark, sort)
 	std::sort(y.begin(), y.end(), std::greater<int>());
 	printf("sort greater std::deque, %ld, %ld ms\n", y.size(), get_msec() - t);
 
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(x[i], y[i]);
 	}
 }

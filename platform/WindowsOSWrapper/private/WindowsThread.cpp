@@ -19,7 +19,7 @@ const std::vector<int> WindowsThread::m_prioList = {
 	THREAD_PRIORITY_TIME_CRITICAL,
 };
 
-WindowsThread::WindowsThread(OSWrapper::Runnable* r, size_t stackSize, int priority, const char* name)
+WindowsThread::WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
 : m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name), 
   m_thread(), m_mutex(), m_condStarted(), m_condFinished(), 
   m_started(false), m_endThreadRequested(false), m_threadId()
@@ -170,7 +170,7 @@ int WindowsThread::getPriority() const
 	return m_priority;
 }
 
-size_t WindowsThread::getStackSize() const
+std::size_t WindowsThread::getStackSize() const
 {
 	if (m_stackSize == 0U) {
 		return 1024U * 1024U;

@@ -1,7 +1,7 @@
 #ifndef CONTAINER_ARRAY_H_INCLUDED
 #define CONTAINER_ARRAY_H_INCLUDED
 
-#include <stddef.h>
+#include <cstddef>
 #ifndef NO_STD_ITERATOR
 #include <iterator>
 #endif
@@ -10,11 +10,11 @@
 
 namespace Container {
 
-template <typename T, size_t Size>
+template <typename T, std::size_t Size>
 struct Array {
 	typedef T value_type;
-	typedef size_t size_type;
-	typedef ptrdiff_t difference_type;
+	typedef std::size_t size_type;
+	typedef std::ptrdiff_t difference_type;
 	typedef value_type* iterator;
 	typedef const value_type* const_iterator;
 	typedef value_type& reference;
@@ -163,10 +163,10 @@ struct Array {
 	}
 };
 
-template <typename T, size_t Size>
+template <typename T, std::size_t Size>
 bool operator==(const Array<T, Size>& x, const Array<T, Size>& y)
 {
-	for (size_t i = 0U; i < Size; ++i) {
+	for (std::size_t i = 0U; i < Size; ++i) {
 		if (!(x[i] == y[i])) {
 			return false;
 		}
@@ -174,13 +174,13 @@ bool operator==(const Array<T, Size>& x, const Array<T, Size>& y)
 	return true;
 }
 
-template <typename T, size_t Size>
+template <typename T, std::size_t Size>
 bool operator!=(const Array<T, Size>& x, const Array<T, Size>& y)
 {
 	return !(x == y);
 }
 
-template <typename T, size_t Size>
+template <typename T, std::size_t Size>
 void swap(Array<T, Size>& x, Array<T, Size>& y)
 {
 	x.swap(y);
