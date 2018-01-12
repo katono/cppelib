@@ -11,7 +11,7 @@
 #include <sys/time.h>
 #endif
 
-using namespace Container;
+using Container::Array;
 
 TEST_GROUP(ArrayBenchmark) {
 	static const std::size_t SIZE = 1000000;

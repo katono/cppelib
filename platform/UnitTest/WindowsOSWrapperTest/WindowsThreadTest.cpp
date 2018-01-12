@@ -9,8 +9,9 @@
 #include <stdexcept>
 #include <windows.h>
 
-using namespace OSWrapper;
-using namespace WindowsOSWrapper;
+using OSWrapper::Runnable;
+using OSWrapper::Thread;
+using WindowsOSWrapper::WindowsThreadFactory;
 
 static std::mutex s_mutex;
 

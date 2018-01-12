@@ -11,7 +11,9 @@
 #include <functional>
 #endif
 
-using namespace Container;
+using Container::RingBuffer;
+using Container::Array;
+using Container::FixedVector;
 
 
 TEST_GROUP(RingBufferTest) {

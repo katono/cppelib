@@ -5,7 +5,7 @@
 #include <functional>
 #endif
 
-using namespace Container;
+using Container::Array;
 
 TEST_GROUP(ArrayTest) {
 	static const std::size_t SIZE = 10;

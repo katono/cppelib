@@ -6,7 +6,9 @@
 #include "DesignByContract/Assertion.h"
 #include <set>
 
-using namespace OSWrapper;
+using OSWrapper::Runnable;
+using OSWrapper::Thread;
+using OSWrapper::ThreadFactory;
 
 class TestRunnable : public Runnable {
 public:

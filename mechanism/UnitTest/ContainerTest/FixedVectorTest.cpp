@@ -11,7 +11,9 @@
 #include <functional>
 #endif
 
-using namespace Container;
+using Container::FixedVector;
+using Container::Array;
+using Container::RingBuffer;
 
 TEST_GROUP(FixedVectorTest) {
 	static const std::size_t SIZE = 10;

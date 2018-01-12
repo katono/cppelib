@@ -2,7 +2,7 @@
 #include "Container/BitPattern.h"
 #include <cstdint>
 
-using namespace Container;
+using Container::BitPattern;
 
 TEST_GROUP(BitPatternTest) {
 	void setup()

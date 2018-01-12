@@ -13,7 +13,7 @@
 #include <sys/time.h>
 #endif
 
-using namespace Container;
+using Container::RingBuffer;
 
 TEST_GROUP(RingBufferBenchmark) {
 	static const std::size_t SIZE = 1000000;

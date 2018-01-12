@@ -10,8 +10,13 @@
 #include <stdexcept>
 #include <windows.h>
 
-using namespace OSWrapper;
-using namespace WindowsOSWrapper;
+using OSWrapper::Runnable;
+using OSWrapper::Thread;
+using OSWrapper::Mutex;
+using OSWrapper::Timeout;
+using OSWrapper::LockGuard;
+using WindowsOSWrapper::WindowsThreadFactory;
+using WindowsOSWrapper::WindowsMutexFactory;
 
 static Mutex* s_mutex;
 

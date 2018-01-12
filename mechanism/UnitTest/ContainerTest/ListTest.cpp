@@ -3,7 +3,9 @@
 #include "Container/Array.h"
 #include <cstdio>
 
-using namespace Container;
+using Container::ListItem;
+using Container::List;
+using Container::Array;
 
 class MyListItem : public ListItem {
 public:

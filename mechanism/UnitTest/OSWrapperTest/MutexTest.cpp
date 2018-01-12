@@ -3,7 +3,10 @@
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/MutexFactory.h"
 
-using namespace OSWrapper;
+using OSWrapper::Mutex;
+using OSWrapper::MutexFactory;
+using OSWrapper::Timeout;
+using OSWrapper::LockGuard;
 
 class TestMutex : public Mutex {
 private:

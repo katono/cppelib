@@ -13,7 +13,7 @@
 #include <sys/time.h>
 #endif
 
-using namespace Container;
+using Container::FixedVector;
 
 TEST_GROUP(FixedVectorBenchmark) {
 	static const std::size_t SIZE = 1000000;
