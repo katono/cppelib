@@ -94,12 +94,14 @@
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="ArrayTest.cpp" />
+    <ClCompile Include="BitPatternTest.cpp" />
     <ClCompile Include="FixedVectorTest.cpp" />
     <ClCompile Include="ListTest.cpp" />
     <ClCompile Include="RingBufferTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Container\Array.h" />
+    <ClInclude Include="..\..\Container\BitPattern.h" />
     <ClInclude Include="..\..\Container\ContainerException.h" />
     <ClInclude Include="..\..\Container\FixedVector.h" />
     <ClInclude Include="..\..\Container\List.h" />
