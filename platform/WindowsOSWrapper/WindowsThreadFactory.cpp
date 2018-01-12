@@ -5,11 +5,11 @@
 namespace WindowsOSWrapper {
 
 WindowsThreadFactory::WindowsThreadFactory()
-: m_mainThread(0, 0, OSWrapper::Thread::InheritPriority, "MainThread"), 
+: m_mainThread(0, 0, OSWrapper::Thread::INHERIT_PRIORITY, "MainThread"), 
   m_threadIdMap(), m_mutex()
 
 {
-	m_mainThread.setPriority(OSWrapper::Thread::InheritPriority);
+	m_mainThread.setPriority(OSWrapper::Thread::INHERIT_PRIORITY);
 	m_threadIdMap.insert(std::make_pair(std::this_thread::get_id(), &m_mainThread));
 }
 

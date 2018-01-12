@@ -4,7 +4,7 @@
 
 namespace OSWrapper {
 
-const int Thread::InheritPriority = -1;
+const int Thread::INHERIT_PRIORITY = -1;
 
 ThreadFactory* Thread::m_factory = 0;
 
@@ -13,13 +13,13 @@ void Thread::setFactory(ThreadFactory* factory)
 	m_factory = factory;
 }
 
-Thread* Thread::create(Runnable* r, std::size_t stackSize/*= 0U*/, int priority/*= InheritPriority*/, const char* name/*= ""*/)
+Thread* Thread::create(Runnable* r, std::size_t stackSize/*= 0U*/, int priority/*= INHERIT_PRIORITY*/, const char* name/*= ""*/)
 {
 	DBC_PRE(m_factory);
 	return m_factory->create(r, stackSize, priority, name);
 }
 
-Thread* Thread::create(std::size_t stackSize/*= 0U*/, int priority/*= InheritPriority*/, const char* name/*= ""*/)
+Thread* Thread::create(std::size_t stackSize/*= 0U*/, int priority/*= INHERIT_PRIORITY*/, const char* name/*= ""*/)
 {
 	DBC_PRE(m_factory);
 	return m_factory->create(0, stackSize, priority, name);

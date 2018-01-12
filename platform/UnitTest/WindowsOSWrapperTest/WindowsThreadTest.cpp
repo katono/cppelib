@@ -53,7 +53,7 @@ public:
 TEST(WindowsThreadTest, create_destroy)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::InheritPriority, "WindowsThread");
+	thread = Thread::create(&runnable, 4096, Thread::INHERIT_PRIORITY, "WindowsThread");
 	CHECK(thread);
 	Thread::destroy(thread);
 }
@@ -61,7 +61,7 @@ TEST(WindowsThreadTest, create_destroy)
 TEST(WindowsThreadTest, start_join_isFinished)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::InheritPriority, "WindowsThread");
+	thread = Thread::create(&runnable, 4096, Thread::INHERIT_PRIORITY, "WindowsThread");
 	runnable.setThread(thread);
 	thread->start();
 
@@ -75,7 +75,7 @@ TEST(WindowsThreadTest, start_join_isFinished)
 
 TEST(WindowsThreadTest, create_destroy_no_runnable)
 {
-	thread = Thread::create(4096, Thread::InheritPriority, "TestThread");
+	thread = Thread::create(4096, Thread::INHERIT_PRIORITY, "TestThread");
 	CHECK(thread);
 	Thread::destroy(thread);
 }
@@ -158,7 +158,7 @@ TEST(WindowsThreadTest, repeat_start)
 TEST(WindowsThreadTest, name)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::InheritPriority, "TestThread");
+	thread = Thread::create(&runnable, 4096, Thread::INHERIT_PRIORITY, "TestThread");
 
 	STRCMP_EQUAL("TestThread", thread->getName());
 	thread->setName("foo");
@@ -201,7 +201,7 @@ TEST(WindowsThreadTest, getNativeHandle)
 TEST(WindowsThreadTest, stackSize)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::InheritPriority, "TestThread");
+	thread = Thread::create(&runnable, 4096, Thread::INHERIT_PRIORITY, "TestThread");
 
 	LONGS_EQUAL(4096, thread->getStackSize());
 	Thread::destroy(thread);

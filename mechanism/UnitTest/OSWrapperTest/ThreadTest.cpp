@@ -25,7 +25,7 @@ public:
 		if (stackSize == 0) {
 			m_stackSize = 1024;
 		}
-		if (priority == Thread::InheritPriority) {
+		if (priority == Thread::INHERIT_PRIORITY) {
 			m_priority = (Thread::getPriorityMax() + Thread::getPriorityMin()) / 2;
 		}
 	}

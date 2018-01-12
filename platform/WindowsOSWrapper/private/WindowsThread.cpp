@@ -152,7 +152,7 @@ void WindowsThread::setPriority(int priority)
 		return;
 	}
 
-	// InheritPriority
+	// INHERIT_PRIORITY
 	const auto winPriority = GetThreadPriority(GetCurrentThread());
 	for (int i = 0; i < static_cast<int>(m_prioList.size()); i++) {
 		if (m_prioList[i] == winPriority) {

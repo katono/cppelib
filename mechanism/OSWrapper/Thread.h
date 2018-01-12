@@ -10,14 +10,14 @@ class ThreadFactory;
 
 class Thread {
 public:
-	static const int InheritPriority;
+	static const int INHERIT_PRIORITY;
 
 	virtual ~Thread() {}
 
 	static void setFactory(ThreadFactory* factory);
 
-	static Thread* create(Runnable* r, std::size_t stackSize = 0U, int priority = InheritPriority, const char* name = "");
-	static Thread* create(std::size_t stackSize = 0U, int priority = InheritPriority, const char* name = "");
+	static Thread* create(Runnable* r, std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
+	static Thread* create(std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
 	static void destroy(Thread* t);
 	static void exit();
 	static void sleep(unsigned long millis);
