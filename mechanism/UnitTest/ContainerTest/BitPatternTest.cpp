@@ -46,6 +46,13 @@ TEST(BitPatternTest, operator_assign)
 	LONGS_EQUAL(0x12345678, b.data());
 }
 
+TEST(BitPatternTest, operator_assign_T)
+{
+	BitPattern<std::uint32_t> b;
+	b = 0x12345678;
+	LONGS_EQUAL(0x12345678, b.data());
+}
+
 TEST(BitPatternTest, set_reset_all)
 {
 	BitPattern<std::uint32_t> b;
@@ -156,6 +163,13 @@ TEST(BitPatternTest, operator_and_equal)
 	LONGS_EQUAL(0x82820000, b.data());
 }
 
+TEST(BitPatternTest, operator_and_equal_T)
+{
+	BitPattern<std::uint32_t> b(0x82824141);
+	b &= 0xAAAAAAAA;
+	LONGS_EQUAL(0x82820000, b.data());
+}
+
 TEST(BitPatternTest, operator_or_equal)
 {
 	BitPattern<std::uint32_t> a(0xAAAAAAAA);
@@ -164,11 +178,25 @@ TEST(BitPatternTest, operator_or_equal)
 	LONGS_EQUAL(0xAAAAEBEB, b.data());
 }
 
+TEST(BitPatternTest, operator_or_equal_T)
+{
+	BitPattern<std::uint32_t> b(0x82824141);
+	b |= 0xAAAAAAAA;
+	LONGS_EQUAL(0xAAAAEBEB, b.data());
+}
+
 TEST(BitPatternTest, operator_xor_equal)
 {
 	BitPattern<std::uint32_t> a(0xAAAAAAAA);
 	BitPattern<std::uint32_t> b(0x82824141);
 	b ^= a;
+	LONGS_EQUAL(0x2828EBEB, b.data());
+}
+
+TEST(BitPatternTest, operator_xor_equal_T)
+{
+	BitPattern<std::uint32_t> b(0x82824141);
+	b ^= 0xAAAAAAAA;
 	LONGS_EQUAL(0x2828EBEB, b.data());
 }
 
@@ -235,11 +263,25 @@ TEST(BitPatternTest, operator_equal_true)
 	CHECK(f);
 }
 
+TEST(BitPatternTest, operator_equal_true_T)
+{
+	BitPattern<std::uint32_t> a(0x12345678);
+	bool f = (a == 0x12345678);
+	CHECK(f);
+}
+
 TEST(BitPatternTest, operator_equal_false)
 {
 	BitPattern<std::uint32_t> a(0x12345678);
 	BitPattern<std::uint32_t> b(0x12345679);
 	bool f = (a == b);
+	CHECK_FALSE(f);
+}
+
+TEST(BitPatternTest, operator_equal_false_T)
+{
+	BitPattern<std::uint32_t> a(0x12345678);
+	bool f = (a == 0x12345679);
 	CHECK_FALSE(f);
 }
 
@@ -251,11 +293,25 @@ TEST(BitPatternTest, operator_not_equal_true)
 	CHECK(f);
 }
 
+TEST(BitPatternTest, operator_not_equal_true_T)
+{
+	BitPattern<std::uint32_t> a(0x12345678);
+	bool f = (a != 0x12345679);
+	CHECK(f);
+}
+
 TEST(BitPatternTest, operator_not_equal_false)
 {
 	BitPattern<std::uint32_t> a(0x12345678);
 	BitPattern<std::uint32_t> b(0x12345678);
 	bool f = (a != b);
+	CHECK_FALSE(f);
+}
+
+TEST(BitPatternTest, operator_not_equal_false_T)
+{
+	BitPattern<std::uint32_t> a(0x12345678);
+	bool f = (a != 0x12345678);
 	CHECK_FALSE(f);
 }
 
@@ -325,6 +381,13 @@ TEST(BitPatternTest, operator_and)
 	LONGS_EQUAL(0x82820000, c.data());
 }
 
+TEST(BitPatternTest, operator_and_T)
+{
+	BitPattern<std::uint32_t> b(0x82824141);
+	BitPattern<std::uint32_t> c = b & 0xAAAAAAAA;
+	LONGS_EQUAL(0x82820000, c.data());
+}
+
 TEST(BitPatternTest, operator_or)
 {
 	BitPattern<std::uint32_t> a(0xAAAAAAAA);
@@ -333,11 +396,25 @@ TEST(BitPatternTest, operator_or)
 	LONGS_EQUAL(0xAAAAEBEB, c.data());
 }
 
+TEST(BitPatternTest, operator_or_T)
+{
+	BitPattern<std::uint32_t> b(0x82824141);
+	BitPattern<std::uint32_t> c = b | 0xAAAAAAAA;
+	LONGS_EQUAL(0xAAAAEBEB, c.data());
+}
+
 TEST(BitPatternTest, operator_xor)
 {
 	BitPattern<std::uint32_t> a(0xAAAAAAAA);
 	BitPattern<std::uint32_t> b(0x82824141);
 	BitPattern<std::uint32_t> c = b ^ a;
+	LONGS_EQUAL(0x2828EBEB, c.data());
+}
+
+TEST(BitPatternTest, operator_xor_T)
+{
+	BitPattern<std::uint32_t> b(0x82824141);
+	BitPattern<std::uint32_t> c = b ^ 0xAAAAAAAA;
 	LONGS_EQUAL(0x2828EBEB, c.data());
 }
 

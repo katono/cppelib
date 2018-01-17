@@ -29,7 +29,7 @@ public:
 	BitPattern& set(std::size_t pos)
 	{
 		DBC_PRE(pos < (sizeof m_data * 8U));
-		m_data |= (1 << pos);
+		m_data |= (1U << pos);
 		return *this;
 	}
 
@@ -42,7 +42,7 @@ public:
 	BitPattern& reset(std::size_t pos)
 	{
 		DBC_PRE(pos < (sizeof m_data * 8U));
-		m_data &= ~(1 << pos);
+		m_data &= ~(1U << pos);
 		return *this;
 	}
 
@@ -55,7 +55,7 @@ public:
 	BitPattern& flip(std::size_t pos)
 	{
 		DBC_PRE(pos < (sizeof m_data * 8U));
-		m_data ^= (1 << pos);
+		m_data ^= (1U << pos);
 		return *this;
 	}
 
@@ -64,9 +64,21 @@ public:
 		return BitPattern(*this).flip();
 	}
 
+	BitPattern& operator=(const T& x)
+	{
+		m_data = x;
+		return *this;
+	}
+
 	BitPattern& operator&=(const BitPattern& x)
 	{
 		m_data &= x.m_data;
+		return *this;
+	}
+
+	BitPattern& operator&=(const T& x)
+	{
+		m_data &= x;
 		return *this;
 	}
 
@@ -76,9 +88,21 @@ public:
 		return *this;
 	}
 
+	BitPattern& operator|=(const T& x)
+	{
+		m_data |= x;
+		return *this;
+	}
+
 	BitPattern& operator^=(const BitPattern& x)
 	{
 		m_data ^= x.m_data;
+		return *this;
+	}
+
+	BitPattern& operator^=(const T& x)
+	{
+		m_data ^= x;
 		return *this;
 	}
 
@@ -109,9 +133,19 @@ public:
 		return m_data == x.m_data;
 	}
 
+	bool operator==(const T& x) const
+	{
+		return m_data == x;
+	}
+
 	bool operator!=(const BitPattern& x) const
 	{
 		return m_data != x.m_data;
+	}
+
+	bool operator!=(const T& x) const
+	{
+		return m_data != x;
 	}
 
 	T data() const
@@ -122,7 +156,7 @@ public:
 	bool test(std::size_t pos) const
 	{
 		DBC_PRE(pos < (sizeof m_data * 8U));
-		return (m_data & (1 << pos)) != 0U;
+		return (m_data & (1U << pos)) != 0U;
 	}
 
 	bool all() const
@@ -140,25 +174,37 @@ public:
 		return m_data == 0U;
 	}
 
+	BitPattern operator&(const BitPattern& x)
+	{
+		return BitPattern(*this) &= x;
+	}
+
+	BitPattern operator&(const T& x)
+	{
+		return BitPattern(*this) &= x;
+	}
+
+	BitPattern operator|(const BitPattern& x)
+	{
+		return BitPattern(*this) |= x;
+	}
+
+	BitPattern operator|(const T& x)
+	{
+		return BitPattern(*this) |= x;
+	}
+
+	BitPattern operator^(const BitPattern& x)
+	{
+		return BitPattern(*this) ^= x;
+	}
+
+	BitPattern operator^(const T& x)
+	{
+		return BitPattern(*this) ^= x;
+	}
+
 };
-
-template <typename T>
-BitPattern<T> operator&(const BitPattern<T>& x, const BitPattern<T>& y)
-{
-	return BitPattern<T>(x) &= y;
-}
-
-template <typename T>
-BitPattern<T> operator|(const BitPattern<T>& x, const BitPattern<T>& y)
-{
-	return BitPattern<T>(x) |= y;
-}
-
-template <typename T>
-BitPattern<T> operator^(const BitPattern<T>& x, const BitPattern<T>& y)
-{
-	return BitPattern<T>(x) ^= y;
-}
 
 }
 
