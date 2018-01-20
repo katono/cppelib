@@ -53,8 +53,8 @@ void WindowsThread::threadLoop()
 		{
 			std::lock_guard<std::mutex> lock(m_mutex);
 			m_started = false;
+			m_condFinished.notify_all();
 		}
-		m_condFinished.notify_all();
 	}
 }
 
