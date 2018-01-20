@@ -15,7 +15,7 @@ public:
 		CalledByNonThread,
 		LockedRecursively,
 		NotLocked,
-		UnknownError
+		OtherError
 	};
 	virtual ~Mutex() {}
 

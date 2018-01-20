@@ -19,7 +19,7 @@ OSWrapper::Mutex::Error WindowsMutex::lock()
 		return OSWrapper::Mutex::OK;
 	}
 	catch (...) {
-		return OSWrapper::Mutex::UnknownError;
+		return OSWrapper::Mutex::OtherError;
 	}
 }
 
@@ -32,7 +32,7 @@ OSWrapper::Mutex::Error WindowsMutex::tryLock()
 		return OSWrapper::Mutex::TimedOut;
 	}
 	catch (...) {
-		return OSWrapper::Mutex::UnknownError;
+		return OSWrapper::Mutex::OtherError;
 	}
 }
 
@@ -48,7 +48,7 @@ OSWrapper::Mutex::Error WindowsMutex::tryLockFor(OSWrapper::Timeout tmout)
 		return OSWrapper::Mutex::TimedOut;
 	}
 	catch (...) {
-		return OSWrapper::Mutex::UnknownError;
+		return OSWrapper::Mutex::OtherError;
 	}
 }
 
@@ -59,7 +59,7 @@ OSWrapper::Mutex::Error WindowsMutex::unlock()
 		return OSWrapper::Mutex::OK;
 	}
 	catch (...) {
-		return OSWrapper::Mutex::UnknownError;
+		return OSWrapper::Mutex::OtherError;
 	}
 }
 
