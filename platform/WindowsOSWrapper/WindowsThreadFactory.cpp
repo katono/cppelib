@@ -5,7 +5,7 @@
 namespace WindowsOSWrapper {
 
 WindowsThreadFactory::WindowsThreadFactory()
-: m_mainThread(0, 0, OSWrapper::Thread::INHERIT_PRIORITY, "MainThread"), 
+: m_mainThread(nullptr, 0, OSWrapper::Thread::INHERIT_PRIORITY, "MainThread"), 
   m_threadIdMap(), m_mutex()
 
 {
@@ -23,7 +23,7 @@ OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::siz
 		return t;
 	}
 	catch (...) {
-		return 0;
+		return nullptr;
 	}
 }
 

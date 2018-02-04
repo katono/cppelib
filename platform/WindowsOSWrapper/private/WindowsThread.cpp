@@ -32,7 +32,7 @@ WindowsThread::~WindowsThread()
 
 void WindowsThread::threadEntry(WindowsThread* t)
 {
-	if (t != 0) {
+	if (t != nullptr) {
 		t->threadLoop();
 	}
 }
@@ -61,7 +61,7 @@ void WindowsThread::threadLoop()
 void WindowsThread::threadMain()
 {
 	try {
-		if (m_runnable != 0) {
+		if (m_runnable != nullptr) {
 			m_runnable->run();
 		}
 	}

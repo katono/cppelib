@@ -16,7 +16,7 @@ OSWrapper::Mutex* WindowsMutexFactory::create()
 		return m;
 	}
 	catch (...) {
-		return 0;
+		return nullptr;
 	}
 }
 
