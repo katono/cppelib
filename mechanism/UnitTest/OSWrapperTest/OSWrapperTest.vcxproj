@@ -93,6 +93,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="EventFlagTest.cpp" />
     <ClCompile Include="MutexTest.cpp" />
     <ClCompile Include="ThreadTest.cpp" />
   </ItemGroup>
