@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EventFlag.h" />
+    <ClInclude Include="EventFlagFactory.h" />
     <ClInclude Include="Mutex.h" />
     <ClInclude Include="MutexFactory.h" />
     <ClInclude Include="Runnable.h" />
@@ -27,6 +29,7 @@
     <ClInclude Include="Timeout.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EventFlag.cpp" />
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="Timeout.cpp" />
