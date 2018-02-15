@@ -48,14 +48,14 @@ EventFlag::Error WindowsEventFlag::wait(EventFlag::Pattern bitPattern, Mode wait
 
 	if (tmout == Timeout::FOREVER) {
 		if (waitMode == EventFlag::OR) {
-			m_cond.wait(lock, [&] { return (bitPattern & m_pattern).any(); });
+			m_cond.wait(lock, [&] { return EventFlag::Pattern(bitPattern & m_pattern).any(); });
 		} else {
 			m_cond.wait(lock, [&] { return (bitPattern & m_pattern) == bitPattern; });
 		}
 	} else {
 		if (waitMode == EventFlag::OR) {
 			if (!m_cond.wait_for(lock, std::chrono::milliseconds(tmout),
-						[&] { return (bitPattern & m_pattern).any(); })) {
+						[&] { return EventFlag::Pattern(bitPattern & m_pattern).any(); })) {
 				m_waiting = false;
 				return EventFlag::TimedOut;
 			}

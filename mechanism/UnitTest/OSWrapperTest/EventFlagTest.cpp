@@ -28,7 +28,7 @@ public:
 	EventFlag::Error wait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern, Timeout tmout)
 	{
 		return (EventFlag::Error) mock().actualCall("wait")
-			.withParameter("bitPattern", bitPattern.data())
+			.withParameter("bitPattern", bitPattern)
 			.withParameter("waitMode", waitMode)
 			.withOutputParameter("releasedPattern", releasedPattern)
 			.withParameter("tmout", tmout)
@@ -49,7 +49,7 @@ public:
 	EventFlag::Error set(Pattern bitPattern)
 	{
 		return (EventFlag::Error) mock().actualCall("set")
-			.withParameter("bitPattern", bitPattern.data())
+			.withParameter("bitPattern", bitPattern)
 			.onObject(this).returnIntValueOrDefault(EventFlag::OK);
 	}
 
@@ -67,7 +67,7 @@ public:
 	EventFlag::Error reset(Pattern bitPattern)
 	{
 		return (EventFlag::Error) mock().actualCall("reset")
-			.withParameter("bitPattern", bitPattern.data())
+			.withParameter("bitPattern", bitPattern)
 			.onObject(this).returnIntValueOrDefault(EventFlag::OK);
 	}
 
@@ -213,7 +213,7 @@ TEST(EventFlagTest, wait)
 	EventFlag::Pattern releasedPattern;
 	EventFlag::Error err = ef->wait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern);
 	LONGS_EQUAL(EventFlag::OK, err);
-	LONGS_EQUAL(0x01, releasedPattern.data());
+	LONGS_EQUAL(0x01, releasedPattern);
 	EventFlag::destroy(ef);
 }
 
@@ -231,7 +231,7 @@ TEST(EventFlagTest, wait_polling)
 	EventFlag::Pattern releasedPattern;
 	EventFlag::Error err = ef->wait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern, Timeout::POLLING);
 	LONGS_EQUAL(EventFlag::OK, err);
-	LONGS_EQUAL(0x01, releasedPattern.data());
+	LONGS_EQUAL(0x01, releasedPattern);
 	EventFlag::destroy(ef);
 }
 
@@ -249,7 +249,7 @@ TEST(EventFlagTest, wait_timeout)
 	EventFlag::Pattern releasedPattern;
 	EventFlag::Error err = ef->wait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern, Timeout(100));
 	LONGS_EQUAL(EventFlag::OK, err);
-	LONGS_EQUAL(0x01, releasedPattern.data());
+	LONGS_EQUAL(0x01, releasedPattern);
 	EventFlag::destroy(ef);
 }
 
@@ -330,7 +330,7 @@ TEST(EventFlagTest, getCurrentPattern)
 		.andReturnValue(0x01);
 
 	EventFlag::Pattern ptn = ef->getCurrentPattern();
-	LONGS_EQUAL(0x01, ptn.data());
+	LONGS_EQUAL(0x01, ptn);
 	EventFlag::destroy(ef);
 }
 
@@ -358,10 +358,10 @@ TEST(EventFlagTest, autoReset_true_OR)
 		EventFlag::Pattern releasedPattern;
 		err = ef->wait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern);
 		LONGS_EQUAL(EventFlag::OK, err);
-		LONGS_EQUAL(0x01, releasedPattern.data());
+		LONGS_EQUAL(0x01, releasedPattern);
 
 		EventFlag::Pattern ptn = ef->getCurrentPattern();
-		LONGS_EQUAL(0x00, ptn.data());
+		LONGS_EQUAL(0x00, ptn);
 	}
 
 	EventFlag::destroy(ef);
@@ -400,14 +400,14 @@ TEST(EventFlagTest, autoReset_false_AND)
 		EventFlag::Pattern releasedPattern;
 		err = ef->wait(EventFlag::Pattern(0x03), EventFlag::AND, &releasedPattern);
 		LONGS_EQUAL(EventFlag::OK, err);
-		LONGS_EQUAL(0x03, releasedPattern.data());
+		LONGS_EQUAL(0x03, releasedPattern);
 
 		EventFlag::Pattern ptn = ef->getCurrentPattern();
-		LONGS_EQUAL(0x03, ptn.data());
+		LONGS_EQUAL(0x03, ptn);
 		err = ef->resetAll();
 		LONGS_EQUAL(EventFlag::OK, err);
 		ptn = ef->getCurrentPattern();
-		LONGS_EQUAL(0x00, ptn.data());
+		LONGS_EQUAL(0x00, ptn);
 	}
 
 	EventFlag::destroy(ef);

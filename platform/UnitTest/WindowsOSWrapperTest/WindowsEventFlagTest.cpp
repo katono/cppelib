@@ -92,7 +92,7 @@ TEST(WindowsEventFlagTest, waitAny_setAll_autoReset)
 			EventFlag::Error err = m_ef->waitAny();
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
 	};
 	testWaitSet<WaitAnyAutoReset, SetAll>(true);
@@ -108,10 +108,10 @@ TEST(WindowsEventFlagTest, waitAny_setAll_resetAll)
 			EventFlag::Error err = m_ef->waitAny();
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(EventFlag::Pattern().set().data(), m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(EventFlag::Pattern().set(), m_ef->getCurrentPattern());
 			err = m_ef->resetAll();
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
 	};
 	testWaitSet<WaitAnyManualReset, SetAll>(false);
@@ -127,11 +127,11 @@ TEST(WindowsEventFlagTest, waitOne_setOne_resetOne)
 			EventFlag::Error err = m_ef->waitOne(2);
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(1 << 2, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(1 << 2, m_ef->getCurrentPattern());
 
 			err = m_ef->resetOne(2);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
 	};
 
@@ -189,18 +189,18 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND)
 			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn);
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x0F, ptn.data());
-			LONGS_EQUAL(0x0F, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x0F, ptn);
+			LONGS_EQUAL(0x0F, m_ef->getCurrentPattern());
 
 			err = m_ef->reset(EventFlag::Pattern(0x01));
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x0E, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x0E, m_ef->getCurrentPattern());
 			err = m_ef->reset(EventFlag::Pattern(0x02));
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x0C, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x0C, m_ef->getCurrentPattern());
 			err = m_ef->reset(EventFlag::Pattern(0x0C));
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x00, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 		}
 	};
 
@@ -214,7 +214,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND)
 			Thread::sleep(10);
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x01, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 			err = m_ef->set(EventFlag::Pattern(0x0E));
 			LONGS_EQUAL(EventFlag::OK, err);
@@ -234,8 +234,8 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
 			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout(100));
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x0F, ptn.data());
-			LONGS_EQUAL(0x00, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x0F, ptn);
+			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 		}
 	};
 
@@ -249,7 +249,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
 			Thread::sleep(10);
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x01, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 			err = m_ef->set(EventFlag::Pattern(0x0E));
 			LONGS_EQUAL(EventFlag::OK, err);
@@ -276,8 +276,8 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_POLLING_TimedOut)
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				LONGS_EQUAL(EventFlag::OK, err);
-				LONGS_EQUAL(0x0F, ptn.data());
-				LONGS_EQUAL(0x00, m_ef->getCurrentPattern().data());
+				LONGS_EQUAL(0x0F, ptn);
+				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 			}
 		}
 	};
@@ -292,7 +292,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_POLLING_TimedOut)
 			Thread::sleep(10);
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x01, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 			err = m_ef->set(EventFlag::Pattern(0x0E));
 			LONGS_EQUAL(EventFlag::OK, err);
@@ -312,12 +312,12 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR)
 			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x01, ptn.data());
-			LONGS_EQUAL(0x01, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x01, ptn);
+			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 			err = m_ef->reset(EventFlag::Pattern(0x01));
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x00, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 		}
 	};
 
@@ -346,8 +346,8 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_Timeout100)
 			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout(100));
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(EventFlag::OK, err);
-			LONGS_EQUAL(0x01, ptn.data());
-			LONGS_EQUAL(0x00, m_ef->getCurrentPattern().data());
+			LONGS_EQUAL(0x01, ptn);
+			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 		}
 	};
 
@@ -383,8 +383,8 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_POLLING_TimedOut)
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				LONGS_EQUAL(EventFlag::OK, err);
-				LONGS_EQUAL(0x01, ptn.data());
-				LONGS_EQUAL(0x00, m_ef->getCurrentPattern().data());
+				LONGS_EQUAL(0x01, ptn);
+				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 			}
 		}
 	};
@@ -414,18 +414,18 @@ TEST(WindowsEventFlagTest, wait_OtherThreadWaiting)
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				LONGS_EQUAL(EventFlag::OK, err);
-				LONGS_EQUAL(0x01, m_ef->getCurrentPattern().data());
+				LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 			}
 
 			err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				LONGS_EQUAL(EventFlag::OK, err);
-				LONGS_EQUAL(0x01, m_ef->getCurrentPattern().data());
+				LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 				err = m_ef->reset(EventFlag::Pattern(0x01));
 				LONGS_EQUAL(EventFlag::OK, err);
-				LONGS_EQUAL(0x00, m_ef->getCurrentPattern().data());
+				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 			}
 		}
 	};
