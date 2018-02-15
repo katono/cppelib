@@ -15,14 +15,23 @@ WindowsThreadFactory::WindowsThreadFactory()
 
 OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
 {
+	WindowsThread* t = nullptr;
+	std::lock_guard<std::mutex> lock(m_mutex);
 	try {
-		std::lock_guard<std::mutex> lock(m_mutex);
-		WindowsThread* t = new WindowsThread(r, stackSize, priority, name);
+		t = new WindowsThread(r, stackSize, priority, name);
 		t->beginThread();
+	}
+	catch (...) {
+		delete t;
+		return nullptr;
+	}
+	try {
 		m_threadIdMap.insert(std::make_pair(t->getId(), t));
 		return t;
 	}
 	catch (...) {
+		t->endThread();
+		delete t;
 		return nullptr;
 	}
 }
