@@ -13,7 +13,7 @@ private:
 
 public:
 	BitPattern() : m_data(0U) {}
-	explicit BitPattern(T pattern) : m_data(pattern) {}
+	BitPattern(T pattern) : m_data(pattern) {}
 
 	std::size_t size() const
 	{
@@ -59,7 +59,12 @@ public:
 		return *this;
 	}
 
-	T data() const
+	operator const T&() const
+	{
+		return m_data;
+	}
+
+	operator T&()
 	{
 		return m_data;
 	}
@@ -83,125 +88,6 @@ public:
 	bool none() const
 	{
 		return m_data == 0U;
-	}
-
-	BitPattern& operator=(const T& x)
-	{
-		m_data = x;
-		return *this;
-	}
-
-	BitPattern operator~() const
-	{
-		return BitPattern(*this).flip();
-	}
-
-	BitPattern& operator&=(const BitPattern& x)
-	{
-		m_data &= x.m_data;
-		return *this;
-	}
-
-	BitPattern& operator&=(const T& x)
-	{
-		m_data &= x;
-		return *this;
-	}
-
-	BitPattern& operator|=(const BitPattern& x)
-	{
-		m_data |= x.m_data;
-		return *this;
-	}
-
-	BitPattern& operator|=(const T& x)
-	{
-		m_data |= x;
-		return *this;
-	}
-
-	BitPattern& operator^=(const BitPattern& x)
-	{
-		m_data ^= x.m_data;
-		return *this;
-	}
-
-	BitPattern& operator^=(const T& x)
-	{
-		m_data ^= x;
-		return *this;
-	}
-
-	BitPattern operator&(const BitPattern& x)
-	{
-		return BitPattern(*this) &= x;
-	}
-
-	BitPattern operator&(const T& x)
-	{
-		return BitPattern(*this) &= x;
-	}
-
-	BitPattern operator|(const BitPattern& x)
-	{
-		return BitPattern(*this) |= x;
-	}
-
-	BitPattern operator|(const T& x)
-	{
-		return BitPattern(*this) |= x;
-	}
-
-	BitPattern operator^(const BitPattern& x)
-	{
-		return BitPattern(*this) ^= x;
-	}
-
-	BitPattern operator^(const T& x)
-	{
-		return BitPattern(*this) ^= x;
-	}
-
-	BitPattern& operator<<=(std::size_t pos)
-	{
-		m_data <<= pos;
-		return *this;
-	}
-
-	BitPattern& operator>>=(std::size_t pos)
-	{
-		m_data >>= pos;
-		return *this;
-	}
-
-	BitPattern operator<<(std::size_t pos) const
-	{
-		return BitPattern(*this) <<= pos;
-	}
-
-	BitPattern operator>>(std::size_t pos) const
-	{
-		return BitPattern(*this) >>= pos;
-	}
-
-	bool operator==(const BitPattern& x) const
-	{
-		return m_data == x.m_data;
-	}
-
-	bool operator==(const T& x) const
-	{
-		return m_data == x;
-	}
-
-	bool operator!=(const BitPattern& x) const
-	{
-		return m_data != x.m_data;
-	}
-
-	bool operator!=(const T& x) const
-	{
-		return m_data != x;
 	}
 
 };
