@@ -34,7 +34,7 @@ TEST_GROUP(WindowsEventFlagTest) {
 	}
 
 	template<class Run1, class Run2>
-	void testWaitSet(bool autoReset)
+	void testTwoThreadsSharingOneEventFlag(bool autoReset)
 	{
 		EventFlag* ef = EventFlag::create(autoReset);
 		Run1 r1(ef);
@@ -95,7 +95,7 @@ TEST(WindowsEventFlagTest, waitAny_setAll_autoReset)
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
 	};
-	testWaitSet<WaitAnyAutoReset, SetAll>(true);
+	testTwoThreadsSharingOneEventFlag<WaitAnyAutoReset, SetAll>(true);
 }
 
 TEST(WindowsEventFlagTest, waitAny_setAll_resetAll)
@@ -114,7 +114,7 @@ TEST(WindowsEventFlagTest, waitAny_setAll_resetAll)
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
 	};
-	testWaitSet<WaitAnyManualReset, SetAll>(false);
+	testTwoThreadsSharingOneEventFlag<WaitAnyManualReset, SetAll>(false);
 }
 
 TEST(WindowsEventFlagTest, waitOne_setOne_resetOne)
@@ -146,7 +146,7 @@ TEST(WindowsEventFlagTest, waitOne_setOne_resetOne)
 			LONGS_EQUAL(EventFlag::OK, err);
 		}
 	};
-	testWaitSet<WaitOne, SetOne>(false);
+	testTwoThreadsSharingOneEventFlag<WaitOne, SetOne>(false);
 }
 
 TEST(WindowsEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
@@ -175,7 +175,7 @@ TEST(WindowsEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
 			LONGS_EQUAL(EventFlag::InvalidParameter, err);
 		}
 	};
-	testWaitSet<WaitOne, SetOne>(false);
+	testTwoThreadsSharingOneEventFlag<WaitOne, SetOne>(false);
 }
 
 TEST(WindowsEventFlagTest, wait_set_reset_AND)
@@ -220,7 +220,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND)
 			LONGS_EQUAL(EventFlag::OK, err);
 		}
 	};
-	testWaitSet<WaitPattern, SetPattern>(false);
+	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(false);
 }
 
 TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
@@ -255,7 +255,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
 			LONGS_EQUAL(EventFlag::OK, err);
 		}
 	};
-	testWaitSet<WaitPattern, SetPattern>(true);
+	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
 TEST(WindowsEventFlagTest, wait_set_reset_AND_POLLING_TimedOut)
@@ -298,7 +298,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_POLLING_TimedOut)
 			LONGS_EQUAL(EventFlag::OK, err);
 		}
 	};
-	testWaitSet<WaitPattern, SetPattern>(true);
+	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
 TEST(WindowsEventFlagTest, wait_set_reset_OR)
@@ -332,7 +332,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR)
 			LONGS_EQUAL(EventFlag::OK, err);
 		}
 	};
-	testWaitSet<WaitPattern, SetPattern>(false);
+	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(false);
 }
 
 TEST(WindowsEventFlagTest, wait_set_reset_OR_Timeout100)
@@ -362,7 +362,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_Timeout100)
 			LONGS_EQUAL(EventFlag::OK, err);
 		}
 	};
-	testWaitSet<WaitPattern, SetPattern>(true);
+	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
 TEST(WindowsEventFlagTest, wait_set_reset_OR_POLLING_TimedOut)
@@ -400,7 +400,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_POLLING_TimedOut)
 			LONGS_EQUAL(EventFlag::OK, err);
 		}
 	};
-	testWaitSet<WaitPattern, SetPattern>(true);
+	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
 TEST(WindowsEventFlagTest, wait_OtherThreadWaiting)
@@ -444,7 +444,7 @@ TEST(WindowsEventFlagTest, wait_OtherThreadWaiting)
 			LONGS_EQUAL(EventFlag::OK, err);
 		}
 	};
-	testWaitSet<WaitOK, WaitFailed>(false);
+	testTwoThreadsSharingOneEventFlag<WaitOK, WaitFailed>(false);
 }
 
 TEST(WindowsEventFlagTest, waitPattern_InvalidParameter)
@@ -471,6 +471,6 @@ TEST(WindowsEventFlagTest, waitPattern_InvalidParameter)
 			LONGS_EQUAL(EventFlag::InvalidParameter, err);
 		}
 	};
-	testWaitSet<WaitFailedInvalidMode, WaitFailedInvalidPattern>(true);
+	testTwoThreadsSharingOneEventFlag<WaitFailedInvalidMode, WaitFailedInvalidPattern>(true);
 }
 
