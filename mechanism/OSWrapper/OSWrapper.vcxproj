@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="EventFlag.h" />
     <ClInclude Include="EventFlagFactory.h" />
+    <ClInclude Include="MessageQueue.h" />
     <ClInclude Include="Mutex.h" />
     <ClInclude Include="MutexFactory.h" />
     <ClInclude Include="Runnable.h" />
