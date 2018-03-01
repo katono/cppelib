@@ -37,10 +37,7 @@ OSWrapper::Error WindowsEventFlag::wait(EventFlag::Pattern bitPattern, Mode wait
 		return OSWrapper::InvalidParameter;
 	}
 
-	std::unique_lock<std::mutex> lock(m_mutex, std::try_to_lock);
-	if (!lock) {
-		return OSWrapper::OtherThreadWaiting;
-	}
+	std::unique_lock<std::mutex> lock(m_mutex);
 	if (m_waiting) {
 		return OSWrapper::OtherThreadWaiting;
 	}
