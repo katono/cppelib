@@ -4,6 +4,7 @@
 #include <cstddef>
 #include "Container/BitPattern.h"
 #include "Timeout.h"
+#include "OSWrapperError.h"
 
 namespace OSWrapper {
 
@@ -11,15 +12,6 @@ class EventFlagFactory;
 
 class EventFlag {
 public:
-	enum Error {
-		OK,
-		TimedOut,
-		CalledByNonThread,
-		InvalidParameter,
-		OtherThreadWaiting,
-		OtherError
-	};
-
 	enum Mode {
 		OR,
 		AND

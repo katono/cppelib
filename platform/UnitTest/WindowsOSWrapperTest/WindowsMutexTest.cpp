@@ -170,19 +170,19 @@ public:
 	void run()
 	{
 		if (m_timeout == Timeout::POLLING) {
-			Mutex::Error err = s_mutex->tryLock();
-			LONGS_EQUAL(Mutex::TimedOut, err);
+			OSWrapper::Error err = s_mutex->tryLock();
+			LONGS_EQUAL(OSWrapper::TimedOut, err);
 		} else {
-			Mutex::Error err = s_mutex->tryLockFor(m_timeout);
-			LONGS_EQUAL(Mutex::TimedOut, err);
+			OSWrapper::Error err = s_mutex->tryLockFor(m_timeout);
+			LONGS_EQUAL(OSWrapper::TimedOut, err);
 		}
 	}
 };
 
 TEST(WindowsMutexTest, tryLock)
 {
-	Mutex::Error err = s_mutex->tryLock();
-	LONGS_EQUAL(Mutex::OK, err);
+	OSWrapper::Error err = s_mutex->tryLock();
+	LONGS_EQUAL(OSWrapper::OK, err);
 
 	TryLockFailedTestRunnable runnable(Timeout::POLLING);
 	Thread* t = Thread::create(&runnable);
@@ -195,8 +195,8 @@ TEST(WindowsMutexTest, tryLock)
 
 TEST(WindowsMutexTest, tryLockFor)
 {
-	Mutex::Error err = s_mutex->tryLockFor(Timeout(100));
-	LONGS_EQUAL(Mutex::OK, err);
+	OSWrapper::Error err = s_mutex->tryLockFor(Timeout(100));
+	LONGS_EQUAL(OSWrapper::OK, err);
 
 	TryLockFailedTestRunnable runnable(Timeout(10));
 	Thread* t = Thread::create(&runnable);
@@ -209,8 +209,8 @@ TEST(WindowsMutexTest, tryLockFor)
 
 TEST(WindowsMutexTest, tryLockFor_FOREVER)
 {
-	Mutex::Error err = s_mutex->tryLockFor(Timeout::FOREVER);
-	LONGS_EQUAL(Mutex::OK, err);
+	OSWrapper::Error err = s_mutex->tryLockFor(Timeout::FOREVER);
+	LONGS_EQUAL(OSWrapper::OK, err);
 
 	TryLockFailedTestRunnable runnable(Timeout::POLLING);
 	Thread* t = Thread::create(&runnable);

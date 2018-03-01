@@ -2,6 +2,7 @@
 #define OS_WRAPPER_MUTEX_H_INCLUDED
 
 #include "Timeout.h"
+#include "OSWrapperError.h"
 
 namespace OSWrapper {
 
@@ -9,14 +10,6 @@ class MutexFactory;
 
 class Mutex {
 public:
-	enum Error {
-		OK,
-		TimedOut,
-		CalledByNonThread,
-		LockedRecursively,
-		NotLocked,
-		OtherError
-	};
 	virtual ~Mutex() {}
 
 	static void setFactory(MutexFactory* factory);

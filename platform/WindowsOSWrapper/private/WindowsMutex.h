@@ -13,10 +13,10 @@ private:
 public:
 	WindowsMutex();
 	virtual ~WindowsMutex();
-	virtual OSWrapper::Mutex::Error lock();
-	virtual OSWrapper::Mutex::Error tryLock();
-	virtual OSWrapper::Mutex::Error tryLockFor(OSWrapper::Timeout tmout);
-	virtual OSWrapper::Mutex::Error unlock();
+	virtual OSWrapper::Error lock();
+	virtual OSWrapper::Error tryLock();
+	virtual OSWrapper::Error tryLockFor(OSWrapper::Timeout tmout);
+	virtual OSWrapper::Error unlock();
 };
 
 }

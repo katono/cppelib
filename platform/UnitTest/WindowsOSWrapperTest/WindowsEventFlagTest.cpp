@@ -76,9 +76,9 @@ public:
 	virtual void run()
 	{
 		Thread::sleep(10);
-		EventFlag::Error err = m_ef->setAll();
+		OSWrapper::Error err = m_ef->setAll();
 		std::lock_guard<std::mutex> lock(s_mutex);
-		LONGS_EQUAL(EventFlag::OK, err);
+		LONGS_EQUAL(OSWrapper::OK, err);
 	}
 };
 
@@ -89,9 +89,9 @@ TEST(WindowsEventFlagTest, waitAny_setAll_autoReset)
 		WaitAnyAutoReset(EventFlag* e) : BaseRunnable(e) {}
 		virtual void run()
 		{
-			EventFlag::Error err = m_ef->waitAny();
+			OSWrapper::Error err = m_ef->waitAny();
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
 	};
@@ -105,12 +105,12 @@ TEST(WindowsEventFlagTest, waitAny_setAll_resetAll)
 		WaitAnyManualReset(EventFlag* e) : BaseRunnable(e) {}
 		virtual void run()
 		{
-			EventFlag::Error err = m_ef->waitAny();
+			OSWrapper::Error err = m_ef->waitAny();
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(EventFlag::Pattern().set(), m_ef->getCurrentPattern());
 			err = m_ef->resetAll();
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
 	};
@@ -124,13 +124,13 @@ TEST(WindowsEventFlagTest, waitOne_setOne_resetOne)
 		WaitOne(EventFlag* e) : BaseRunnable(e) {}
 		virtual void run()
 		{
-			EventFlag::Error err = m_ef->waitOne(2);
+			OSWrapper::Error err = m_ef->waitOne(2);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(1 << 2, m_ef->getCurrentPattern());
 
 			err = m_ef->resetOne(2);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
 	};
@@ -141,9 +141,9 @@ TEST(WindowsEventFlagTest, waitOne_setOne_resetOne)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->setOne(2);
+			OSWrapper::Error err = m_ef->setOne(2);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitOne, SetOne>(false);
@@ -156,12 +156,12 @@ TEST(WindowsEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
 		WaitOne(EventFlag* e) : BaseRunnable(e) {}
 		virtual void run()
 		{
-			EventFlag::Error err = m_ef->waitOne(EventFlag::Pattern().size());
+			OSWrapper::Error err = m_ef->waitOne(EventFlag::Pattern().size());
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::InvalidParameter, err);
+			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 
 			err = m_ef->resetOne(EventFlag::Pattern().size());
-			LONGS_EQUAL(EventFlag::InvalidParameter, err);
+			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 		}
 	};
 
@@ -170,9 +170,9 @@ TEST(WindowsEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
 		SetOne(EventFlag* e) : BaseRunnable(e) {}
 		virtual void run()
 		{
-			EventFlag::Error err = m_ef->setOne(EventFlag::Pattern().size());
+			OSWrapper::Error err = m_ef->setOne(EventFlag::Pattern().size());
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::InvalidParameter, err);
+			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitOne, SetOne>(false);
@@ -186,20 +186,20 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn);
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x0F, ptn);
 			LONGS_EQUAL(0x0F, m_ef->getCurrentPattern());
 
 			err = m_ef->reset(EventFlag::Pattern(0x01));
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x0E, m_ef->getCurrentPattern());
 			err = m_ef->reset(EventFlag::Pattern(0x02));
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x0C, m_ef->getCurrentPattern());
 			err = m_ef->reset(EventFlag::Pattern(0x0C));
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 		}
 	};
@@ -210,14 +210,14 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->set(EventFlag::Pattern(0x01));
+			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			Thread::sleep(10);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 			err = m_ef->set(EventFlag::Pattern(0x0E));
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(false);
@@ -231,9 +231,9 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout(100));
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout(100));
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x0F, ptn);
 			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 		}
@@ -245,14 +245,14 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->set(EventFlag::Pattern(0x01));
+			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			Thread::sleep(10);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 			err = m_ef->set(EventFlag::Pattern(0x0E));
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
@@ -266,16 +266,16 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_POLLING_TimedOut)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout::POLLING);
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout::POLLING);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
-				LONGS_EQUAL(EventFlag::TimedOut, err);
+				LONGS_EQUAL(OSWrapper::TimedOut, err);
 			}
-			Thread::sleep(30);
+			Thread::sleep(50);
 			err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout::POLLING);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
-				LONGS_EQUAL(EventFlag::OK, err);
+				LONGS_EQUAL(OSWrapper::OK, err);
 				LONGS_EQUAL(0x0F, ptn);
 				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 			}
@@ -288,14 +288,14 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_POLLING_TimedOut)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->set(EventFlag::Pattern(0x01));
+			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			Thread::sleep(10);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 			err = m_ef->set(EventFlag::Pattern(0x0E));
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
@@ -309,14 +309,14 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, ptn);
 			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 			err = m_ef->reset(EventFlag::Pattern(0x01));
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 		}
 	};
@@ -327,9 +327,9 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->set(EventFlag::Pattern(0x01));
+			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(false);
@@ -343,9 +343,9 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_Timeout100)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout(100));
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout(100));
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, ptn);
 			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 		}
@@ -357,9 +357,9 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_Timeout100)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->set(EventFlag::Pattern(0x01));
+			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
@@ -373,16 +373,16 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_POLLING_TimedOut)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout::POLLING);
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout::POLLING);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
-				LONGS_EQUAL(EventFlag::TimedOut, err);
+				LONGS_EQUAL(OSWrapper::TimedOut, err);
 			}
-			Thread::sleep(20);
+			Thread::sleep(50);
 			err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout::POLLING);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
-				LONGS_EQUAL(EventFlag::OK, err);
+				LONGS_EQUAL(OSWrapper::OK, err);
 				LONGS_EQUAL(0x01, ptn);
 				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 			}
@@ -395,9 +395,9 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_POLLING_TimedOut)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->set(EventFlag::Pattern(0x01));
+			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
@@ -410,21 +410,21 @@ TEST(WindowsEventFlagTest, wait_OtherThreadWaiting)
 		WaitOK(EventFlag* e) : BaseRunnable(e) {}
 		virtual void run()
 		{
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
-				LONGS_EQUAL(EventFlag::OK, err);
+				LONGS_EQUAL(OSWrapper::OK, err);
 				LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 			}
 
 			err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
-				LONGS_EQUAL(EventFlag::OK, err);
+				LONGS_EQUAL(OSWrapper::OK, err);
 				LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
 				err = m_ef->reset(EventFlag::Pattern(0x01));
-				LONGS_EQUAL(EventFlag::OK, err);
+				LONGS_EQUAL(OSWrapper::OK, err);
 				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
 			}
 		}
@@ -436,12 +436,12 @@ TEST(WindowsEventFlagTest, wait_OtherThreadWaiting)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
-			LONGS_EQUAL(EventFlag::OtherThreadWaiting, err);
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
+			LONGS_EQUAL(OSWrapper::OtherThreadWaiting, err);
 
 			err = m_ef->set(EventFlag::Pattern(0x01));
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::OK, err);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitOK, WaitFailed>(false);
@@ -454,9 +454,9 @@ TEST(WindowsEventFlagTest, waitPattern_InvalidParameter)
 		WaitFailedInvalidMode(EventFlag* e) : BaseRunnable(e) {}
 		virtual void run()
 		{
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x0F), (EventFlag::Mode)-1, 0);
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), (EventFlag::Mode)-1, 0);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::InvalidParameter, err);
+			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 		}
 	};
 
@@ -466,9 +466,9 @@ TEST(WindowsEventFlagTest, waitPattern_InvalidParameter)
 		virtual void run()
 		{
 			Thread::sleep(10);
-			EventFlag::Error err = m_ef->wait(EventFlag::Pattern(0x00), EventFlag::OR, 0);
+			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x00), EventFlag::OR, 0);
 			std::lock_guard<std::mutex> lock(s_mutex);
-			LONGS_EQUAL(EventFlag::InvalidParameter, err);
+			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitFailedInvalidMode, WaitFailedInvalidPattern>(true);

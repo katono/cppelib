@@ -12,54 +12,54 @@ WindowsMutex::~WindowsMutex()
 {
 }
 
-OSWrapper::Mutex::Error WindowsMutex::lock()
+OSWrapper::Error WindowsMutex::lock()
 {
 	try {
 		m_mutex.lock();
-		return OSWrapper::Mutex::OK;
+		return OSWrapper::OK;
 	}
 	catch (...) {
-		return OSWrapper::Mutex::OtherError;
+		return OSWrapper::OtherError;
 	}
 }
 
-OSWrapper::Mutex::Error WindowsMutex::tryLock()
+OSWrapper::Error WindowsMutex::tryLock()
 {
 	try {
 		if (m_mutex.try_lock()) {
-			return OSWrapper::Mutex::OK;
+			return OSWrapper::OK;
 		}
-		return OSWrapper::Mutex::TimedOut;
+		return OSWrapper::TimedOut;
 	}
 	catch (...) {
-		return OSWrapper::Mutex::OtherError;
+		return OSWrapper::OtherError;
 	}
 }
 
-OSWrapper::Mutex::Error WindowsMutex::tryLockFor(OSWrapper::Timeout tmout)
+OSWrapper::Error WindowsMutex::tryLockFor(OSWrapper::Timeout tmout)
 {
 	if (tmout == OSWrapper::Timeout::FOREVER) {
 		return lock();
 	}
 	try {
 		if (m_mutex.try_lock_for(std::chrono::milliseconds(tmout))) {
-			return OSWrapper::Mutex::OK;
+			return OSWrapper::OK;
 		}
-		return OSWrapper::Mutex::TimedOut;
+		return OSWrapper::TimedOut;
 	}
 	catch (...) {
-		return OSWrapper::Mutex::OtherError;
+		return OSWrapper::OtherError;
 	}
 }
 
-OSWrapper::Mutex::Error WindowsMutex::unlock()
+OSWrapper::Error WindowsMutex::unlock()
 {
 	try {
 		m_mutex.unlock();
-		return OSWrapper::Mutex::OK;
+		return OSWrapper::OK;
 	}
 	catch (...) {
-		return OSWrapper::Mutex::OtherError;
+		return OSWrapper::OtherError;
 	}
 }
 
