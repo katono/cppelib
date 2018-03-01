@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="WindowsEventFlagTest.cpp" />
+    <ClCompile Include="WindowsMessageQueueTest.cpp" />
     <ClCompile Include="WindowsMutexTest.cpp" />
     <ClCompile Include="WindowsThreadTest.cpp" />
   </ItemGroup>
