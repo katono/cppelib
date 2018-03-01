@@ -30,8 +30,8 @@ public:
 #endif
 
 private:
-	Array<T, MaxSize> m_buf;
 	size_type m_end;
+	Array<T, MaxSize> m_buf;
 
 public:
 	FixedVector() : m_end(0U) {}

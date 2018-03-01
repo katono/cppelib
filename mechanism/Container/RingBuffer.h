@@ -214,9 +214,9 @@ public:
 private:
 	static const size_type BufSize = MaxSize + 1U;
 
-	Array<T, BufSize> m_buf;
 	size_type m_begin;
 	size_type m_end;
+	Array<T, BufSize> m_buf;
 
 public:
 	RingBuffer() : m_begin(0U), m_end(0U) {}
