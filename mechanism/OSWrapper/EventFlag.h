@@ -26,9 +26,17 @@ public:
 	static EventFlag* create(bool autoReset);
 	static void destroy(EventFlag* e);
 
-	virtual Error waitAny(Timeout tmout = Timeout::FOREVER) = 0;
-	virtual Error waitOne(std::size_t pos, Timeout tmout = Timeout::FOREVER) = 0;
-	virtual Error wait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern, Timeout tmout = Timeout::FOREVER) = 0;
+	virtual Error waitAny() = 0;
+	virtual Error waitOne(std::size_t pos) = 0;
+	virtual Error wait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern) = 0;
+
+	virtual Error tryWaitAny() = 0;
+	virtual Error tryWaitOne(std::size_t pos) = 0;
+	virtual Error tryWait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern) = 0;
+
+	virtual Error timedWaitAny(Timeout tmout) = 0;
+	virtual Error timedWaitOne(std::size_t pos, Timeout tmout) = 0;
+	virtual Error timedWait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern, Timeout tmout) = 0;
 
 	virtual Error setAll() = 0;
 	virtual Error setOne(std::size_t pos) = 0;

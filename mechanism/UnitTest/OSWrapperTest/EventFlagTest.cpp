@@ -11,23 +11,63 @@ class TestEventFlag : public EventFlag {
 	bool m_autoReset;
 public:
 	TestEventFlag(bool autoReset) : m_autoReset(autoReset) {}
-	OSWrapper::Error waitAny(Timeout tmout)
+	OSWrapper::Error waitAny()
 	{
 		return (OSWrapper::Error) mock().actualCall("waitAny")
-			.withParameter("tmout", tmout)
 			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
 	}
-	OSWrapper::Error waitOne(std::size_t pos, Timeout tmout)
+	OSWrapper::Error waitOne(std::size_t pos)
 	{
 		return (OSWrapper::Error) mock()
 			.actualCall("waitOne")
 			.withParameter("pos", pos)
+			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
+	}
+	OSWrapper::Error wait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern)
+	{
+		return (OSWrapper::Error) mock().actualCall("wait")
+			.withParameter("bitPattern", bitPattern)
+			.withParameter("waitMode", waitMode)
+			.withOutputParameter("releasedPattern", releasedPattern)
+			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
+	}
+	OSWrapper::Error tryWaitAny()
+	{
+		return (OSWrapper::Error) mock().actualCall("tryWaitAny")
+			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
+	}
+	OSWrapper::Error tryWaitOne(std::size_t pos)
+	{
+		return (OSWrapper::Error) mock()
+			.actualCall("tryWaitOne")
+			.withParameter("pos", pos)
+			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
+	}
+	OSWrapper::Error tryWait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern)
+	{
+		return (OSWrapper::Error) mock().actualCall("tryWait")
+			.withParameter("bitPattern", bitPattern)
+			.withParameter("waitMode", waitMode)
+			.withOutputParameter("releasedPattern", releasedPattern)
+			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
+	}
+	OSWrapper::Error timedWaitAny(Timeout tmout)
+	{
+		return (OSWrapper::Error) mock().actualCall("timedWaitAny")
 			.withParameter("tmout", tmout)
 			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
 	}
-	OSWrapper::Error wait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern, Timeout tmout)
+	OSWrapper::Error timedWaitOne(std::size_t pos, Timeout tmout)
 	{
-		return (OSWrapper::Error) mock().actualCall("wait")
+		return (OSWrapper::Error) mock()
+			.actualCall("timedWaitOne")
+			.withParameter("pos", pos)
+			.withParameter("tmout", tmout)
+			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
+	}
+	OSWrapper::Error timedWait(Pattern bitPattern, Mode waitMode, Pattern* releasedPattern, Timeout tmout)
+	{
+		return (OSWrapper::Error) mock().actualCall("timedWait")
 			.withParameter("bitPattern", bitPattern)
 			.withParameter("waitMode", waitMode)
 			.withOutputParameter("releasedPattern", releasedPattern)
@@ -128,35 +168,10 @@ TEST(EventFlagTest, waitAny)
 {
 	EventFlag* ef = EventFlag::create(true);
 	mock().expectOneCall("waitAny").onObject(ef)
-		.withParameter("tmout", Timeout::FOREVER)
 		.andReturnValue(OSWrapper::OK);
 
 	OSWrapper::Error err = ef->waitAny();
 	LONGS_EQUAL(OSWrapper::OK, err);
-	EventFlag::destroy(ef);
-}
-
-TEST(EventFlagTest, waitAny_polling)
-{
-	EventFlag* ef = EventFlag::create(true);
-	mock().expectOneCall("waitAny").onObject(ef)
-		.withParameter("tmout", Timeout::POLLING)
-		.andReturnValue(OSWrapper::TimedOut);
-
-	OSWrapper::Error err = ef->waitAny(Timeout::POLLING);
-	LONGS_EQUAL(OSWrapper::TimedOut, err);
-	EventFlag::destroy(ef);
-}
-
-TEST(EventFlagTest, waitAny_timeout)
-{
-	EventFlag* ef = EventFlag::create(true);
-	mock().expectOneCall("waitAny").onObject(ef)
-		.withParameter("tmout", Timeout(100))
-		.andReturnValue(OSWrapper::TimedOut);
-
-	OSWrapper::Error err = ef->waitAny(Timeout(100));
-	LONGS_EQUAL(OSWrapper::TimedOut, err);
 	EventFlag::destroy(ef);
 }
 
@@ -165,37 +180,10 @@ TEST(EventFlagTest, waitOne)
 	EventFlag* ef = EventFlag::create(true);
 	mock().expectOneCall("waitOne").onObject(ef)
 		.withParameter("pos", 0)
-		.withParameter("tmout", Timeout::FOREVER)
 		.andReturnValue(OSWrapper::OK);
 
 	OSWrapper::Error err = ef->waitOne(0);
 	LONGS_EQUAL(OSWrapper::OK, err);
-	EventFlag::destroy(ef);
-}
-
-TEST(EventFlagTest, waitOne_polling)
-{
-	EventFlag* ef = EventFlag::create(true);
-	mock().expectOneCall("waitOne").onObject(ef)
-		.withParameter("pos", 0)
-		.withParameter("tmout", Timeout::POLLING)
-		.andReturnValue(OSWrapper::TimedOut);
-
-	OSWrapper::Error err = ef->waitOne(0, Timeout::POLLING);
-	LONGS_EQUAL(OSWrapper::TimedOut, err);
-	EventFlag::destroy(ef);
-}
-
-TEST(EventFlagTest, waitOne_timeout)
-{
-	EventFlag* ef = EventFlag::create(true);
-	mock().expectOneCall("waitOne").onObject(ef)
-		.withParameter("pos", 0)
-		.withParameter("tmout", Timeout(100))
-		.andReturnValue(OSWrapper::TimedOut);
-
-	OSWrapper::Error err = ef->waitOne(0, Timeout(100));
-	LONGS_EQUAL(OSWrapper::TimedOut, err);
 	EventFlag::destroy(ef);
 }
 
@@ -207,7 +195,6 @@ TEST(EventFlagTest, wait)
 		.withParameter("bitPattern", 0xFF)
 		.withParameter("waitMode", EventFlag::OR)
 		.withOutputParameterReturning("releasedPattern", &outputPattern, sizeof outputPattern)
-		.withParameter("tmout", Timeout::FOREVER)
 		.andReturnValue(OSWrapper::OK);
 
 	EventFlag::Pattern releasedPattern;
@@ -217,11 +204,144 @@ TEST(EventFlagTest, wait)
 	EventFlag::destroy(ef);
 }
 
-TEST(EventFlagTest, wait_polling)
+TEST(EventFlagTest, tryWaitAny)
+{
+	EventFlag* ef = EventFlag::create(true);
+	mock().expectOneCall("tryWaitAny").onObject(ef)
+		.andReturnValue(OSWrapper::OK);
+
+	OSWrapper::Error err = ef->tryWaitAny();
+	LONGS_EQUAL(OSWrapper::OK, err);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, tryWaitOne)
+{
+	EventFlag* ef = EventFlag::create(true);
+	mock().expectOneCall("tryWaitOne").onObject(ef)
+		.withParameter("pos", 0)
+		.andReturnValue(OSWrapper::OK);
+
+	OSWrapper::Error err = ef->tryWaitOne(0);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, tryWait)
 {
 	EventFlag* ef = EventFlag::create(true);
 	EventFlag::Pattern outputPattern(0x01);
-	mock().expectOneCall("wait").onObject(ef)
+	mock().expectOneCall("tryWait").onObject(ef)
+		.withParameter("bitPattern", 0xFF)
+		.withParameter("waitMode", EventFlag::OR)
+		.withOutputParameterReturning("releasedPattern", &outputPattern, sizeof outputPattern)
+		.andReturnValue(OSWrapper::OK);
+
+	EventFlag::Pattern releasedPattern;
+	OSWrapper::Error err = ef->tryWait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	LONGS_EQUAL(0x01, releasedPattern);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, timedWaitAny_forever)
+{
+	EventFlag* ef = EventFlag::create(true);
+	mock().expectOneCall("timedWaitAny").onObject(ef)
+		.withParameter("tmout", Timeout::FOREVER)
+		.andReturnValue(OSWrapper::OK);
+
+	OSWrapper::Error err = ef->timedWaitAny(Timeout::FOREVER);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, timedWaitAny_polling)
+{
+	EventFlag* ef = EventFlag::create(true);
+	mock().expectOneCall("timedWaitAny").onObject(ef)
+		.withParameter("tmout", Timeout::POLLING)
+		.andReturnValue(OSWrapper::TimedOut);
+
+	OSWrapper::Error err = ef->timedWaitAny(Timeout::POLLING);
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, timedWaitAny_timeout)
+{
+	EventFlag* ef = EventFlag::create(true);
+	mock().expectOneCall("timedWaitAny").onObject(ef)
+		.withParameter("tmout", Timeout(100))
+		.andReturnValue(OSWrapper::TimedOut);
+
+	OSWrapper::Error err = ef->timedWaitAny(Timeout(100));
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, timedWaitOne_forever)
+{
+	EventFlag* ef = EventFlag::create(true);
+	mock().expectOneCall("timedWaitOne").onObject(ef)
+		.withParameter("pos", 0)
+		.withParameter("tmout", Timeout::FOREVER)
+		.andReturnValue(OSWrapper::OK);
+
+	OSWrapper::Error err = ef->timedWaitOne(0, Timeout::FOREVER);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, timedWaitOne_polling)
+{
+	EventFlag* ef = EventFlag::create(true);
+	mock().expectOneCall("timedWaitOne").onObject(ef)
+		.withParameter("pos", 0)
+		.withParameter("tmout", Timeout::POLLING)
+		.andReturnValue(OSWrapper::TimedOut);
+
+	OSWrapper::Error err = ef->timedWaitOne(0, Timeout::POLLING);
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, timedWaitOne_timeout)
+{
+	EventFlag* ef = EventFlag::create(true);
+	mock().expectOneCall("timedWaitOne").onObject(ef)
+		.withParameter("pos", 0)
+		.withParameter("tmout", Timeout(100))
+		.andReturnValue(OSWrapper::TimedOut);
+
+	OSWrapper::Error err = ef->timedWaitOne(0, Timeout(100));
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, timedWait_forever)
+{
+	EventFlag* ef = EventFlag::create(true);
+	EventFlag::Pattern outputPattern(0x01);
+	mock().expectOneCall("timedWait").onObject(ef)
+		.withParameter("bitPattern", 0xFF)
+		.withParameter("waitMode", EventFlag::OR)
+		.withOutputParameterReturning("releasedPattern", &outputPattern, sizeof outputPattern)
+		.withParameter("tmout", Timeout::FOREVER)
+		.andReturnValue(OSWrapper::OK);
+
+	EventFlag::Pattern releasedPattern;
+	OSWrapper::Error err = ef->timedWait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern, Timeout::FOREVER);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	LONGS_EQUAL(0x01, releasedPattern);
+	EventFlag::destroy(ef);
+}
+
+TEST(EventFlagTest, timedWait_polling)
+{
+	EventFlag* ef = EventFlag::create(true);
+	EventFlag::Pattern outputPattern(0x01);
+	mock().expectOneCall("timedWait").onObject(ef)
 		.withParameter("bitPattern", 0xFF)
 		.withParameter("waitMode", EventFlag::OR)
 		.withOutputParameterReturning("releasedPattern", &outputPattern, sizeof outputPattern)
@@ -229,17 +349,17 @@ TEST(EventFlagTest, wait_polling)
 		.andReturnValue(OSWrapper::OK);
 
 	EventFlag::Pattern releasedPattern;
-	OSWrapper::Error err = ef->wait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern, Timeout::POLLING);
+	OSWrapper::Error err = ef->timedWait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern, Timeout::POLLING);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	LONGS_EQUAL(0x01, releasedPattern);
 	EventFlag::destroy(ef);
 }
 
-TEST(EventFlagTest, wait_timeout)
+TEST(EventFlagTest, timedWait_timeout)
 {
 	EventFlag* ef = EventFlag::create(true);
 	EventFlag::Pattern outputPattern(0x01);
-	mock().expectOneCall("wait").onObject(ef)
+	mock().expectOneCall("timedWait").onObject(ef)
 		.withParameter("bitPattern", 0xFF)
 		.withParameter("waitMode", EventFlag::OR)
 		.withOutputParameterReturning("releasedPattern", &outputPattern, sizeof outputPattern)
@@ -247,7 +367,7 @@ TEST(EventFlagTest, wait_timeout)
 		.andReturnValue(OSWrapper::OK);
 
 	EventFlag::Pattern releasedPattern;
-	OSWrapper::Error err = ef->wait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern, Timeout(100));
+	OSWrapper::Error err = ef->timedWait(EventFlag::Pattern(0xFF), EventFlag::OR, &releasedPattern, Timeout(100));
 	LONGS_EQUAL(OSWrapper::OK, err);
 	LONGS_EQUAL(0x01, releasedPattern);
 	EventFlag::destroy(ef);
@@ -345,7 +465,6 @@ TEST(EventFlagTest, autoReset_true_OR)
 		.withParameter("bitPattern", 0xFF)
 		.withParameter("waitMode", EventFlag::OR)
 		.withOutputParameterReturning("releasedPattern", &outputPattern, sizeof outputPattern)
-		.withParameter("tmout", Timeout::FOREVER)
 		.andReturnValue(OSWrapper::OK);
 	mock().expectOneCall("getCurrentPattern").onObject(ef)
 		.andReturnValue(0x00);
@@ -381,7 +500,6 @@ TEST(EventFlagTest, autoReset_false_AND)
 		.withParameter("bitPattern", 0x03)
 		.withParameter("waitMode", EventFlag::AND)
 		.withOutputParameterReturning("releasedPattern", &outputPattern, sizeof outputPattern)
-		.withParameter("tmout", Timeout::FOREVER)
 		.andReturnValue(OSWrapper::OK);
 	mock().expectOneCall("getCurrentPattern").onObject(ef)
 		.andReturnValue(0x03);

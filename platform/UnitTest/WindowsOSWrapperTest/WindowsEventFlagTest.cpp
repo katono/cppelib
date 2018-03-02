@@ -53,6 +53,15 @@ TEST_GROUP(WindowsEventFlagTest) {
 
 		EventFlag::destroy(ef);
 	}
+
+	class BaseRunnable : public Runnable {
+	protected:
+		EventFlag* m_ef;
+	public:
+		BaseRunnable(EventFlag* e) : m_ef(e) {}
+		virtual void run() = 0;
+	};
+
 };
 
 TEST(WindowsEventFlagTest, create_destroy)
@@ -61,26 +70,6 @@ TEST(WindowsEventFlagTest, create_destroy)
 	CHECK(ef);
 	EventFlag::destroy(ef);
 }
-
-class BaseRunnable : public Runnable {
-protected:
-	EventFlag* m_ef;
-public:
-	BaseRunnable(EventFlag* e) : m_ef(e) {}
-	virtual void run() = 0;
-};
-
-class SetAll : public BaseRunnable {
-public:
-	SetAll(EventFlag* e) : BaseRunnable(e) {}
-	virtual void run()
-	{
-		Thread::sleep(10);
-		OSWrapper::Error err = m_ef->setAll();
-		std::lock_guard<std::mutex> lock(s_mutex);
-		LONGS_EQUAL(OSWrapper::OK, err);
-	}
-};
 
 TEST(WindowsEventFlagTest, waitAny_setAll_autoReset)
 {
@@ -93,6 +82,44 @@ TEST(WindowsEventFlagTest, waitAny_setAll_autoReset)
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
+		}
+	};
+	class SetAll : public BaseRunnable {
+	public:
+		SetAll(EventFlag* e) : BaseRunnable(e) {}
+		virtual void run()
+		{
+			Thread::sleep(10);
+			OSWrapper::Error err = m_ef->setAll();
+			std::lock_guard<std::mutex> lock(s_mutex);
+			LONGS_EQUAL(OSWrapper::OK, err);
+		}
+	};
+	testTwoThreadsSharingOneEventFlag<WaitAnyAutoReset, SetAll>(true);
+}
+
+TEST(WindowsEventFlagTest, tryWaitAny_setAll_autoReset)
+{
+	class WaitAnyAutoReset : public BaseRunnable {
+	public:
+		WaitAnyAutoReset(EventFlag* e) : BaseRunnable(e) {}
+		virtual void run()
+		{
+			Thread::sleep(10);
+			OSWrapper::Error err = m_ef->tryWaitAny();
+			std::lock_guard<std::mutex> lock(s_mutex);
+			LONGS_EQUAL(OSWrapper::OK, err);
+			LONGS_EQUAL(0, m_ef->getCurrentPattern());
+		}
+	};
+	class SetAll : public BaseRunnable {
+	public:
+		SetAll(EventFlag* e) : BaseRunnable(e) {}
+		virtual void run()
+		{
+			OSWrapper::Error err = m_ef->setAll();
+			std::lock_guard<std::mutex> lock(s_mutex);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitAnyAutoReset, SetAll>(true);
@@ -112,6 +139,17 @@ TEST(WindowsEventFlagTest, waitAny_setAll_resetAll)
 			err = m_ef->resetAll();
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
+		}
+	};
+	class SetAll : public BaseRunnable {
+	public:
+		SetAll(EventFlag* e) : BaseRunnable(e) {}
+		virtual void run()
+		{
+			Thread::sleep(10);
+			OSWrapper::Error err = m_ef->setAll();
+			std::lock_guard<std::mutex> lock(s_mutex);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneEventFlag<WaitAnyManualReset, SetAll>(false);
@@ -141,6 +179,38 @@ TEST(WindowsEventFlagTest, waitOne_setOne_resetOne)
 		virtual void run()
 		{
 			Thread::sleep(10);
+			OSWrapper::Error err = m_ef->setOne(2);
+			std::lock_guard<std::mutex> lock(s_mutex);
+			LONGS_EQUAL(OSWrapper::OK, err);
+		}
+	};
+	testTwoThreadsSharingOneEventFlag<WaitOne, SetOne>(false);
+}
+
+TEST(WindowsEventFlagTest, tryWaitOne_setOne_resetOne)
+{
+	class WaitOne : public BaseRunnable {
+	public:
+		WaitOne(EventFlag* e) : BaseRunnable(e) {}
+		virtual void run()
+		{
+			Thread::sleep(10);
+			OSWrapper::Error err = m_ef->tryWaitOne(2);
+			std::lock_guard<std::mutex> lock(s_mutex);
+			LONGS_EQUAL(OSWrapper::OK, err);
+			LONGS_EQUAL(1 << 2, m_ef->getCurrentPattern());
+
+			err = m_ef->resetOne(2);
+			LONGS_EQUAL(OSWrapper::OK, err);
+			LONGS_EQUAL(0, m_ef->getCurrentPattern());
+		}
+	};
+
+	class SetOne : public BaseRunnable {
+	public:
+		SetOne(EventFlag* e) : BaseRunnable(e) {}
+		virtual void run()
+		{
 			OSWrapper::Error err = m_ef->setOne(2);
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
@@ -223,7 +293,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(false);
 }
 
-TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
+TEST(WindowsEventFlagTest, timedWait_set_reset_AND_Timeout100)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -231,7 +301,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout(100));
+			OSWrapper::Error err = m_ef->timedWait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout(100));
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x0F, ptn);
@@ -258,7 +328,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_Timeout100)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
-TEST(WindowsEventFlagTest, wait_set_reset_AND_POLLING_TimedOut)
+TEST(WindowsEventFlagTest, tryWait_set_reset_AND_TimedOut)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -266,13 +336,13 @@ TEST(WindowsEventFlagTest, wait_set_reset_AND_POLLING_TimedOut)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout::POLLING);
+			OSWrapper::Error err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::TimedOut, err);
 			}
 			Thread::sleep(50);
-			err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout::POLLING);
+			err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
@@ -335,7 +405,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(false);
 }
 
-TEST(WindowsEventFlagTest, wait_set_reset_OR_Timeout100)
+TEST(WindowsEventFlagTest, timedWait_set_reset_OR_Timeout100)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -343,7 +413,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_Timeout100)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout(100));
+			OSWrapper::Error err = m_ef->timedWait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout(100));
 			std::lock_guard<std::mutex> lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, ptn);
@@ -365,7 +435,7 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_Timeout100)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
-TEST(WindowsEventFlagTest, wait_set_reset_OR_POLLING_TimedOut)
+TEST(WindowsEventFlagTest, tryWait_set_reset_OR_TimedOut)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -373,13 +443,13 @@ TEST(WindowsEventFlagTest, wait_set_reset_OR_POLLING_TimedOut)
 		virtual void run()
 		{
 			EventFlag::Pattern ptn;
-			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout::POLLING);
+			OSWrapper::Error err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::TimedOut, err);
 			}
 			Thread::sleep(50);
-			err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout::POLLING);
+			err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);

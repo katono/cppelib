@@ -20,9 +20,17 @@ public:
 	WindowsEventFlag(bool autoReset);
 	virtual ~WindowsEventFlag();
 
-	virtual OSWrapper::Error waitAny(OSWrapper::Timeout tmout);
-	virtual OSWrapper::Error waitOne(std::size_t pos, OSWrapper::Timeout tmout);
-	virtual OSWrapper::Error wait(OSWrapper::EventFlag::Pattern bitPattern, Mode waitMode, OSWrapper::EventFlag::Pattern* releasedPattern, OSWrapper::Timeout tmout);
+	virtual OSWrapper::Error waitAny();
+	virtual OSWrapper::Error waitOne(std::size_t pos);
+	virtual OSWrapper::Error wait(OSWrapper::EventFlag::Pattern bitPattern, Mode waitMode, OSWrapper::EventFlag::Pattern* releasedPattern);
+
+	virtual OSWrapper::Error tryWaitAny();
+	virtual OSWrapper::Error tryWaitOne(std::size_t pos);
+	virtual OSWrapper::Error tryWait(OSWrapper::EventFlag::Pattern bitPattern, Mode waitMode, OSWrapper::EventFlag::Pattern* releasedPattern);
+
+	virtual OSWrapper::Error timedWaitAny(OSWrapper::Timeout tmout);
+	virtual OSWrapper::Error timedWaitOne(std::size_t pos, OSWrapper::Timeout tmout);
+	virtual OSWrapper::Error timedWait(OSWrapper::EventFlag::Pattern bitPattern, Mode waitMode, OSWrapper::EventFlag::Pattern* releasedPattern, OSWrapper::Timeout tmout);
 
 	virtual OSWrapper::Error setAll();
 	virtual OSWrapper::Error setOne(std::size_t pos);

@@ -15,20 +15,50 @@ WindowsEventFlag::~WindowsEventFlag()
 {
 }
 
-OSWrapper::Error WindowsEventFlag::waitAny(Timeout tmout)
+OSWrapper::Error WindowsEventFlag::waitAny()
 {
-	return wait(EventFlag::Pattern().set(), EventFlag::OR, nullptr, tmout);
+	return timedWaitAny(Timeout::FOREVER);
 }
 
-OSWrapper::Error WindowsEventFlag::waitOne(std::size_t pos, Timeout tmout)
+OSWrapper::Error WindowsEventFlag::waitOne(std::size_t pos)
+{
+	return timedWaitOne(pos, Timeout::FOREVER);
+}
+
+OSWrapper::Error WindowsEventFlag::wait(OSWrapper::EventFlag::Pattern bitPattern, Mode waitMode, OSWrapper::EventFlag::Pattern* releasedPattern)
+{
+	return timedWait(bitPattern, waitMode, releasedPattern, Timeout::FOREVER);
+}
+
+OSWrapper::Error WindowsEventFlag::tryWaitAny()
+{
+	return timedWaitAny(Timeout::POLLING);
+}
+
+OSWrapper::Error WindowsEventFlag::tryWaitOne(std::size_t pos)
+{
+	return timedWaitOne(pos, Timeout::POLLING);
+}
+
+OSWrapper::Error WindowsEventFlag::tryWait(OSWrapper::EventFlag::Pattern bitPattern, Mode waitMode, OSWrapper::EventFlag::Pattern* releasedPattern)
+{
+	return timedWait(bitPattern, waitMode, releasedPattern, Timeout::POLLING);
+}
+
+OSWrapper::Error WindowsEventFlag::timedWaitAny(Timeout tmout)
+{
+	return timedWait(EventFlag::Pattern().set(), EventFlag::OR, nullptr, tmout);
+}
+
+OSWrapper::Error WindowsEventFlag::timedWaitOne(std::size_t pos, Timeout tmout)
 {
 	if (pos >= EventFlag::Pattern().size()) {
 		return OSWrapper::InvalidParameter;
 	}
-	return wait(EventFlag::Pattern().set(pos), EventFlag::OR, nullptr, tmout);
+	return timedWait(EventFlag::Pattern().set(pos), EventFlag::OR, nullptr, tmout);
 }
 
-OSWrapper::Error WindowsEventFlag::wait(EventFlag::Pattern bitPattern, Mode waitMode, EventFlag::Pattern* releasedPattern, Timeout tmout)
+OSWrapper::Error WindowsEventFlag::timedWait(EventFlag::Pattern bitPattern, Mode waitMode, EventFlag::Pattern* releasedPattern, Timeout tmout)
 {
 	if ((waitMode != EventFlag::OR) && (waitMode != EventFlag::AND)) {
 		return OSWrapper::InvalidParameter;
