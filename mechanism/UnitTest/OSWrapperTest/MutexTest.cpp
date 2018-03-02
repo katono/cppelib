@@ -26,9 +26,9 @@ public:
 		return (OSWrapper::Error) mock().actualCall("tryLock").onObject(this).returnIntValueOrDefault(OSWrapper::OK);
 	}
 
-	OSWrapper::Error tryLockFor(Timeout tmout)
+	OSWrapper::Error timedLock(Timeout tmout)
 	{
-		return (OSWrapper::Error) mock().actualCall("tryLockFor").withParameter("tmout", tmout)
+		return (OSWrapper::Error) mock().actualCall("timedLock").withParameter("tmout", tmout)
 			.onObject(this).returnIntValueOrDefault(OSWrapper::OK);
 	}
 
@@ -114,12 +114,12 @@ TEST(MutexTest, tryLock)
 	Mutex::destroy(mutex);
 }
 
-TEST(MutexTest, tryLockFor)
+TEST(MutexTest, timedLock)
 {
 	mutex = Mutex::create();
-	mock().expectOneCall("tryLockFor").onObject(mutex).withParameter("tmout", Timeout(100)).andReturnValue(OSWrapper::TimedOut);
+	mock().expectOneCall("timedLock").onObject(mutex).withParameter("tmout", Timeout(100)).andReturnValue(OSWrapper::TimedOut);
 
-	OSWrapper::Error err = mutex->tryLockFor(Timeout(100));
+	OSWrapper::Error err = mutex->timedLock(Timeout(100));
 	LONGS_EQUAL(OSWrapper::TimedOut, err);
 
 	Mutex::destroy(mutex);

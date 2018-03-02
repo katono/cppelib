@@ -20,7 +20,7 @@ public:
 
 	virtual Error lock() = 0;
 	virtual Error tryLock() = 0;
-	virtual Error tryLockFor(Timeout tmout) = 0;
+	virtual Error timedLock(Timeout tmout) = 0;
 	virtual Error unlock() = 0;
 
 private:

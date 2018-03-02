@@ -164,18 +164,11 @@ TEST(WindowsMutexTest, shared_data_lock_LockGuard)
 }
 
 class TryLockFailedTestRunnable : public Runnable {
-	Timeout m_timeout;
 public:
-	TryLockFailedTestRunnable(Timeout tmout) : m_timeout(tmout) {}
 	void run()
 	{
-		if (m_timeout == Timeout::POLLING) {
-			OSWrapper::Error err = s_mutex->tryLock();
-			LONGS_EQUAL(OSWrapper::TimedOut, err);
-		} else {
-			OSWrapper::Error err = s_mutex->tryLockFor(m_timeout);
-			LONGS_EQUAL(OSWrapper::TimedOut, err);
-		}
+		OSWrapper::Error err = s_mutex->tryLock();
+		LONGS_EQUAL(OSWrapper::TimedOut, err);
 	}
 };
 
@@ -184,7 +177,7 @@ TEST(WindowsMutexTest, tryLock)
 	OSWrapper::Error err = s_mutex->tryLock();
 	LONGS_EQUAL(OSWrapper::OK, err);
 
-	TryLockFailedTestRunnable runnable(Timeout::POLLING);
+	TryLockFailedTestRunnable runnable;
 	Thread* t = Thread::create(&runnable);
 	t->start();
 	t->join();
@@ -193,12 +186,23 @@ TEST(WindowsMutexTest, tryLock)
 	s_mutex->unlock();
 }
 
-TEST(WindowsMutexTest, tryLockFor)
+class TimedLockFailedTestRunnable : public Runnable {
+	Timeout m_timeout;
+public:
+	TimedLockFailedTestRunnable(Timeout tmout) : m_timeout(tmout) {}
+	void run()
+	{
+		OSWrapper::Error err = s_mutex->timedLock(m_timeout);
+		LONGS_EQUAL(OSWrapper::TimedOut, err);
+	}
+};
+
+TEST(WindowsMutexTest, timedLock)
 {
-	OSWrapper::Error err = s_mutex->tryLockFor(Timeout(100));
+	OSWrapper::Error err = s_mutex->timedLock(Timeout(100));
 	LONGS_EQUAL(OSWrapper::OK, err);
 
-	TryLockFailedTestRunnable runnable(Timeout(10));
+	TimedLockFailedTestRunnable runnable(Timeout(10));
 	Thread* t = Thread::create(&runnable);
 	t->start();
 	t->join();
@@ -207,12 +211,12 @@ TEST(WindowsMutexTest, tryLockFor)
 	s_mutex->unlock();
 }
 
-TEST(WindowsMutexTest, tryLockFor_FOREVER)
+TEST(WindowsMutexTest, timedLock_FOREVER)
 {
-	OSWrapper::Error err = s_mutex->tryLockFor(Timeout::FOREVER);
+	OSWrapper::Error err = s_mutex->timedLock(Timeout::FOREVER);
 	LONGS_EQUAL(OSWrapper::OK, err);
 
-	TryLockFailedTestRunnable runnable(Timeout::POLLING);
+	TimedLockFailedTestRunnable runnable(Timeout::POLLING);
 	Thread* t = Thread::create(&runnable);
 	t->start();
 	t->join();

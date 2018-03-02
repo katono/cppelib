@@ -15,7 +15,7 @@ public:
 	virtual ~WindowsMutex();
 	virtual OSWrapper::Error lock();
 	virtual OSWrapper::Error tryLock();
-	virtual OSWrapper::Error tryLockFor(OSWrapper::Timeout tmout);
+	virtual OSWrapper::Error timedLock(OSWrapper::Timeout tmout);
 	virtual OSWrapper::Error unlock();
 };
 

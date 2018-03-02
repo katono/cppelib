@@ -36,7 +36,7 @@ OSWrapper::Error WindowsMutex::tryLock()
 	}
 }
 
-OSWrapper::Error WindowsMutex::tryLockFor(OSWrapper::Timeout tmout)
+OSWrapper::Error WindowsMutex::timedLock(OSWrapper::Timeout tmout)
 {
 	if (tmout == OSWrapper::Timeout::FOREVER) {
 		return lock();
