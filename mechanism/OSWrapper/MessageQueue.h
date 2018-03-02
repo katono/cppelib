@@ -161,6 +161,9 @@ private:
 			destroy(&m_buf[m_begin]);
 			m_begin = next_idx(m_begin);
 		}
+
+		RingBuf(const RingBuf&);
+		RingBuf& operator=(const RingBuf&);
 	};
 	RingBuf* m_rb;
 
@@ -219,6 +222,9 @@ private:
 		m_rb->pop(msg);
 		m_evNotFull->setAll();
 	}
+
+	MessageQueue(const MessageQueue&);
+	MessageQueue& operator=(const MessageQueue&);
 };
 
 }
