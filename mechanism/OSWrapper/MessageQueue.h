@@ -30,12 +30,22 @@ public:
 		delete m;
 	}
 
-	Error send(const T& msg, Timeout tmout = Timeout::FOREVER)
+	Error send(const T& msg)
+	{
+		return timedSend(msg, Timeout::FOREVER);
+	}
+
+	Error trySend(const T& msg)
+	{
+		return timedSend(msg, Timeout::POLLING);
+	}
+
+	Error timedSend(const T& msg, Timeout tmout)
 	{
 		LockGuard lock(m_mtxSend);
 
 		if (isFull()) {
-			Error err = m_evNotFull->waitAny(tmout);
+			Error err = m_evNotFull->timedWaitAny(tmout);
 			if (err != OK) {
 				return err;
 			}
@@ -45,7 +55,17 @@ public:
 		return OK;
 	}
 
-	Error receive(T* msg, Timeout tmout = Timeout::FOREVER)
+	Error receive(T* msg)
+	{
+		return timedReceive(msg, Timeout::FOREVER);
+	}
+
+	Error tryReceive(T* msg)
+	{
+		return timedReceive(msg, Timeout::POLLING);
+	}
+
+	Error timedReceive(T* msg, Timeout tmout)
 	{
 		if (msg == 0) {
 			return InvalidParameter;
@@ -54,7 +74,7 @@ public:
 		LockGuard lock(m_mtxRecv);
 
 		if (isEmpty()) {
-			Error err = m_evNotEmpty->waitAny(tmout);
+			Error err = m_evNotEmpty->timedWaitAny(tmout);
 			if (err != OK) {
 				return err;
 			}

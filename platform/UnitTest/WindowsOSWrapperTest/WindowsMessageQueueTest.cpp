@@ -105,11 +105,20 @@ TEST(WindowsMessageQueueTest, receive_nullptr)
 	MessageQueue<int>::destroy(mq);
 }
 
-TEST(WindowsMessageQueueTest, receive_TimedOut)
+TEST(WindowsMessageQueueTest, tryReceive_TimedOut)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
 	int data = 0;
-	OSWrapper::Error err = mq->receive(&data, Timeout::POLLING);
+	OSWrapper::Error err = mq->tryReceive(&data);
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+	MessageQueue<int>::destroy(mq);
+}
+
+TEST(WindowsMessageQueueTest, timedReceive_Timeout10)
+{
+	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
+	int data = 0;
+	OSWrapper::Error err = mq->timedReceive(&data, Timeout(10));
 	LONGS_EQUAL(OSWrapper::TimedOut, err);
 	MessageQueue<int>::destroy(mq);
 }
@@ -143,7 +152,7 @@ TEST(WindowsMessageQueueTest, send_receive)
 	testTwoThreadsSharingOneMQ<Sender, Receiver, IntMQ>();
 }
 
-TEST(WindowsMessageQueueTest, send_receive_full)
+TEST(WindowsMessageQueueTest, trySend_TimedOut_receive)
 {
 	class Sender : public BaseRunnable {
 	public:
@@ -151,7 +160,7 @@ TEST(WindowsMessageQueueTest, send_receive_full)
 		virtual void run()
 		{
 			for (int i = 0; i < SIZE; i++) {
-				OSWrapper::Error err = m_mq->send(i, Timeout::POLLING);
+				OSWrapper::Error err = m_mq->trySend(i);
 				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 			}
@@ -161,7 +170,7 @@ TEST(WindowsMessageQueueTest, send_receive_full)
 				LONGS_EQUAL(SIZE, size);
 			}
 			{
-				OSWrapper::Error err = m_mq->send(SIZE, Timeout::POLLING);
+				OSWrapper::Error err = m_mq->trySend(SIZE);
 				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::TimedOut, err);
 			}
