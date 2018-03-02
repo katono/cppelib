@@ -17,30 +17,10 @@ public:
 		MessageQueue* m = 0;
 		try {
 			m = new MessageQueue(maxSize);
-			m->m_mtxRB = Mutex::create();
-			if (m->m_mtxRB == 0) {
-				throw 0;
-			}
-			m->m_mtxSend = Mutex::create();
-			if (m->m_mtxSend == 0) {
-				throw 0;
-			}
-			m->m_mtxRecv = Mutex::create();
-			if (m->m_mtxRecv == 0) {
-				throw 0;
-			}
-			m->m_evNotEmpty = EventFlag::create(true);
-			if (m->m_evNotEmpty == 0) {
-				throw 0;
-			}
-			m->m_evNotFull = EventFlag::create(true);
-			if (m->m_evNotFull == 0) {
-				throw 0;
-			}
 			return m;
 		}
 		catch (...) {
-			destroy(m);
+			delete m;
 			return 0;
 		}
 	}
@@ -177,6 +157,26 @@ private:
 	: m_rb(0), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_evNotEmpty(0), m_evNotFull(0)
 	{
 		m_rb = new RingBuf(maxSize + 1U);
+		m_mtxRB = Mutex::create();
+		if (m_mtxRB == 0) {
+			throw 0;
+		}
+		m_mtxSend = Mutex::create();
+		if (m_mtxSend == 0) {
+			throw 0;
+		}
+		m_mtxRecv = Mutex::create();
+		if (m_mtxRecv == 0) {
+			throw 0;
+		}
+		m_evNotEmpty = EventFlag::create(true);
+		if (m_evNotEmpty == 0) {
+			throw 0;
+		}
+		m_evNotFull = EventFlag::create(true);
+		if (m_evNotFull == 0) {
+			throw 0;
+		}
 	}
 
 	~MessageQueue()
