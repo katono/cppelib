@@ -42,16 +42,21 @@ public:
 
 	Error timedSend(const T& msg, Timeout tmout)
 	{
-		LockGuard lock(m_mtxSend);
+		Error err = m_mtxSend->timedLock(tmout);
+		if (err != OK) {
+			return err;
+		}
 
 		if (isFull()) {
-			Error err = m_evNotFull->timedWaitAny(tmout);
+			err = m_evNotFull->timedWaitAny(tmout);
 			if (err != OK) {
+				m_mtxSend->unlock();
 				return err;
 			}
 		}
 
 		push(msg);
+		m_mtxSend->unlock();
 		return OK;
 	}
 
@@ -71,16 +76,21 @@ public:
 			return InvalidParameter;
 		}
 
-		LockGuard lock(m_mtxRecv);
+		Error err = m_mtxRecv->timedLock(tmout);
+		if (err != OK) {
+			return err;
+		}
 
 		if (isEmpty()) {
-			Error err = m_evNotEmpty->timedWaitAny(tmout);
+			err = m_evNotEmpty->timedWaitAny(tmout);
 			if (err != OK) {
+				m_mtxRecv->unlock();
 				return err;
 			}
 		}
 
 		pop(msg);
+		m_mtxRecv->unlock();
 		return OK;
 	}
 
