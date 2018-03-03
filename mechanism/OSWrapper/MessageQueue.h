@@ -72,10 +72,6 @@ public:
 
 	Error timedReceive(T* msg, Timeout tmout)
 	{
-		if (msg == 0) {
-			return InvalidParameter;
-		}
-
 		Error err = m_mtxRecv->timedLock(tmout);
 		if (err != OK) {
 			return err;
@@ -167,7 +163,9 @@ private:
 
 		void pop(T* data)
 		{
-			*data = m_buf[m_begin];
+			if (data != 0) {
+				*data = m_buf[m_begin];
+			}
 			destroy(&m_buf[m_begin]);
 			m_begin = next_idx(m_begin);
 		}

@@ -97,14 +97,6 @@ TEST(WindowsMessageQueueTest, getSize_0)
 	MessageQueue<int>::destroy(mq);
 }
 
-TEST(WindowsMessageQueueTest, receive_nullptr)
-{
-	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
-	OSWrapper::Error err = mq->receive(0);
-	LONGS_EQUAL(OSWrapper::InvalidParameter, err);
-	MessageQueue<int>::destroy(mq);
-}
-
 TEST(WindowsMessageQueueTest, tryReceive_TimedOut)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
@@ -147,6 +139,33 @@ TEST(WindowsMessageQueueTest, send_receive)
 			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(100, data);
+		}
+	};
+	testTwoThreadsSharingOneMQ<Sender, Receiver, IntMQ>();
+}
+
+TEST(WindowsMessageQueueTest, send_receive_nullptr)
+{
+	class Sender : public BaseRunnable {
+	public:
+		Sender(IntMQ* mq) : BaseRunnable(mq) {}
+		virtual void run()
+		{
+			Thread::sleep(10);
+			OSWrapper::Error err = m_mq->send(100);
+			LockGuard lock(s_mutex);
+			LONGS_EQUAL(OSWrapper::OK, err);
+		}
+	};
+
+	class Receiver : public BaseRunnable {
+	public:
+		Receiver(IntMQ* mq) : BaseRunnable(mq) {}
+		virtual void run()
+		{
+			OSWrapper::Error err = m_mq->receive(0);
+			LockGuard lock(s_mutex);
+			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
 	testTwoThreadsSharingOneMQ<Sender, Receiver, IntMQ>();
