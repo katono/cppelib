@@ -265,7 +265,7 @@ TEST(FixedVectorTest, ctor_n_data_exception)
 		FixedVector<int, SIZE> x(SIZE + 1);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -288,7 +288,7 @@ TEST(FixedVectorTest, ctor_range_exception)
 		FixedVector<int, SIZE> x(a.begin(), a.end());
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -347,7 +347,7 @@ TEST(FixedVectorTest, resize_exception)
 		x.resize(SIZE + 1);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -379,7 +379,7 @@ TEST(FixedVectorTest, push_back_exception)
 		x.push_back(101);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -413,7 +413,7 @@ TEST(FixedVectorTest, assign_n_exception)
 		x.assign(SIZE + 1, 100);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -499,7 +499,7 @@ TEST(FixedVectorTest, assign_range_exception)
 		x.assign(a.begin(), a.end());
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -536,7 +536,7 @@ TEST(FixedVectorTest, insert_exception)
 		x.insert(x.begin(), 100);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -603,7 +603,7 @@ TEST(FixedVectorTest, insert_n_exception)
 		x.insert(x.begin(), SIZE + 1, 100);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -706,7 +706,7 @@ TEST(FixedVectorTest, insert_range_exception)
 		x.insert(x.end(), a.begin(), a.end());
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -1305,7 +1305,7 @@ TEST(FixedVectorTest, algo_copy_exception)
 		std::copy(a.begin(), a.end(), std::back_inserter(x));
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("Container::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedVector::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");

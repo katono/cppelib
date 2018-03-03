@@ -33,6 +33,14 @@ private:
 	size_type m_end;
 	Array<T, MaxSize> m_buf;
 
+	class BadAlloc : public Container::BadAlloc {
+	public:
+		BadAlloc() : Container::BadAlloc() {}
+		const char* what() const throw()
+		{
+			return "FixedVector::BadAlloc";
+		}
+	};
 public:
 	FixedVector() : m_end(0U) {}
 

@@ -218,6 +218,14 @@ private:
 	size_type m_end;
 	Array<T, BufSize> m_buf;
 
+	class BadAlloc : public Container::BadAlloc {
+	public:
+		BadAlloc() : Container::BadAlloc() {}
+		const char* what() const throw()
+		{
+			return "RingBuffer::BadAlloc";
+		}
+	};
 public:
 	RingBuffer() : m_begin(0U), m_end(0U) {}
 

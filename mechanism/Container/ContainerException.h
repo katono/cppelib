@@ -19,10 +19,7 @@ private:
 class BadAlloc : public std::exception {
 public:
 	BadAlloc() {}
-	const char* what() const throw()
-	{
-		return "Container::BadAlloc";
-	}
+	virtual const char* what() const throw() = 0;
 };
 
 }
