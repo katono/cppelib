@@ -121,6 +121,8 @@ private:
 		void construct(T* p, const T& val) { new(p) T(val); }
 		void destroy(T* p) { p->~T(); }
 
+		RingBuf(const RingBuf&);
+		RingBuf& operator=(const RingBuf&);
 	public:
 		RingBuf(std::size_t bufSize) : m_begin(0U), m_end(0U), m_bufSize(bufSize), m_buf(0)
 		{
@@ -170,8 +172,6 @@ private:
 			m_begin = next_idx(m_begin);
 		}
 
-		RingBuf(const RingBuf&);
-		RingBuf& operator=(const RingBuf&);
 	};
 	RingBuf* m_rb;
 
