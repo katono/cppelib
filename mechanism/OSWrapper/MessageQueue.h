@@ -16,13 +16,16 @@ public:
 	{
 		MessageQueue* m = 0;
 		try {
-			m = new MessageQueue(maxSize);
-			return m;
+			m = new MessageQueue();
 		}
 		catch (...) {
+			return 0;
+		}
+		if (!m->init(maxSize + 1U)) {
 			delete m;
 			return 0;
 		}
+		return m;
 	}
 
 	static void destroy(MessageQueue* m)
@@ -93,13 +96,13 @@ public:
 	std::size_t getSize() const
 	{
 		LockGuard lock(m_mtxRB);
-		return m_rb->getSize();
+		return m_rb.getSize();
 	}
 
 	std::size_t getMaxSize() const
 	{
 		LockGuard lock(m_mtxRB);
-		return m_rb->getMaxSize();
+		return m_rb.getMaxSize();
 	}
 
 private:
@@ -124,14 +127,17 @@ private:
 		RingBuf(const RingBuf&);
 		RingBuf& operator=(const RingBuf&);
 	public:
-		RingBuf(std::size_t bufSize) : m_begin(0U), m_end(0U), m_bufSize(bufSize), m_buf(0)
-		{
-			m_buf = new T[m_bufSize];
-		}
+		RingBuf() : m_begin(0U), m_end(0U), m_bufSize(0U), m_buf(0) {}
 
 		~RingBuf()
 		{
-			delete[] m_buf;
+			free(m_buf);
+		}
+
+		void setBuffer(T* buf, std::size_t bufSize)
+		{
+			m_buf = buf;
+			m_bufSize = bufSize;
 		}
 
 		std::size_t getSize() const
@@ -173,7 +179,7 @@ private:
 		}
 
 	};
-	RingBuf* m_rb;
+	RingBuf m_rb;
 
 	Mutex* m_mtxRB;
 	Mutex* m_mtxSend;
@@ -181,30 +187,9 @@ private:
 	EventFlag* m_evNotEmpty;
 	EventFlag* m_evNotFull;
 
-	MessageQueue(std::size_t maxSize)
-	: m_rb(0), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_evNotEmpty(0), m_evNotFull(0)
+	MessageQueue()
+	: m_rb(), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_evNotEmpty(0), m_evNotFull(0)
 	{
-		m_rb = new RingBuf(maxSize + 1U);
-		m_mtxRB = Mutex::create();
-		if (m_mtxRB == 0) {
-			throw 0;
-		}
-		m_mtxSend = Mutex::create();
-		if (m_mtxSend == 0) {
-			throw 0;
-		}
-		m_mtxRecv = Mutex::create();
-		if (m_mtxRecv == 0) {
-			throw 0;
-		}
-		m_evNotEmpty = EventFlag::create(true);
-		if (m_evNotEmpty == 0) {
-			throw 0;
-		}
-		m_evNotFull = EventFlag::create(true);
-		if (m_evNotFull == 0) {
-			throw 0;
-		}
 	}
 
 	~MessageQueue()
@@ -214,13 +199,57 @@ private:
 		Mutex::destroy(m_mtxRecv);
 		Mutex::destroy(m_mtxSend);
 		Mutex::destroy(m_mtxRB);
-		delete m_rb;
+	}
+
+	void* operator new(std::size_t size)
+	{
+		void* p = malloc(size);
+		if (p == 0) {
+			throw 0;
+		}
+		return p;
+	}
+
+	void operator delete(void* p)
+	{
+		free(p);
+	}
+
+	bool init(std::size_t bufSize)
+	{
+		T* m_rb_buffer = static_cast<T*>(malloc(sizeof(T) * bufSize)); // TODO
+		if (m_rb_buffer == 0) {
+			return false;
+		}
+		m_rb.setBuffer(m_rb_buffer, bufSize);
+
+		m_mtxRB = Mutex::create();
+		if (m_mtxRB == 0) {
+			return false;
+		}
+		m_mtxSend = Mutex::create();
+		if (m_mtxSend == 0) {
+			return false;
+		}
+		m_mtxRecv = Mutex::create();
+		if (m_mtxRecv == 0) {
+			return false;
+		}
+		m_evNotEmpty = EventFlag::create(true);
+		if (m_evNotEmpty == 0) {
+			return false;
+		}
+		m_evNotFull = EventFlag::create(true);
+		if (m_evNotFull == 0) {
+			return false;
+		}
+		return true;
 	}
 
 	bool isEmpty() const
 	{
 		LockGuard lock(m_mtxRB);
-		const bool is_empty = m_rb->isEmpty();
+		const bool is_empty = m_rb.isEmpty();
 		if (is_empty) {
 			m_evNotEmpty->resetAll();
 		}
@@ -230,7 +259,7 @@ private:
 	bool isFull() const
 	{
 		LockGuard lock(m_mtxRB);
-		const bool is_full = m_rb->isFull();
+		const bool is_full = m_rb.isFull();
 		if (is_full) {
 			m_evNotFull->resetAll();
 		}
@@ -240,14 +269,14 @@ private:
 	void push(const T& msg)
 	{
 		LockGuard lock(m_mtxRB);
-		m_rb->push(msg);
+		m_rb.push(msg);
 		m_evNotEmpty->setAll();
 	}
 
 	void pop(T* msg)
 	{
 		LockGuard lock(m_mtxRB);
-		m_rb->pop(msg);
+		m_rb.pop(msg);
 		m_evNotFull->setAll();
 	}
 
