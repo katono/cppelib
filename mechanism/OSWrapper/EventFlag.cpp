@@ -4,23 +4,23 @@
 
 namespace OSWrapper {
 
-EventFlagFactory* EventFlag::m_factory = 0;
+static EventFlagFactory* s_factory = 0;
 
-void EventFlag::setFactory(EventFlagFactory* factory)
+void registerEventFlagFactory(EventFlagFactory* factory)
 {
-	m_factory = factory;
+	s_factory = factory;
 }
 
 EventFlag* EventFlag::create(bool autoReset)
 {
-	DBC_PRE(m_factory);
-	return m_factory->create(autoReset);
+	DBC_PRE(s_factory);
+	return s_factory->create(autoReset);
 }
 
 void EventFlag::destroy(EventFlag* e)
 {
-	if ((m_factory != 0) && (e != 0)) {
-		m_factory->destroy(e);
+	if ((s_factory != 0) && (e != 0)) {
+		s_factory->destroy(e);
 	}
 }
 

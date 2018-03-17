@@ -137,7 +137,7 @@ TEST_GROUP(EventFlagTest) {
 
 	void setup()
 	{
-		EventFlag::setFactory(&testFactory);
+		OSWrapper::registerEventFlagFactory(&testFactory);
 	}
 	void teardown()
 	{

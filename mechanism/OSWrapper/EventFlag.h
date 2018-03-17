@@ -10,6 +10,8 @@ namespace OSWrapper {
 
 class EventFlagFactory;
 
+void registerEventFlagFactory(EventFlagFactory* factory);
+
 class EventFlag {
 public:
 	enum Mode {
@@ -20,8 +22,6 @@ public:
 	typedef Container::BitPattern<unsigned int> Pattern;
 
 	virtual ~EventFlag() {}
-
-	static void setFactory(EventFlagFactory* factory);
 
 	static EventFlag* create(bool autoReset);
 	static void destroy(EventFlag* e);
@@ -48,8 +48,6 @@ public:
 
 	virtual Pattern getCurrentPattern() const = 0;
 
-private:
-	static EventFlagFactory* m_factory;
 };
 
 }
