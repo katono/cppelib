@@ -8,11 +8,11 @@ namespace OSWrapper {
 
 class MutexFactory;
 
+void registerMutexFactory(MutexFactory* factory);
+
 class Mutex {
 public:
 	virtual ~Mutex() {}
-
-	static void setFactory(MutexFactory* factory);
 
 	static Mutex* create();
 	static Mutex* create(int priorityCeiling);
@@ -23,8 +23,6 @@ public:
 	virtual Error timedLock(Timeout tmout) = 0;
 	virtual Error unlock() = 0;
 
-private:
-	static MutexFactory* m_factory;
 };
 
 class LockGuard {

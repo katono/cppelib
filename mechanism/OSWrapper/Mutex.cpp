@@ -4,29 +4,29 @@
 
 namespace OSWrapper {
 
-MutexFactory* Mutex::m_factory = 0;
+static MutexFactory* s_factory = 0;
 
-void Mutex::setFactory(MutexFactory* factory)
+void registerMutexFactory(MutexFactory* factory)
 {
-	m_factory = factory;
+	s_factory = factory;
 }
 
 Mutex* Mutex::create()
 {
-	DBC_PRE(m_factory);
-	return m_factory->create();
+	DBC_PRE(s_factory);
+	return s_factory->create();
 }
 
 Mutex* Mutex::create(int priorityCeiling)
 {
-	DBC_PRE(m_factory);
-	return m_factory->create(priorityCeiling);
+	DBC_PRE(s_factory);
+	return s_factory->create(priorityCeiling);
 }
 
 void Mutex::destroy(Mutex* m)
 {
-	if ((m_factory != 0) && (m != 0)) {
-		m_factory->destroy(m);
+	if ((s_factory != 0) && (m != 0)) {
+		s_factory->destroy(m);
 	}
 }
 

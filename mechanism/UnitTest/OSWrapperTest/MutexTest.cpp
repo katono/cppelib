@@ -64,7 +64,7 @@ TEST_GROUP(MutexTest) {
 
 	void setup()
 	{
-		Mutex::setFactory(&testFactory);
+		OSWrapper::registerMutexFactory(&testFactory);
 	}
 	void teardown()
 	{
