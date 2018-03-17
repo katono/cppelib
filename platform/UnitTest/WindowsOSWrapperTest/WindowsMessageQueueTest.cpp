@@ -42,9 +42,9 @@ TEST_GROUP(WindowsMessageQueueTest) {
 
 	void setup()
 	{
-		Thread::setFactory(&testThreadFactory);
-		Mutex::setFactory(&testMutexFactory);
-		EventFlag::setFactory(&testEventFlagFactory);
+		OSWrapper::registerThreadFactory(&testThreadFactory);
+		OSWrapper::registerMutexFactory(&testMutexFactory);
+		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
 		s_mutex = Mutex::create();
 	}
 	void teardown()

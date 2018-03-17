@@ -21,7 +21,7 @@ TEST_GROUP(WindowsThreadTest) {
 
 	void setup()
 	{
-		Thread::setFactory(&testFactory);
+		OSWrapper::registerThreadFactory(&testFactory);
 	}
 	void teardown()
 	{

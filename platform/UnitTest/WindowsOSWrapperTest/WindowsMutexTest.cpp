@@ -26,8 +26,8 @@ TEST_GROUP(WindowsMutexTest) {
 
 	void setup()
 	{
-		Thread::setFactory(&testThreadFactory);
-		Mutex::setFactory(&testMutexFactory);
+		OSWrapper::registerThreadFactory(&testThreadFactory);
+		OSWrapper::registerMutexFactory(&testMutexFactory);
 		s_mutex = Mutex::create();
 	}
 	void teardown()

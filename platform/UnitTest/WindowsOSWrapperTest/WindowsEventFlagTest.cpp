@@ -24,8 +24,8 @@ TEST_GROUP(WindowsEventFlagTest) {
 
 	void setup()
 	{
-		Thread::setFactory(&testThreadFactory);
-		EventFlag::setFactory(&testEventFlagFactory);
+		OSWrapper::registerThreadFactory(&testThreadFactory);
+		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
 	}
 	void teardown()
 	{
