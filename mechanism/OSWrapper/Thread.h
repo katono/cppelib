@@ -8,13 +8,13 @@ namespace OSWrapper {
 class Runnable;
 class ThreadFactory;
 
+void registerThreadFactory(ThreadFactory* factory);
+
 class Thread {
 public:
 	static const int INHERIT_PRIORITY;
 
 	virtual ~Thread() {}
-
-	static void setFactory(ThreadFactory* factory);
 
 	static Thread* create(Runnable* r, std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
 	static Thread* create(std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
@@ -38,8 +38,6 @@ public:
 	virtual std::size_t getStackSize() const = 0;
 	virtual void* getNativeHandle() = 0;
 
-private:
-	static ThreadFactory* m_factory;
 };
 
 }
