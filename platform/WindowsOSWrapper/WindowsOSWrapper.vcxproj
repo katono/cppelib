@@ -20,19 +20,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\WindowsEventFlag.cpp" />
+    <ClCompile Include="private\WindowsFixedAllocator.cpp" />
     <ClCompile Include="private\WindowsMutex.cpp" />
     <ClCompile Include="private\WindowsThread.cpp" />
+    <ClCompile Include="private\WindowsVariableAllocator.cpp" />
     <ClCompile Include="WindowsEventFlagFactory.cpp" />
+    <ClCompile Include="WindowsFixedAllocatorFactory.cpp" />
     <ClCompile Include="WindowsMutexFactory.cpp" />
     <ClCompile Include="WindowsThreadFactory.cpp" />
+    <ClCompile Include="WindowsVariableAllocatorFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\WindowsEventFlag.h" />
+    <ClInclude Include="private\WindowsFixedAllocator.h" />
     <ClInclude Include="private\WindowsMutex.h" />
     <ClInclude Include="private\WindowsThread.h" />
+    <ClInclude Include="private\WindowsVariableAllocator.h" />
     <ClInclude Include="WindowsEventFlagFactory.h" />
+    <ClInclude Include="WindowsFixedAllocatorFactory.h" />
     <ClInclude Include="WindowsMutexFactory.h" />
     <ClInclude Include="WindowsThreadFactory.h" />
+    <ClInclude Include="WindowsVariableAllocatorFactory.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
