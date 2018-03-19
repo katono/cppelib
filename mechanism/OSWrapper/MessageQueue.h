@@ -6,8 +6,12 @@
 #include "OSWrapperError.h"
 #include "Mutex.h"
 #include "EventFlag.h"
+#include "VariableAllocator.h"
 
 namespace OSWrapper {
+
+void registerMessageQueueAllocator(VariableAllocator* allocator);
+VariableAllocator* getMessageQueueAllocator();
 
 template <typename T>
 class MessageQueue {
@@ -131,7 +135,7 @@ private:
 
 		~RingBuf()
 		{
-			free(m_buf);
+			getMessageQueueAllocator()->deallocate(m_buf);
 		}
 
 		void setBuffer(T* buf, std::size_t bufSize)
@@ -203,7 +207,11 @@ private:
 
 	void* operator new(std::size_t size)
 	{
-		void* p = malloc(size);
+		VariableAllocator* allocator = getMessageQueueAllocator();
+		if (allocator == 0) {
+			throw 0;
+		}
+		void* p = allocator->allocate(size);
 		if (p == 0) {
 			throw 0;
 		}
@@ -212,12 +220,12 @@ private:
 
 	void operator delete(void* p)
 	{
-		free(p);
+		getMessageQueueAllocator()->deallocate(p);
 	}
 
 	bool init(std::size_t bufSize)
 	{
-		T* m_rb_buffer = static_cast<T*>(malloc(sizeof(T) * bufSize)); // TODO
+		T* m_rb_buffer = static_cast<T*>(getMessageQueueAllocator()->allocate(sizeof(T) * bufSize));
 		if (m_rb_buffer == 0) {
 			return false;
 		}
