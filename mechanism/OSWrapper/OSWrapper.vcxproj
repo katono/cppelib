@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="EventFlag.h" />
     <ClInclude Include="EventFlagFactory.h" />
+    <ClInclude Include="FixedAllocator.h" />
+    <ClInclude Include="FixedAllocatorFactory.h" />
     <ClInclude Include="MessageQueue.h" />
     <ClInclude Include="Mutex.h" />
     <ClInclude Include="MutexFactory.h" />
@@ -28,12 +30,17 @@
     <ClInclude Include="Thread.h" />
     <ClInclude Include="ThreadFactory.h" />
     <ClInclude Include="Timeout.h" />
+    <ClInclude Include="VariableAllocator.h" />
+    <ClInclude Include="VariableAllocatorFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EventFlag.cpp" />
+    <ClCompile Include="FixedAllocator.cpp" />
+    <ClCompile Include="MessageQueue.cpp" />
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="Timeout.cpp" />
+    <ClCompile Include="VariableAllocator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -94,8 +94,10 @@
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="EventFlagTest.cpp" />
+    <ClCompile Include="FixedAllocatorTest.cpp" />
     <ClCompile Include="MutexTest.cpp" />
     <ClCompile Include="ThreadTest.cpp" />
+    <ClCompile Include="VariableAllocatorTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
