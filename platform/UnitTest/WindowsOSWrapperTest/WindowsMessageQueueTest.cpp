@@ -5,6 +5,7 @@
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "OSWrapper/EventFlag.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
+#include "WindowsOSWrapper/WindowsVariableAllocatorFactory.h"
 #include "OSWrapper/MessageQueue.h"
 #include "DesignByContract/Assertion.h"
 #include "CppUTest/TestHarness.h"
@@ -15,12 +16,14 @@ using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
 using OSWrapper::EventFlag;
+using OSWrapper::VariableAllocator;
 using OSWrapper::MessageQueue;
 using OSWrapper::Timeout;
 using OSWrapper::LockGuard;
 using WindowsOSWrapper::WindowsThreadFactory;
 using WindowsOSWrapper::WindowsMutexFactory;
 using WindowsOSWrapper::WindowsEventFlagFactory;
+using WindowsOSWrapper::WindowsVariableAllocatorFactory;
 
 static Mutex* s_mutex;
 
@@ -28,6 +31,8 @@ TEST_GROUP(WindowsMessageQueueTest) {
 	WindowsThreadFactory testThreadFactory;
 	WindowsMutexFactory testMutexFactory;
 	WindowsEventFlagFactory testEventFlagFactory;
+	WindowsVariableAllocatorFactory testVariableAllocatorFactory;
+	VariableAllocator* allocator;
 
 	static const std::size_t SIZE = 10;
 	typedef MessageQueue<int> IntMQ;
@@ -45,11 +50,19 @@ TEST_GROUP(WindowsMessageQueueTest) {
 		OSWrapper::registerThreadFactory(&testThreadFactory);
 		OSWrapper::registerMutexFactory(&testMutexFactory);
 		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
+		OSWrapper::registerVariableAllocatorFactory(&testVariableAllocatorFactory);
+
+		const std::size_t dummy_size = 1000;
+		allocator = VariableAllocator::create(dummy_size);
+		CHECK(allocator);
+		OSWrapper::registerMessageQueueAllocator(allocator);
+
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
+		VariableAllocator::destroy(allocator);
 		mock().checkExpectations();
 		mock().clear();
 	}
@@ -58,6 +71,7 @@ TEST_GROUP(WindowsMessageQueueTest) {
 	void testTwoThreadsSharingOneMQ()
 	{
 		MQ* mq = MQ::create(SIZE);
+		CHECK(mq);
 		Run1 r1(mq);
 		Thread* thread1 = Thread::create(&r1);
 		Run2 r2(mq);
@@ -81,6 +95,18 @@ TEST(WindowsMessageQueueTest, create_destroy)
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
 	CHECK(mq);
 	MessageQueue<int>::destroy(mq);
+}
+
+TEST(WindowsMessageQueueTest, destroy_nullptr)
+{
+	MessageQueue<int>::destroy(0);
+}
+
+TEST(WindowsMessageQueueTest, create_failed)
+{
+	OSWrapper::registerMessageQueueAllocator(0);
+	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
+	CHECK_FALSE(mq);
 }
 
 TEST(WindowsMessageQueueTest, getMaxSize)
@@ -288,6 +314,7 @@ TEST(WindowsMessageQueueTest, send_receive_many_threads)
 
 	const int num = 100;
 	IntMQ* mq = IntMQ::create(SIZE);
+	CHECK(mq);
 	Sender r1(mq);
 	Receiver r2(mq);
 	Thread* thread1[num];
