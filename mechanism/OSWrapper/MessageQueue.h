@@ -225,11 +225,11 @@ private:
 
 	bool init(std::size_t bufSize)
 	{
-		T* m_rb_buffer = static_cast<T*>(getMessageQueueAllocator()->allocate(sizeof(T) * bufSize));
-		if (m_rb_buffer == 0) {
+		T* rb_buffer = static_cast<T*>(getMessageQueueAllocator()->allocate(sizeof(T) * bufSize));
+		if (rb_buffer == 0) {
 			return false;
 		}
-		m_rb.setBuffer(m_rb_buffer, bufSize);
+		m_rb.setBuffer(rb_buffer, bufSize);
 
 		m_mtxRB = Mutex::create();
 		if (m_mtxRB == 0) {

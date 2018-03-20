@@ -3,16 +3,16 @@
 
 namespace OSWrapper {
 
-static VariableAllocator* mqAllocator = 0;
+static VariableAllocator* s_allocator = 0;
 
 void registerMessageQueueAllocator(VariableAllocator* allocator)
 {
-	mqAllocator = allocator;
+	s_allocator = allocator;
 }
 
 VariableAllocator* getMessageQueueAllocator()
 {
-	return mqAllocator;
+	return s_allocator;
 }
 
 }
