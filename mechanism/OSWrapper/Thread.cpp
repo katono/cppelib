@@ -16,13 +16,10 @@ void registerThreadFactory(ThreadFactory* factory)
 Thread* Thread::create(Runnable* r, std::size_t stackSize/*= 0U*/, int priority/*= INHERIT_PRIORITY*/, const char* name/*= ""*/)
 {
 	DBC_PRE(s_factory);
+	if (r == 0) {
+		return 0;
+	}
 	return s_factory->create(r, stackSize, priority, name);
-}
-
-Thread* Thread::create(std::size_t stackSize/*= 0U*/, int priority/*= INHERIT_PRIORITY*/, const char* name/*= ""*/)
-{
-	DBC_PRE(s_factory);
-	return s_factory->create(0, stackSize, priority, name);
 }
 
 void Thread::destroy(Thread* t)

@@ -2,6 +2,8 @@
 #define OS_WRAPPER_THREAD_H_INCLUDED
 
 #include <cstddef>
+#include "Timeout.h"
+#include "OSWrapperError.h"
 
 namespace OSWrapper {
 
@@ -17,7 +19,6 @@ public:
 	virtual ~Thread() {}
 
 	static Thread* create(Runnable* r, std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
-	static Thread* create(std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
 	static void destroy(Thread* t);
 	static void exit();
 	static void sleep(unsigned long millis);
@@ -27,8 +28,9 @@ public:
 	static int getPriorityMin();
 
 	virtual void start() = 0;
-	virtual void start(Runnable* r) = 0;
-	virtual void join() = 0;
+	virtual Error wait() = 0;
+	virtual Error tryWait() = 0;
+	virtual Error timedWait(Timeout tmout) = 0;
 	virtual bool isFinished() const = 0;
 
 	virtual void setName(const char* name) = 0;
