@@ -45,8 +45,8 @@ TEST_GROUP(WindowsEventFlagTest) {
 		thread1->start();
 		thread2->start();
 
-		thread1->join();
-		thread2->join();
+		thread1->wait();
+		thread2->wait();
 
 		Thread::destroy(thread1);
 		Thread::destroy(thread2);

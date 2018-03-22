@@ -80,8 +80,8 @@ TEST_GROUP(WindowsMessageQueueTest) {
 		thread1->start();
 		thread2->start();
 
-		thread1->join();
-		thread2->join();
+		thread1->wait();
+		thread2->wait();
 
 		Thread::destroy(thread1);
 		Thread::destroy(thread2);
@@ -331,8 +331,8 @@ TEST(WindowsMessageQueueTest, send_receive_many_threads)
 	}
 
 	for (int i = 0; i < num; i++) {
-		thread1[i]->join();
-		thread2[i]->join();
+		thread1[i]->wait();
+		thread2[i]->wait();
 	}
 
 	for (int i = 0; i < num; i++) {

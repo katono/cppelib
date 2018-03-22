@@ -118,7 +118,7 @@ TEST(WindowsMutexTest, shared_data_lock)
 	}
 
 	for (int i = 0; i < num; i++) {
-		t[i]->join();
+		t[i]->wait();
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -153,7 +153,7 @@ TEST(WindowsMutexTest, shared_data_lock_LockGuard)
 	}
 
 	for (int i = 0; i < num; i++) {
-		t[i]->join();
+		t[i]->wait();
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -180,7 +180,7 @@ TEST(WindowsMutexTest, tryLock)
 	TryLockFailedTestRunnable runnable;
 	Thread* t = Thread::create(&runnable);
 	t->start();
-	t->join();
+	t->wait();
 	Thread::destroy(t);
 
 	s_mutex->unlock();
@@ -205,7 +205,7 @@ TEST(WindowsMutexTest, timedLock)
 	TimedLockFailedTestRunnable runnable(Timeout(10));
 	Thread* t = Thread::create(&runnable);
 	t->start();
-	t->join();
+	t->wait();
 	Thread::destroy(t);
 
 	s_mutex->unlock();
@@ -219,7 +219,7 @@ TEST(WindowsMutexTest, timedLock_FOREVER)
 	TimedLockFailedTestRunnable runnable(Timeout::POLLING);
 	Thread* t = Thread::create(&runnable);
 	t->start();
-	t->join();
+	t->wait();
 	Thread::destroy(t);
 
 	s_mutex->unlock();

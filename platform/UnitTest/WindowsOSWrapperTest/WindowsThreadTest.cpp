@@ -59,7 +59,7 @@ TEST(WindowsThreadTest, create_destroy)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, start_join_isFinished)
+TEST(WindowsThreadTest, start_wait_isFinished)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, 4096, Thread::INHERIT_PRIORITY, "WindowsThread");
@@ -68,17 +68,16 @@ TEST(WindowsThreadTest, start_join_isFinished)
 
 	CHECK(!thread->isFinished());
 
-	thread->join();
+	thread->wait();
 	CHECK(thread->isFinished());
 
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, create_destroy_no_runnable)
+TEST(WindowsThreadTest, create_failed_runnable_nullptr)
 {
-	thread = Thread::create(4096, Thread::INHERIT_PRIORITY, "TestThread");
-	CHECK(thread);
-	Thread::destroy(thread);
+	thread = Thread::create(0, 4096, Thread::INHERIT_PRIORITY, "TestThread");
+	CHECK_FALSE(thread);
 }
 
 TEST(WindowsThreadTest, getCurrentThread_mainThread)
@@ -122,21 +121,12 @@ TEST(WindowsThreadTest, many_threads)
 	}
 
 	for (int i = 0; i < num; i++) {
-		t[i]->join();
+		t[i]->wait();
 	}
 
 	for (int i = 0; i < num; i++) {
 		Thread::destroy(t[i]);
 	}
-}
-
-TEST(WindowsThreadTest, start_runnable)
-{
-	thread = Thread::create();
-	MockRunnable runnable;
-	mock().expectOneCall("run");
-	thread->start(&runnable);
-	Thread::destroy(thread);
 }
 
 TEST(WindowsThreadTest, repeat_start)
@@ -147,11 +137,11 @@ TEST(WindowsThreadTest, repeat_start)
 
 	thread->start();
 	thread->start();
-	thread->join();
+	thread->wait();
 
-	thread->start(&runnable);
-	thread->start(&runnable);
-	thread->join();
+	thread->start();
+	thread->start();
+	thread->wait();
 
 	Thread::destroy(thread);
 }
@@ -195,7 +185,7 @@ TEST(WindowsThreadTest, getNativeHandle)
 	thread = Thread::create(&runnable);
 	thread->start();
 
-	thread->join();
+	thread->wait();
 	Thread::destroy(thread);
 }
 
