@@ -9,6 +9,7 @@
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::ThreadFactory;
+using OSWrapper::Timeout;
 
 class TestRunnable : public Runnable {
 public:
@@ -43,15 +44,20 @@ public:
 		m_finished = false;
 	}
 
-	void start(Runnable* r)
-	{
-		m_runnable = r;
-		start();
-	}
-
-	void join()
+	OSWrapper::Error wait()
 	{
 		m_finished = true;
+		return OSWrapper::OK;
+	}
+
+	OSWrapper::Error tryWait()
+	{
+		return OSWrapper::TimedOut;
+	}
+
+	OSWrapper::Error timedWait(Timeout)
+	{
+		return OSWrapper::TimedOut;
 	}
 
 	bool isFinished() const
@@ -169,11 +175,10 @@ TEST(ThreadTest, create_destroy)
 	Thread::destroy(thread);
 }
 
-TEST(ThreadTest, create_destroy_no_runnable)
+TEST(ThreadTest, create_failed_runnable_nullptr)
 {
-	thread = Thread::create(4096, normalPriority, "TestThread");
-	CHECK(thread);
-	Thread::destroy(thread);
+	thread = Thread::create(0, 4096, normalPriority, "TestThread");
+	CHECK_FALSE(thread);
 }
 
 TEST(ThreadTest, destroy_nullptr)
@@ -216,38 +221,7 @@ TEST(ThreadTest, start)
 	Thread::destroy(thread);
 }
 
-TEST(ThreadTest, start_exception)
-{
-	thread = Thread::create(4096, normalPriority, "TestThread");
-	try {
-		thread->start();
-	}
-	catch (const std::exception& e) {
-		STRCMP_CONTAINS("Pre-condition failed", e.what());
-		Thread::destroy(thread);
-		return;
-	}
-	FAIL("failed");
-}
-
-TEST(ThreadTest, start_runnable)
-{
-	thread = Thread::create(4096, normalPriority, "TestThread");
-	mock().expectOneCall("run").onObject(&testRun);
-	thread->start(&testRun);
-	Thread::destroy(thread);
-}
-
-TEST(ThreadTest, start_other_runnable)
-{
-	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
-	TestRunnable r;
-	mock().expectOneCall("run").onObject(&r);
-	thread->start(&r);
-	Thread::destroy(thread);
-}
-
-TEST(ThreadTest, start_join_isFinished)
+TEST(ThreadTest, start_wait_isFinished)
 {
 	thread = Thread::create(&testRun, 4096, normalPriority, "TestThread");
 	mock().expectOneCall("run").onObject(&testRun);
@@ -255,7 +229,15 @@ TEST(ThreadTest, start_join_isFinished)
 
 	CHECK(!thread->isFinished());
 
-	thread->join();
+	OSWrapper::Error err = thread->tryWait();
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+
+	err = thread->timedWait(Timeout(10));
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+
+	err = thread->wait();
+	LONGS_EQUAL(OSWrapper::OK, err);
+
 	CHECK(thread->isFinished());
 
 	Thread::destroy(thread);
@@ -300,20 +282,9 @@ TEST(ThreadTest, create_only_runnable)
 	Thread::destroy(thread);
 }
 
-TEST(ThreadTest, create_no_param)
-{
-	thread = Thread::create();
-
-	LONGS_EQUAL(1024, thread->getStackSize());
-	LONGS_EQUAL(normalPriority, thread->getPriority());
-	STRCMP_EQUAL("", thread->getName());
-
-	Thread::destroy(thread);
-}
-
 TEST(ThreadTest, getNativeHandle)
 {
-	thread = Thread::create();
+	thread = Thread::create(&testRun);
 
 	LONGS_EQUAL(1234, (int)thread->getNativeHandle());
 
