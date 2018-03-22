@@ -23,7 +23,7 @@ const std::vector<int> WindowsThread::m_prioList = {
 WindowsThread::WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
 : m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name), 
   m_thread(), m_mutex(), m_condStarted(), m_condFinished(), 
-  m_started(false), m_endThreadRequested(false), m_threadId()
+  m_isActive(false), m_endThreadRequested(false), m_threadId()
 {
 }
 
@@ -43,7 +43,7 @@ void WindowsThread::threadLoop()
 	while (true) {
 		{
 			std::unique_lock<std::mutex> lock(m_mutex);
-			m_condStarted.wait(lock, [this] { return m_started; });
+			m_condStarted.wait(lock, [this] { return m_isActive; });
 			if (m_endThreadRequested) {
 				break;
 			}
@@ -51,7 +51,7 @@ void WindowsThread::threadLoop()
 		threadMain();
 		{
 			std::lock_guard<std::mutex> lock(m_mutex);
-			m_started = false;
+			m_isActive = false;
 			m_condFinished.notify_all();
 		}
 	}
@@ -89,7 +89,7 @@ void WindowsThread::endThread()
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		m_endThreadRequested = true;
-		m_started = true;
+		m_isActive = true;
 		m_condStarted.notify_all();
 	}
 	m_thread.join();
@@ -98,10 +98,10 @@ void WindowsThread::endThread()
 void WindowsThread::start()
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	if (m_started) {
+	if (m_isActive) {
 		return;
 	}
-	m_started = true;
+	m_isActive = true;
 	m_condStarted.notify_all();
 }
 
@@ -119,10 +119,10 @@ OSWrapper::Error WindowsThread::timedWait(OSWrapper::Timeout tmout)
 {
 	std::unique_lock<std::mutex> lock(m_mutex);
 	if (tmout == OSWrapper::Timeout::FOREVER) {
-		m_condFinished.wait(lock, [this] { return !m_started; });
+		m_condFinished.wait(lock, [this] { return !m_isActive; });
 	} else {
 		if (!m_condFinished.wait_for(lock, std::chrono::milliseconds(tmout),
-					[this] { return !m_started; })) {
+					[this] { return !m_isActive; })) {
 			return OSWrapper::TimedOut;
 		}
 	}
@@ -132,7 +132,7 @@ OSWrapper::Error WindowsThread::timedWait(OSWrapper::Timeout tmout)
 bool WindowsThread::isFinished() const
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	return !m_started;
+	return !m_isActive;
 }
 
 void WindowsThread::setName(const char* name)

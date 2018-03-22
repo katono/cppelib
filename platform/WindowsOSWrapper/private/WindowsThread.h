@@ -20,7 +20,7 @@ private:
 	mutable std::mutex m_mutex;
 	std::condition_variable m_condStarted;
 	std::condition_variable m_condFinished;
-	bool m_started;
+	bool m_isActive;
 	bool m_endThreadRequested;
 	std::thread::id m_threadId;
 	static const std::vector<int> m_prioList;
