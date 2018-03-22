@@ -3,6 +3,7 @@
 #include <exception>
 #include <windows.h>
 #include <process.h>
+#include <chrono>
 #include <iostream>
 
 namespace WindowsOSWrapper {
@@ -42,9 +43,7 @@ void WindowsThread::threadLoop()
 	while (true) {
 		{
 			std::unique_lock<std::mutex> lock(m_mutex);
-			while (!m_started) {
-				m_condStarted.wait(lock);
-			}
+			m_condStarted.wait(lock, [this] { return m_started; });
 			if (m_endThreadRequested) {
 				break;
 			}
@@ -86,7 +85,7 @@ void WindowsThread::beginThread()
 
 void WindowsThread::endThread()
 {
-	join();
+	wait();
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		m_endThreadRequested = true;
@@ -106,23 +105,28 @@ void WindowsThread::start()
 	m_condStarted.notify_all();
 }
 
-void WindowsThread::start(OSWrapper::Runnable* r)
+OSWrapper::Error WindowsThread::wait()
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
-	if (m_started) {
-		return;
-	}
-	m_runnable = r;
-	m_started = true;
-	m_condStarted.notify_all();
+	return timedWait(OSWrapper::Timeout::FOREVER);
 }
 
-void WindowsThread::join()
+OSWrapper::Error WindowsThread::tryWait()
+{
+	return timedWait(OSWrapper::Timeout::POLLING);
+}
+
+OSWrapper::Error WindowsThread::timedWait(OSWrapper::Timeout tmout)
 {
 	std::unique_lock<std::mutex> lock(m_mutex);
-	while (m_started) {
-		m_condFinished.wait(lock);
+	if (tmout == OSWrapper::Timeout::FOREVER) {
+		m_condFinished.wait(lock, [this] { return !m_started; });
+	} else {
+		if (!m_condFinished.wait_for(lock, std::chrono::milliseconds(tmout),
+					[this] { return !m_started; })) {
+			return OSWrapper::TimedOut;
+		}
 	}
+	return OSWrapper::OK;
 }
 
 bool WindowsThread::isFinished() const

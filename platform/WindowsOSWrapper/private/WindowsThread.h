@@ -33,8 +33,9 @@ public:
 	WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name);
 	virtual ~WindowsThread();
 	virtual void start();
-	virtual void start(OSWrapper::Runnable* r);
-	virtual void join();
+	virtual OSWrapper::Error wait();
+	virtual OSWrapper::Error tryWait();
+	virtual OSWrapper::Error timedWait(OSWrapper::Timeout tmout);
 	virtual bool isFinished() const;
 	virtual void setName(const char* name);
 	virtual const char* getName() const;
