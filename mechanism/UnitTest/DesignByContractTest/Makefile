@@ -2,7 +2,7 @@
 
 MECHANISM_DIR = ../..
 DBC_DIR = $(MECHANISM_DIR)/DesignByContract
-CPPUTEST_DIR = $(MECHANISM_DIR)/../cpputest-3.8
+CPPUTEST_DIR = $(MECHANISM_DIR)/../CppUTest
 
 CC=g++
 CFLAGS = -Wall
