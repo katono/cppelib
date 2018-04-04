@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppUTest", "..\..\cpputest-3.8\CppUTest.vcxproj", "{F468F539-27BD-468E-BE64-DDE641400B51}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppUTest", "..\..\CppUTest\CppUTest.vcxproj", "{F468F539-27BD-468E-BE64-DDE641400B51}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AllTests", "AllTests\AllTests.vcxproj", "{2214F665-79C7-467B-9D52-53A7CE94F0BD}"
 	ProjectSection(ProjectDependencies) = postProject
