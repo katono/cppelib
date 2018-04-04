@@ -1,4 +1,3 @@
-#include "CppUTest/TestHarness.h"
 #define DESIGN_BY_CONTRACT
 #include "Container/RingBuffer.h"
 #include <deque>
@@ -12,6 +11,7 @@
 #else
 #include <sys/time.h>
 #endif
+#include "CppUTest/TestHarness.h"
 
 using Container::RingBuffer;
 
