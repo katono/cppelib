@@ -6,7 +6,6 @@
 #include <iterator>
 #endif
 #include "ContainerException.h"
-#include "DesignByContract/Assertion.h"
 
 namespace Container {
 
@@ -45,13 +44,11 @@ struct Array {
 
 	reference operator[](size_type idx)
 	{
-		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
 	const_reference operator[](size_type idx) const
 	{
-		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
