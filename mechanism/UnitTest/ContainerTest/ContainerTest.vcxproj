@@ -105,6 +105,7 @@
     <ClInclude Include="..\..\Container\ContainerException.h" />
     <ClInclude Include="..\..\Container\FixedVector.h" />
     <ClInclude Include="..\..\Container\List.h" />
+    <ClInclude Include="..\..\Container\private\Construct.h" />
     <ClInclude Include="..\..\Container\private\TypeTraits.h" />
     <ClInclude Include="..\..\Container\RingBuffer.h" />
   </ItemGroup>
