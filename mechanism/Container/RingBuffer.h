@@ -5,9 +5,9 @@
 #ifndef NO_STD_ITERATOR
 #include <iterator>
 #endif
-#include "Array.h"
 #include "ContainerException.h"
 #include "private/TypeTraits.h"
+#include "private/Construct.h"
 #include "DesignByContract/Assertion.h"
 
 namespace Container {
@@ -45,15 +45,12 @@ public:
 	RingBuffer_iterator& operator+=(difference_type n)
 	{
 		DBC_PRE(m_rb != 0);
-		DBC_PRE((m_rb->begin() <= *this) && (*this <= m_rb->end()));
 		if (n < 0) {
 			return operator-=(-n);
 		}
 
 		const size_type un = static_cast<size_type>(n);
-		DBC_PRE((*this - m_rb->begin()) + un < BufSize);
 		m_idx = m_rb->next_idx(m_idx, un);
-		DBC_ASSERT((m_rb->begin() <= *this) && (*this <= m_rb->end()));
 		return *this;
 	}
 
@@ -66,15 +63,12 @@ public:
 	RingBuffer_iterator& operator-=(difference_type n)
 	{
 		DBC_PRE(m_rb != 0);
-		DBC_PRE((m_rb->begin() <= *this) && (*this <= m_rb->end()));
 		if (n < 0) {
 			return operator+=(-n);
 		}
-		DBC_PRE((*this - m_rb->begin()) >= n);
 
 		const size_type un = static_cast<size_type>(n);
 		m_idx = m_rb->prev_idx(m_idx, un);
-		DBC_ASSERT((m_rb->begin() <= *this) && (*this <= m_rb->end()));
 		return *this;
 	}
 
@@ -82,8 +76,6 @@ public:
 	{
 		DBC_PRE(m_rb != 0);
 		DBC_PRE(m_rb == x.m_rb);
-		DBC_PRE((m_rb->begin() <= *this) && (*this <= m_rb->end()));
-		DBC_PRE((x.m_rb->begin() <= x) && (x <= x.m_rb->end()));
 		if (*this >= x) {
 			return static_cast<difference_type>(m_rb->distance(x.m_idx, m_idx));
 		}
@@ -214,9 +206,14 @@ public:
 private:
 	static const size_type BufSize = MaxSize + 1U;
 
+	union InternalBuf {
+		double dummyForAlignment;
+		char buf[sizeof(T) * BufSize];
+	};
+	InternalBuf m_internalBuf;
+	T (&m_buf)[BufSize];
 	size_type m_begin;
 	size_type m_end;
-	Array<T, BufSize> m_buf;
 
 	class BadAlloc : public Container::BadAlloc {
 	public:
@@ -226,20 +223,55 @@ private:
 			return "RingBuffer::BadAlloc";
 		}
 	};
+
 public:
-	RingBuffer() : m_begin(0U), m_end(0U) {}
+	RingBuffer() : m_buf(*reinterpret_cast<T(*)[BufSize]>(&m_internalBuf)), m_begin(0U), m_end(0U) {}
 
 	RingBuffer(size_type n, const T& data = T())
-	: m_begin(0U), m_end(0U)
+	: m_buf(*reinterpret_cast<T(*)[BufSize]>(&m_internalBuf)), m_begin(0U), m_end(0U)
 	{
 		assign(n, data);
 	}
 
 	template <typename InputIterator>
 	RingBuffer(InputIterator first, InputIterator last)
-	: m_begin(0U), m_end(0U)
+	: m_buf(*reinterpret_cast<T(*)[BufSize]>(&m_internalBuf)), m_begin(0U), m_end(0U)
 	{
 		assign(first, last);
+	}
+
+	RingBuffer(const RingBuffer& x)
+	: m_buf(*reinterpret_cast<T(*)[BufSize]>(&m_internalBuf)), m_begin(x.m_begin), m_end(x.m_end)
+	{
+		for (std::size_t i = 0U; i < x.size(); ++i) {
+			construct(&operator[](i), x[i]);
+		}
+	}
+
+	~RingBuffer()
+	{
+		destroy(begin(), end());
+	}
+
+	RingBuffer& operator=(const RingBuffer& x)
+	{
+		if (size() < x.size()) {
+			for (std::size_t i = 0U; i < x.size(); ++i) {
+				if (i < size()) {
+					operator[](i) = x[i];
+				} else {
+					construct(&operator[](i), x[i]);
+				}
+			}
+		} else {
+			const std::size_t n = x.size();
+			for (std::size_t i = 0U; i < n; ++i) {
+				operator[](i) = x[i];
+			}
+			destroy(begin() + n, end());
+		}
+		m_end = (begin() + x.size()).m_idx;
+		return *this;
 	}
 
 	size_type size() const
@@ -269,18 +301,17 @@ public:
 
 	void clear()
 	{
+		destroy(begin(), end());
 		m_begin = m_end;
 	}
 
 	reference operator[](size_type idx)
 	{
-		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
 	const_reference operator[](size_type idx) const
 	{
-		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
@@ -369,6 +400,7 @@ public:
 	void resize(size_type n, const T& data = T())
 	{
 		if (size() >= n) {
+			destroy(begin() + n, end());
 			m_end = prev_idx(m_end, size() - n);
 			return;
 		}
@@ -387,7 +419,7 @@ public:
 		if (full()) {
 			throw BadAlloc();
 		}
-		m_buf[m_end] = data;
+		construct(&*end(), data);
 		m_end = next_idx(m_end);
 	}
 
@@ -395,6 +427,7 @@ public:
 	{
 		DBC_PRE(!empty());
 		m_end = prev_idx(m_end);
+		destroy(&*end());
 	}
 
 	void push_front(const T& data)
@@ -403,12 +436,13 @@ public:
 			throw BadAlloc();
 		}
 		m_begin = prev_idx(m_begin);
-		m_buf[m_begin] = data;
+		construct(&*begin(), data);
 	}
 
 	void pop_front()
 	{
 		DBC_PRE(!empty());
+		destroy(&*begin());
 		m_begin = next_idx(m_begin);
 	}
 
@@ -474,13 +508,23 @@ public:
 		DBC_PRE((begin() <= last) && (last <= end()));
 		const size_type n = static_cast<size_type>(last - first);
 		if ((first - begin()) >= (end() - last)) {
-			move_forward(last.m_idx, m_end, n);
+			// move the end side
+			for (iterator i = last; i != end(); ++i) {
+				*(i - n) = *i;
+			}
+			destroy(end() - n, end());
 			m_end = prev_idx(m_end, n);
 			return first;
+		} else {
+			// move the begin side
+			iterator stop = begin() - 1;
+			for (iterator i = first - 1; i != stop; --i) {
+				*(i + n) = *i;
+			}
+			destroy(begin(), begin() + n);
+			m_begin = next_idx(m_begin, n);
+			return last;
 		}
-		move_backward(m_begin, first.m_idx, n);
-		m_begin = next_idx(m_begin, n);
-		return last;
 	}
 
 	void swap(RingBuffer& other)
@@ -488,15 +532,31 @@ public:
 		if (this == &other) {
 			return;
 		}
-		m_buf.swap(other.m_buf);
-
-		size_type tmp_begin = m_begin;
-		m_begin = other.m_begin;
-		other.m_begin = tmp_begin;
-
-		size_type tmp_end = m_end;
-		m_end = other.m_end;
-		other.m_end = tmp_end;
+		const size_type this_size = size();
+		const size_type other_size = other.size();
+		for (size_type i = 0U; i < MaxSize; ++i) {
+			if (i < this_size) {
+				if (i < other_size) {
+					const T tmp = operator[](i);
+					operator[](i) = other[i];
+					other[i] = tmp;
+				} else {
+					const T tmp = operator[](i);
+					destroy(&operator[](i));
+					construct(&other[i], tmp);
+				}
+			} else {
+				if (i < other_size) {
+					const T tmp = other[i];
+					destroy(&other[i]);
+					construct(&operator[](i), tmp);
+				} else {
+					break;
+				}
+			}
+		}
+		m_end = (begin() + other_size).m_idx;
+		other.m_end = (other.begin() + this_size).m_idx;
 	}
 
 private:
@@ -511,6 +571,7 @@ private:
 		if (idx + un < BufSize) {
 			return idx + un;
 		}
+		// wraparound
 		return idx + un - BufSize;
 	}
 
@@ -519,6 +580,7 @@ private:
 		if (idx >= un) {
 			return idx - un;
 		}
+		// wraparound
 		return BufSize + idx - un;
 	}
 
@@ -527,22 +589,8 @@ private:
 		if (first_idx <= last_idx) {
 			return last_idx - first_idx;
 		}
+		// wraparound
 		return BufSize - first_idx + last_idx;
-	}
-
-	void move_backward(size_type first, size_type last, size_type n)
-	{
-		const size_type stop = prev_idx(first);
-		for (size_type i = prev_idx(last); i != stop; i = prev_idx(i)) {
-			m_buf[next_idx(i, n)] = m_buf[i];
-		}
-	}
-
-	void move_forward(size_type first, size_type last, size_type n)
-	{
-		for (size_type i = first; i != last; i = next_idx(i)) {
-			m_buf[prev_idx(i, n)] = m_buf[i];
-		}
 	}
 
 	template <typename Integer>
@@ -562,21 +610,49 @@ private:
 		if (available_size() < n) {
 			throw BadAlloc();
 		}
-		const size_type idx = pos.m_idx;
+
 		if ((size() / 2U) < static_cast<size_type>(pos - begin())) {
-			move_backward(idx, m_end, n);
-			for (size_type i = 0U; i < n; ++i) {
-				m_buf[next_idx(idx, i)] = data;
+			// move the end side
+			iterator stop = pos - 1;
+			for (iterator i = end() - 1; i != stop; --i) {
+				if ((i + n) < end()) {
+					*(i + n) = *i;
+				} else {
+					construct(&*(i + n), *i);
+				}
+			}
+
+			stop = pos + n;
+			for (iterator i = pos; i < stop; ++i) {
+				if (i < end()) {
+					*i = data;
+				} else {
+					construct(&*i, data);
+				}
 			}
 			m_end = next_idx(m_end, n);
 			return pos;
+		} else {
+			// move the begin side
+			iterator old_begin = begin();
+			m_begin = prev_idx(m_begin, n);
+			for (iterator i = old_begin; i != pos; ++i) {
+				if (old_begin <= (i - n)) {
+					*(i - n) = *i;
+				} else {
+					construct(&*(i - n), *i);
+				}
+			}
+
+			for (iterator i = pos - n; i != pos; ++i) {
+				if (old_begin <= i) {
+					*i = data;
+				} else {
+					construct(&*i, data);
+				}
+			}
+			return pos - n;
 		}
-		move_forward(m_begin, idx, n);
-		for (size_type i = 0U; i < n; ++i) {
-			m_buf[prev_idx(idx, n - i)] = data;
-		}
-		m_begin = prev_idx(m_begin, n);
-		return pos - n;
 	}
 
 	template <typename InputIterator>
@@ -593,23 +669,49 @@ private:
 		if (available_size() < n) {
 			throw BadAlloc();
 		}
-		size_type idx = pos.m_idx;
+
 		if ((size() / 2U) < static_cast<size_type>(pos - begin())) {
-			move_backward(idx, m_end, n);
+			// move the end side
+			iterator stop = pos - 1;
+			for (iterator i = end() - 1; i != stop; --i) {
+				if ((i + n) < end()) {
+					*(i + n) = *i;
+				} else {
+					construct(&*(i + n), *i);
+				}
+			}
+
 			for (; first != last; ++first) {
-				m_buf[idx] = *first;
-				idx = next_idx(idx);
+				if (pos < end()) {
+					*pos = *first;
+				} else {
+					construct(&*pos, *first);
+				}
+				++pos;
 			}
 			m_end = next_idx(m_end, n);
-			return;
+		} else {
+			// move the begin side
+			iterator old_begin = begin();
+			m_begin = prev_idx(m_begin, n);
+			for (iterator i = old_begin; i != pos; ++i) {
+				if (old_begin <= (i - n)) {
+					*(i - n) = *i;
+				} else {
+					construct(&*(i - n), *i);
+				}
+			}
+
+			iterator i = pos - n;
+			for (; first != last; ++first) {
+				if (old_begin <= i) {
+					*i = *first;
+				} else {
+					construct(&*i, *first);
+				}
+				++i;
+			}
 		}
-		move_forward(m_begin, idx, n);
-		idx = prev_idx(idx, n);
-		for (; first != last; ++first) {
-			m_buf[idx] = *first;
-			idx = next_idx(idx);
-		}
-		m_begin = prev_idx(m_begin, n);
 	}
 
 };

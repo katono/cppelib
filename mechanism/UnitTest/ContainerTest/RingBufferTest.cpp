@@ -1,4 +1,3 @@
-#include "CppUTest/TestHarness.h"
 #include "Container/RingBuffer.h"
 #include "Container/Array.h"
 #include "Container/FixedVector.h"
@@ -10,6 +9,8 @@
 #include <algorithm>
 #include <functional>
 #endif
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using Container::RingBuffer;
 using Container::Array;
@@ -23,6 +24,8 @@ TEST_GROUP(RingBufferTest) {
 	}
 	void teardown()
 	{
+		mock().checkExpectations();
+		mock().clear();
 	}
 
 	SimpleString StringFrom(RingBuffer<int, SIZE>::iterator value)
@@ -661,6 +664,43 @@ TEST(RingBufferTest, insert_n)
 
 }
 
+TEST(RingBufferTest, insert_n2)
+{
+	RingBuffer<int, SIZE> x;
+	x.insert(x.end(), 2U, 100);
+	LONGS_EQUAL(2, x.size());
+	LONGS_EQUAL(100, x[0]);
+	LONGS_EQUAL(100, x[1]);
+
+	x.insert(x.begin() + 1, 3U, 200);
+	LONGS_EQUAL(5, x.size());
+	LONGS_EQUAL(100, x[0]);
+	LONGS_EQUAL(200, x[1]);
+	LONGS_EQUAL(200, x[2]);
+	LONGS_EQUAL(200, x[3]);
+	LONGS_EQUAL(100, x[4]);
+
+	x.insert(x.end(), 1U, 300);
+	LONGS_EQUAL(6, x.size());
+	LONGS_EQUAL(100, x[0]);
+	LONGS_EQUAL(200, x[1]);
+	LONGS_EQUAL(200, x[2]);
+	LONGS_EQUAL(200, x[3]);
+	LONGS_EQUAL(100, x[4]);
+	LONGS_EQUAL(300, x[5]);
+
+	x.insert(x.begin() + 3, 1U, 400);
+	LONGS_EQUAL(7, x.size());
+	LONGS_EQUAL(100, x[0]);
+	LONGS_EQUAL(200, x[1]);
+	LONGS_EQUAL(200, x[2]);
+	LONGS_EQUAL(400, x[3]);
+	LONGS_EQUAL(200, x[4]);
+	LONGS_EQUAL(100, x[5]);
+	LONGS_EQUAL(300, x[6]);
+
+}
+
 TEST(RingBufferTest, insert_n_dispatch)
 {
 	RingBuffer<int, SIZE> x;
@@ -755,9 +795,30 @@ TEST(RingBufferTest, insert_range)
 	LONGS_EQUAL(3, x[0]);
 	LONGS_EQUAL(4, x[1]);
 	LONGS_EQUAL(0, x[2]);
-	LONGS_EQUAL(a.back(), x[3]);
+	LONGS_EQUAL(9, x[3]);
 	LONGS_EQUAL(1, x[4]);
 	LONGS_EQUAL(2, x[5]);
+
+	x.insert(x.end(), a.begin(), a.begin() + 1);
+	LONGS_EQUAL(7, x.size());
+	LONGS_EQUAL(3, x[0]);
+	LONGS_EQUAL(4, x[1]);
+	LONGS_EQUAL(0, x[2]);
+	LONGS_EQUAL(9, x[3]);
+	LONGS_EQUAL(1, x[4]);
+	LONGS_EQUAL(2, x[5]);
+	LONGS_EQUAL(0, x[6]);
+
+	x.insert(x.begin() + 2, a.begin() + 5, a.begin() + 6);
+	LONGS_EQUAL(8, x.size());
+	LONGS_EQUAL(3, x[0]);
+	LONGS_EQUAL(4, x[1]);
+	LONGS_EQUAL(5, x[2]);
+	LONGS_EQUAL(0, x[3]);
+	LONGS_EQUAL(9, x[4]);
+	LONGS_EQUAL(1, x[5]);
+	LONGS_EQUAL(2, x[6]);
+	LONGS_EQUAL(0, x[7]);
 }
 
 TEST(RingBufferTest, insert_range2)
@@ -787,9 +848,30 @@ TEST(RingBufferTest, insert_range2)
 	LONGS_EQUAL(3, x[0]);
 	LONGS_EQUAL(4, x[1]);
 	LONGS_EQUAL(0, x[2]);
-	LONGS_EQUAL(a.back(), x[3]);
+	LONGS_EQUAL(9, x[3]);
 	LONGS_EQUAL(1, x[4]);
 	LONGS_EQUAL(2, x[5]);
+
+	x.insert(x.end(), a.begin(), a.begin() + 1);
+	LONGS_EQUAL(7, x.size());
+	LONGS_EQUAL(3, x[0]);
+	LONGS_EQUAL(4, x[1]);
+	LONGS_EQUAL(0, x[2]);
+	LONGS_EQUAL(9, x[3]);
+	LONGS_EQUAL(1, x[4]);
+	LONGS_EQUAL(2, x[5]);
+	LONGS_EQUAL(0, x[6]);
+
+	x.insert(x.begin() + 2, a.begin() + 5, a.begin() + 6);
+	LONGS_EQUAL(8, x.size());
+	LONGS_EQUAL(3, x[0]);
+	LONGS_EQUAL(4, x[1]);
+	LONGS_EQUAL(5, x[2]);
+	LONGS_EQUAL(0, x[3]);
+	LONGS_EQUAL(9, x[4]);
+	LONGS_EQUAL(1, x[5]);
+	LONGS_EQUAL(2, x[6]);
+	LONGS_EQUAL(0, x[7]);
 }
 
 TEST(RingBufferTest, insert_range_c_array)
@@ -970,6 +1052,39 @@ TEST(RingBufferTest, swap)
 		LONGS_EQUAL(x.size() - i - 1, x.at(i));
 		LONGS_EQUAL(i, y.at(i));
 	}
+	LONGS_EQUAL(x.size(), y.size());
+}
+
+TEST(RingBufferTest, swap2)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const Array<int, SIZE> b = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+	RingBuffer<int, SIZE> x(a.begin(), a.begin() + 2);
+	RingBuffer<int, SIZE> y(b.begin(), b.begin() + 3);
+	x.swap(y);
+	LONGS_EQUAL(3, x.size());
+	LONGS_EQUAL(2, y.size());
+	LONGS_EQUAL(9, x.at(0));
+	LONGS_EQUAL(8, x.at(1));
+	LONGS_EQUAL(7, x.at(2));
+	LONGS_EQUAL(0, y.at(0));
+	LONGS_EQUAL(1, y.at(1));
+}
+
+TEST(RingBufferTest, swap3)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const Array<int, SIZE> b = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+	RingBuffer<int, SIZE> x(a.begin(), a.begin() + 3);
+	RingBuffer<int, SIZE> y(b.begin(), b.begin() + 2);
+	x.swap(y);
+	LONGS_EQUAL(2, x.size());
+	LONGS_EQUAL(3, y.size());
+	LONGS_EQUAL(9, x.at(0));
+	LONGS_EQUAL(8, x.at(1));
+	LONGS_EQUAL(0, y.at(0));
+	LONGS_EQUAL(1, y.at(1));
+	LONGS_EQUAL(2, y.at(2));
 }
 
 TEST(RingBufferTest, swap_same)
@@ -993,6 +1108,7 @@ TEST(RingBufferTest, swap_nonmember)
 		LONGS_EQUAL(x.size() - i - 1, x.at(i));
 		LONGS_EQUAL(i, y.at(i));
 	}
+	LONGS_EQUAL(x.size(), y.size());
 }
 
 TEST(RingBufferTest, swap_nonmember_same)
@@ -1013,7 +1129,7 @@ TEST(RingBufferTest, operator_equal_true)
 	CHECK_TRUE(x == y);
 }
 
-TEST(RingBufferTest, operator_equal_true_exists_garbage)
+TEST(RingBufferTest, operator_equal_true_after_pop_back)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	RingBuffer<int, SIZE> x(a.begin(), a.end());
@@ -1572,3 +1688,281 @@ TEST(RingBufferTest, rbegin_rend_const)
 }
 #endif
 
+
+class C {
+	int count;
+public:
+	C() : count(1)
+	{
+		mock().actualCall("C_default_ctor");
+	}
+	C(const C&) : count(1)
+	{
+		mock().actualCall("C_copy_ctor");
+	}
+	C& operator=(const C&)
+	{
+		mock().actualCall("C_operator_assign");
+		return *this;
+	}
+	~C()
+	{
+		--count;
+		mock().actualCall("C_dtor");
+		LONGS_EQUAL(0, count);
+	}
+};
+
+TEST(RingBufferTest, default_ctor_C)
+{
+	mock().expectNCalls(0, "C_default_ctor");
+	mock().expectNCalls(0, "C_dtor");
+	RingBuffer<C, SIZE> x;
+}
+
+TEST(RingBufferTest, ctor_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	mock().expectNCalls(1, "C_dtor");
+	C c;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	RingBuffer<C, SIZE> x(2, c);
+	LONGS_EQUAL(2, x.size());
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	RingBuffer<C, SIZE> y(x.begin(), x.end());
+	LONGS_EQUAL(2, y.size());
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	RingBuffer<C, SIZE> z(x);
+	LONGS_EQUAL(2, z.size());
+}
+
+TEST(RingBufferTest, operator_assign_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	mock().expectNCalls(1, "C_dtor");
+	C c;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	RingBuffer<C, SIZE> x(2, c);
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	RingBuffer<C, SIZE> y(1, c);
+
+	mock().expectNCalls(1, "C_operator_assign");
+	mock().expectNCalls(1, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	y = x;
+	LONGS_EQUAL(2, y.size());
+
+	mock().expectNCalls(3, "C_copy_ctor");
+	RingBuffer<C, SIZE> z(3, c);
+
+	mock().expectNCalls(2, "C_operator_assign");
+	mock().expectNCalls(3, "C_dtor");
+	z = x;
+	LONGS_EQUAL(2, z.size());
+}
+
+TEST(RingBufferTest, push_back_pop_back_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	RingBuffer<C, SIZE> x;
+	x.push_back(c);
+	x.push_back(c);
+
+	mock().expectNCalls(1, "C_dtor");
+	x.pop_back();
+
+	mock().expectNCalls(1, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(RingBufferTest, insert_n_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	mock().expectNCalls(4, "C_copy_ctor");
+	RingBuffer<C, SIZE> x;
+	x.insert(x.end(), 4, c);
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	mock().expectNCalls(1, "C_operator_assign");
+	mock().expectNCalls(1, "C_operator_assign");
+	x.insert(x.begin() + 2, 1, c);
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	x.insert(x.end(), 1, c);
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	mock().expectNCalls(1, "C_operator_assign");
+	mock().expectNCalls(1, "C_operator_assign");
+	x.insert(x.end() - 2, 1, c);
+
+	mock().expectNCalls(7, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(RingBufferTest, insert_range_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	mock().expectNCalls(4, "C_copy_ctor");
+	RingBuffer<C, SIZE> x(4, c);
+
+	RingBuffer<C, SIZE> y;
+
+	mock().expectNCalls(4, "C_copy_ctor");
+	y.insert(y.end(), x.begin(), x.end());
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	mock().expectNCalls(1, "C_operator_assign");
+	mock().expectNCalls(1, "C_operator_assign");
+	y.insert(y.begin() + 2, x.begin(), x.begin() + 1);
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	y.insert(y.end(), x.begin(), x.begin() + 1);
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	mock().expectNCalls(1, "C_operator_assign");
+	mock().expectNCalls(1, "C_operator_assign");
+	y.insert(y.end() - 2, x.begin(), x.begin() + 1);
+
+	mock().expectNCalls(7, "C_dtor");
+	mock().expectNCalls(4, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(RingBufferTest, erase_range_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	mock().expectNCalls(5, "C_copy_ctor");
+	RingBuffer<C, SIZE> x(5, c);
+
+	mock().expectNCalls(1, "C_operator_assign");
+	mock().expectNCalls(1, "C_dtor");
+	x.erase(x.begin() + 1, x.begin() + 2);
+
+	mock().expectNCalls(1, "C_operator_assign");
+	mock().expectNCalls(1, "C_dtor");
+	x.erase(x.end() - 2, x.end() - 1);
+
+	mock().expectNCalls(3, "C_dtor");
+	x.erase(x.begin(), x.end());
+
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(RingBufferTest, swap_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+	const std::size_t num = 2;
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	RingBuffer<C, SIZE> x(num, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	RingBuffer<C, SIZE> y(num, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	mock().expectNCalls(num * 2, "C_operator_assign");
+	mock().expectNCalls(num, "C_dtor");
+	x.swap(y);
+
+	mock().expectNCalls(num * 2, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(RingBufferTest, swap_C2)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+	const std::size_t num = 2;
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	RingBuffer<C, SIZE> x(num, c);
+
+	mock().expectNCalls(num + 1, "C_copy_ctor");
+	RingBuffer<C, SIZE> y(num + 1, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	mock().expectNCalls(num * 2, "C_operator_assign");
+	mock().expectNCalls(num, "C_dtor");
+	mock().expectNCalls(1 * 2, "C_copy_ctor");
+	mock().expectNCalls(1 * 2, "C_dtor");
+	x.swap(y);
+
+	mock().expectNCalls(num * 2 + 1, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(RingBufferTest, swap_C3)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+	const std::size_t num = 2;
+
+	mock().expectNCalls(num + 1, "C_copy_ctor");
+	RingBuffer<C, SIZE> x(num + 1, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	RingBuffer<C, SIZE> y(num, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	mock().expectNCalls(num * 2, "C_operator_assign");
+	mock().expectNCalls(num, "C_dtor");
+	mock().expectNCalls(1 * 2, "C_copy_ctor");
+	mock().expectNCalls(1 * 2, "C_dtor");
+	x.swap(y);
+
+	mock().expectNCalls(num * 2 + 1, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+#if (__cplusplus >= 201103L) || defined(_WIN32)
+#include <memory>
+
+TEST(RingBufferTest, shared_ptr_int)
+{
+	RingBuffer<std::shared_ptr<int>, SIZE> x;
+	x.push_back(std::make_shared<int>(1));
+	LONGS_EQUAL(1, *x[0]);
+	*x[0] = 2;
+	LONGS_EQUAL(2, *x[0]);
+}
+
+TEST(RingBufferTest, shared_ptr_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	{
+		RingBuffer<std::shared_ptr<C>, SIZE> x;
+
+		mock().expectNCalls(2, "C_copy_ctor");
+		x.push_back(std::make_shared<C>(c));
+		x.push_back(std::make_shared<C>(c));
+
+		mock().expectNCalls(1, "C_dtor");
+		x.pop_back();
+
+		mock().expectNCalls(1, "C_dtor");
+	}
+
+	mock().expectNCalls(1, "C_dtor");
+}
+#endif

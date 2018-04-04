@@ -1,4 +1,3 @@
-#include "CppUTest/TestHarness.h"
 #include "Container/FixedVector.h"
 #include "Container/Array.h"
 #include "Container/RingBuffer.h"
@@ -10,6 +9,8 @@
 #include <algorithm>
 #include <functional>
 #endif
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using Container::FixedVector;
 using Container::Array;
@@ -22,6 +23,8 @@ TEST_GROUP(FixedVectorTest) {
 	}
 	void teardown()
 	{
+		mock().checkExpectations();
+		mock().clear();
 	}
 };
 
@@ -780,6 +783,39 @@ TEST(FixedVectorTest, swap)
 		LONGS_EQUAL(x.size() - i - 1, x.at(i));
 		LONGS_EQUAL(i, y.at(i));
 	}
+	LONGS_EQUAL(x.size(), y.size());
+}
+
+TEST(FixedVectorTest, swap2)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const Array<int, SIZE> b = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+	FixedVector<int, SIZE> x(a.begin(), a.begin() + 2);
+	FixedVector<int, SIZE> y(b.begin(), b.begin() + 3);
+	x.swap(y);
+	LONGS_EQUAL(3, x.size());
+	LONGS_EQUAL(2, y.size());
+	LONGS_EQUAL(9, x.at(0));
+	LONGS_EQUAL(8, x.at(1));
+	LONGS_EQUAL(7, x.at(2));
+	LONGS_EQUAL(0, y.at(0));
+	LONGS_EQUAL(1, y.at(1));
+}
+
+TEST(FixedVectorTest, swap3)
+{
+	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const Array<int, SIZE> b = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+	FixedVector<int, SIZE> x(a.begin(), a.begin() + 3);
+	FixedVector<int, SIZE> y(b.begin(), b.begin() + 2);
+	x.swap(y);
+	LONGS_EQUAL(2, x.size());
+	LONGS_EQUAL(3, y.size());
+	LONGS_EQUAL(9, x.at(0));
+	LONGS_EQUAL(8, x.at(1));
+	LONGS_EQUAL(0, y.at(0));
+	LONGS_EQUAL(1, y.at(1));
+	LONGS_EQUAL(2, y.at(2));
 }
 
 TEST(FixedVectorTest, swap_same)
@@ -803,6 +839,7 @@ TEST(FixedVectorTest, swap_nonmember)
 		LONGS_EQUAL(x.size() - i - 1, x.at(i));
 		LONGS_EQUAL(i, y.at(i));
 	}
+	LONGS_EQUAL(x.size(), y.size());
 }
 
 TEST(FixedVectorTest, swap_nonmember_same)
@@ -823,7 +860,7 @@ TEST(FixedVectorTest, operator_equal_true)
 	CHECK_TRUE(x == y);
 }
 
-TEST(FixedVectorTest, operator_equal_true_exists_garbage)
+TEST(FixedVectorTest, operator_equal_true_after_pop_back)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	FixedVector<int, SIZE> x(a.begin(), a.end());
@@ -1334,3 +1371,258 @@ TEST(FixedVectorTest, rbegin_rend_const)
 }
 #endif
 
+
+class C {
+	int count;
+public:
+	C() : count(1)
+	{
+		mock().actualCall("C_default_ctor");
+	}
+	C(const C&) : count(1)
+	{
+		mock().actualCall("C_copy_ctor");
+	}
+	C& operator=(const C&)
+	{
+		mock().actualCall("C_operator_assign");
+		return *this;
+	}
+	~C()
+	{
+		--count;
+		mock().actualCall("C_dtor");
+		LONGS_EQUAL(0, count);
+	}
+};
+
+TEST(FixedVectorTest, default_ctor_C)
+{
+	mock().expectNCalls(0, "C_default_ctor");
+	mock().expectNCalls(0, "C_dtor");
+	FixedVector<C, SIZE> x;
+}
+
+TEST(FixedVectorTest, ctor_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	mock().expectNCalls(1, "C_dtor");
+	C c;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	FixedVector<C, SIZE> x(2, c);
+	LONGS_EQUAL(2, x.size());
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	FixedVector<C, SIZE> y(x.begin(), x.end());
+	LONGS_EQUAL(2, y.size());
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	FixedVector<C, SIZE> z(x);
+	LONGS_EQUAL(2, z.size());
+}
+
+TEST(FixedVectorTest, operator_assign_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	mock().expectNCalls(1, "C_dtor");
+	C c;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	FixedVector<C, SIZE> x(2, c);
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	FixedVector<C, SIZE> y(1, c);
+
+	mock().expectNCalls(1, "C_operator_assign");
+	mock().expectNCalls(1, "C_copy_ctor");
+	mock().expectNCalls(2, "C_dtor");
+	y = x;
+	LONGS_EQUAL(2, y.size());
+
+	mock().expectNCalls(3, "C_copy_ctor");
+	FixedVector<C, SIZE> z(3, c);
+
+	mock().expectNCalls(2, "C_operator_assign");
+	mock().expectNCalls(3, "C_dtor");
+	z = x;
+	LONGS_EQUAL(2, z.size());
+}
+
+TEST(FixedVectorTest, push_back_pop_back_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	FixedVector<C, SIZE> x;
+	x.push_back(c);
+	x.push_back(c);
+
+	mock().expectNCalls(1, "C_dtor");
+	x.pop_back();
+
+	mock().expectNCalls(1, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(FixedVectorTest, insert_n_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	FixedVector<C, SIZE> x;
+	x.insert(x.end(), 2, c);
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	mock().expectNCalls(2, "C_operator_assign");
+	x.insert(x.begin(), 1, c);
+
+	mock().expectNCalls(3, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(FixedVectorTest, insert_range_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	FixedVector<C, SIZE> x(2, c);
+
+	FixedVector<C, SIZE> y;
+
+	mock().expectNCalls(2, "C_copy_ctor");
+	y.insert(y.end(), x.begin(), x.end());
+
+	mock().expectNCalls(1, "C_copy_ctor");
+	mock().expectNCalls(2, "C_operator_assign");
+	y.insert(y.begin(), x.begin(), x.begin() + 1);
+
+	mock().expectNCalls(5, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(FixedVectorTest, erase_range_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	mock().expectNCalls(4, "C_copy_ctor");
+	FixedVector<C, SIZE> x(4, c);
+
+	mock().expectNCalls(2, "C_operator_assign");
+	mock().expectNCalls(2, "C_dtor");
+	x.erase(x.begin() + 1, x.begin() + 2);
+
+	mock().expectNCalls(2, "C_dtor");
+	x.erase(x.begin(), x.end());
+
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(FixedVectorTest, swap_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+	const std::size_t num = 2;
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	FixedVector<C, SIZE> x(num, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	FixedVector<C, SIZE> y(num, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	mock().expectNCalls(num * 2, "C_operator_assign");
+	mock().expectNCalls(num, "C_dtor");
+	x.swap(y);
+
+	mock().expectNCalls(num * 2, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(FixedVectorTest, swap_C2)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+	const std::size_t num = 2;
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	FixedVector<C, SIZE> x(num, c);
+
+	mock().expectNCalls(num + 1, "C_copy_ctor");
+	FixedVector<C, SIZE> y(num + 1, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	mock().expectNCalls(num * 2, "C_operator_assign");
+	mock().expectNCalls(num, "C_dtor");
+	mock().expectNCalls(1 * 2, "C_copy_ctor");
+	mock().expectNCalls(1 * 2, "C_dtor");
+	x.swap(y);
+
+	mock().expectNCalls(num * 2 + 1, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+TEST(FixedVectorTest, swap_C3)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+	const std::size_t num = 2;
+
+	mock().expectNCalls(num + 1, "C_copy_ctor");
+	FixedVector<C, SIZE> x(num + 1, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	FixedVector<C, SIZE> y(num, c);
+
+	mock().expectNCalls(num, "C_copy_ctor");
+	mock().expectNCalls(num * 2, "C_operator_assign");
+	mock().expectNCalls(num, "C_dtor");
+	mock().expectNCalls(1 * 2, "C_copy_ctor");
+	mock().expectNCalls(1 * 2, "C_dtor");
+	x.swap(y);
+
+	mock().expectNCalls(num * 2 + 1, "C_dtor");
+	mock().expectNCalls(1, "C_dtor");
+}
+
+#if (__cplusplus >= 201103L) || defined(_WIN32)
+#include <memory>
+
+TEST(FixedVectorTest, shared_ptr_int)
+{
+	FixedVector<std::shared_ptr<int>, SIZE> x;
+	x.push_back(std::make_shared<int>(1));
+	LONGS_EQUAL(1, *x[0]);
+	*x[0] = 2;
+	LONGS_EQUAL(2, *x[0]);
+}
+
+TEST(FixedVectorTest, shared_ptr_C)
+{
+	mock().expectNCalls(1, "C_default_ctor");
+	C c;
+
+	{
+		FixedVector<std::shared_ptr<C>, SIZE> x;
+
+		mock().expectNCalls(2, "C_copy_ctor");
+		x.push_back(std::make_shared<C>(c));
+		x.push_back(std::make_shared<C>(c));
+
+		mock().expectNCalls(1, "C_dtor");
+		x.pop_back();
+
+		mock().expectNCalls(1, "C_dtor");
+	}
+
+	mock().expectNCalls(1, "C_dtor");
+}
+#endif

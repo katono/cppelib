@@ -5,9 +5,9 @@
 #ifndef NO_STD_ITERATOR
 #include <iterator>
 #endif
-#include "Array.h"
 #include "ContainerException.h"
 #include "private/TypeTraits.h"
+#include "private/Construct.h"
 #include "DesignByContract/Assertion.h"
 
 namespace Container {
@@ -30,8 +30,13 @@ public:
 #endif
 
 private:
+	union InternalBuf {
+		double dummyForAlignment;
+		char buf[sizeof(T) * MaxSize];
+	};
+	InternalBuf m_internalBuf;
+	T (&m_buf)[MaxSize];
 	size_type m_end;
-	Array<T, MaxSize> m_buf;
 
 	class BadAlloc : public Container::BadAlloc {
 	public:
@@ -41,20 +46,55 @@ private:
 			return "FixedVector::BadAlloc";
 		}
 	};
+
 public:
-	FixedVector() : m_end(0U) {}
+	FixedVector() : m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U) {}
 
 	FixedVector(size_type n, const T& data = T())
-	: m_end(0U)
+	: m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
 	{
 		assign(n, data);
 	}
 
 	template <typename InputIterator>
 	FixedVector(InputIterator first, InputIterator last)
-	: m_end(0U)
+	: m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
 	{
 		assign(first, last);
+	}
+
+	FixedVector(const FixedVector& x)
+	: m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(x.m_end)
+	{
+		for (std::size_t i = 0U; i < x.size(); ++i) {
+			construct(&operator[](i), x[i]);
+		}
+	}
+
+	~FixedVector()
+	{
+		destroy(begin(), end());
+	}
+
+	FixedVector& operator=(const FixedVector& x)
+	{
+		if (size() < x.size()) {
+			for (std::size_t i = 0U; i < x.size(); ++i) {
+				if (i < size()) {
+					operator[](i) = x[i];
+				} else {
+					construct(&operator[](i), x[i]);
+				}
+			}
+		} else {
+			const std::size_t n = x.size();
+			for (std::size_t i = 0U; i < n; ++i) {
+				operator[](i) = x[i];
+			}
+			destroy(begin() + n, end());
+		}
+		m_end = x.m_end;
+		return *this;
 	}
 
 	size_type size() const
@@ -84,18 +124,17 @@ public:
 
 	void clear()
 	{
+		destroy(begin(), end());
 		m_end = 0U;
 	}
 
 	reference operator[](size_type idx)
 	{
-		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
 	const_reference operator[](size_type idx) const
 	{
-		DBC_PRE(idx < size());
 		return *(begin() + idx);
 	}
 
@@ -127,12 +166,12 @@ public:
 
 	iterator begin()
 	{
-		return m_buf.begin();
+		return &m_buf[0];
 	}
 
 	const_iterator begin() const
 	{
-		return m_buf.begin();
+		return &m_buf[0];
 	}
 
 	iterator end()
@@ -194,6 +233,7 @@ public:
 	void resize(size_type n, const T& data = T())
 	{
 		if (size() >= n) {
+			destroy(begin() + n, end());
 			m_end = n;
 			return;
 		}
@@ -202,7 +242,7 @@ public:
 			throw BadAlloc();
 		}
 		for (size_type i = m_end; i < n; ++i) {
-			*(begin() + i) = data;
+			construct(&*(begin() + i), data);
 		}
 		m_end = n;
 	}
@@ -212,7 +252,7 @@ public:
 		if (full()) {
 			throw BadAlloc();
 		}
-		*(begin() + m_end) = data;
+		construct(&*end(), data);
 		++m_end;
 	}
 
@@ -220,6 +260,7 @@ public:
 	{
 		DBC_PRE(!empty());
 		--m_end;
+		destroy(&*end());
 	}
 
 	void assign(size_type n, const T& data)
@@ -284,7 +325,10 @@ public:
 		DBC_PRE((begin() <= first) && (first < end()));
 		DBC_PRE((begin() <= last) && (last <= end()));
 		const difference_type n = last - first;
-		move_forward(last, end(), n);
+		for (iterator i = last; i != end(); ++i) {
+			*(i - n) = *i;
+		}
+		destroy(end() - n, end());
 		m_end -= n;
 		return first;
 	}
@@ -294,7 +338,29 @@ public:
 		if (this == &other) {
 			return;
 		}
-		m_buf.swap(other.m_buf);
+		const size_type this_size = size();
+		const size_type other_size = other.size();
+		for (size_type i = 0U; i < MaxSize; ++i) {
+			if (i < this_size) {
+				if (i < other_size) {
+					const T tmp = operator[](i);
+					operator[](i) = other[i];
+					other[i] = tmp;
+				} else {
+					const T tmp = operator[](i);
+					destroy(&operator[](i));
+					construct(&other[i], tmp);
+				}
+			} else {
+				if (i < other_size) {
+					const T tmp = other[i];
+					destroy(&other[i]);
+					construct(&operator[](i), tmp);
+				} else {
+					break;
+				}
+			}
+		}
 		size_type tmp = m_end;
 		m_end = other.m_end;
 		other.m_end = tmp;
@@ -303,20 +369,6 @@ public:
 private:
 	template <typename U, std::size_t N>
 	friend bool operator==(const FixedVector<U, N>& x, const FixedVector<U, N>& y);
-
-	void move_backward(iterator first, iterator last, difference_type n)
-	{
-		for (iterator i = last - 1; i != first - 1; --i) {
-			*(i + n) = *i;
-		}
-	}
-
-	void move_forward(iterator first, iterator last, difference_type n)
-	{
-		for (iterator i = first; i != last; ++i) {
-			*(i - n) = *i;
-		}
-	}
 
 	template <typename Integer>
 	void insert_dispatch(iterator pos, Integer n, Integer data, TrueType)
@@ -335,10 +387,23 @@ private:
 		if (available_size() < n) {
 			throw BadAlloc();
 		}
-		move_backward(pos, end(), static_cast<difference_type>(n));
-		for (iterator i = pos; i < pos + n; ++i) {
-			*i = data;
+
+		for (iterator i = end() - 1; i != pos - 1; --i) {
+			if ((i + n) < end()) {
+				*(i + n) = *i;
+			} else {
+				construct(&*(i + n), *i);
+			}
 		}
+
+		for (iterator i = pos; i < pos + n; ++i) {
+			if (i < end()) {
+				*i = data;
+			} else {
+				construct(&*i, data);
+			}
+		}
+
 		m_end += n;
 	}
 
@@ -356,11 +421,24 @@ private:
 		if (available_size() < n) {
 			throw BadAlloc();
 		}
-		move_backward(pos, end(), static_cast<difference_type>(n));
+
+		for (iterator i = end() - 1; i != pos - 1; --i) {
+			if ((i + n) < end()) {
+				*(i + n) = *i;
+			} else {
+				construct(&*(i + n), *i);
+			}
+		}
+
 		for (; first != last; ++first) {
-			*pos = *first;
+			if (pos < end()) {
+				*pos = *first;
+			} else {
+				construct(&*pos, *first);
+			}
 			++pos;
 		}
+
 		m_end += n;
 	}
 
