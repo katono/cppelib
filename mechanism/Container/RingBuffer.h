@@ -530,38 +530,6 @@ public:
 		}
 	}
 
-	void swap(RingBuffer& other)
-	{
-		if (this == &other) {
-			return;
-		}
-		const size_type this_size = size();
-		const size_type other_size = other.size();
-		for (size_type i = 0U; i < MaxSize; ++i) {
-			if (i < this_size) {
-				if (i < other_size) {
-					const T tmp = operator[](i);
-					operator[](i) = other[i];
-					other[i] = tmp;
-				} else {
-					const T tmp = operator[](i);
-					destroy(&operator[](i));
-					construct(&other[i], tmp);
-				}
-			} else {
-				if (i < other_size) {
-					const T tmp = other[i];
-					destroy(&other[i]);
-					construct(&operator[](i), tmp);
-				} else {
-					break;
-				}
-			}
-		}
-		m_end = (begin() + other_size).m_idx;
-		other.m_end = (other.begin() + this_size).m_idx;
-	}
-
 private:
 	template <typename U, typename Ref, typename Ptr, typename RBPtr, std::size_t N>
 	friend class RingBuffer_iterator;
@@ -737,12 +705,6 @@ template <typename T, std::size_t MaxSize>
 bool operator!=(const RingBuffer<T, MaxSize>& x, const RingBuffer<T, MaxSize>& y)
 {
 	return !(x == y);
-}
-
-template <typename T, std::size_t MaxSize>
-void swap(RingBuffer<T, MaxSize>& x, RingBuffer<T, MaxSize>& y)
-{
-	x.swap(y);
 }
 
 }

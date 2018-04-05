@@ -336,39 +336,6 @@ public:
 		return first;
 	}
 
-	void swap(FixedVector& other)
-	{
-		if (this == &other) {
-			return;
-		}
-		const size_type this_size = size();
-		const size_type other_size = other.size();
-		for (size_type i = 0U; i < MaxSize; ++i) {
-			if (i < this_size) {
-				if (i < other_size) {
-					const T tmp = operator[](i);
-					operator[](i) = other[i];
-					other[i] = tmp;
-				} else {
-					const T tmp = operator[](i);
-					destroy(&operator[](i));
-					construct(&other[i], tmp);
-				}
-			} else {
-				if (i < other_size) {
-					const T tmp = other[i];
-					destroy(&other[i]);
-					construct(&operator[](i), tmp);
-				} else {
-					break;
-				}
-			}
-		}
-		size_type tmp = m_end;
-		m_end = other.m_end;
-		other.m_end = tmp;
-	}
-
 private:
 	template <typename U, std::size_t N>
 	friend bool operator==(const FixedVector<U, N>& x, const FixedVector<U, N>& y);
@@ -465,12 +432,6 @@ template <typename T, std::size_t MaxSize>
 bool operator!=(const FixedVector<T, MaxSize>& x, const FixedVector<T, MaxSize>& y)
 {
 	return !(x == y);
-}
-
-template <typename T, std::size_t MaxSize>
-void swap(FixedVector<T, MaxSize>& x, FixedVector<T, MaxSize>& y)
-{
-	x.swap(y);
 }
 
 }
