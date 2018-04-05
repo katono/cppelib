@@ -34,8 +34,8 @@ private:
 		double dummyForAlignment;
 		char buf[sizeof(T) * MaxSize];
 	};
-	InternalBuf m_internalBuf;
-	T (&m_buf)[MaxSize];
+	InternalBuf m_realBuf;
+	T (&m_virtualBuf)[MaxSize];
 	size_type m_end;
 
 	class BadAlloc : public Container::BadAlloc {
@@ -49,24 +49,24 @@ private:
 
 public:
 	FixedVector()
-	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[MaxSize]>(&m_realBuf)), m_end(0U)
 	{}
 
 	FixedVector(size_type n, const T& data = T())
-	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[MaxSize]>(&m_realBuf)), m_end(0U)
 	{
 		assign(n, data);
 	}
 
 	template <typename InputIterator>
 	FixedVector(InputIterator first, InputIterator last)
-	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[MaxSize]>(&m_realBuf)), m_end(0U)
 	{
 		assign(first, last);
 	}
 
 	FixedVector(const FixedVector& x)
-	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(x.m_end)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[MaxSize]>(&m_realBuf)), m_end(x.m_end)
 	{
 		for (std::size_t i = 0U; i < x.size(); ++i) {
 			construct(&operator[](i), x[i]);
@@ -171,12 +171,12 @@ public:
 
 	iterator begin()
 	{
-		return &m_buf[0];
+		return &m_virtualBuf[0];
 	}
 
 	const_iterator begin() const
 	{
-		return &m_buf[0];
+		return &m_virtualBuf[0];
 	}
 
 	iterator end()

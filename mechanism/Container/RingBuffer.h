@@ -115,13 +115,13 @@ public:
 	reference operator*() const
 	{
 		DBC_PRE(m_rb != 0);
-		return m_rb->m_buf[m_idx];
+		return m_rb->m_virtualBuf[m_idx];
 	}
 
 	pointer operator->() const
 	{
 		DBC_PRE(m_rb != 0);
-		return &m_rb->m_buf[m_idx];
+		return &m_rb->m_virtualBuf[m_idx];
 	}
 
 	reference operator[](difference_type n) const
@@ -210,8 +210,8 @@ private:
 		double dummyForAlignment;
 		char buf[sizeof(T) * BufSize];
 	};
-	InternalBuf m_internalBuf;
-	T (&m_buf)[BufSize];
+	InternalBuf m_realBuf;
+	T (&m_virtualBuf)[BufSize];
 	size_type m_begin;
 	size_type m_end;
 
@@ -226,24 +226,24 @@ private:
 
 public:
 	RingBuffer()
-	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[BufSize]>(&m_internalBuf)), m_begin(0U), m_end(0U)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{}
 
 	RingBuffer(size_type n, const T& data = T())
-	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[BufSize]>(&m_internalBuf)), m_begin(0U), m_end(0U)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{
 		assign(n, data);
 	}
 
 	template <typename InputIterator>
 	RingBuffer(InputIterator first, InputIterator last)
-	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[BufSize]>(&m_internalBuf)), m_begin(0U), m_end(0U)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{
 		assign(first, last);
 	}
 
 	RingBuffer(const RingBuffer& x)
-	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[BufSize]>(&m_internalBuf)), m_begin(x.m_begin), m_end(x.m_end)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(x.m_begin), m_end(x.m_end)
 	{
 		for (std::size_t i = 0U; i < x.size(); ++i) {
 			construct(&operator[](i), x[i]);
