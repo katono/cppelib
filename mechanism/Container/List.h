@@ -21,7 +21,7 @@ private:
 	friend class List;
 
 protected:
-	ListItem() : m_nextListItem(0), m_prevListItem(0) {}
+	ListItem() : m_nextListItem(), m_prevListItem() {}
 };
 
 template <typename T, typename Ref, typename Ptr, typename ListItemPtr>
@@ -129,7 +129,7 @@ public:
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 #endif
 
-	List()
+	List() : m_terminator()
 	{
 		m_terminator.m_nextListItem = &m_terminator;
 		m_terminator.m_prevListItem = &m_terminator;

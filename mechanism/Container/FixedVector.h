@@ -48,23 +48,25 @@ private:
 	};
 
 public:
-	FixedVector() : m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U) {}
+	FixedVector()
+	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
+	{}
 
 	FixedVector(size_type n, const T& data = T())
-	: m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
+	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
 	{
 		assign(n, data);
 	}
 
 	template <typename InputIterator>
 	FixedVector(InputIterator first, InputIterator last)
-	: m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
+	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(0U)
 	{
 		assign(first, last);
 	}
 
 	FixedVector(const FixedVector& x)
-	: m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(x.m_end)
+	: m_internalBuf(), m_buf(*reinterpret_cast<T(*)[MaxSize]>(&m_internalBuf)), m_end(x.m_end)
 	{
 		for (std::size_t i = 0U; i < x.size(); ++i) {
 			construct(&operator[](i), x[i]);
