@@ -153,7 +153,7 @@ struct Array {
 			return;
 		}
 		for (size_type i = 0U; i < size(); ++i) {
-			const T tmp = operator[](i);
+			T tmp = operator[](i);
 			operator[](i) = other[i];
 			other[i] = tmp;
 		}
