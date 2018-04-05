@@ -78,6 +78,9 @@ public:
 
 	FixedVector& operator=(const FixedVector& x)
 	{
+		if (this == &x) {
+			return *this;
+		}
 		if (size() < x.size()) {
 			for (std::size_t i = 0U; i < x.size(); ++i) {
 				if (i < size()) {
