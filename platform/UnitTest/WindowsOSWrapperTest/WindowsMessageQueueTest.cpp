@@ -7,7 +7,7 @@
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
 #include "WindowsOSWrapper/WindowsVariableAllocatorFactory.h"
 #include "OSWrapper/MessageQueue.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"

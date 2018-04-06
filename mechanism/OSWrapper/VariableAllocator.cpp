@@ -1,6 +1,6 @@
 #include "VariableAllocator.h"
 #include "VariableAllocatorFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 
 namespace OSWrapper {
 

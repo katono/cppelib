@@ -1,5 +1,5 @@
 #include "WindowsThreadFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 #include <chrono>
 
 namespace WindowsOSWrapper {

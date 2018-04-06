@@ -1,6 +1,6 @@
 #include "Thread.h"
 #include "ThreadFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 
 namespace OSWrapper {
 

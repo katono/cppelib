@@ -1,6 +1,6 @@
 #include "FixedAllocator.h"
 #include "FixedAllocatorFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 
 namespace OSWrapper {
 

@@ -6,7 +6,7 @@
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "OSWrapper/Mutex.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 #include <stdexcept>
 #include <windows.h>
 

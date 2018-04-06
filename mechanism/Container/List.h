@@ -5,7 +5,7 @@
 #ifndef NO_STD_ITERATOR
 #include <iterator>
 #endif
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 
 namespace Container {
 

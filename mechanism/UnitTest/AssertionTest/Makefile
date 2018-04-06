@@ -1,7 +1,7 @@
 .PHONY: all clean test 
 
 MECHANISM_DIR = ../..
-DBC_DIR = $(MECHANISM_DIR)/DesignByContract
+ASSERTION_DIR = $(MECHANISM_DIR)/Assertion
 CPPUTEST_DIR = $(MECHANISM_DIR)/../CppUTest
 
 CC=g++
@@ -40,4 +40,4 @@ test: all
 clean:
 	rm -f $(TARGET) *.o #*.gc*
 
-AssertionTest.o: $(DBC_DIR)/Assertion.h
+AssertionTest.o: $(ASSERTION_DIR)/Assertion.h

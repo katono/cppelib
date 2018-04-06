@@ -2,7 +2,7 @@
 #define CONTAINER_BIT_PATTERN_H_INCLUDED
 
 #include <cstddef>
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 
 namespace Container {
 

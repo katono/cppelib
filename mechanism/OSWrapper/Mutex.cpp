@@ -1,6 +1,6 @@
 #include "Mutex.h"
 #include "MutexFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 
 namespace OSWrapper {
 

@@ -3,7 +3,7 @@
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/ThreadFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 #include <set>
 
 using OSWrapper::Runnable;

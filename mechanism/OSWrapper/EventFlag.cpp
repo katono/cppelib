@@ -1,6 +1,6 @@
 #include "EventFlag.h"
 #include "EventFlagFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 
 namespace OSWrapper {
 

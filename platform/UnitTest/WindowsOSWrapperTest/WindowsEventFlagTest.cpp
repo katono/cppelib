@@ -6,7 +6,7 @@
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "OSWrapper/EventFlag.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 #include <mutex>
 
 using OSWrapper::Runnable;

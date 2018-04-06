@@ -8,7 +8,7 @@
 #include "ContainerException.h"
 #include "private/TypeTraits.h"
 #include "private/Construct.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 
 namespace Container {
 

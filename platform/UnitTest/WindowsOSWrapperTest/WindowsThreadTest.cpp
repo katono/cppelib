@@ -4,7 +4,7 @@
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
-#include "DesignByContract/Assertion.h"
+#include "Assertion/Assertion.h"
 #include <mutex>
 #include <stdexcept>
 #include <windows.h>
