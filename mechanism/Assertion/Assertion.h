@@ -3,23 +3,23 @@
 
 #include <exception>
 
-#define DBC_ASSERT_STRINGIFY(n) #n
-#define DBC_ASSERT_TOSTRING(n) DBC_ASSERT_STRINGIFY(n)
+#define ASSERTION_ASSERT_STRINGIFY(n) #n
+#define ASSERTION_ASSERT_TOSTRING(n) ASSERTION_ASSERT_STRINGIFY(n)
 
-#define DBC_ASSERT(x)\
+#define CHECK_ASSERT(x)\
 	(x) ? \
 		(void)0 :\
-		throw Assertion::Error(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")")
+		throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")")
 
-#define DBC_PRE(x)\
+#define CHECK_PRECOND(x)\
 	(x) ? \
 		(void)0 :\
-		throw Assertion::Error(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Pre-condition failed (" #x ")")
+		throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Pre-condition failed (" #x ")")
 
-#define DBC_POST(x)\
+#define CHECK_POSTCOND(x)\
 	(x) ? \
 		(void)0 :\
-		throw Assertion::Error(__FILE__ "(" DBC_ASSERT_TOSTRING(__LINE__) "): Post-condition failed (" #x ")")
+		throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Post-condition failed (" #x ")")
 
 namespace Assertion {
 
