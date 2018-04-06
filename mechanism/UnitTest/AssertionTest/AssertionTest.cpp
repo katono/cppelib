@@ -9,12 +9,12 @@ TEST_GROUP(AssertionTest) {
 	public:
 		void foo(const char* str)
 		{
-			DBC_PRE(str);
+			CHECK_PRECOND(str);
 			m_str = str;
 		}
 		void bar()
 		{
-			DBC_POST(m_str.length() > 0);
+			CHECK_POSTCOND(m_str.length() > 0);
 		}
 	};
 	void setup()
@@ -29,7 +29,7 @@ TEST(AssertionTest, assert_true)
 {
 	try {
 		bool a = true;
-		DBC_ASSERT(a);
+		CHECK_ASSERT(a);
 	}
 	catch (...) {
 		FAIL("failed");
@@ -40,7 +40,7 @@ TEST(AssertionTest, assert_false)
 {
 	try {
 		bool a = false;
-		DBC_ASSERT(a);
+		CHECK_ASSERT(a);
 	}
 	catch (const std::exception& e) {
 		STRCMP_CONTAINS("Assertion failed", e.what());

@@ -13,7 +13,7 @@ void registerEventFlagFactory(EventFlagFactory* factory)
 
 EventFlag* EventFlag::create(bool autoReset)
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	return s_factory->create(autoReset);
 }
 

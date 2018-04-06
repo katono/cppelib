@@ -66,7 +66,7 @@ OSWrapper::Thread* WindowsThreadFactory::getCurrentThread()
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 	auto iter = m_threadIdMap.find(std::this_thread::get_id());
-	DBC_ASSERT(iter != m_threadIdMap.end());
+	CHECK_ASSERT(iter != m_threadIdMap.end());
 	return iter->second;
 }
 

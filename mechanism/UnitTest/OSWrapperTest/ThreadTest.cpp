@@ -39,7 +39,7 @@ public:
 
 	void start()
 	{
-		DBC_PRE(m_runnable);
+		CHECK_PRECOND(m_runnable);
 		m_runnable->run();
 		m_finished = false;
 	}

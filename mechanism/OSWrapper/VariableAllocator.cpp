@@ -13,7 +13,7 @@ void registerVariableAllocatorFactory(VariableAllocatorFactory* factory)
 
 VariableAllocator* VariableAllocator::create(std::size_t memoryPoolSize, void* memoryPool/*= 0*/)
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	return s_factory->create(memoryPoolSize, memoryPool);
 }
 

@@ -28,7 +28,7 @@ public:
 
 	BitPattern& set(std::size_t pos)
 	{
-		DBC_PRE(pos < (sizeof m_data * 8U));
+		CHECK_PRECOND(pos < (sizeof m_data * 8U));
 		m_data |= (1U << pos);
 		return *this;
 	}
@@ -41,7 +41,7 @@ public:
 
 	BitPattern& reset(std::size_t pos)
 	{
-		DBC_PRE(pos < (sizeof m_data * 8U));
+		CHECK_PRECOND(pos < (sizeof m_data * 8U));
 		m_data &= ~(1U << pos);
 		return *this;
 	}
@@ -54,7 +54,7 @@ public:
 
 	BitPattern& flip(std::size_t pos)
 	{
-		DBC_PRE(pos < (sizeof m_data * 8U));
+		CHECK_PRECOND(pos < (sizeof m_data * 8U));
 		m_data ^= (1U << pos);
 		return *this;
 	}
@@ -71,7 +71,7 @@ public:
 
 	bool test(std::size_t pos) const
 	{
-		DBC_PRE(pos < (sizeof m_data * 8U));
+		CHECK_PRECOND(pos < (sizeof m_data * 8U));
 		return (m_data & (1U << pos)) != 0U;
 	}
 

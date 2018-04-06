@@ -52,14 +52,14 @@ public:
 
 	List_iterator& operator++()
 	{
-		DBC_PRE(m_item != 0);
+		CHECK_PRECOND(m_item != 0);
 		m_item = m_item->m_nextListItem;
 		return *this;
 	}
 
 	List_iterator& operator--()
 	{
-		DBC_PRE(m_item != 0);
+		CHECK_PRECOND(m_item != 0);
 		m_item = m_item->m_prevListItem;
 		return *this;
 	}
@@ -80,13 +80,13 @@ public:
 
 	reference operator*() const
 	{
-		DBC_PRE(m_item != 0);
+		CHECK_PRECOND(m_item != 0);
 		return *static_cast<pointer>(m_item);
 	}
 
 	pointer operator->() const
 	{
-		DBC_PRE(m_item != 0);
+		CHECK_PRECOND(m_item != 0);
 		return static_cast<pointer>(m_item);
 	}
 
@@ -193,25 +193,25 @@ public:
 
 	reference front()
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		return *begin();
 	}
 
 	const_reference front() const
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		return *begin();
 	}
 
 	reference back()
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		return *--end();
 	}
 
 	const_reference back() const
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		return *--end();
 	}
 
@@ -222,7 +222,7 @@ public:
 
 	void pop_back()
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		erase(--end());
 	}
 
@@ -233,13 +233,13 @@ public:
 
 	void pop_front()
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		erase(begin());
 	}
 
 	iterator insert(iterator pos, T& data)
 	{
-		DBC_PRE(pos.m_item != 0);
+		CHECK_PRECOND(pos.m_item != 0);
 		data.m_nextListItem = pos.m_item;
 		data.m_prevListItem = pos.m_item->m_prevListItem;
 		pos.m_item->m_prevListItem = &data;
@@ -249,8 +249,8 @@ public:
 
 	iterator erase(iterator pos)
 	{
-		DBC_PRE(!empty());
-		DBC_PRE(pos.m_item != 0);
+		CHECK_PRECOND(!empty());
+		CHECK_PRECOND(pos.m_item != 0);
 		ListItem* item = pos.m_item->m_nextListItem;
 		pos.m_item->m_prevListItem->m_nextListItem = pos.m_item->m_nextListItem;
 		pos.m_item->m_nextListItem->m_prevListItem = pos.m_item->m_prevListItem;
@@ -259,7 +259,7 @@ public:
 
 	void splice(iterator pos, List& x)
 	{
-		DBC_PRE(this != &x);
+		CHECK_PRECOND(this != &x);
 		if (x.empty()) {
 			return;
 		}
@@ -268,8 +268,8 @@ public:
 
 	void splice(iterator pos, List& x, iterator i)
 	{
-		DBC_PRE(i != end());
-		DBC_PRE(i != x.end());
+		CHECK_PRECOND(i != end());
+		CHECK_PRECOND(i != x.end());
 		if (pos == i) {
 			return;
 		}
@@ -283,11 +283,11 @@ public:
 
 	void splice(iterator pos, List& x, iterator first, iterator last)
 	{
-		DBC_PRE(pos.m_item != 0);
-		DBC_PRE(first.m_item != 0);
-		DBC_PRE(last.m_item != 0);
-		DBC_PRE(first != end());
-		DBC_PRE(first != x.end());
+		CHECK_PRECOND(pos.m_item != 0);
+		CHECK_PRECOND(first.m_item != 0);
+		CHECK_PRECOND(last.m_item != 0);
+		CHECK_PRECOND(first != end());
+		CHECK_PRECOND(first != x.end());
 		if (first == last) {
 			return;
 		}

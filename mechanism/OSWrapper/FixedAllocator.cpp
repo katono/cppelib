@@ -13,7 +13,7 @@ void registerFixedAllocatorFactory(FixedAllocatorFactory* factory)
 
 FixedAllocator* FixedAllocator::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool/*= 0*/)
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	return s_factory->create(blockSize, memoryPoolSize, memoryPool);
 }
 

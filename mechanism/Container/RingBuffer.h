@@ -44,7 +44,7 @@ public:
 
 	RingBuffer_iterator& operator+=(difference_type n)
 	{
-		DBC_PRE(m_rb != 0);
+		CHECK_PRECOND(m_rb != 0);
 		if (n < 0) {
 			return operator-=(-n);
 		}
@@ -62,7 +62,7 @@ public:
 
 	RingBuffer_iterator& operator-=(difference_type n)
 	{
-		DBC_PRE(m_rb != 0);
+		CHECK_PRECOND(m_rb != 0);
 		if (n < 0) {
 			return operator+=(-n);
 		}
@@ -74,8 +74,8 @@ public:
 
 	difference_type operator-(const RingBuffer_iterator& x) const
 	{
-		DBC_PRE(m_rb != 0);
-		DBC_PRE(m_rb == x.m_rb);
+		CHECK_PRECOND(m_rb != 0);
+		CHECK_PRECOND(m_rb == x.m_rb);
 		if (*this >= x) {
 			return static_cast<difference_type>(m_rb->distance(x.m_idx, m_idx));
 		}
@@ -114,13 +114,13 @@ public:
 
 	reference operator*() const
 	{
-		DBC_PRE(m_rb != 0);
+		CHECK_PRECOND(m_rb != 0);
 		return m_rb->m_virtualBuf[m_idx];
 	}
 
 	pointer operator->() const
 	{
-		DBC_PRE(m_rb != 0);
+		CHECK_PRECOND(m_rb != 0);
 		return &m_rb->m_virtualBuf[m_idx];
 	}
 
@@ -131,7 +131,7 @@ public:
 
 	bool operator==(const RingBuffer_iterator& x) const
 	{
-		DBC_PRE(m_rb == x.m_rb);
+		CHECK_PRECOND(m_rb == x.m_rb);
 		return m_idx == x.m_idx;
 	}
 
@@ -142,8 +142,8 @@ public:
 
 	bool operator<(const RingBuffer_iterator& x) const
 	{
-		DBC_PRE(m_rb != 0);
-		DBC_PRE(m_rb == x.m_rb);
+		CHECK_PRECOND(m_rb != 0);
+		CHECK_PRECOND(m_rb == x.m_rb);
 		return
 			m_rb->distance(m_rb->m_begin, m_idx) <
 			m_rb->distance(x.m_rb->m_begin, x.m_idx);
@@ -380,25 +380,25 @@ public:
 
 	reference front()
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		return *begin();
 	}
 
 	const_reference front() const
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		return *begin();
 	}
 
 	reference back()
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		return *(end() - 1);
 	}
 
 	const_reference back() const
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		return *(end() - 1);
 	}
 
@@ -430,7 +430,7 @@ public:
 
 	void pop_back()
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		m_end = prev_idx(m_end);
 		destroy(&*end());
 	}
@@ -446,7 +446,7 @@ public:
 
 	void pop_front()
 	{
-		DBC_PRE(!empty());
+		CHECK_PRECOND(!empty());
 		destroy(&*begin());
 		m_begin = next_idx(m_begin);
 	}
@@ -482,35 +482,35 @@ public:
 
 	iterator insert(iterator pos, const T& data)
 	{
-		DBC_PRE((begin() <= pos) && (pos <= end()));
+		CHECK_PRECOND((begin() <= pos) && (pos <= end()));
 		return insert_n(pos, 1U, data);
 	}
 
 	void insert(iterator pos, size_type n, const T& data)
 	{
-		DBC_PRE((begin() <= pos) && (pos <= end()));
+		CHECK_PRECOND((begin() <= pos) && (pos <= end()));
 		insert_n(pos, n, data);
 	}
 
 	template <typename InputIterator>
 	void insert(iterator pos, InputIterator first, InputIterator last)
 	{
-		DBC_PRE((begin() <= pos) && (pos <= end()));
+		CHECK_PRECOND((begin() <= pos) && (pos <= end()));
 		typedef typename IsInteger<InputIterator>::Integral Integral;
 		insert_dispatch(pos, first, last, Integral());
 	}
 
 	iterator erase(iterator pos)
 	{
-		DBC_PRE((begin() <= pos) && (pos < end()));
+		CHECK_PRECOND((begin() <= pos) && (pos < end()));
 		return erase(pos, pos + 1);
 	}
 
 	iterator erase(iterator first, iterator last)
 	{
-		DBC_PRE(first < last);
-		DBC_PRE((begin() <= first) && (first < end()));
-		DBC_PRE((begin() <= last) && (last <= end()));
+		CHECK_PRECOND(first < last);
+		CHECK_PRECOND((begin() <= first) && (first < end()));
+		CHECK_PRECOND((begin() <= last) && (last <= end()));
 		const size_type n = static_cast<size_type>(last - first);
 		if ((first - begin()) >= (end() - last)) {
 			// move the end side

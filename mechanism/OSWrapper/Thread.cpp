@@ -15,7 +15,7 @@ void registerThreadFactory(ThreadFactory* factory)
 
 Thread* Thread::create(Runnable* r, std::size_t stackSize/*= 0U*/, int priority/*= INHERIT_PRIORITY*/, const char* name/*= ""*/)
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	if (r == 0) {
 		return 0;
 	}
@@ -31,37 +31,37 @@ void Thread::destroy(Thread* t)
 
 void Thread::exit()
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	s_factory->exit();
 }
 
 void Thread::sleep(unsigned long millis)
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	s_factory->sleep(millis);
 }
 
 void Thread::yield()
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	s_factory->yield();
 }
 
 Thread* Thread::getCurrentThread()
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	return s_factory->getCurrentThread();
 }
 
 int Thread::getPriorityMax()
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	return s_factory->getPriorityMax();
 }
 
 int Thread::getPriorityMin()
 {
-	DBC_PRE(s_factory);
+	CHECK_PRECOND(s_factory);
 	return s_factory->getPriorityMin();
 }
 
