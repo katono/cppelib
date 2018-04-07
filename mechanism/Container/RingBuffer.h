@@ -131,8 +131,7 @@ public:
 
 	bool operator==(const RingBuffer_iterator& x) const
 	{
-		CHECK_PRECOND(m_rb == x.m_rb);
-		return m_idx == x.m_idx;
+		return (m_rb == x.m_rb) && (m_idx == x.m_idx);
 	}
 
 	bool operator!=(const RingBuffer_iterator& x) const

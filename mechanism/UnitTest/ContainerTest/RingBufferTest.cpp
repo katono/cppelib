@@ -1369,6 +1369,10 @@ TEST(RingBufferTest, iterator_operator_equal_false)
 	RingBuffer<int, SIZE>::iterator it = x.begin();
 	RingBuffer<int, SIZE>::iterator it2 = x.begin() + 1;
 	CHECK_FALSE(it == it2);
+
+	RingBuffer<int, SIZE> y(SIZE);
+	RingBuffer<int, SIZE>::iterator it3 = y.begin();
+	CHECK_FALSE(it == it3);
 }
 
 TEST(RingBufferTest, iterator_operator_notequal_true)
