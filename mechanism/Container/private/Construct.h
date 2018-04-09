@@ -1,6 +1,8 @@
 #ifndef CONTAINER_CONSTRUCT_H_INCLUDED
 #define CONTAINER_CONSTRUCT_H_INCLUDED
 
+#include <new>
+
 namespace Container {
 
 template <typename T1, typename T2>

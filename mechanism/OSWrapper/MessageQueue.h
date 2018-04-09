@@ -2,6 +2,7 @@
 #define OS_WRAPPER_MESSAGE_QUEUE_H_INCLUDED
 
 #include <cstddef>
+#include <new>
 #include "Timeout.h"
 #include "OSWrapperError.h"
 #include "Mutex.h"
