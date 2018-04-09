@@ -63,9 +63,15 @@ public:
 			}
 		}
 
-		push(msg);
+		err = OK;
+		try {
+			push(msg);
+		}
+		catch (...) {
+			err = OtherError;
+		}
 		m_mtxSend->unlock();
-		return OK;
+		return err;
 	}
 
 	Error receive(T* msg)
@@ -93,9 +99,15 @@ public:
 			}
 		}
 
-		pop(msg);
+		err = OK;
+		try {
+			pop(msg);
+		}
+		catch (...) {
+			err = OtherError;
+		}
 		m_mtxRecv->unlock();
-		return OK;
+		return err;
 	}
 
 	std::size_t getSize() const
