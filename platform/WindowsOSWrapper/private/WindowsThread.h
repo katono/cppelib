@@ -50,8 +50,8 @@ public:
 		return m_threadId;
 	}
 
-	static int getPriorityMax();
-	static int getPriorityMin();
+	static int getHighestPriority();
+	static int getLowestPriority();
 
 	class Exit {
 	public:

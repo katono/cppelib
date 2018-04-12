@@ -70,14 +70,14 @@ OSWrapper::Thread* WindowsThreadFactory::getCurrentThread()
 	return iter->second;
 }
 
-int WindowsThreadFactory::getPriorityMax() const
+int WindowsThreadFactory::getHighestPriority() const
 {
-	return WindowsThread::getPriorityMax();
+	return WindowsThread::getHighestPriority();
 }
 
-int WindowsThreadFactory::getPriorityMin() const
+int WindowsThreadFactory::getLowestPriority() const
 {
-	return WindowsThread::getPriorityMin();
+	return WindowsThread::getLowestPriority();
 }
 
 }

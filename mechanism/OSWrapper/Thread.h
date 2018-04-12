@@ -24,8 +24,8 @@ public:
 	static void sleep(unsigned long millis);
 	static void yield();
 	static Thread* getCurrentThread();
-	static int getPriorityMax();
-	static int getPriorityMin();
+	static int getHighestPriority();
+	static int getLowestPriority();
 
 	virtual void start() = 0;
 	virtual Error wait() = 0;

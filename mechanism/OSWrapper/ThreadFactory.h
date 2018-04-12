@@ -17,8 +17,8 @@ public:
 	virtual void sleep(unsigned long millis) = 0;
 	virtual void yield() = 0;
 	virtual Thread* getCurrentThread() = 0;
-	virtual int getPriorityMax() const = 0;
-	virtual int getPriorityMin() const = 0;
+	virtual int getHighestPriority() const = 0;
+	virtual int getLowestPriority() const = 0;
 };
 
 }

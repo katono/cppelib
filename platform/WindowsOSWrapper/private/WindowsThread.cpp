@@ -188,12 +188,12 @@ void* WindowsThread::getNativeHandle()
 	return m_thread.native_handle();
 }
 
-int WindowsThread::getPriorityMax()
+int WindowsThread::getHighestPriority()
 {
 	return static_cast<int>(m_prioList.size()) - 1;
 }
 
-int WindowsThread::getPriorityMin()
+int WindowsThread::getLowestPriority()
 {
 	return 0;
 }

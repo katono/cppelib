@@ -21,8 +21,8 @@ private:
 	virtual void sleep(unsigned long millis);
 	virtual void yield();
 	virtual OSWrapper::Thread* getCurrentThread();
-	virtual int getPriorityMax() const;
-	virtual int getPriorityMin() const;
+	virtual int getHighestPriority() const;
+	virtual int getLowestPriority() const;
 
 	WindowsThread m_mainThread;
 	std::unordered_map<std::thread::id, OSWrapper::Thread*> m_threadIdMap;
