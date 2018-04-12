@@ -6,6 +6,8 @@ namespace OSWrapper {
 class Timeout {
 private:
 	long m_milliseconds;
+
+	Timeout& operator=(const Timeout&);
 public:
 	explicit Timeout(long milliseconds) : m_milliseconds(milliseconds) {}
 	operator long() const { return m_milliseconds; }
