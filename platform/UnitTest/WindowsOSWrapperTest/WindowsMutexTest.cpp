@@ -8,7 +8,6 @@
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "Assertion/Assertion.h"
 #include <stdexcept>
-#include <windows.h>
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
