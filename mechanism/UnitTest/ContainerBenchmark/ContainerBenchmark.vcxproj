@@ -96,13 +96,13 @@
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="ArrayBenchmark.cpp" />
+    <ClCompile Include="FixedDequeBenchmark.cpp" />
     <ClCompile Include="FixedVectorBenchmark.cpp" />
-    <ClCompile Include="RingBufferBenchmark.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Container\Array.h" />
+    <ClInclude Include="..\..\Container\FixedDeque.h" />
     <ClInclude Include="..\..\Container\FixedVector.h" />
-    <ClInclude Include="..\..\Container\RingBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
