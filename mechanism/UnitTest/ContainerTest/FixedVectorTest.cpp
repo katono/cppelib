@@ -1333,10 +1333,10 @@ public:
 		for (std::size_t i = 0; i < num; ++i) {
 			if (i < maxUsed) {
 				LONGS_EQUAL_TEXT(0xDEADBEEF, array[i].data,
-						StringFromFormat("%d", i).asCharString());
+						StringFromFormat("%ld", i).asCharString());
 			} else {
 				CHECK_TRUE_TEXT(0xDEADBEEF != array[i].data,
-						StringFromFormat("%d", i).asCharString());
+						StringFromFormat("%ld", i).asCharString());
 			}
 		}
 	}

@@ -1654,10 +1654,10 @@ public:
 		for (std::size_t i = 0; i < num; ++i, ++it) {
 			if (i < maxUsed) {
 				LONGS_EQUAL_TEXT(0xDEADBEEF, it->data,
-						StringFromFormat("%d", i).asCharString());
+						StringFromFormat("%ld", i).asCharString());
 			} else {
 				CHECK_TRUE_TEXT(0xDEADBEEF != it->data,
-						StringFromFormat("%d", i).asCharString());
+						StringFromFormat("%ld", i).asCharString());
 			}
 		}
 	}
