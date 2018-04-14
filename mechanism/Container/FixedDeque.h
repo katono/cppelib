@@ -15,7 +15,7 @@ namespace Container {
 template <typename T, std::size_t MaxSize>
 class FixedDeque;
 
-template <typename T, typename Ref, typename Ptr, typename RBPtr, std::size_t MaxSize>
+template <typename T, typename Ref, typename Ptr, typename FDPtr, std::size_t MaxSize>
 class FixedDeque_iterator {
 public:
 	typedef T value_type;
@@ -31,26 +31,26 @@ public:
 	typedef std::random_access_iterator_tag iterator_category;
 #endif
 
-	FixedDeque_iterator() : m_rb(0), m_idx(0U) {}
+	FixedDeque_iterator() : m_fd(0), m_idx(0U) {}
 
-	FixedDeque_iterator(const iterator& x) : m_rb(x.m_rb), m_idx(x.m_idx) {}
+	FixedDeque_iterator(const iterator& x) : m_fd(x.m_fd), m_idx(x.m_idx) {}
 
 	FixedDeque_iterator& operator=(const iterator& x)
 	{
-		m_rb = x.m_rb;
+		m_fd = x.m_fd;
 		m_idx = x.m_idx;
 		return *this;
 	}
 
 	FixedDeque_iterator& operator+=(difference_type n)
 	{
-		CHECK_PRECOND(m_rb != 0);
+		CHECK_PRECOND(m_fd != 0);
 		if (n < 0) {
 			return operator-=(-n);
 		}
 
 		const size_type un = static_cast<size_type>(n);
-		m_idx = m_rb->next_idx(m_idx, un);
+		m_idx = m_fd->next_idx(m_idx, un);
 		return *this;
 	}
 
@@ -62,24 +62,24 @@ public:
 
 	FixedDeque_iterator& operator-=(difference_type n)
 	{
-		CHECK_PRECOND(m_rb != 0);
+		CHECK_PRECOND(m_fd != 0);
 		if (n < 0) {
 			return operator+=(-n);
 		}
 
 		const size_type un = static_cast<size_type>(n);
-		m_idx = m_rb->prev_idx(m_idx, un);
+		m_idx = m_fd->prev_idx(m_idx, un);
 		return *this;
 	}
 
 	difference_type operator-(const FixedDeque_iterator& x) const
 	{
-		CHECK_PRECOND(m_rb != 0);
-		CHECK_PRECOND(m_rb == x.m_rb);
+		CHECK_PRECOND(m_fd != 0);
+		CHECK_PRECOND(m_fd == x.m_fd);
 		if (*this >= x) {
-			return static_cast<difference_type>(m_rb->distance(x.m_idx, m_idx));
+			return static_cast<difference_type>(m_fd->distance(x.m_idx, m_idx));
 		}
-		return -static_cast<difference_type>(m_rb->distance(m_idx, x.m_idx));
+		return -static_cast<difference_type>(m_fd->distance(m_idx, x.m_idx));
 	}
 
 	FixedDeque_iterator operator-(difference_type n) const
@@ -114,14 +114,14 @@ public:
 
 	reference operator*() const
 	{
-		CHECK_PRECOND(m_rb != 0);
-		return m_rb->m_virtualBuf[m_idx];
+		CHECK_PRECOND(m_fd != 0);
+		return m_fd->m_virtualBuf[m_idx];
 	}
 
 	pointer operator->() const
 	{
-		CHECK_PRECOND(m_rb != 0);
-		return &m_rb->m_virtualBuf[m_idx];
+		CHECK_PRECOND(m_fd != 0);
+		return &m_fd->m_virtualBuf[m_idx];
 	}
 
 	reference operator[](difference_type n) const
@@ -131,7 +131,7 @@ public:
 
 	bool operator==(const FixedDeque_iterator& x) const
 	{
-		return (m_rb == x.m_rb) && (m_idx == x.m_idx);
+		return (m_fd == x.m_fd) && (m_idx == x.m_idx);
 	}
 
 	bool operator!=(const FixedDeque_iterator& x) const
@@ -141,11 +141,11 @@ public:
 
 	bool operator<(const FixedDeque_iterator& x) const
 	{
-		CHECK_PRECOND(m_rb != 0);
-		CHECK_PRECOND(m_rb == x.m_rb);
+		CHECK_PRECOND(m_fd != 0);
+		CHECK_PRECOND(m_fd == x.m_fd);
 		return
-			m_rb->distance(m_rb->m_begin, m_idx) <
-			m_rb->distance(x.m_rb->m_begin, x.m_idx);
+			m_fd->distance(m_fd->m_begin, m_idx) <
+			m_fd->distance(x.m_fd->m_begin, x.m_idx);
 	}
 
 	bool operator>(const FixedDeque_iterator& x) const
@@ -167,20 +167,20 @@ private:
 	template <typename U, std::size_t N>
 	friend class FixedDeque;
 
-	template <typename U, typename RefX, typename PtrX, typename RBPtrX, std::size_t N>
+	template <typename U, typename RefX, typename PtrX, typename FDPtrX, std::size_t N>
 	friend class FixedDeque_iterator;
 
 	static const size_type BufSize = MaxSize + 1U;
 
-	RBPtr m_rb;
+	FDPtr m_fd;
 	size_type m_idx;
 
-	FixedDeque_iterator(RBPtr rb, size_type idx) : m_rb(rb), m_idx(idx) {}
+	FixedDeque_iterator(FDPtr fd, size_type idx) : m_fd(fd), m_idx(idx) {}
 };
 
-template <typename T, typename Ref, typename Ptr, typename RBPtr, std::size_t MaxSize>
-FixedDeque_iterator<T, Ref, Ptr, RBPtr, MaxSize>
-operator+(std::ptrdiff_t n, const FixedDeque_iterator<T, Ref, Ptr, RBPtr, MaxSize>& x)
+template <typename T, typename Ref, typename Ptr, typename FDPtr, std::size_t MaxSize>
+FixedDeque_iterator<T, Ref, Ptr, FDPtr, MaxSize>
+operator+(std::ptrdiff_t n, const FixedDeque_iterator<T, Ref, Ptr, FDPtr, MaxSize>& x)
 {
 	return x + n;
 }
@@ -514,7 +514,7 @@ public:
 	}
 
 private:
-	template <typename U, typename Ref, typename Ptr, typename RBPtr, std::size_t N>
+	template <typename U, typename Ref, typename Ptr, typename FDPtr, std::size_t N>
 	friend class FixedDeque_iterator;
 
 	template <typename U, std::size_t N>
