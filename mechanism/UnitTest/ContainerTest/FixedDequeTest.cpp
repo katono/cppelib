@@ -1,4 +1,4 @@
-#include "Container/RingBuffer.h"
+#include "Container/FixedDeque.h"
 #include "Container/Array.h"
 #include "Container/FixedVector.h"
 #ifndef NO_STD_CONTAINER
@@ -11,12 +11,12 @@
 #endif
 #include "CppUTest/TestHarness.h"
 
-using Container::RingBuffer;
+using Container::FixedDeque;
 using Container::Array;
 using Container::FixedVector;
 
 
-TEST_GROUP(RingBufferTest) {
+TEST_GROUP(FixedDequeTest) {
 	static const std::size_t SIZE = 10;
 	void setup()
 	{
@@ -25,92 +25,92 @@ TEST_GROUP(RingBufferTest) {
 	{
 	}
 
-	SimpleString StringFrom(RingBuffer<int, SIZE>::iterator value)
+	SimpleString StringFrom(FixedDeque<int, SIZE>::iterator value)
 	{
 		return StringFromFormat("%p", (void *)&*value);
 	}
-	SimpleString StringFrom(RingBuffer<int, SIZE>::const_iterator value)
+	SimpleString StringFrom(FixedDeque<int, SIZE>::const_iterator value)
 	{
 		return StringFromFormat("%p", (void *)&*value);
 	}
 };
 
-TEST(RingBufferTest, size_0)
+TEST(FixedDequeTest, size_0)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(RingBufferTest, size)
+TEST(FixedDequeTest, size)
 {
-	RingBuffer<int, SIZE> x(5);
+	FixedDeque<int, SIZE> x(5);
 	LONGS_EQUAL(5, x.size());
 }
 
-TEST(RingBufferTest, available_size)
+TEST(FixedDequeTest, available_size)
 {
-	RingBuffer<int, SIZE> x(5);
+	FixedDeque<int, SIZE> x(5);
 	LONGS_EQUAL(SIZE - 5, x.available_size());
 }
 
-TEST(RingBufferTest, max_size)
+TEST(FixedDequeTest, max_size)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	LONGS_EQUAL(SIZE, x.max_size());
 }
 
-TEST(RingBufferTest, empty_true)
+TEST(FixedDequeTest, empty_true)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	CHECK(x.empty());
 }
 
-TEST(RingBufferTest, empty_false)
+TEST(FixedDequeTest, empty_false)
 {
-	RingBuffer<int, SIZE> x(1);
+	FixedDeque<int, SIZE> x(1);
 	CHECK_FALSE(x.empty());
 }
 
-TEST(RingBufferTest, full_true)
+TEST(FixedDequeTest, full_true)
 {
-	RingBuffer<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE> x(SIZE);
 	CHECK(x.full());
 }
 
-TEST(RingBufferTest, full_false)
+TEST(FixedDequeTest, full_false)
 {
-	RingBuffer<int, SIZE> x(SIZE - 2);
+	FixedDeque<int, SIZE> x(SIZE - 2);
 	CHECK_FALSE(x.full());
 }
 
-TEST(RingBufferTest, clear)
+TEST(FixedDequeTest, clear)
 {
-	RingBuffer<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE> x(SIZE);
 	x.clear();
 	CHECK(x.empty());
 }
 
-TEST(RingBufferTest, operator_bracket_read)
+TEST(FixedDequeTest, operator_bracket_read)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	LONGS_EQUAL(0, x[0]);
 	LONGS_EQUAL(5, x[5]);
 	LONGS_EQUAL(9, x[9]);
 }
 
-TEST(RingBufferTest, operator_bracket_read_const)
+TEST(FixedDequeTest, operator_bracket_read_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE + 1> x(a.begin(), a.end());
+	const FixedDeque<int, SIZE + 1> x(a.begin(), a.end());
 	LONGS_EQUAL(0, x[0]);
 	LONGS_EQUAL(5, x[5]);
 	LONGS_EQUAL(9, x[9]);
 }
 
-TEST(RingBufferTest, operator_bracket_write)
+TEST(FixedDequeTest, operator_bracket_write)
 {
-	RingBuffer<int, SIZE> x(10);
+	FixedDeque<int, SIZE> x(10);
 	x[0] = 100;
 	LONGS_EQUAL(100, x[0]);
 
@@ -118,27 +118,27 @@ TEST(RingBufferTest, operator_bracket_write)
 	LONGS_EQUAL(10, x[9]);
 }
 
-TEST(RingBufferTest, at_read)
+TEST(FixedDequeTest, at_read)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	LONGS_EQUAL(0, x.at(0));
 	LONGS_EQUAL(5, x.at(5));
 	LONGS_EQUAL(9, x.at(9));
 }
 
-TEST(RingBufferTest, at_read_const)
+TEST(FixedDequeTest, at_read_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> x(a.begin(), a.end());
+	const FixedDeque<int, SIZE> x(a.begin(), a.end());
 	LONGS_EQUAL(0, x.at(0));
 	LONGS_EQUAL(5, x.at(5));
 	LONGS_EQUAL(9, x.at(9));
 }
 
-TEST(RingBufferTest, at_write)
+TEST(FixedDequeTest, at_write)
 {
-	RingBuffer<int, SIZE> x(10);
+	FixedDeque<int, SIZE> x(10);
 	x.at(0) = 100;
 	LONGS_EQUAL(100, x.at(0));
 
@@ -146,142 +146,142 @@ TEST(RingBufferTest, at_write)
 	LONGS_EQUAL(10, x.at(9));
 }
 
-TEST(RingBufferTest, at_exception)
+TEST(FixedDequeTest, at_exception)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	try {
 		x.at(0);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::at", e.what());
+		STRCMP_EQUAL("FixedDeque::at", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, at_exception_const)
+TEST(FixedDequeTest, at_exception_const)
 {
-	const RingBuffer<int, SIZE> x;
+	const FixedDeque<int, SIZE> x;
 	try {
 		x.at(0);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::at", e.what());
+		STRCMP_EQUAL("FixedDeque::at", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, begin_end)
+TEST(FixedDequeTest, begin_end)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	std::size_t i = 0;
-	for (RingBuffer<int, SIZE>::iterator it = x.begin(); it != x.end(); ++it, ++i) {
+	for (FixedDeque<int, SIZE>::iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
 }
 
-TEST(RingBufferTest, begin_end_const)
+TEST(FixedDequeTest, begin_end_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> x(a.begin(), a.end());
+	const FixedDeque<int, SIZE> x(a.begin(), a.end());
 	std::size_t i = 0;
-	for (RingBuffer<int, SIZE>::const_iterator it = x.begin(); it != x.end(); ++it, ++i) {
+	for (FixedDeque<int, SIZE>::const_iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
 }
 
-TEST(RingBufferTest, front_read)
+TEST(FixedDequeTest, front_read)
 {
-	RingBuffer<int, SIZE> x(1);
+	FixedDeque<int, SIZE> x(1);
 	LONGS_EQUAL(0, x.front());
 }
 
-TEST(RingBufferTest, front_read_const)
+TEST(FixedDequeTest, front_read_const)
 {
-	const RingBuffer<int, SIZE> x(1);
+	const FixedDeque<int, SIZE> x(1);
 	LONGS_EQUAL(0, x.front());
 }
 
-TEST(RingBufferTest, front_write)
+TEST(FixedDequeTest, front_write)
 {
-	RingBuffer<int, SIZE> x(1);
+	FixedDeque<int, SIZE> x(1);
 	x.front() = 100;
 	LONGS_EQUAL(100, x.front());
 }
 
-TEST(RingBufferTest, back_read)
+TEST(FixedDequeTest, back_read)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	LONGS_EQUAL(9, x.back());
 }
 
-TEST(RingBufferTest, back_read_const)
+TEST(FixedDequeTest, back_read_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> x(a.begin(), a.end());
+	const FixedDeque<int, SIZE> x(a.begin(), a.end());
 	LONGS_EQUAL(9, x.back());
 }
 
-TEST(RingBufferTest, back_write)
+TEST(FixedDequeTest, back_write)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	x.back() = 100;
 	LONGS_EQUAL(100, x.back());
 }
 
-TEST(RingBufferTest, ctor_n_data)
+TEST(FixedDequeTest, ctor_n_data)
 {
-	RingBuffer<int, SIZE> x(SIZE, 100);
+	FixedDeque<int, SIZE> x(SIZE, 100);
 	LONGS_EQUAL(SIZE, x.size());
-	for (RingBuffer<int, SIZE>::iterator it = x.begin(); it != x.end(); ++it) {
+	for (FixedDeque<int, SIZE>::iterator it = x.begin(); it != x.end(); ++it) {
 		LONGS_EQUAL(100, *it);
 	}
 }
 
-TEST(RingBufferTest, ctor_n_data_exception)
+TEST(FixedDequeTest, ctor_n_data_exception)
 {
 	try {
-		RingBuffer<int, SIZE> x(SIZE + 1);
+		FixedDeque<int, SIZE> x(SIZE + 1);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, ctor_range)
+TEST(FixedDequeTest, ctor_range)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
 
-TEST(RingBufferTest, ctor_range_exception)
+TEST(FixedDequeTest, ctor_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	try {
-		RingBuffer<int, SIZE> x(a.begin(), a.end());
+		FixedDeque<int, SIZE> x(a.begin(), a.end());
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, copy_ctor)
+TEST(FixedDequeTest, copy_ctor)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> b(a.begin(), a.end());
-	const RingBuffer<int, SIZE> x(b);
+	const FixedDeque<int, SIZE> b(a.begin(), a.end());
+	const FixedDeque<int, SIZE> x(b);
 	LONGS_EQUAL(SIZE, b.size());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -290,11 +290,11 @@ TEST(RingBufferTest, copy_ctor)
 	}
 }
 
-TEST(RingBufferTest, operator_assign)
+TEST(FixedDequeTest, operator_assign)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	const FixedDeque<int, SIZE> b(a.begin(), a.end());
+	FixedDeque<int, SIZE> x;
 	x = b;
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -302,10 +302,10 @@ TEST(RingBufferTest, operator_assign)
 	}
 }
 
-TEST(RingBufferTest, operator_assign_self)
+TEST(FixedDequeTest, operator_assign_self)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	x = x;
 	LONGS_EQUAL(SIZE, x.size());
 	for (size_t i = 0; i < x.size(); ++i) {
@@ -313,16 +313,16 @@ TEST(RingBufferTest, operator_assign_self)
 	}
 }
 
-TEST(RingBufferTest, resize_shorten)
+TEST(FixedDequeTest, resize_shorten)
 {
-	RingBuffer<int, SIZE> x(5);
+	FixedDeque<int, SIZE> x(5);
 	x.resize(3);
 	LONGS_EQUAL(3, x.size());
 }
 
-TEST(RingBufferTest, resize_make_longer)
+TEST(FixedDequeTest, resize_make_longer)
 {
-	RingBuffer<int, SIZE> x(5);
+	FixedDeque<int, SIZE> x(5);
 	x.resize(8, 100);
 	LONGS_EQUAL(8, x.size());
 	std::size_t i;
@@ -334,22 +334,22 @@ TEST(RingBufferTest, resize_make_longer)
 	}
 }
 
-TEST(RingBufferTest, resize_exception)
+TEST(FixedDequeTest, resize_exception)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	try {
 		x.resize(SIZE + 1);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, push_back)
+TEST(FixedDequeTest, push_back)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_back(100);
 	LONGS_EQUAL(1, x.size());
 	LONGS_EQUAL(100, x.back());
@@ -363,9 +363,9 @@ TEST(RingBufferTest, push_back)
 	LONGS_EQUAL(102, x.back());
 }
 
-TEST(RingBufferTest, push_back_pop_front)
+TEST(FixedDequeTest, push_back_pop_front)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	for (std::size_t i = 0; i < SIZE * 100; ++i) {
 		x.push_back(i);
 		LONGS_EQUAL(i, x.front());
@@ -374,9 +374,9 @@ TEST(RingBufferTest, push_back_pop_front)
 	}
 }
 
-TEST(RingBufferTest, push_back_exception)
+TEST(FixedDequeTest, push_back_exception)
 {
-	RingBuffer<int, SIZE> x(SIZE - 1);
+	FixedDeque<int, SIZE> x(SIZE - 1);
 	x.push_back(100);
 	LONGS_EQUAL(SIZE, x.size());
 
@@ -384,15 +384,15 @@ TEST(RingBufferTest, push_back_exception)
 		x.push_back(101);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, pop_back)
+TEST(FixedDequeTest, pop_back)
 {
-	RingBuffer<int, SIZE> x(3);
+	FixedDeque<int, SIZE> x(3);
 	x.pop_back();
 	LONGS_EQUAL(2, x.size());
 	x.pop_back();
@@ -401,9 +401,9 @@ TEST(RingBufferTest, pop_back)
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(RingBufferTest, push_front)
+TEST(FixedDequeTest, push_front)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_front(100);
 	LONGS_EQUAL(1, x.size());
 	LONGS_EQUAL(100, x.front());
@@ -417,9 +417,9 @@ TEST(RingBufferTest, push_front)
 	LONGS_EQUAL(102, x.front());
 }
 
-TEST(RingBufferTest, push_front_pop_back)
+TEST(FixedDequeTest, push_front_pop_back)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	for (std::size_t i = 0; i < SIZE * 100; ++i) {
 		x.push_front(i);
 		LONGS_EQUAL(i, x.back());
@@ -428,9 +428,9 @@ TEST(RingBufferTest, push_front_pop_back)
 	}
 }
 
-TEST(RingBufferTest, push_front_exception)
+TEST(FixedDequeTest, push_front_exception)
 {
-	RingBuffer<int, SIZE> x(SIZE - 1);
+	FixedDeque<int, SIZE> x(SIZE - 1);
 	x.push_front(100);
 	LONGS_EQUAL(SIZE, x.size());
 
@@ -438,15 +438,15 @@ TEST(RingBufferTest, push_front_exception)
 		x.push_front(101);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, pop_front)
+TEST(FixedDequeTest, pop_front)
 {
-	RingBuffer<int, SIZE> x(3);
+	FixedDeque<int, SIZE> x(3);
 	x.pop_front();
 	LONGS_EQUAL(2, x.size());
 	x.pop_front();
@@ -455,33 +455,33 @@ TEST(RingBufferTest, pop_front)
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(RingBufferTest, assign_n)
+TEST(FixedDequeTest, assign_n)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.assign(SIZE, 100);
 	LONGS_EQUAL(SIZE, x.size());
-	for (RingBuffer<int, SIZE>::iterator it = x.begin(); it != x.end(); ++it) {
+	for (FixedDeque<int, SIZE>::iterator it = x.begin(); it != x.end(); ++it) {
 		LONGS_EQUAL(100, *it);
 	}
 }
 
-TEST(RingBufferTest, assign_n_exception)
+TEST(FixedDequeTest, assign_n_exception)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	try {
 		x.assign(SIZE + 1, 100);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, assign_range)
+TEST(FixedDequeTest, assign_range)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.assign(a.begin(), a.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -489,10 +489,10 @@ TEST(RingBufferTest, assign_range)
 	}
 }
 
-TEST(RingBufferTest, assign_range_c_array)
+TEST(FixedDequeTest, assign_range_c_array)
 {
 	const int a[SIZE] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.assign(&a[0], &a[SIZE]);
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -500,11 +500,11 @@ TEST(RingBufferTest, assign_range_c_array)
 	}
 }
 
-TEST(RingBufferTest, assign_range_FixedVector_iter)
+TEST(FixedDequeTest, assign_range_FixedVector_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const FixedVector<int, SIZE> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -512,11 +512,11 @@ TEST(RingBufferTest, assign_range_FixedVector_iter)
 	}
 }
 
-TEST(RingBufferTest, assign_range_RingBuffer_iter)
+TEST(FixedDequeTest, assign_range_FixedDeque_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	const FixedDeque<int, SIZE> b(a.begin(), a.end());
+	FixedDeque<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -525,11 +525,11 @@ TEST(RingBufferTest, assign_range_RingBuffer_iter)
 }
 
 #ifndef NO_STD_CONTAINER
-TEST(RingBufferTest, assign_range_deque_iter)
+TEST(FixedDequeTest, assign_range_deque_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const std::deque<int> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -537,11 +537,11 @@ TEST(RingBufferTest, assign_range_deque_iter)
 	}
 }
 
-TEST(RingBufferTest, assign_range_list_iter)
+TEST(FixedDequeTest, assign_range_list_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const std::list<int> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -550,24 +550,24 @@ TEST(RingBufferTest, assign_range_list_iter)
 }
 #endif
 
-TEST(RingBufferTest, assign_range_exception)
+TEST(FixedDequeTest, assign_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	try {
 		x.assign(a.begin(), a.end());
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, insert)
+TEST(FixedDequeTest, insert)
 {
-	RingBuffer<int, SIZE> x;
-	RingBuffer<int, SIZE>::iterator it;
+	FixedDeque<int, SIZE> x;
+	FixedDeque<int, SIZE>::iterator it;
 	it = x.insert(x.end(), 1);
 	CHECK_EQUAL(x.begin(), it);
 	LONGS_EQUAL(1, x.size());
@@ -596,14 +596,14 @@ TEST(RingBufferTest, insert)
 
 }
 
-TEST(RingBufferTest, insert2)
+TEST(FixedDequeTest, insert2)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_front(1);
 	x.pop_back();
 	LONGS_EQUAL(0, x.size());
 
-	RingBuffer<int, SIZE>::iterator it;
+	FixedDeque<int, SIZE>::iterator it;
 	it = x.insert(x.end(), 1);
 	CHECK_EQUAL(x.begin(), it);
 	LONGS_EQUAL(1, x.size());
@@ -632,22 +632,22 @@ TEST(RingBufferTest, insert2)
 
 }
 
-TEST(RingBufferTest, insert_exception)
+TEST(FixedDequeTest, insert_exception)
 {
-	RingBuffer<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE> x(SIZE);
 	try {
 		x.insert(x.begin(), 100);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, insert_n)
+TEST(FixedDequeTest, insert_n)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), 2U, 100);
 	LONGS_EQUAL(2, x.size());
 	LONGS_EQUAL(100, x[0]);
@@ -672,9 +672,9 @@ TEST(RingBufferTest, insert_n)
 
 }
 
-TEST(RingBufferTest, insert_n2)
+TEST(FixedDequeTest, insert_n2)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), 2U, 100);
 	LONGS_EQUAL(2, x.size());
 	LONGS_EQUAL(100, x[0]);
@@ -709,9 +709,9 @@ TEST(RingBufferTest, insert_n2)
 
 }
 
-TEST(RingBufferTest, insert_n_dispatch)
+TEST(FixedDequeTest, insert_n_dispatch)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), 2, 100);
 	LONGS_EQUAL(2, x.size());
 	LONGS_EQUAL(100, x[0]);
@@ -736,9 +736,9 @@ TEST(RingBufferTest, insert_n_dispatch)
 
 }
 
-TEST(RingBufferTest, insert_n_dispatch2)
+TEST(FixedDequeTest, insert_n_dispatch2)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_front(1);
 	x.pop_back();
 	LONGS_EQUAL(0, x.size());
@@ -767,23 +767,23 @@ TEST(RingBufferTest, insert_n_dispatch2)
 
 }
 
-TEST(RingBufferTest, insert_n_exception)
+TEST(FixedDequeTest, insert_n_exception)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	try {
 		x.insert(x.begin(), SIZE + 1, 100);
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, insert_range)
+TEST(FixedDequeTest, insert_range)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), a.begin(), a.begin() + 3);
 	LONGS_EQUAL(3, x.size());
 	LONGS_EQUAL(0, x[0]);
@@ -829,10 +829,10 @@ TEST(RingBufferTest, insert_range)
 	LONGS_EQUAL(0, x[7]);
 }
 
-TEST(RingBufferTest, insert_range2)
+TEST(FixedDequeTest, insert_range2)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_front(1);
 	x.pop_back();
 	LONGS_EQUAL(0, x.size());
@@ -882,10 +882,10 @@ TEST(RingBufferTest, insert_range2)
 	LONGS_EQUAL(0, x[7]);
 }
 
-TEST(RingBufferTest, insert_range_c_array)
+TEST(FixedDequeTest, insert_range_c_array)
 {
 	const int a[SIZE] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), &a[0], &a[SIZE]);
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -893,11 +893,11 @@ TEST(RingBufferTest, insert_range_c_array)
 	}
 }
 
-TEST(RingBufferTest, insert_range_FixedVector_iter)
+TEST(FixedDequeTest, insert_range_FixedVector_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const FixedVector<int, SIZE> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -905,11 +905,11 @@ TEST(RingBufferTest, insert_range_FixedVector_iter)
 	}
 }
 
-TEST(RingBufferTest, insert_range_RingBuffer_iter)
+TEST(FixedDequeTest, insert_range_FixedDeque_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	const FixedDeque<int, SIZE> b(a.begin(), a.end());
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -918,11 +918,11 @@ TEST(RingBufferTest, insert_range_RingBuffer_iter)
 }
 
 #ifndef NO_STD_CONTAINER
-TEST(RingBufferTest, insert_range_deque_iter)
+TEST(FixedDequeTest, insert_range_deque_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const std::deque<int> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -930,11 +930,11 @@ TEST(RingBufferTest, insert_range_deque_iter)
 	}
 }
 
-TEST(RingBufferTest, insert_range_list_iter)
+TEST(FixedDequeTest, insert_range_list_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const std::list<int> b(a.begin(), a.end());
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -943,25 +943,25 @@ TEST(RingBufferTest, insert_range_list_iter)
 }
 #endif
 
-TEST(RingBufferTest, insert_range_exception)
+TEST(FixedDequeTest, insert_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	try {
 		x.insert(x.end(), a.begin(), a.end());
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, erase)
+TEST(FixedDequeTest, erase)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it;
 	it = x.erase(x.begin());
 	LONGS_EQUAL(SIZE - 1, x.size());
 	LONGS_EQUAL(1, x[0]);
@@ -988,11 +988,11 @@ TEST(RingBufferTest, erase)
 	CHECK_EQUAL(x.end() - 1, it);
 }
 
-TEST(RingBufferTest, erase_range)
+TEST(FixedDequeTest, erase_range)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it;
 	it = x.erase(x.begin(), x.begin() + 2);
 	LONGS_EQUAL(SIZE - 2, x.size());
 	LONGS_EQUAL(2, x[0]);
@@ -1011,16 +1011,16 @@ TEST(RingBufferTest, erase_range)
 	CHECK_EQUAL(x.begin() + 1, it);
 }
 
-TEST(RingBufferTest, erase_range2)
+TEST(FixedDequeTest, erase_range2)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_front(1);
 	x.pop_back();
 	LONGS_EQUAL(0, x.size());
 	x.assign(a.begin(), a.end());
 
-	RingBuffer<int, SIZE>::iterator it;
+	FixedDeque<int, SIZE>::iterator it;
 	it = x.erase(x.begin(), x.begin() + 2);
 	LONGS_EQUAL(SIZE - 2, x.size());
 	LONGS_EQUAL(2, x[0]);
@@ -1039,29 +1039,29 @@ TEST(RingBufferTest, erase_range2)
 	CHECK_EQUAL(x.begin() + 1, it);
 }
 
-TEST(RingBufferTest, erase_range_all)
+TEST(FixedDequeTest, erase_range_all)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it;
 	it = x.erase(x.begin(), x.end());
 	LONGS_EQUAL(0, x.size());
 	CHECK_EQUAL(x.end(), it);
 }
 
-TEST(RingBufferTest, operator_equal_true)
+TEST(FixedDequeTest, operator_equal_true)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE> y(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> y(a.begin(), a.end());
 	CHECK_TRUE(x == y);
 }
 
-TEST(RingBufferTest, operator_equal_true_after_pop_back)
+TEST(FixedDequeTest, operator_equal_true_after_pop_back)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE> y(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> y(a.begin(), a.end());
 	x.back() = 100;
 	y.back() = 101;
 	x.pop_back();
@@ -1069,211 +1069,211 @@ TEST(RingBufferTest, operator_equal_true_after_pop_back)
 	CHECK_TRUE(x == y);
 }
 
-TEST(RingBufferTest, operator_equal_false)
+TEST(FixedDequeTest, operator_equal_false)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const Array<int, SIZE> b = {0, 1, 2, 3, 4, 5, 6, 7, 8, 10};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE> y(b.begin(), b.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> y(b.begin(), b.end());
 	CHECK_FALSE(x == y);
 }
 
-TEST(RingBufferTest, operator_equal_false_diff_size)
+TEST(FixedDequeTest, operator_equal_false_diff_size)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE> y(a.begin(), a.end() - 1);
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> y(a.begin(), a.end() - 1);
 	CHECK_FALSE(x == y);
 }
 
-TEST(RingBufferTest, operator_notequal_true)
+TEST(FixedDequeTest, operator_notequal_true)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const Array<int, SIZE> b = {0, 1, 2, 3, 4, 5, 6, 7, 8, 10};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE> y(b.begin(), b.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> y(b.begin(), b.end());
 	CHECK_TRUE(x != y);
 }
 
-TEST(RingBufferTest, operator_notequal_false)
+TEST(FixedDequeTest, operator_notequal_false)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE> y(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> y(a.begin(), a.end());
 	CHECK_FALSE(x != y);
 }
 
-TEST(RingBufferTest, iterator_copy_ctor)
+TEST(FixedDequeTest, iterator_copy_ctor)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2(it);
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2(it);
 	CHECK_EQUAL(it, it2);
-	RingBuffer<int, SIZE>::iterator it3;
+	FixedDeque<int, SIZE>::iterator it3;
 	it3 = it;
 	CHECK_EQUAL(it, it3);
 
-	const RingBuffer<int, SIZE>& y = x;
-	RingBuffer<int, SIZE>::const_iterator cit = y.begin();
-	RingBuffer<int, SIZE>::const_iterator cit2(it);
+	const FixedDeque<int, SIZE>& y = x;
+	FixedDeque<int, SIZE>::const_iterator cit = y.begin();
+	FixedDeque<int, SIZE>::const_iterator cit2(it);
 	CHECK_EQUAL(cit, cit2);
-	RingBuffer<int, SIZE>::const_iterator cit3;
+	FixedDeque<int, SIZE>::const_iterator cit3;
 	cit3 = it;
 	CHECK_EQUAL(cit, cit3);
 }
 
-TEST(RingBufferTest, iterator_operator_plusequal)
+TEST(FixedDequeTest, iterator_operator_plusequal)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator i = it += 5;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator i = it += 5;
 	LONGS_EQUAL(5, *it);
 	CHECK_EQUAL(x.begin() + 5, it);
 	CHECK_EQUAL(it, i);
 }
 
-TEST(RingBufferTest, iterator_operator_plusequal_0)
+TEST(FixedDequeTest, iterator_operator_plusequal_0)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
 	it += 0;
 	LONGS_EQUAL(0, *it);
 	CHECK_EQUAL(x.begin(), it);
 }
 
-TEST(RingBufferTest, iterator_operator_plusequal_max)
+TEST(FixedDequeTest, iterator_operator_plusequal_max)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
 	it += SIZE;
 	CHECK_EQUAL(x.end(), it);
 }
 
-TEST(RingBufferTest, iterator_operator_plusequal_minus)
+TEST(FixedDequeTest, iterator_operator_plusequal_minus)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.end();
-	RingBuffer<int, SIZE>::iterator i = it += -1;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.end();
+	FixedDeque<int, SIZE>::iterator i = it += -1;
 	LONGS_EQUAL(9, *it);
 	CHECK_EQUAL(x.begin() + 9, it);
 	CHECK_EQUAL(it, i);
 }
 
-TEST(RingBufferTest, iterator_operator_plusequal_minus_max)
+TEST(FixedDequeTest, iterator_operator_plusequal_minus_max)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.end();
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.end();
 	it += -static_cast<std::ptrdiff_t>(SIZE);
 	LONGS_EQUAL(0, *it);
 	CHECK_EQUAL(x.begin(), it);
 }
 
-TEST(RingBufferTest, iterator_operator_plus)
+TEST(FixedDequeTest, iterator_operator_plus)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin() + 5;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin() + 5;
 	LONGS_EQUAL(5, *it);
 }
 
-TEST(RingBufferTest, iterator_operator_plus_nonmember)
+TEST(FixedDequeTest, iterator_operator_plus_nonmember)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = 5 + x.begin();
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = 5 + x.begin();
 	LONGS_EQUAL(5, *it);
 	LONGS_EQUAL(1, *(-4 + it));
 }
 
-TEST(RingBufferTest, iterator_operator_incremant)
+TEST(FixedDequeTest, iterator_operator_incremant)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator i = ++it;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator i = ++it;
 	LONGS_EQUAL(1, *it);
 	LONGS_EQUAL(1, *i);
 
-	RingBuffer<int, SIZE>::iterator j = it++;
+	FixedDeque<int, SIZE>::iterator j = it++;
 	LONGS_EQUAL(2, *it);
 	LONGS_EQUAL(1, *j);
 }
 
-TEST(RingBufferTest, iterator_operator_minusqual)
+TEST(FixedDequeTest, iterator_operator_minusqual)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.end();
-	RingBuffer<int, SIZE>::iterator i = it -= 5;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.end();
+	FixedDeque<int, SIZE>::iterator i = it -= 5;
 	LONGS_EQUAL(5, *it);
 	CHECK_EQUAL(x.end() - 5, it);
 	CHECK_EQUAL(it, i);
 }
 
-TEST(RingBufferTest, iterator_operator_minusequal_0)
+TEST(FixedDequeTest, iterator_operator_minusequal_0)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
 	it -= 0;
 	LONGS_EQUAL(0, *it);
 	CHECK_EQUAL(x.begin(), it);
 }
 
-TEST(RingBufferTest, iterator_operator_minusqual_max)
+TEST(FixedDequeTest, iterator_operator_minusqual_max)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.end();
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.end();
 	it -= SIZE;
 	LONGS_EQUAL(0, *it);
 	CHECK_EQUAL(x.begin(), it);
 }
 
-TEST(RingBufferTest, iterator_operator_minusequal_minus)
+TEST(FixedDequeTest, iterator_operator_minusequal_minus)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator i = it -= -1;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator i = it -= -1;
 	LONGS_EQUAL(1, *it);
 	CHECK_EQUAL(x.begin() + 1, it);
 	CHECK_EQUAL(it, i);
 }
 
-TEST(RingBufferTest, iterator_operator_minusequal_minus_max)
+TEST(FixedDequeTest, iterator_operator_minusequal_minus_max)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
 	it -= -static_cast<std::ptrdiff_t>(SIZE);
 	CHECK_EQUAL(x.end(), it);
 }
 
-TEST(RingBufferTest, iterator_operator_minus)
+TEST(FixedDequeTest, iterator_operator_minus)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.end() - 5;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.end() - 5;
 	LONGS_EQUAL(5, *it);
 }
 
-TEST(RingBufferTest, iterator_operator_decremant)
+TEST(FixedDequeTest, iterator_operator_decremant)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.end();
-	RingBuffer<int, SIZE>::iterator i = --it;
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.end();
+	FixedDeque<int, SIZE>::iterator i = --it;
 	LONGS_EQUAL(9, *it);
 	LONGS_EQUAL(9, *i);
 
-	RingBuffer<int, SIZE>::iterator j = it--;
+	FixedDeque<int, SIZE>::iterator j = it--;
 	LONGS_EQUAL(8, *it);
 	LONGS_EQUAL(9, *j);
 }
@@ -1283,52 +1283,52 @@ struct A {
 	const char* b;
 };
 
-TEST(RingBufferTest, iterator_operator_arrow)
+TEST(FixedDequeTest, iterator_operator_arrow)
 {
 	A a = {1, "foo"};
-	RingBuffer<A, SIZE> x(1, a);
-	RingBuffer<A, SIZE>::iterator it = x.begin();
+	FixedDeque<A, SIZE> x(1, a);
+	FixedDeque<A, SIZE>::iterator it = x.begin();
 	LONGS_EQUAL(1, it->a);
 	STRCMP_EQUAL("foo", it->b);
 
 	it->a = 10;
 	LONGS_EQUAL(10, it->a);
 
-	RingBuffer<A, SIZE>::const_iterator cit(it);
+	FixedDeque<A, SIZE>::const_iterator cit(it);
 	LONGS_EQUAL(10, cit->a);
 	STRCMP_EQUAL("foo", cit->b);
 }
 
-TEST(RingBufferTest, iterator_operator_asterisk)
+TEST(FixedDequeTest, iterator_operator_asterisk)
 {
 	A a = {1, "foo"};
-	RingBuffer<A, SIZE> x(1, a);
-	RingBuffer<A, SIZE>::iterator it = x.begin();
+	FixedDeque<A, SIZE> x(1, a);
+	FixedDeque<A, SIZE>::iterator it = x.begin();
 	LONGS_EQUAL(1, (*it).a);
 	STRCMP_EQUAL("foo", (*it).b);
 
 	(*it).a = 10;
 	LONGS_EQUAL(10, (*it).a);
 
-	RingBuffer<A, SIZE>::const_iterator cit(it);
+	FixedDeque<A, SIZE>::const_iterator cit(it);
 	LONGS_EQUAL(10, (*cit).a);
 	STRCMP_EQUAL("foo", (*cit).b);
 }
 
-TEST(RingBufferTest, iterator_operator_bracket_read)
+TEST(FixedDequeTest, iterator_operator_bracket_read)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
-	RingBuffer<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE>::iterator it = x.begin();
 	LONGS_EQUAL(0, it[0]);
 	LONGS_EQUAL(5, it[5]);
 	LONGS_EQUAL(9, it[9]);
 }
 
-TEST(RingBufferTest, iterator_operator_bracket_write)
+TEST(FixedDequeTest, iterator_operator_bracket_write)
 {
-	RingBuffer<int, SIZE> x(10);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE> x(10);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
 	it[0] = 100;
 	LONGS_EQUAL(100, it[0]);
 
@@ -1336,12 +1336,12 @@ TEST(RingBufferTest, iterator_operator_bracket_write)
 	LONGS_EQUAL(10, it[9]);
 }
 
-TEST(RingBufferTest, iterator_operator_equal_true)
+TEST(FixedDequeTest, iterator_operator_equal_true)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin();
-	RingBuffer<int, SIZE>::const_iterator cit(it);
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin();
+	FixedDeque<int, SIZE>::const_iterator cit(it);
 	CHECK_TRUE(it == it2);
 	CHECK_TRUE(cit == it);
 	// CHECK_TRUE(it == cit); // compile error
@@ -1360,23 +1360,23 @@ TEST(RingBufferTest, iterator_operator_equal_true)
 
 }
 
-TEST(RingBufferTest, iterator_operator_equal_false)
+TEST(FixedDequeTest, iterator_operator_equal_false)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin() + 1;
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin() + 1;
 	CHECK_FALSE(it == it2);
 
-	RingBuffer<int, SIZE> y(SIZE);
-	RingBuffer<int, SIZE>::iterator it3 = y.begin();
+	FixedDeque<int, SIZE> y(SIZE);
+	FixedDeque<int, SIZE>::iterator it3 = y.begin();
 	CHECK_FALSE(it == it3);
 }
 
-TEST(RingBufferTest, iterator_operator_notequal_true)
+TEST(FixedDequeTest, iterator_operator_notequal_true)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin() + 1;
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin() + 1;
 	CHECK_TRUE(it != it2);
 
 	it = x.begin();
@@ -1384,11 +1384,11 @@ TEST(RingBufferTest, iterator_operator_notequal_true)
 	CHECK_TRUE(it != it2);
 }
 
-TEST(RingBufferTest, iterator_operator_notequal_false)
+TEST(FixedDequeTest, iterator_operator_notequal_false)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin();
 	CHECK_FALSE(it != it2);
 
 	it = x.end();
@@ -1396,32 +1396,32 @@ TEST(RingBufferTest, iterator_operator_notequal_false)
 	CHECK_FALSE(it != it2);
 }
 
-TEST(RingBufferTest, iterator_operator_less_true)
+TEST(FixedDequeTest, iterator_operator_less_true)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.end();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.end();
 	CHECK_TRUE(it < it2);
 }
 
-TEST(RingBufferTest, iterator_operator_less_true2)
+TEST(FixedDequeTest, iterator_operator_less_true2)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_front(1);
 	x.pop_back();
 	LONGS_EQUAL(0, x.size());
 
 	x.resize(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.end();
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.end();
 	CHECK_TRUE(it < it2);
 }
 
-TEST(RingBufferTest, iterator_operator_less_false)
+TEST(FixedDequeTest, iterator_operator_less_false)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin();
 	CHECK_FALSE(it < it2);
 
 	it = x.end();
@@ -1433,16 +1433,16 @@ TEST(RingBufferTest, iterator_operator_less_false)
 	CHECK_FALSE(it < it2);
 }
 
-TEST(RingBufferTest, iterator_operator_less_false2)
+TEST(FixedDequeTest, iterator_operator_less_false2)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_front(1);
 	x.pop_back();
 	LONGS_EQUAL(0, x.size());
 
 	x.resize(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin();
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin();
 	CHECK_FALSE(it < it2);
 
 	it = x.end();
@@ -1454,19 +1454,19 @@ TEST(RingBufferTest, iterator_operator_less_false2)
 	CHECK_FALSE(it < it2);
 }
 
-TEST(RingBufferTest, iterator_operator_greater_true)
+TEST(FixedDequeTest, iterator_operator_greater_true)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.end();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.end();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin();
 	CHECK_TRUE(it > it2);
 }
 
-TEST(RingBufferTest, iterator_operator_greater_false)
+TEST(FixedDequeTest, iterator_operator_greater_false)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin();
 	CHECK_FALSE(it > it2);
 
 	it = x.end();
@@ -1478,11 +1478,11 @@ TEST(RingBufferTest, iterator_operator_greater_false)
 	CHECK_FALSE(it > it2);
 }
 
-TEST(RingBufferTest, iterator_operator_lessequal_true)
+TEST(FixedDequeTest, iterator_operator_lessequal_true)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.end();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.end();
 	CHECK_TRUE(it <= it2);
 
 	it = x.begin();
@@ -1494,19 +1494,19 @@ TEST(RingBufferTest, iterator_operator_lessequal_true)
 	CHECK_TRUE(it <= it2);
 }
 
-TEST(RingBufferTest, iterator_operator_lessequal_false)
+TEST(FixedDequeTest, iterator_operator_lessequal_false)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.end();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.end();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin();
 	CHECK_FALSE(it <= it2);
 }
 
-TEST(RingBufferTest, iterator_operator_greaterequal_true)
+TEST(FixedDequeTest, iterator_operator_greaterequal_true)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.end();
-	RingBuffer<int, SIZE>::iterator it2 = x.begin();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.end();
+	FixedDeque<int, SIZE>::iterator it2 = x.begin();
 	CHECK_TRUE(it >= it2);
 
 	it = x.begin();
@@ -1518,49 +1518,49 @@ TEST(RingBufferTest, iterator_operator_greaterequal_true)
 	CHECK_TRUE(it >= it2);
 }
 
-TEST(RingBufferTest, iterator_operator_greaterequal_false)
+TEST(FixedDequeTest, iterator_operator_greaterequal_false)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.end();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.end();
 	CHECK_FALSE(it >= it2);
 }
 
-TEST(RingBufferTest, iterator_difference)
+TEST(FixedDequeTest, iterator_difference)
 {
-	RingBuffer<int, SIZE> x(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.end();
+	FixedDeque<int, SIZE> x(SIZE);
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.end();
 	LONGS_EQUAL(SIZE, it2 - it);
 	LONGS_EQUAL(-static_cast<std::ptrdiff_t>(SIZE), it - it2);
 }
 
-TEST(RingBufferTest, iterator_difference2)
+TEST(FixedDequeTest, iterator_difference2)
 {
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	x.push_front(1);
 	x.pop_back();
 	LONGS_EQUAL(0, x.size());
 
 	x.resize(SIZE);
-	RingBuffer<int, SIZE>::iterator it = x.begin();
-	RingBuffer<int, SIZE>::iterator it2 = x.end();
+	FixedDeque<int, SIZE>::iterator it = x.begin();
+	FixedDeque<int, SIZE>::iterator it2 = x.end();
 	LONGS_EQUAL(SIZE, it2 - it);
 	LONGS_EQUAL(-static_cast<std::ptrdiff_t>(SIZE), it - it2);
 }
 
-TEST(RingBufferTest, new_delete)
+TEST(FixedDequeTest, new_delete)
 {
-	RingBuffer<int, SIZE>* x = new RingBuffer<int, SIZE>(SIZE);
+	FixedDeque<int, SIZE>* x = new FixedDeque<int, SIZE>(SIZE);
 	LONGS_EQUAL(SIZE, x->size());
 	delete x;
 }
 
 #ifndef NO_STD_ALGORITHM
-TEST(RingBufferTest, algo_sort)
+TEST(FixedDequeTest, algo_sort)
 {
 	const Array<int, SIZE> a = {1, 7, 0, 2, 5, 3, 9, 4, 6, 8};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	std::sort(x.begin(), x.end());
 	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
@@ -1572,10 +1572,10 @@ TEST(RingBufferTest, algo_sort)
 	}
 }
 
-TEST(RingBufferTest, algo_copy)
+TEST(FixedDequeTest, algo_copy)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	std::copy(a.begin(), a.end(), std::back_inserter(x));
 	LONGS_EQUAL(SIZE, x.size());
 	for (std::size_t i = 0; i < x.size(); ++i) {
@@ -1583,15 +1583,15 @@ TEST(RingBufferTest, algo_copy)
 	}
 }
 
-TEST(RingBufferTest, algo_copy_exception)
+TEST(FixedDequeTest, algo_copy_exception)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(1);
+	FixedDeque<int, SIZE> x(1);
 	try {
 		std::copy(a.begin(), a.end(), std::back_inserter(x));
 	}
 	catch (const std::exception& e) {
-		STRCMP_EQUAL("RingBuffer::BadAlloc", e.what());
+		STRCMP_EQUAL("FixedDeque::BadAlloc", e.what());
 		return;
 	}
 	FAIL("failed");
@@ -1599,22 +1599,22 @@ TEST(RingBufferTest, algo_copy_exception)
 #endif
 
 #ifndef NO_STD_ITERATOR
-TEST(RingBufferTest, rbegin_rend)
+TEST(FixedDequeTest, rbegin_rend)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	RingBuffer<int, SIZE> x(a.begin(), a.end());
+	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	std::size_t i = SIZE - 1;
-	for (RingBuffer<int, SIZE>::reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
+	for (FixedDeque<int, SIZE>::reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}
 }
 
-TEST(RingBufferTest, rbegin_rend_const)
+TEST(FixedDequeTest, rbegin_rend_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> x(a.begin(), a.end());
+	const FixedDeque<int, SIZE> x(a.begin(), a.end());
 	std::size_t i = SIZE - 1;
-	for (RingBuffer<int, SIZE>::const_reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
+	for (FixedDeque<int, SIZE>::const_reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}
 }
@@ -1664,32 +1664,32 @@ public:
 };
 
 
-TEST(RingBufferTest, default_ctor_RBElem)
+TEST(FixedDequeTest, default_ctor_RBElem)
 {
-	RingBuffer<RBElem, SIZE> x;
+	FixedDeque<RBElem, SIZE> x;
 	RBElem::checkElemsDestroyed(x.begin(), SIZE, 0);
 }
 
-TEST(RingBufferTest, ctor_RBElem)
+TEST(FixedDequeTest, ctor_RBElem)
 {
 	RBElem a;
 
-	RingBuffer<RBElem, SIZE> x(2, a);
+	FixedDeque<RBElem, SIZE> x(2, a);
 	LONGS_EQUAL(2, x.size());
 
-	RingBuffer<RBElem, SIZE> y(x.begin(), x.end());
+	FixedDeque<RBElem, SIZE> y(x.begin(), x.end());
 	LONGS_EQUAL(2, y.size());
 
-	RingBuffer<RBElem, SIZE> z(x);
+	FixedDeque<RBElem, SIZE> z(x);
 	LONGS_EQUAL(2, z.size());
 
-	RingBuffer<RBElem, SIZE>::iterator it = x.begin();
+	FixedDeque<RBElem, SIZE>::iterator it = x.begin();
 	x.clear();
 	RBElem::checkElemsDestroyed(it, SIZE, 2);
 
 	a.data = RBElem::EXCEPTION_DATA;
 	try {
-		RingBuffer<RBElem, SIZE> xx(1, a);
+		FixedDeque<RBElem, SIZE> xx(1, a);
 	}
 	catch (const RBElem::Exception&) {
 		return;
@@ -1698,42 +1698,42 @@ TEST(RingBufferTest, ctor_RBElem)
 
 }
 
-TEST(RingBufferTest, operator_assign_RBElem)
+TEST(FixedDequeTest, operator_assign_RBElem)
 {
 	RBElem a;
 
-	RingBuffer<RBElem, SIZE> x(2, a);
+	FixedDeque<RBElem, SIZE> x(2, a);
 
-	RingBuffer<RBElem, SIZE> y(1, a);
+	FixedDeque<RBElem, SIZE> y(1, a);
 
 	y = x;
 	LONGS_EQUAL(2, y.size());
 
-	RingBuffer<RBElem, SIZE> z(3, a);
+	FixedDeque<RBElem, SIZE> z(3, a);
 
 	z = x;
 	LONGS_EQUAL(2, z.size());
 
-	RingBuffer<RBElem, SIZE>::iterator it = z.begin();
+	FixedDeque<RBElem, SIZE>::iterator it = z.begin();
 	z.clear();
 	RBElem::checkElemsDestroyed(it, SIZE, 3);
 
 }
 
-TEST(RingBufferTest, push_back_pop_back_RBElem)
+TEST(FixedDequeTest, push_back_pop_back_RBElem)
 {
 	RBElem a;
 
-	RingBuffer<RBElem, SIZE> x;
+	FixedDeque<RBElem, SIZE> x;
 	x.push_back(a);
 	x.push_back(a);
 	x.pop_back();
 
-	RingBuffer<RBElem, SIZE>::iterator it = x.begin();
+	FixedDeque<RBElem, SIZE>::iterator it = x.begin();
 	x.clear();
 	RBElem::checkElemsDestroyed(it, SIZE, 2);
 
-	RingBuffer<RBElem, SIZE> y;
+	FixedDeque<RBElem, SIZE> y;
 	y.push_back(a);
 	a.data = RBElem::EXCEPTION_DATA;
 	try {
@@ -1741,7 +1741,7 @@ TEST(RingBufferTest, push_back_pop_back_RBElem)
 	}
 	catch (const RBElem::Exception&) {
 		LONGS_EQUAL(1, y.size());
-		RingBuffer<RBElem, SIZE>::iterator yit = y.begin();
+		FixedDeque<RBElem, SIZE>::iterator yit = y.begin();
 		y.clear();
 		RBElem::checkElemsDestroyed(yit, SIZE, 1);
 		return;
@@ -1749,11 +1749,11 @@ TEST(RingBufferTest, push_back_pop_back_RBElem)
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, insert_n_RBElem)
+TEST(FixedDequeTest, insert_n_RBElem)
 {
 	RBElem a;
 
-	RingBuffer<RBElem, SIZE> x;
+	FixedDeque<RBElem, SIZE> x;
 	x.insert(x.end(), 4, a);
 	x.insert(x.begin() + 2, 1, a);
 	x.insert(x.end(), 1, a);
@@ -1768,7 +1768,7 @@ TEST(RingBufferTest, insert_n_RBElem)
 	}
 	catch (const RBElem::Exception&) {
 		LONGS_EQUAL(9, x.size());
-		RingBuffer<RBElem, SIZE>::iterator it = x.begin();
+		FixedDeque<RBElem, SIZE>::iterator it = x.begin();
 		x.clear();
 		RBElem::checkElemsDestroyed(it, SIZE, 9);
 		return;
@@ -1776,12 +1776,12 @@ TEST(RingBufferTest, insert_n_RBElem)
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, insert_range_RBElem)
+TEST(FixedDequeTest, insert_range_RBElem)
 {
 	RBElem a;
 
-	RingBuffer<RBElem, SIZE> x(4, a);
-	RingBuffer<RBElem, SIZE> y;
+	FixedDeque<RBElem, SIZE> x(4, a);
+	FixedDeque<RBElem, SIZE> y;
 	y.insert(y.end(), x.begin(), x.end());
 	y.insert(y.begin() + 2, x.begin(), x.begin() + 1);
 	y.insert(y.end(), x.begin(), x.begin() + 1);
@@ -1796,7 +1796,7 @@ TEST(RingBufferTest, insert_range_RBElem)
 	}
 	catch (const RBElem::Exception&) {
 		LONGS_EQUAL(9, y.size());
-		RingBuffer<RBElem, SIZE>::iterator it = y.begin();
+		FixedDeque<RBElem, SIZE>::iterator it = y.begin();
 		y.clear();
 		RBElem::checkElemsDestroyed(it, SIZE, 9);
 		return;
@@ -1804,11 +1804,11 @@ TEST(RingBufferTest, insert_range_RBElem)
 	FAIL("failed");
 }
 
-TEST(RingBufferTest, erase_range_RBElem)
+TEST(FixedDequeTest, erase_range_RBElem)
 {
 	RBElem a;
 
-	RingBuffer<RBElem, SIZE> x(5, a);
+	FixedDeque<RBElem, SIZE> x(5, a);
 
 	x.erase(x.begin() + 1, x.begin() + 2);
 
@@ -1821,21 +1821,21 @@ TEST(RingBufferTest, erase_range_RBElem)
 #if (__cplusplus >= 201103L) || defined(_WIN32)
 #include <memory>
 
-TEST(RingBufferTest, shared_ptr_int)
+TEST(FixedDequeTest, shared_ptr_int)
 {
-	RingBuffer<std::shared_ptr<int>, SIZE> x;
+	FixedDeque<std::shared_ptr<int>, SIZE> x;
 	x.push_back(std::make_shared<int>(1));
 	LONGS_EQUAL(1, *x[0]);
 	*x[0] = 2;
 	LONGS_EQUAL(2, *x[0]);
 }
 
-TEST(RingBufferTest, shared_ptr_RBElem)
+TEST(FixedDequeTest, shared_ptr_RBElem)
 {
 	RBElem a;
 
 	{
-		RingBuffer<std::shared_ptr<RBElem>, SIZE> x;
+		FixedDeque<std::shared_ptr<RBElem>, SIZE> x;
 
 		x.push_back(std::make_shared<RBElem>(a));
 		x.push_back(std::make_shared<RBElem>(a));

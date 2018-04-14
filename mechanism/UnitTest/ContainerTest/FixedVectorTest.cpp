@@ -1,6 +1,6 @@
 #include "Container/FixedVector.h"
 #include "Container/Array.h"
-#include "Container/RingBuffer.h"
+#include "Container/FixedDeque.h"
 #ifndef NO_STD_CONTAINER
 #include <deque>
 #include <list>
@@ -13,7 +13,7 @@
 
 using Container::FixedVector;
 using Container::Array;
-using Container::RingBuffer;
+using Container::FixedDeque;
 
 TEST_GROUP(FixedVectorTest) {
 	static const std::size_t SIZE = 10;
@@ -464,10 +464,10 @@ TEST(FixedVectorTest, assign_range_FixedVector_iter)
 	}
 }
 
-TEST(FixedVectorTest, assign_range_RingBuffer_iter)
+TEST(FixedVectorTest, assign_range_FixedDeque_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> b(a.begin(), a.end());
+	const FixedDeque<int, SIZE> b(a.begin(), a.end());
 	FixedVector<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
@@ -672,10 +672,10 @@ TEST(FixedVectorTest, insert_range_FixedVector_iter)
 	}
 }
 
-TEST(FixedVectorTest, insert_range_RingBuffer_iter)
+TEST(FixedVectorTest, insert_range_FixedDeque_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	const RingBuffer<int, SIZE> b(a.begin(), a.end());
+	const FixedDeque<int, SIZE> b(a.begin(), a.end());
 	FixedVector<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());

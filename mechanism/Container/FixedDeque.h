@@ -1,5 +1,5 @@
-#ifndef CONTAINER_RING_BUFFER_H_INCLUDED
-#define CONTAINER_RING_BUFFER_H_INCLUDED
+#ifndef CONTAINER_FIXED_DEQUE_H_INCLUDED
+#define CONTAINER_FIXED_DEQUE_H_INCLUDED
 
 #include <cstddef>
 #ifndef NO_STD_ITERATOR
@@ -13,16 +13,16 @@
 namespace Container {
 
 template <typename T, std::size_t MaxSize>
-class RingBuffer;
+class FixedDeque;
 
 template <typename T, typename Ref, typename Ptr, typename RBPtr, std::size_t MaxSize>
-class RingBuffer_iterator {
+class FixedDeque_iterator {
 public:
 	typedef T value_type;
 	typedef std::size_t size_type;
 	typedef std::ptrdiff_t difference_type;
-	typedef RingBuffer_iterator<T, T&, T*, RingBuffer<T, MaxSize>*, MaxSize> iterator;
-	typedef RingBuffer_iterator<T, const T&, const T*, const RingBuffer<T, MaxSize>*, MaxSize> const_iterator;
+	typedef FixedDeque_iterator<T, T&, T*, FixedDeque<T, MaxSize>*, MaxSize> iterator;
+	typedef FixedDeque_iterator<T, const T&, const T*, const FixedDeque<T, MaxSize>*, MaxSize> const_iterator;
 	typedef Ref reference;
 	typedef const Ref const_reference;
 	typedef Ptr pointer;
@@ -31,18 +31,18 @@ public:
 	typedef std::random_access_iterator_tag iterator_category;
 #endif
 
-	RingBuffer_iterator() : m_rb(0), m_idx(0U) {}
+	FixedDeque_iterator() : m_rb(0), m_idx(0U) {}
 
-	RingBuffer_iterator(const iterator& x) : m_rb(x.m_rb), m_idx(x.m_idx) {}
+	FixedDeque_iterator(const iterator& x) : m_rb(x.m_rb), m_idx(x.m_idx) {}
 
-	RingBuffer_iterator& operator=(const iterator& x)
+	FixedDeque_iterator& operator=(const iterator& x)
 	{
 		m_rb = x.m_rb;
 		m_idx = x.m_idx;
 		return *this;
 	}
 
-	RingBuffer_iterator& operator+=(difference_type n)
+	FixedDeque_iterator& operator+=(difference_type n)
 	{
 		CHECK_PRECOND(m_rb != 0);
 		if (n < 0) {
@@ -54,13 +54,13 @@ public:
 		return *this;
 	}
 
-	RingBuffer_iterator operator+(difference_type n) const
+	FixedDeque_iterator operator+(difference_type n) const
 	{
-		RingBuffer_iterator tmp = *this;
+		FixedDeque_iterator tmp = *this;
 		return tmp += n;
 	}
 
-	RingBuffer_iterator& operator-=(difference_type n)
+	FixedDeque_iterator& operator-=(difference_type n)
 	{
 		CHECK_PRECOND(m_rb != 0);
 		if (n < 0) {
@@ -72,7 +72,7 @@ public:
 		return *this;
 	}
 
-	difference_type operator-(const RingBuffer_iterator& x) const
+	difference_type operator-(const FixedDeque_iterator& x) const
 	{
 		CHECK_PRECOND(m_rb != 0);
 		CHECK_PRECOND(m_rb == x.m_rb);
@@ -82,32 +82,32 @@ public:
 		return -static_cast<difference_type>(m_rb->distance(m_idx, x.m_idx));
 	}
 
-	RingBuffer_iterator operator-(difference_type n) const
+	FixedDeque_iterator operator-(difference_type n) const
 	{
-		RingBuffer_iterator tmp = *this;
+		FixedDeque_iterator tmp = *this;
 		return tmp -= n;
 	}
 
-	RingBuffer_iterator& operator++()
+	FixedDeque_iterator& operator++()
 	{
 		return operator+=(1);
 	}
 
-	RingBuffer_iterator& operator--()
+	FixedDeque_iterator& operator--()
 	{
 		return operator-=(1);
 	}
 
-	RingBuffer_iterator operator++(int)
+	FixedDeque_iterator operator++(int)
 	{
-		RingBuffer_iterator tmp = *this;
+		FixedDeque_iterator tmp = *this;
 		++*this;
 		return tmp;
 	}
 
-	RingBuffer_iterator operator--(int)
+	FixedDeque_iterator operator--(int)
 	{
-		RingBuffer_iterator tmp = *this;
+		FixedDeque_iterator tmp = *this;
 		--*this;
 		return tmp;
 	}
@@ -129,17 +129,17 @@ public:
 		return *(*this + n);
 	}
 
-	bool operator==(const RingBuffer_iterator& x) const
+	bool operator==(const FixedDeque_iterator& x) const
 	{
 		return (m_rb == x.m_rb) && (m_idx == x.m_idx);
 	}
 
-	bool operator!=(const RingBuffer_iterator& x) const
+	bool operator!=(const FixedDeque_iterator& x) const
 	{
 		return !(*this == x);
 	}
 
-	bool operator<(const RingBuffer_iterator& x) const
+	bool operator<(const FixedDeque_iterator& x) const
 	{
 		CHECK_PRECOND(m_rb != 0);
 		CHECK_PRECOND(m_rb == x.m_rb);
@@ -148,51 +148,51 @@ public:
 			m_rb->distance(x.m_rb->m_begin, x.m_idx);
 	}
 
-	bool operator>(const RingBuffer_iterator& x) const
+	bool operator>(const FixedDeque_iterator& x) const
 	{
 		return x < *this;
 	}
 
-	bool operator<=(const RingBuffer_iterator& x) const
+	bool operator<=(const FixedDeque_iterator& x) const
 	{
 		return !(x < *this);
 	}
 
-	bool operator>=(const RingBuffer_iterator& x) const
+	bool operator>=(const FixedDeque_iterator& x) const
 	{
 		return !(*this < x);
 	}
 
 private:
 	template <typename U, std::size_t N>
-	friend class RingBuffer;
+	friend class FixedDeque;
 
 	template <typename U, typename RefX, typename PtrX, typename RBPtrX, std::size_t N>
-	friend class RingBuffer_iterator;
+	friend class FixedDeque_iterator;
 
 	static const size_type BufSize = MaxSize + 1U;
 
 	RBPtr m_rb;
 	size_type m_idx;
 
-	RingBuffer_iterator(RBPtr rb, size_type idx) : m_rb(rb), m_idx(idx) {}
+	FixedDeque_iterator(RBPtr rb, size_type idx) : m_rb(rb), m_idx(idx) {}
 };
 
 template <typename T, typename Ref, typename Ptr, typename RBPtr, std::size_t MaxSize>
-RingBuffer_iterator<T, Ref, Ptr, RBPtr, MaxSize>
-operator+(std::ptrdiff_t n, const RingBuffer_iterator<T, Ref, Ptr, RBPtr, MaxSize>& x)
+FixedDeque_iterator<T, Ref, Ptr, RBPtr, MaxSize>
+operator+(std::ptrdiff_t n, const FixedDeque_iterator<T, Ref, Ptr, RBPtr, MaxSize>& x)
 {
 	return x + n;
 }
 
 template <typename T, std::size_t MaxSize>
-class RingBuffer {
+class FixedDeque {
 public:
 	typedef T value_type;
 	typedef std::size_t size_type;
 	typedef std::ptrdiff_t difference_type;
-	typedef RingBuffer_iterator<T, T&, T*, RingBuffer*, MaxSize> iterator;
-	typedef RingBuffer_iterator<T, const T&, const T*, const RingBuffer*, MaxSize> const_iterator;
+	typedef FixedDeque_iterator<T, T&, T*, FixedDeque*, MaxSize> iterator;
+	typedef FixedDeque_iterator<T, const T&, const T*, const FixedDeque*, MaxSize> const_iterator;
 	typedef value_type& reference;
 	typedef const value_type& const_reference;
 	typedef value_type* pointer;
@@ -219,40 +219,40 @@ private:
 		BadAlloc() : Container::BadAlloc() {}
 		const char* what() const throw()
 		{
-			return "RingBuffer::BadAlloc";
+			return "FixedDeque::BadAlloc";
 		}
 	};
 
 public:
-	RingBuffer()
+	FixedDeque()
 	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{}
 
-	RingBuffer(size_type n, const T& data = T())
+	FixedDeque(size_type n, const T& data = T())
 	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{
 		assign(n, data);
 	}
 
 	template <typename InputIterator>
-	RingBuffer(InputIterator first, InputIterator last)
+	FixedDeque(InputIterator first, InputIterator last)
 	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{
 		assign(first, last);
 	}
 
-	RingBuffer(const RingBuffer& x)
+	FixedDeque(const FixedDeque& x)
 	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{
 		assign(x.begin(), x.end());
 	}
 
-	~RingBuffer()
+	~FixedDeque()
 	{
 		destroy(begin(), end());
 	}
 
-	RingBuffer& operator=(const RingBuffer& x)
+	FixedDeque& operator=(const FixedDeque& x)
 	{
 		if (this != &x) {
 			assign(x.begin(), x.end());
@@ -304,7 +304,7 @@ public:
 	reference at(size_type idx)
 	{
 		if (idx >= size()) {
-			throw OutOfRange("RingBuffer::at");
+			throw OutOfRange("FixedDeque::at");
 		}
 		return *(begin() + idx);
 	}
@@ -312,7 +312,7 @@ public:
 	const_reference at(size_type idx) const
 	{
 		if (idx >= size()) {
-			throw OutOfRange("RingBuffer::at");
+			throw OutOfRange("FixedDeque::at");
 		}
 		return *(begin() + idx);
 	}
@@ -515,10 +515,10 @@ public:
 
 private:
 	template <typename U, typename Ref, typename Ptr, typename RBPtr, std::size_t N>
-	friend class RingBuffer_iterator;
+	friend class FixedDeque_iterator;
 
 	template <typename U, std::size_t N>
-	friend bool operator==(const RingBuffer<U, N>& x, const RingBuffer<U, N>& y);
+	friend bool operator==(const FixedDeque<U, N>& x, const FixedDeque<U, N>& y);
 
 	size_type next_idx(size_type idx, size_type un = 1U) const
 	{
@@ -721,7 +721,7 @@ private:
 };
 
 template <typename T, std::size_t MaxSize>
-bool operator==(const RingBuffer<T, MaxSize>& x, const RingBuffer<T, MaxSize>& y)
+bool operator==(const FixedDeque<T, MaxSize>& x, const FixedDeque<T, MaxSize>& y)
 {
 	if (x.size() != y.size()) {
 		return false;
@@ -735,11 +735,11 @@ bool operator==(const RingBuffer<T, MaxSize>& x, const RingBuffer<T, MaxSize>& y
 }
 
 template <typename T, std::size_t MaxSize>
-bool operator!=(const RingBuffer<T, MaxSize>& x, const RingBuffer<T, MaxSize>& y)
+bool operator!=(const FixedDeque<T, MaxSize>& x, const FixedDeque<T, MaxSize>& y)
 {
 	return !(x == y);
 }
 
 }
 
-#endif // CONTAINER_RING_BUFFER_H_INCLUDED
+#endif // CONTAINER_FIXED_DEQUE_H_INCLUDED

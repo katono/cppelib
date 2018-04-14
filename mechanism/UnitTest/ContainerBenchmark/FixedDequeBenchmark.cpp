@@ -1,5 +1,5 @@
 #define DESIGN_BY_CONTRACT
-#include "Container/RingBuffer.h"
+#include "Container/FixedDeque.h"
 #include <deque>
 #include <algorithm>
 #include <functional>
@@ -13,12 +13,12 @@
 #endif
 #include "CppUTest/TestHarness.h"
 
-using Container::RingBuffer;
+using Container::FixedDeque;
 
-TEST_GROUP(RingBufferBenchmark) {
+TEST_GROUP(FixedDequeBenchmark) {
 	static const std::size_t SIZE = 1000000;
 	static const std::size_t SORT_SIZE = 100000;
-	RingBuffer<int, SIZE> x;
+	FixedDeque<int, SIZE> x;
 	std::deque<int> y;
 	void setup()
 	{
@@ -45,20 +45,20 @@ TEST_GROUP(RingBufferBenchmark) {
 #endif
 	}
 
-	SimpleString StringFrom(RingBuffer<int, SIZE>::iterator value)
+	SimpleString StringFrom(FixedDeque<int, SIZE>::iterator value)
 	{
 		return StringFromFormat("%p", (void *)&*value);
 	}
 };
 
-TEST(RingBufferBenchmark, push_back_pop_back)
+TEST(FixedDequeBenchmark, push_back_pop_back)
 {
 	unsigned long t;
 	t = get_msec();
 	for (std::size_t i = 0; i < SIZE; ++i) {
 		x.push_back(i);
 	}
-	std::printf("RingBuffer::push_back, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("FixedDeque::push_back, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	for (std::size_t i = 0; i < SIZE; ++i) {
@@ -74,7 +74,7 @@ TEST(RingBufferBenchmark, push_back_pop_back)
 	while (!x.empty()) {
 		x.pop_back();
 	}
-	std::printf("RingBuffer::pop_back, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("FixedDeque::pop_back, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	while (!y.empty()) {
@@ -84,14 +84,14 @@ TEST(RingBufferBenchmark, push_back_pop_back)
 
 }
 
-TEST(RingBufferBenchmark, push_front_pop_front)
+TEST(FixedDequeBenchmark, push_front_pop_front)
 {
 	unsigned long t;
 	t = get_msec();
 	for (std::size_t i = 0; i < SIZE; ++i) {
 		x.push_front(i);
 	}
-	std::printf("RingBuffer::push_front, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("FixedDeque::push_front, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	for (std::size_t i = 0; i < SIZE; ++i) {
@@ -107,7 +107,7 @@ TEST(RingBufferBenchmark, push_front_pop_front)
 	while (!x.empty()) {
 		x.pop_front();
 	}
-	std::printf("RingBuffer::pop_front, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("FixedDeque::pop_front, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	while (!y.empty()) {
@@ -117,7 +117,7 @@ TEST(RingBufferBenchmark, push_front_pop_front)
 
 }
 
-TEST(RingBufferBenchmark, sort)
+TEST(FixedDequeBenchmark, sort)
 {
 	for (std::size_t i = 0; i < SORT_SIZE; ++i) {
 		const int tmp = std::rand();
@@ -128,7 +128,7 @@ TEST(RingBufferBenchmark, sort)
 	unsigned long t;
 	t = get_msec();
 	std::sort(x.begin(), x.end());
-	std::printf("sort RingBuffer, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("sort FixedDeque, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	std::sort(y.begin(), y.end());
@@ -140,7 +140,7 @@ TEST(RingBufferBenchmark, sort)
 
 	t = get_msec();
 	std::sort(x.begin(), x.end());
-	std::printf("sort 2 RingBuffer, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("sort 2 FixedDeque, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	std::sort(y.begin(), y.end());
@@ -152,7 +152,7 @@ TEST(RingBufferBenchmark, sort)
 
 	t = get_msec();
 	std::sort(x.begin(), x.end(), std::greater<int>());
-	std::printf("sort greater RingBuffer, %ld, %ld ms\n", x.size(), get_msec() - t);
+	std::printf("sort greater FixedDeque, %ld, %ld ms\n", x.size(), get_msec() - t);
 
 	t = get_msec();
 	std::sort(y.begin(), y.end(), std::greater<int>());
