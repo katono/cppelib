@@ -22,7 +22,7 @@ TARGET = alltests
 OBJS = main.o
 OBJS += ArrayTest.o
 OBJS += FixedVectorTest.o
-OBJS += RingBufferTest.o
+OBJS += FixedDequeTest.o
 OBJS += ListTest.o
 
 all: $(TARGET)
@@ -46,5 +46,5 @@ clean:
 
 ArrayTest.o: $(CONTAINER_DIR)/Array.h
 FixedVectorTest.o: $(CONTAINER_DIR)/FixedVector.h
-RingBufferTest.o: $(CONTAINER_DIR)/RingBuffer.h
+FixedDequeTest.o: $(CONTAINER_DIR)/FixedDeque.h
 ListTest.o: $(CONTAINER_DIR)/List.h
