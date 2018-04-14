@@ -346,3 +346,49 @@ TEST(WindowsMessageQueueTest, send_receive_many_threads)
 	LONGS_EQUAL(num * SIZE, recv_count);
 }
 
+struct Elem {
+	unsigned int data;
+	static const unsigned int EXCEPTION_DATA = 0;
+	class Exception {};
+
+	Elem() : data(100) {}
+	Elem(const Elem& x) : data(x.data)
+	{
+		if (x.data == EXCEPTION_DATA) {
+			throw Exception();
+		}
+	}
+	Elem& operator=(const Elem&)
+	{
+		if (data == EXCEPTION_DATA) {
+			throw Exception();
+		}
+		return *this;
+	}
+};
+
+TEST(WindowsMessageQueueTest, send_receive_exception)
+{
+	MessageQueue<Elem>* mq = MessageQueue<Elem>::create(SIZE);
+	CHECK(mq);
+	Elem a;
+
+	OSWrapper::Error err;
+	err = mq->send(a);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	LONGS_EQUAL(1, mq->getSize());
+
+	a.data = Elem::EXCEPTION_DATA;
+	err = mq->send(a);
+	LONGS_EQUAL(OSWrapper::OtherError, err);
+	LONGS_EQUAL(1, mq->getSize());
+
+	Elem b;
+	b.data = Elem::EXCEPTION_DATA;
+	err = mq->receive(&b);
+	LONGS_EQUAL(OSWrapper::OtherError, err);
+	LONGS_EQUAL(1, mq->getSize());
+
+	MessageQueue<Elem>::destroy(mq);
+}
+
