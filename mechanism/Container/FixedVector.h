@@ -66,11 +66,9 @@ public:
 	}
 
 	FixedVector(const FixedVector& x)
-	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[MaxSize]>(&m_realBuf)), m_end(x.m_end)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[MaxSize]>(&m_realBuf)), m_end(0U)
 	{
-		for (std::size_t i = 0U; i < x.size(); ++i) {
-			construct(&operator[](i), x[i]);
-		}
+		assign(x.begin(), x.end());
 	}
 
 	~FixedVector()
@@ -80,25 +78,9 @@ public:
 
 	FixedVector& operator=(const FixedVector& x)
 	{
-		if (this == &x) {
-			return *this;
+		if (this != &x) {
+			assign(x.begin(), x.end());
 		}
-		if (size() < x.size()) {
-			for (std::size_t i = 0U; i < x.size(); ++i) {
-				if (i < size()) {
-					operator[](i) = x[i];
-				} else {
-					construct(&operator[](i), x[i]);
-				}
-			}
-		} else {
-			const std::size_t n = x.size();
-			for (std::size_t i = 0U; i < n; ++i) {
-				operator[](i) = x[i];
-			}
-			destroy(begin() + n, end());
-		}
-		m_end = x.m_end;
 		return *this;
 	}
 
@@ -246,10 +228,10 @@ public:
 		if (max_size() < n) {
 			throw BadAlloc();
 		}
-		for (size_type i = m_end; i < n; ++i) {
-			construct(&*(begin() + i), data);
+		const size_type rest = n - size();
+		for (size_type i = 0U; i < rest; ++i) {
+			push_back(data);
 		}
-		m_end = n;
 	}
 
 	void push_back(const T& data)
@@ -264,8 +246,8 @@ public:
 	void pop_back()
 	{
 		CHECK_PRECOND(!empty());
+		destroy(&*(end() - 1));
 		--m_end;
-		destroy(&*end());
 	}
 
 	void assign(size_type n, const T& data)
@@ -360,23 +342,32 @@ private:
 			throw BadAlloc();
 		}
 
-		for (iterator i = end() - 1; i != pos - 1; --i) {
-			if ((i + n) < end()) {
-				*(i + n) = *i;
-			} else {
-				construct(&*(i + n), *i);
+		const size_type num_elems_pos_to_end = end() - pos;
+		iterator old_end = end();
+		if (num_elems_pos_to_end > n) {
+			for (size_type i = 0U; i < n; ++i) {
+				construct(&*end());
+				++m_end;
+			}
+			for (iterator it = old_end - 1; it != pos - 1; --it) {
+				*(it + n) = *it;
+			}
+			for (iterator it = pos; it != pos + n; ++it) {
+				*it = data;
+			}
+		} else {
+			for (size_type i = 0U; i < n - num_elems_pos_to_end; ++i) {
+				construct(&*end(), data);
+				++m_end;
+			}
+			for (iterator it = pos; it != pos + num_elems_pos_to_end; ++it) {
+				construct(&*end(), *it);
+				++m_end;
+			}
+			for (iterator it = pos; it != old_end; ++it) {
+				*it = data;
 			}
 		}
-
-		for (iterator i = pos; i < pos + n; ++i) {
-			if (i < end()) {
-				*i = data;
-			} else {
-				construct(&*i, data);
-			}
-		}
-
-		m_end += n;
 	}
 
 	template <typename InputIterator>
@@ -394,24 +385,41 @@ private:
 			throw BadAlloc();
 		}
 
-		for (iterator i = end() - 1; i != pos - 1; --i) {
-			if ((i + n) < end()) {
-				*(i + n) = *i;
-			} else {
-				construct(&*(i + n), *i);
+		const size_type num_elems_pos_to_end = end() - pos;
+		iterator old_end = end();
+		if (num_elems_pos_to_end > n) {
+			for (size_type i = 0U; i < n; ++i) {
+				construct(&*end());
+				++m_end;
 			}
-		}
-
-		for (; first != last; ++first) {
-			if (pos < end()) {
+			for (iterator it = old_end - 1; it != pos - 1; --it) {
+				*(it + n) = *it;
+			}
+			for (; first != last; ++pos, ++first) {
 				*pos = *first;
-			} else {
-				construct(&*pos, *first);
 			}
-			++pos;
+		} else {
+			InputIterator mid = first;
+#ifdef NO_STD_ITERATOR
+			for (size_type i = 0U; i < num_elems_pos_to_end; ++i) {
+				++mid;
+			}
+#else
+			std::advance(mid, num_elems_pos_to_end);
+#endif
+			for (size_type i = 0U; i < n - num_elems_pos_to_end; ++i) {
+				construct(&*end(), *mid);
+				++mid;
+				++m_end;
+			}
+			for (iterator it = pos; it != pos + num_elems_pos_to_end; ++it) {
+				construct(&*end(), *it);
+				++m_end;
+			}
+			for (iterator it = pos; it != old_end; ++it, ++first) {
+				*it = *first;
+			}
 		}
-
-		m_end += n;
 	}
 
 };

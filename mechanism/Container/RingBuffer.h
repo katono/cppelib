@@ -242,11 +242,9 @@ public:
 	}
 
 	RingBuffer(const RingBuffer& x)
-	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(x.m_begin), m_end(x.m_end)
+	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{
-		for (std::size_t i = 0U; i < x.size(); ++i) {
-			construct(&operator[](i), x[i]);
-		}
+		assign(x.begin(), x.end());
 	}
 
 	~RingBuffer()
@@ -256,25 +254,9 @@ public:
 
 	RingBuffer& operator=(const RingBuffer& x)
 	{
-		if (this == &x) {
-			return *this;
+		if (this != &x) {
+			assign(x.begin(), x.end());
 		}
-		if (size() < x.size()) {
-			for (std::size_t i = 0U; i < x.size(); ++i) {
-				if (i < size()) {
-					operator[](i) = x[i];
-				} else {
-					construct(&operator[](i), x[i]);
-				}
-			}
-		} else {
-			const std::size_t n = x.size();
-			for (std::size_t i = 0U; i < n; ++i) {
-				operator[](i) = x[i];
-			}
-			destroy(begin() + n, end());
-		}
-		m_end = (begin() + x.size()).m_idx;
 		return *this;
 	}
 
@@ -306,7 +288,7 @@ public:
 	void clear()
 	{
 		destroy(begin(), end());
-		m_begin = m_end;
+		m_end = m_begin;
 	}
 
 	reference operator[](size_type idx)
@@ -430,8 +412,8 @@ public:
 	void pop_back()
 	{
 		CHECK_PRECOND(!empty());
+		destroy(&*(end() - 1));
 		m_end = prev_idx(m_end);
-		destroy(&*end());
 	}
 
 	void push_front(const T& data)
@@ -439,8 +421,8 @@ public:
 		if (full()) {
 			throw BadAlloc();
 		}
+		construct(&*(begin() - 1), data);
 		m_begin = prev_idx(m_begin);
-		construct(&*begin(), data);
 	}
 
 	void pop_front()
@@ -585,42 +567,59 @@ private:
 
 		if ((size() / 2U) < static_cast<size_type>(pos - begin())) {
 			// move the end side
-			iterator stop = pos - 1;
-			for (iterator i = end() - 1; i != stop; --i) {
-				if ((i + n) < end()) {
-					*(i + n) = *i;
-				} else {
-					construct(&*(i + n), *i);
+			const size_type num_elems_pos_to_end = end() - pos;
+			iterator old_end = end();
+			if (num_elems_pos_to_end > n) {
+				for (size_type i = 0U; i < n; ++i) {
+					construct(&*end());
+					m_end = next_idx(m_end);
+				}
+				for (iterator it = old_end - 1; it != pos - 1; --it) {
+					*(it + n) = *it;
+				}
+				for (iterator it = pos; it != pos + n; ++it) {
+					*it = data;
+				}
+			} else {
+				for (size_type i = 0U; i < n - num_elems_pos_to_end; ++i) {
+					construct(&*end(), data);
+					m_end = next_idx(m_end);
+				}
+				for (iterator it = pos; it != pos + num_elems_pos_to_end; ++it) {
+					construct(&*end(), *it);
+					m_end = next_idx(m_end);
+				}
+				for (iterator it = pos; it != old_end; ++it) {
+					*it = data;
 				}
 			}
-
-			stop = pos + n;
-			for (iterator i = pos; i < stop; ++i) {
-				if (i < end()) {
-					*i = data;
-				} else {
-					construct(&*i, data);
-				}
-			}
-			m_end = next_idx(m_end, n);
 			return pos;
 		} else {
 			// move the begin side
+			const size_type num_elems_beg_to_pos = pos - begin();
 			iterator old_begin = begin();
-			m_begin = prev_idx(m_begin, n);
-			for (iterator i = old_begin; i != pos; ++i) {
-				if (old_begin <= (i - n)) {
-					*(i - n) = *i;
-				} else {
-					construct(&*(i - n), *i);
+			if (num_elems_beg_to_pos > n) {
+				for (size_type i = 0U; i < n; ++i) {
+					construct(&*(begin() - 1));
+					m_begin = prev_idx(m_begin);
 				}
-			}
-
-			for (iterator i = pos - n; i != pos; ++i) {
-				if (old_begin <= i) {
-					*i = data;
-				} else {
-					construct(&*i, data);
+				for (iterator it = old_begin; it != pos; ++it) {
+					*(it - n) = *it;
+				}
+				for (iterator it = pos - n; it != pos; ++it) {
+					*it = data;
+				}
+			} else {
+				for (size_type i = 0U; i < n - num_elems_beg_to_pos; ++i) {
+					construct(&*(begin() - 1), data);
+					m_begin = prev_idx(m_begin);
+				}
+				for (iterator it = pos - 1; it != old_begin - 1; --it) {
+					construct(&*(begin() - 1), *it);
+					m_begin = prev_idx(m_begin);
+				}
+				for (iterator it = old_begin; it != pos; ++it) {
+					*it = data;
 				}
 			}
 			return pos - n;
@@ -644,44 +643,77 @@ private:
 
 		if ((size() / 2U) < static_cast<size_type>(pos - begin())) {
 			// move the end side
-			iterator stop = pos - 1;
-			for (iterator i = end() - 1; i != stop; --i) {
-				if ((i + n) < end()) {
-					*(i + n) = *i;
-				} else {
-					construct(&*(i + n), *i);
+			const size_type num_elems_pos_to_end = end() - pos;
+			iterator old_end = end();
+			if (num_elems_pos_to_end > n) {
+				for (size_type i = 0U; i < n; ++i) {
+					construct(&*end());
+					m_end = next_idx(m_end);
 				}
-			}
-
-			for (; first != last; ++first) {
-				if (pos < end()) {
+				for (iterator it = old_end - 1; it != pos - 1; --it) {
+					*(it + n) = *it;
+				}
+				for (; first != last; ++pos, ++first) {
 					*pos = *first;
-				} else {
-					construct(&*pos, *first);
 				}
-				++pos;
+			} else {
+				InputIterator mid = first;
+#ifdef NO_STD_ITERATOR
+				for (size_type i = 0U; i < num_elems_pos_to_end; ++i) {
+					++mid;
+				}
+#else
+				std::advance(mid, num_elems_pos_to_end);
+#endif
+				for (size_type i = 0U; i < n - num_elems_pos_to_end; ++i) {
+					construct(&*end(), *mid);
+					++mid;
+					m_end = next_idx(m_end);
+				}
+				for (iterator it = pos; it != pos + num_elems_pos_to_end; ++it) {
+					construct(&*end(), *it);
+					m_end = next_idx(m_end);
+				}
+				for (iterator it = pos; it != old_end; ++it, ++first) {
+					*it = *first;
+				}
 			}
-			m_end = next_idx(m_end, n);
 		} else {
 			// move the begin side
+			const size_type num_elems_beg_to_pos = pos - begin();
 			iterator old_begin = begin();
-			m_begin = prev_idx(m_begin, n);
-			for (iterator i = old_begin; i != pos; ++i) {
-				if (old_begin <= (i - n)) {
-					*(i - n) = *i;
-				} else {
-					construct(&*(i - n), *i);
+			if (num_elems_beg_to_pos > n) {
+				for (size_type i = 0U; i < n; ++i) {
+					construct(&*(begin() - 1));
+					m_begin = prev_idx(m_begin);
 				}
-			}
-
-			iterator i = pos - n;
-			for (; first != last; ++first) {
-				if (old_begin <= i) {
-					*i = *first;
-				} else {
-					construct(&*i, *first);
+				for (iterator it = old_begin; it != pos; ++it) {
+					*(it - n) = *it;
 				}
-				++i;
+				for (iterator it = pos - n; it != pos; ++it, ++first) {
+					*it = *first;
+				}
+			} else {
+				InputIterator mid = first;
+#ifdef NO_STD_ITERATOR
+				for (size_type i = 0U; i < n - num_elems_beg_to_pos; ++i) {
+					++mid;
+				}
+#else
+				std::advance(mid, n - num_elems_beg_to_pos);
+#endif
+				InputIterator p = mid;
+				for (size_type i = 0U; i < n - num_elems_beg_to_pos; ++i) {
+					construct(&*(begin() - 1), *--p);
+					m_begin = prev_idx(m_begin);
+				}
+				for (iterator it = pos - 1; it != old_begin - 1; --it) {
+					construct(&*(begin() - 1), *it);
+					m_begin = prev_idx(m_begin);
+				}
+				for (iterator it = old_begin; it != pos; ++it, ++mid) {
+					*it = *mid;
+				}
 			}
 		}
 	}

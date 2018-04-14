@@ -10,7 +10,6 @@
 #include <functional>
 #endif
 #include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 
 using Container::RingBuffer;
 using Container::Array;
@@ -24,8 +23,6 @@ TEST_GROUP(RingBufferTest) {
 	}
 	void teardown()
 	{
-		mock().checkExpectations();
-		mock().clear();
 	}
 
 	SimpleString StringFrom(RingBuffer<int, SIZE>::iterator value)
@@ -1624,181 +1621,201 @@ TEST(RingBufferTest, rbegin_rend_const)
 #endif
 
 
-class C {
+class RBElem {
 	int count;
 public:
-	C() : count(1)
+	unsigned int data;
+	static const unsigned int EXCEPTION_DATA = 0;
+
+	RBElem() : count(1), data(100) {}
+
+	class Exception {};
+
+	RBElem(const RBElem& x) : count(x.count), data(x.data)
 	{
-		mock().actualCall("C_default_ctor");
+		if (x.data == EXCEPTION_DATA) {
+			throw Exception();
+		}
 	}
-	C(const C&) : count(1)
+	RBElem& operator=(const RBElem&)
 	{
-		mock().actualCall("C_copy_ctor");
-	}
-	C& operator=(const C&)
-	{
-		mock().actualCall("C_operator_assign");
 		return *this;
 	}
-	~C()
+	~RBElem()
 	{
+		data = 0xDEADBEEF;
 		--count;
-		mock().actualCall("C_dtor");
 		LONGS_EQUAL(0, count);
+	}
+
+	template <typename Iterator>
+	static void checkElemsDestroyed(Iterator it, std::size_t num, std::size_t maxUsed)
+	{
+		for (std::size_t i = 0; i < num; ++i, ++it) {
+			if (i < maxUsed) {
+				LONGS_EQUAL_TEXT(0xDEADBEEF, it->data,
+						StringFromFormat("%d", i).asCharString());
+			} else {
+				CHECK_TRUE_TEXT(0xDEADBEEF != it->data,
+						StringFromFormat("%d", i).asCharString());
+			}
+		}
 	}
 };
 
-TEST(RingBufferTest, default_ctor_C)
+
+TEST(RingBufferTest, default_ctor_RBElem)
 {
-	mock().expectNCalls(0, "C_default_ctor");
-	mock().expectNCalls(0, "C_dtor");
-	RingBuffer<C, SIZE> x;
+	RingBuffer<RBElem, SIZE> x;
+	RBElem::checkElemsDestroyed(x.begin(), SIZE, 0);
 }
 
-TEST(RingBufferTest, ctor_C)
+TEST(RingBufferTest, ctor_RBElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	mock().expectNCalls(1, "C_dtor");
-	C c;
+	RBElem a;
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
-	RingBuffer<C, SIZE> x(2, c);
+	RingBuffer<RBElem, SIZE> x(2, a);
 	LONGS_EQUAL(2, x.size());
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
-	RingBuffer<C, SIZE> y(x.begin(), x.end());
+	RingBuffer<RBElem, SIZE> y(x.begin(), x.end());
 	LONGS_EQUAL(2, y.size());
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
-	RingBuffer<C, SIZE> z(x);
+	RingBuffer<RBElem, SIZE> z(x);
 	LONGS_EQUAL(2, z.size());
+
+	RingBuffer<RBElem, SIZE>::iterator it = x.begin();
+	x.clear();
+	RBElem::checkElemsDestroyed(it, SIZE, 2);
+
+	a.data = RBElem::EXCEPTION_DATA;
+	try {
+		RingBuffer<RBElem, SIZE> xx(1, a);
+	}
+	catch (const RBElem::Exception&) {
+		return;
+	}
+	FAIL("failed");
+
 }
 
-TEST(RingBufferTest, operator_assign_C)
+TEST(RingBufferTest, operator_assign_RBElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	mock().expectNCalls(1, "C_dtor");
-	C c;
+	RBElem a;
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
-	RingBuffer<C, SIZE> x(2, c);
+	RingBuffer<RBElem, SIZE> x(2, a);
 
-	mock().expectNCalls(1, "C_copy_ctor");
-	RingBuffer<C, SIZE> y(1, c);
+	RingBuffer<RBElem, SIZE> y(1, a);
 
-	mock().expectNCalls(1, "C_operator_assign");
-	mock().expectNCalls(1, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
 	y = x;
 	LONGS_EQUAL(2, y.size());
 
-	mock().expectNCalls(3, "C_copy_ctor");
-	RingBuffer<C, SIZE> z(3, c);
+	RingBuffer<RBElem, SIZE> z(3, a);
 
-	mock().expectNCalls(2, "C_operator_assign");
-	mock().expectNCalls(3, "C_dtor");
 	z = x;
 	LONGS_EQUAL(2, z.size());
+
+	RingBuffer<RBElem, SIZE>::iterator it = z.begin();
+	z.clear();
+	RBElem::checkElemsDestroyed(it, SIZE, 3);
+
 }
 
-TEST(RingBufferTest, push_back_pop_back_C)
+TEST(RingBufferTest, push_back_pop_back_RBElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	RBElem a;
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	RingBuffer<C, SIZE> x;
-	x.push_back(c);
-	x.push_back(c);
-
-	mock().expectNCalls(1, "C_dtor");
+	RingBuffer<RBElem, SIZE> x;
+	x.push_back(a);
+	x.push_back(a);
 	x.pop_back();
 
-	mock().expectNCalls(1, "C_dtor");
-	mock().expectNCalls(1, "C_dtor");
+	RingBuffer<RBElem, SIZE>::iterator it = x.begin();
+	x.clear();
+	RBElem::checkElemsDestroyed(it, SIZE, 2);
+
+	RingBuffer<RBElem, SIZE> y;
+	y.push_back(a);
+	a.data = RBElem::EXCEPTION_DATA;
+	try {
+		y.push_back(a);
+	}
+	catch (const RBElem::Exception&) {
+		LONGS_EQUAL(1, y.size());
+		RingBuffer<RBElem, SIZE>::iterator yit = y.begin();
+		y.clear();
+		RBElem::checkElemsDestroyed(yit, SIZE, 1);
+		return;
+	}
+	FAIL("failed");
 }
 
-TEST(RingBufferTest, insert_n_C)
+TEST(RingBufferTest, insert_n_RBElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	RBElem a;
 
-	mock().expectNCalls(4, "C_copy_ctor");
-	RingBuffer<C, SIZE> x;
-	x.insert(x.end(), 4, c);
+	RingBuffer<RBElem, SIZE> x;
+	x.insert(x.end(), 4, a);
+	x.insert(x.begin() + 2, 1, a);
+	x.insert(x.end(), 1, a);
+	x.insert(x.end() - 2, 1, a);
+	x.insert(x.end() - 1, 1, a);
+	x.insert(x.begin() + 1, 1, a);
+	LONGS_EQUAL(9, x.size());
 
-	mock().expectNCalls(1, "C_copy_ctor");
-	mock().expectNCalls(1, "C_operator_assign");
-	mock().expectNCalls(1, "C_operator_assign");
-	x.insert(x.begin() + 2, 1, c);
-
-	mock().expectNCalls(1, "C_copy_ctor");
-	x.insert(x.end(), 1, c);
-
-	mock().expectNCalls(1, "C_copy_ctor");
-	mock().expectNCalls(1, "C_operator_assign");
-	mock().expectNCalls(1, "C_operator_assign");
-	x.insert(x.end() - 2, 1, c);
-
-	mock().expectNCalls(7, "C_dtor");
-	mock().expectNCalls(1, "C_dtor");
+	a.data = RBElem::EXCEPTION_DATA;
+	try {
+		x.insert(x.end(), 1, a);
+	}
+	catch (const RBElem::Exception&) {
+		LONGS_EQUAL(9, x.size());
+		RingBuffer<RBElem, SIZE>::iterator it = x.begin();
+		x.clear();
+		RBElem::checkElemsDestroyed(it, SIZE, 9);
+		return;
+	}
+	FAIL("failed");
 }
 
-TEST(RingBufferTest, insert_range_C)
+TEST(RingBufferTest, insert_range_RBElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	RBElem a;
 
-	mock().expectNCalls(4, "C_copy_ctor");
-	RingBuffer<C, SIZE> x(4, c);
-
-	RingBuffer<C, SIZE> y;
-
-	mock().expectNCalls(4, "C_copy_ctor");
+	RingBuffer<RBElem, SIZE> x(4, a);
+	RingBuffer<RBElem, SIZE> y;
 	y.insert(y.end(), x.begin(), x.end());
-
-	mock().expectNCalls(1, "C_copy_ctor");
-	mock().expectNCalls(1, "C_operator_assign");
-	mock().expectNCalls(1, "C_operator_assign");
 	y.insert(y.begin() + 2, x.begin(), x.begin() + 1);
-
-	mock().expectNCalls(1, "C_copy_ctor");
 	y.insert(y.end(), x.begin(), x.begin() + 1);
-
-	mock().expectNCalls(1, "C_copy_ctor");
-	mock().expectNCalls(1, "C_operator_assign");
-	mock().expectNCalls(1, "C_operator_assign");
 	y.insert(y.end() - 2, x.begin(), x.begin() + 1);
+	y.insert(y.end() - 1, x.begin(), x.begin() + 1);
+	y.insert(y.begin() + 1, x.begin(), x.begin() + 1);
+	LONGS_EQUAL(9, y.size());
 
-	mock().expectNCalls(7, "C_dtor");
-	mock().expectNCalls(4, "C_dtor");
-	mock().expectNCalls(1, "C_dtor");
+	x[0].data = RBElem::EXCEPTION_DATA;
+	try {
+		y.insert(y.end(), x.begin(), x.begin() + 1);
+	}
+	catch (const RBElem::Exception&) {
+		LONGS_EQUAL(9, y.size());
+		RingBuffer<RBElem, SIZE>::iterator it = y.begin();
+		y.clear();
+		RBElem::checkElemsDestroyed(it, SIZE, 9);
+		return;
+	}
+	FAIL("failed");
 }
 
-TEST(RingBufferTest, erase_range_C)
+TEST(RingBufferTest, erase_range_RBElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	RBElem a;
 
-	mock().expectNCalls(5, "C_copy_ctor");
-	RingBuffer<C, SIZE> x(5, c);
+	RingBuffer<RBElem, SIZE> x(5, a);
 
-	mock().expectNCalls(1, "C_operator_assign");
-	mock().expectNCalls(1, "C_dtor");
 	x.erase(x.begin() + 1, x.begin() + 2);
 
-	mock().expectNCalls(1, "C_operator_assign");
-	mock().expectNCalls(1, "C_dtor");
 	x.erase(x.end() - 2, x.end() - 1);
 
-	mock().expectNCalls(3, "C_dtor");
 	x.erase(x.begin(), x.end());
 
-	mock().expectNCalls(1, "C_dtor");
 }
 
 #if (__cplusplus >= 201103L) || defined(_WIN32)
@@ -1813,24 +1830,19 @@ TEST(RingBufferTest, shared_ptr_int)
 	LONGS_EQUAL(2, *x[0]);
 }
 
-TEST(RingBufferTest, shared_ptr_C)
+TEST(RingBufferTest, shared_ptr_RBElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	RBElem a;
 
 	{
-		RingBuffer<std::shared_ptr<C>, SIZE> x;
+		RingBuffer<std::shared_ptr<RBElem>, SIZE> x;
 
-		mock().expectNCalls(2, "C_copy_ctor");
-		x.push_back(std::make_shared<C>(c));
-		x.push_back(std::make_shared<C>(c));
+		x.push_back(std::make_shared<RBElem>(a));
+		x.push_back(std::make_shared<RBElem>(a));
 
-		mock().expectNCalls(1, "C_dtor");
 		x.pop_back();
 
-		mock().expectNCalls(1, "C_dtor");
 	}
 
-	mock().expectNCalls(1, "C_dtor");
 }
 #endif

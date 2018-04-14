@@ -10,7 +10,6 @@
 #include <functional>
 #endif
 #include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 
 using Container::FixedVector;
 using Container::Array;
@@ -23,8 +22,6 @@ TEST_GROUP(FixedVectorTest) {
 	}
 	void teardown()
 	{
-		mock().checkExpectations();
-		mock().clear();
 	}
 };
 
@@ -641,14 +638,15 @@ TEST(FixedVectorTest, insert_range)
 	LONGS_EQUAL(1, x[3]);
 	LONGS_EQUAL(2, x[4]);
 
-	x.insert(x.begin() + 1, a.end() - 1, a.end());
-	LONGS_EQUAL(6, x.size());
+	x.insert(x.begin() + 3, a.end() - 2, a.end());
+	LONGS_EQUAL(7, x.size());
 	LONGS_EQUAL(3, x[0]);
-	LONGS_EQUAL(a.back(), x[1]);
-	LONGS_EQUAL(4, x[2]);
-	LONGS_EQUAL(0, x[3]);
-	LONGS_EQUAL(1, x[4]);
-	LONGS_EQUAL(2, x[5]);
+	LONGS_EQUAL(4, x[1]);
+	LONGS_EQUAL(0, x[2]);
+	LONGS_EQUAL(8, x[3]);
+	LONGS_EQUAL(9, x[4]);
+	LONGS_EQUAL(1, x[5]);
+	LONGS_EQUAL(2, x[6]);
 }
 
 TEST(FixedVectorTest, insert_range_c_array)
@@ -1303,158 +1301,184 @@ TEST(FixedVectorTest, rbegin_rend_const)
 #endif
 
 
-class C {
+class VElem {
 	int count;
 public:
-	C() : count(1)
+	unsigned int data;
+	static const unsigned int EXCEPTION_DATA = 0;
+
+	VElem() : count(1), data(100) {}
+
+	class Exception {};
+
+	VElem(const VElem& x) : count(x.count), data(x.data)
 	{
-		mock().actualCall("C_default_ctor");
+		if (x.data == EXCEPTION_DATA) {
+			throw Exception();
+		}
 	}
-	C(const C&) : count(1)
+	VElem& operator=(const VElem&)
 	{
-		mock().actualCall("C_copy_ctor");
-	}
-	C& operator=(const C&)
-	{
-		mock().actualCall("C_operator_assign");
 		return *this;
 	}
-	~C()
+	~VElem()
 	{
+		data = 0xDEADBEEF;
 		--count;
-		mock().actualCall("C_dtor");
 		LONGS_EQUAL(0, count);
+	}
+
+	static void checkElemsDestroyed(const VElem* array, std::size_t num, std::size_t maxUsed)
+	{
+		for (std::size_t i = 0; i < num; ++i) {
+			if (i < maxUsed) {
+				LONGS_EQUAL_TEXT(0xDEADBEEF, array[i].data,
+						StringFromFormat("%d", i).asCharString());
+			} else {
+				CHECK_TRUE_TEXT(0xDEADBEEF != array[i].data,
+						StringFromFormat("%d", i).asCharString());
+			}
+		}
 	}
 };
 
-TEST(FixedVectorTest, default_ctor_C)
+TEST(FixedVectorTest, default_ctor_VElem)
 {
-	mock().expectNCalls(0, "C_default_ctor");
-	mock().expectNCalls(0, "C_dtor");
-	FixedVector<C, SIZE> x;
+	FixedVector<VElem, SIZE> x;
+	VElem::checkElemsDestroyed(&x[0], SIZE, 0);
 }
 
-TEST(FixedVectorTest, ctor_C)
+TEST(FixedVectorTest, ctor_VElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	mock().expectNCalls(1, "C_dtor");
-	C c;
+	VElem a;
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
-	FixedVector<C, SIZE> x(2, c);
+	FixedVector<VElem, SIZE> x(2, a);
 	LONGS_EQUAL(2, x.size());
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
-	FixedVector<C, SIZE> y(x.begin(), x.end());
+	FixedVector<VElem, SIZE> y(x.begin(), x.end());
 	LONGS_EQUAL(2, y.size());
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
-	FixedVector<C, SIZE> z(x);
+	FixedVector<VElem, SIZE> z(x);
 	LONGS_EQUAL(2, z.size());
+
+	x.clear();
+	VElem::checkElemsDestroyed(&x[0], SIZE, 2);
+
+	a.data = VElem::EXCEPTION_DATA;
+	try {
+		FixedVector<VElem, SIZE> xx(1, a);
+	}
+	catch (const VElem::Exception&) {
+		return;
+	}
+	FAIL("failed");
 }
 
-TEST(FixedVectorTest, operator_assign_C)
+TEST(FixedVectorTest, operator_assign_VElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	mock().expectNCalls(1, "C_dtor");
-	C c;
+	VElem a;
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
-	FixedVector<C, SIZE> x(2, c);
+	FixedVector<VElem, SIZE> x(2, a);
 
-	mock().expectNCalls(1, "C_copy_ctor");
-	FixedVector<C, SIZE> y(1, c);
+	FixedVector<VElem, SIZE> y(1, a);
 
-	mock().expectNCalls(1, "C_operator_assign");
-	mock().expectNCalls(1, "C_copy_ctor");
-	mock().expectNCalls(2, "C_dtor");
 	y = x;
 	LONGS_EQUAL(2, y.size());
 
-	mock().expectNCalls(3, "C_copy_ctor");
-	FixedVector<C, SIZE> z(3, c);
+	FixedVector<VElem, SIZE> z(3, a);
 
-	mock().expectNCalls(2, "C_operator_assign");
-	mock().expectNCalls(3, "C_dtor");
 	z = x;
 	LONGS_EQUAL(2, z.size());
+
+	z.clear();
+	VElem::checkElemsDestroyed(&z[0], SIZE, 3);
 }
 
-TEST(FixedVectorTest, push_back_pop_back_C)
+TEST(FixedVectorTest, push_back_pop_back_VElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	VElem a;
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	FixedVector<C, SIZE> x;
-	x.push_back(c);
-	x.push_back(c);
-
-	mock().expectNCalls(1, "C_dtor");
+	FixedVector<VElem, SIZE> x;
+	x.push_back(a);
+	x.push_back(a);
 	x.pop_back();
+	LONGS_EQUAL(1, x.size());
+	x.clear();
+	VElem::checkElemsDestroyed(&x[0], SIZE, 2);
 
-	mock().expectNCalls(1, "C_dtor");
-	mock().expectNCalls(1, "C_dtor");
+	FixedVector<VElem, SIZE> y;
+	y.push_back(a);
+	a.data = VElem::EXCEPTION_DATA;
+	try {
+		y.push_back(a);
+	}
+	catch (const VElem::Exception&) {
+		LONGS_EQUAL(1, y.size());
+		y.clear();
+		VElem::checkElemsDestroyed(&y[0], SIZE, 1);
+		return;
+	}
+	FAIL("failed");
 }
 
-TEST(FixedVectorTest, insert_n_C)
+TEST(FixedVectorTest, insert_n_VElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	VElem a;
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	FixedVector<C, SIZE> x;
-	x.insert(x.end(), 2, c);
+	FixedVector<VElem, SIZE> x;
+	x.insert(x.end(), 2, a);
+	x.insert(x.begin(), 1, a);
+	x.insert(x.end() - 1, 2, a);
+	LONGS_EQUAL(5, x.size());
 
-	mock().expectNCalls(1, "C_copy_ctor");
-	mock().expectNCalls(2, "C_operator_assign");
-	x.insert(x.begin(), 1, c);
-
-	mock().expectNCalls(3, "C_dtor");
-	mock().expectNCalls(1, "C_dtor");
+	a.data = VElem::EXCEPTION_DATA;
+	try {
+		x.insert(x.end(), 1, a);
+	}
+	catch (const VElem::Exception&) {
+		LONGS_EQUAL(5, x.size());
+		x.clear();
+		VElem::checkElemsDestroyed(&x[0], SIZE, 5);
+		return;
+	}
+	FAIL("failed");
 }
 
-TEST(FixedVectorTest, insert_range_C)
+TEST(FixedVectorTest, insert_range_VElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	VElem a;
 
-	mock().expectNCalls(2, "C_copy_ctor");
-	FixedVector<C, SIZE> x(2, c);
-
-	FixedVector<C, SIZE> y;
-
-	mock().expectNCalls(2, "C_copy_ctor");
+	FixedVector<VElem, SIZE> x(2, a);
+	FixedVector<VElem, SIZE> y;
 	y.insert(y.end(), x.begin(), x.end());
-
-	mock().expectNCalls(1, "C_copy_ctor");
-	mock().expectNCalls(2, "C_operator_assign");
 	y.insert(y.begin(), x.begin(), x.begin() + 1);
+	y.insert(y.end() - 1, x.begin(), x.begin() + 2);
+	LONGS_EQUAL(5, y.size());
 
-	mock().expectNCalls(5, "C_dtor");
-	mock().expectNCalls(1, "C_dtor");
+	x[0].data = VElem::EXCEPTION_DATA;
+	try {
+		y.insert(y.end(), x.begin(), x.begin() + 1);
+	}
+	catch (const VElem::Exception&) {
+		LONGS_EQUAL(5, y.size());
+		y.clear();
+		VElem::checkElemsDestroyed(&y[0], SIZE, 5);
+		return;
+	}
+	FAIL("failed");
 }
 
-TEST(FixedVectorTest, erase_range_C)
+TEST(FixedVectorTest, erase_range_VElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	VElem a;
 
-	mock().expectNCalls(4, "C_copy_ctor");
-	FixedVector<C, SIZE> x(4, c);
+	FixedVector<VElem, SIZE> x(4, a);
 
-	mock().expectNCalls(2, "C_operator_assign");
-	mock().expectNCalls(2, "C_dtor");
 	x.erase(x.begin() + 1, x.begin() + 2);
 
-	mock().expectNCalls(2, "C_dtor");
 	x.erase(x.begin(), x.end());
 
-	mock().expectNCalls(1, "C_dtor");
+	VElem::checkElemsDestroyed(&x[0], SIZE, 4);
 }
 
 #if (__cplusplus >= 201103L) || defined(_WIN32)
@@ -1469,24 +1493,19 @@ TEST(FixedVectorTest, shared_ptr_int)
 	LONGS_EQUAL(2, *x[0]);
 }
 
-TEST(FixedVectorTest, shared_ptr_C)
+TEST(FixedVectorTest, shared_ptr_VElem)
 {
-	mock().expectNCalls(1, "C_default_ctor");
-	C c;
+	VElem a;
 
 	{
-		FixedVector<std::shared_ptr<C>, SIZE> x;
+		FixedVector<std::shared_ptr<VElem>, SIZE> x;
 
-		mock().expectNCalls(2, "C_copy_ctor");
-		x.push_back(std::make_shared<C>(c));
-		x.push_back(std::make_shared<C>(c));
+		x.push_back(std::make_shared<VElem>(a));
+		x.push_back(std::make_shared<VElem>(a));
 
-		mock().expectNCalls(1, "C_dtor");
 		x.pop_back();
 
-		mock().expectNCalls(1, "C_dtor");
 	}
 
-	mock().expectNCalls(1, "C_dtor");
 }
 #endif
