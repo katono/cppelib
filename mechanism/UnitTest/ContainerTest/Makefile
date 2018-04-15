@@ -23,7 +23,7 @@ OBJS = main.o
 OBJS += ArrayTest.o
 OBJS += FixedVectorTest.o
 OBJS += FixedDequeTest.o
-OBJS += ListTest.o
+OBJS += DoublyLinkedListTest.o
 
 all: $(TARGET)
 
@@ -47,4 +47,4 @@ clean:
 ArrayTest.o: $(CONTAINER_DIR)/Array.h
 FixedVectorTest.o: $(CONTAINER_DIR)/FixedVector.h
 FixedDequeTest.o: $(CONTAINER_DIR)/FixedDeque.h
-ListTest.o: $(CONTAINER_DIR)/List.h
+DoublyLinkedListTest.o: $(CONTAINER_DIR)/DoublyLinkedList.h
