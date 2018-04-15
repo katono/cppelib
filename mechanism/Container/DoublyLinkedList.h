@@ -1,5 +1,5 @@
-#ifndef CONTAINER_LIST_H_INCLUDED
-#define CONTAINER_LIST_H_INCLUDED
+#ifndef CONTAINER_DOUBLY_LINKEDLIST_H_INCLUDED
+#define CONTAINER_DOUBLY_LINKEDLIST_H_INCLUDED
 
 #include <cstddef>
 #ifndef NO_STD_ITERATOR
@@ -9,29 +9,29 @@
 
 namespace Container {
 
-class ListItem {
+class DoublyLinkedListNode {
 private:
-	ListItem* m_nextListItem;
-	ListItem* m_prevListItem;
+	DoublyLinkedListNode* m_nextListNode;
+	DoublyLinkedListNode* m_prevListNode;
 
-	template <typename T, typename Ref, typename Ptr, typename ListItemPtr>
-	friend class List_iterator;
+	template <typename T, typename Ref, typename Ptr, typename DoublyLinkedListNodePtr>
+	friend class DoublyLinkedList_iterator;
 
 	template <typename T>
-	friend class List;
+	friend class DoublyLinkedList;
 
 protected:
-	ListItem() : m_nextListItem(), m_prevListItem() {}
+	DoublyLinkedListNode() : m_nextListNode(), m_prevListNode() {}
 };
 
-template <typename T, typename Ref, typename Ptr, typename ListItemPtr>
-class List_iterator {
+template <typename T, typename Ref, typename Ptr, typename DoublyLinkedListNodePtr>
+class DoublyLinkedList_iterator {
 public:
 	typedef T value_type;
 	typedef std::size_t size_type;
 	typedef std::ptrdiff_t difference_type;
-	typedef List_iterator<T, T&, T*, ListItem*> iterator;
-	typedef List_iterator<T, const T&, const T*, const ListItem*> const_iterator;
+	typedef DoublyLinkedList_iterator<T, T&, T*, DoublyLinkedListNode*> iterator;
+	typedef DoublyLinkedList_iterator<T, const T&, const T*, const DoublyLinkedListNode*> const_iterator;
 	typedef Ref reference;
 	typedef const Ref const_reference;
 	typedef Ptr pointer;
@@ -40,86 +40,86 @@ public:
 	typedef std::bidirectional_iterator_tag iterator_category;
 #endif
 
-	List_iterator() : m_item(0) {}
+	DoublyLinkedList_iterator() : m_node(0) {}
 
-	List_iterator(const iterator& x) : m_item(x.m_item) {}
+	DoublyLinkedList_iterator(const iterator& x) : m_node(x.m_node) {}
 
-	List_iterator& operator=(const iterator& x)
+	DoublyLinkedList_iterator& operator=(const iterator& x)
 	{
-		m_item = x.m_item;
+		m_node = x.m_node;
 		return *this;
 	}
 
-	List_iterator& operator++()
+	DoublyLinkedList_iterator& operator++()
 	{
-		CHECK_PRECOND(m_item != 0);
-		m_item = m_item->m_nextListItem;
+		CHECK_PRECOND(m_node != 0);
+		m_node = m_node->m_nextListNode;
 		return *this;
 	}
 
-	List_iterator& operator--()
+	DoublyLinkedList_iterator& operator--()
 	{
-		CHECK_PRECOND(m_item != 0);
-		m_item = m_item->m_prevListItem;
+		CHECK_PRECOND(m_node != 0);
+		m_node = m_node->m_prevListNode;
 		return *this;
 	}
 
-	List_iterator operator++(int)
+	DoublyLinkedList_iterator operator++(int)
 	{
-		List_iterator tmp = *this;
+		DoublyLinkedList_iterator tmp = *this;
 		++*this;
 		return tmp;
 	}
 
-	List_iterator operator--(int)
+	DoublyLinkedList_iterator operator--(int)
 	{
-		List_iterator tmp = *this;
+		DoublyLinkedList_iterator tmp = *this;
 		--*this;
 		return tmp;
 	}
 
 	reference operator*() const
 	{
-		CHECK_PRECOND(m_item != 0);
-		return *static_cast<pointer>(m_item);
+		CHECK_PRECOND(m_node != 0);
+		return *static_cast<pointer>(m_node);
 	}
 
 	pointer operator->() const
 	{
-		CHECK_PRECOND(m_item != 0);
-		return static_cast<pointer>(m_item);
+		CHECK_PRECOND(m_node != 0);
+		return static_cast<pointer>(m_node);
 	}
 
-	bool operator==(const List_iterator& x) const
+	bool operator==(const DoublyLinkedList_iterator& x) const
 	{
-		return m_item == x.m_item;
+		return m_node == x.m_node;
 	}
 
-	bool operator!=(const List_iterator& x) const
+	bool operator!=(const DoublyLinkedList_iterator& x) const
 	{
 		return !(*this == x);
 	}
 
 private:
 	template <typename U>
-	friend class List;
+	friend class DoublyLinkedList;
 
-	template <typename U, typename RefX, typename PtrX, typename ListItemPtrX>
-	friend class List_iterator;
+	template <typename U, typename RefX, typename PtrX, typename DoublyLinkedListNodePtrX>
+	friend class DoublyLinkedList_iterator;
 
-	ListItemPtr m_item;
+	DoublyLinkedListNodePtr m_node;
 
-	explicit List_iterator(ListItemPtr item) : m_item(item) {}
+	explicit DoublyLinkedList_iterator(DoublyLinkedListNodePtr node) : m_node(node) {}
 };
 
 template <typename T>
-class List {
+class DoublyLinkedList {
 public:
 	typedef T value_type;
 	typedef std::size_t size_type;
 	typedef std::ptrdiff_t difference_type;
-	typedef List_iterator<T, T&, T*, ListItem*> iterator;
-	typedef List_iterator<T, const T&, const T*, const ListItem*> const_iterator;
+	typedef DoublyLinkedList_iterator<T, T&, T*, DoublyLinkedListNode*> iterator;
+	typedef DoublyLinkedList_iterator<T, const T&, const T*, const DoublyLinkedListNode*> const_iterator;
 	typedef value_type& reference;
 	typedef const value_type& const_reference;
 	typedef value_type* pointer;
@@ -129,15 +129,15 @@ public:
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 #endif
 
-	List() : m_terminator()
+	DoublyLinkedList() : m_terminator()
 	{
-		m_terminator.m_nextListItem = &m_terminator;
-		m_terminator.m_prevListItem = &m_terminator;
+		m_terminator.m_nextListNode = &m_terminator;
+		m_terminator.m_prevListNode = &m_terminator;
 	}
 
 	bool empty() const
 	{
-		return m_terminator.m_nextListItem == &m_terminator;
+		return m_terminator.m_nextListNode == &m_terminator;
 	}
 
 	size_type size() const
@@ -151,12 +151,12 @@ public:
 
 	iterator begin()
 	{
-		return iterator(m_terminator.m_nextListItem);
+		return iterator(m_terminator.m_nextListNode);
 	}
 
 	const_iterator begin() const
 	{
-		return const_iterator(m_terminator.m_nextListItem);
+		return const_iterator(m_terminator.m_nextListNode);
 	}
 
 	iterator end()
@@ -239,25 +239,25 @@ public:
 
 	iterator insert(iterator pos, T& data)
 	{
-		CHECK_PRECOND(pos.m_item != 0);
-		data.m_nextListItem = pos.m_item;
-		data.m_prevListItem = pos.m_item->m_prevListItem;
-		pos.m_item->m_prevListItem = &data;
-		data.m_prevListItem->m_nextListItem = &data;
+		CHECK_PRECOND(pos.m_node != 0);
+		data.m_nextListNode = pos.m_node;
+		data.m_prevListNode = pos.m_node->m_prevListNode;
+		pos.m_node->m_prevListNode = &data;
+		data.m_prevListNode->m_nextListNode = &data;
 		return iterator(&data);
 	}
 
 	iterator erase(iterator pos)
 	{
 		CHECK_PRECOND(!empty());
-		CHECK_PRECOND(pos.m_item != 0);
-		ListItem* item = pos.m_item->m_nextListItem;
-		pos.m_item->m_prevListItem->m_nextListItem = pos.m_item->m_nextListItem;
-		pos.m_item->m_nextListItem->m_prevListItem = pos.m_item->m_prevListItem;
-		return iterator(item);
+		CHECK_PRECOND(pos.m_node != 0);
+		DoublyLinkedListNode* node = pos.m_node->m_nextListNode;
+		pos.m_node->m_prevListNode->m_nextListNode = pos.m_node->m_nextListNode;
+		pos.m_node->m_nextListNode->m_prevListNode = pos.m_node->m_prevListNode;
+		return iterator(node);
 	}
 
-	void splice(iterator pos, List& x)
+	void splice(iterator pos, DoublyLinkedList& x)
 	{
 		CHECK_PRECOND(this != &x);
 		if (x.empty()) {
@@ -266,7 +266,7 @@ public:
 		splice(pos, x, x.begin(), x.end());
 	}
 
-	void splice(iterator pos, List& x, iterator i)
+	void splice(iterator pos, DoublyLinkedList& x, iterator i)
 	{
 		CHECK_PRECOND(i != end());
 		CHECK_PRECOND(i != x.end());
@@ -281,11 +281,11 @@ public:
 		splice(pos, x, i, j);
 	}
 
-	void splice(iterator pos, List& x, iterator first, iterator last)
+	void splice(iterator pos, DoublyLinkedList& x, iterator first, iterator last)
 	{
-		CHECK_PRECOND(pos.m_item != 0);
-		CHECK_PRECOND(first.m_item != 0);
-		CHECK_PRECOND(last.m_item != 0);
+		CHECK_PRECOND(pos.m_node != 0);
+		CHECK_PRECOND(first.m_node != 0);
+		CHECK_PRECOND(last.m_node != 0);
 		CHECK_PRECOND(first != end());
 		CHECK_PRECOND(first != x.end());
 		if (first == last) {
@@ -294,40 +294,40 @@ public:
 		if (pos == last) {
 			return;
 		}
-		last.m_item->m_prevListItem->m_nextListItem = pos.m_item;
-		first.m_item->m_prevListItem->m_nextListItem = last.m_item;
-		pos.m_item->m_prevListItem->m_nextListItem = first.m_item;
+		last.m_node->m_prevListNode->m_nextListNode = pos.m_node;
+		first.m_node->m_prevListNode->m_nextListNode = last.m_node;
+		pos.m_node->m_prevListNode->m_nextListNode = first.m_node;
 
-		ListItem* tmp = pos.m_item->m_prevListItem;
-		pos.m_item->m_prevListItem = last.m_item->m_prevListItem;
-		last.m_item->m_prevListItem = first.m_item->m_prevListItem;
-		first.m_item->m_prevListItem = tmp;
+		DoublyLinkedListNode* tmp = pos.m_node->m_prevListNode;
+		pos.m_node->m_prevListNode = last.m_node->m_prevListNode;
+		last.m_node->m_prevListNode = first.m_node->m_prevListNode;
+		first.m_node->m_prevListNode = tmp;
 	}
 
-	void swap(List& other)
+	void swap(DoublyLinkedList& other)
 	{
 		if (this == &other) {
 			return;
 		}
-		List tmp;
+		DoublyLinkedList tmp;
 		tmp.splice(tmp.end(), other);
 		other.splice(other.end(), *this);
 		splice(end(), tmp);
 	}
 
 private:
-	ListItem m_terminator;
+	DoublyLinkedListNode m_terminator;
 
-	List(const List& x);
-	List& operator=(const List& x);
+	DoublyLinkedList(const DoublyLinkedList& x);
+	DoublyLinkedList& operator=(const DoublyLinkedList& x);
 };
 
 template <typename T>
-void swap(List<T>& x, List<T>& y)
+void swap(DoublyLinkedList<T>& x, DoublyLinkedList<T>& y)
 {
 	x.swap(y);
 }
 
 }
 
-#endif // CONTAINER_LIST_H_INCLUDED
+#endif // CONTAINER_DOUBLY_LINKEDLIST_H_INCLUDED

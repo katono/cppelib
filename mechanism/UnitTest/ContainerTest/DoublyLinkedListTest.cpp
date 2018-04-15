@@ -1,42 +1,42 @@
 #include "CppUTest/TestHarness.h"
-#include "Container/List.h"
+#include "Container/DoublyLinkedList.h"
 #include "Container/Array.h"
 #include <cstdio>
 
-using Container::ListItem;
-using Container::List;
+using Container::DoublyLinkedListNode;
+using Container::DoublyLinkedList;
 using Container::Array;
 
-class MyListItem : public ListItem {
+class MyListNode : public DoublyLinkedListNode {
 public:
 	int m_value;
-	MyListItem() : m_value(0) {}
-	explicit MyListItem(int v) : m_value(v) {}
-	virtual ~MyListItem() {}
-	virtual const char* name() const { return "MyListItem"; }
+	MyListNode() : m_value(0) {}
+	explicit MyListNode(int v) : m_value(v) {}
+	virtual ~MyListNode() {}
+	virtual const char* name() const { return "MyListNode"; }
 };
 
-class DerivedItem1 : public MyListItem {
+class DerivedNode1 : public MyListNode {
 public:
-	DerivedItem1() : MyListItem() {}
-	explicit DerivedItem1(int v) : MyListItem(v) {}
-	virtual ~DerivedItem1() {}
-	const char* name() const { return "DerivedItem1"; }
+	DerivedNode1() : MyListNode() {}
+	explicit DerivedNode1(int v) : MyListNode(v) {}
+	virtual ~DerivedNode1() {}
+	const char* name() const { return "DerivedNode1"; }
 };
 
-class DerivedItem2 : public MyListItem {
+class DerivedNode2 : public MyListNode {
 public:
-	DerivedItem2() : MyListItem() {}
-	explicit DerivedItem2(int v) : MyListItem(v) {}
-	virtual ~DerivedItem2() {}
-	const char* name() const { return "DerivedItem2"; }
+	DerivedNode2() : MyListNode() {}
+	explicit DerivedNode2(int v) : MyListNode(v) {}
+	virtual ~DerivedNode2() {}
+	const char* name() const { return "DerivedNode2"; }
 };
 
 
-TEST_GROUP(ListTest) {
-	typedef List<MyListItem> MyList;
+TEST_GROUP(DoublyLinkedListTest) {
+	typedef DoublyLinkedList<MyListNode> MyList;
 	static const std::size_t MAXSIZE = 100;
-	typedef Array<MyListItem*, MAXSIZE> CheckArray;
+	typedef Array<MyListNode*, MAXSIZE> CheckArray;
 
 	void setup()
 	{
@@ -77,49 +77,49 @@ TEST_GROUP(ListTest) {
 	}
 };
 
-TEST(ListTest, size_0)
+TEST(DoublyLinkedListTest, size_0)
 {
 	MyList x;
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(ListTest, empty_true)
+TEST(DoublyLinkedListTest, empty_true)
 {
 	MyList x;
 	CHECK(x.empty());
 }
 
-TEST(ListTest, empty_false)
+TEST(DoublyLinkedListTest, empty_false)
 {
 	MyList x;
-	MyListItem a(100);
+	MyListNode a(100);
 	x.push_back(a);
 	CHECK(!x.empty());
 }
 
-TEST(ListTest, push_back)
+TEST(DoublyLinkedListTest, push_back)
 {
 	MyList x;
-	MyListItem a(100);
+	MyListNode a(100);
 	x.push_back(a);
 	LONGS_EQUAL(1, x.size());
 	LONGS_EQUAL(100, x.back().m_value);
 
-	MyListItem b(200);
+	MyListNode b(200);
 	x.push_back(b);
 	LONGS_EQUAL(2, x.size());
 	LONGS_EQUAL(200, x.back().m_value);
 
-	MyListItem c(300);
+	MyListNode c(300);
 	x.push_back(c);
 	LONGS_EQUAL(3, x.size());
 	LONGS_EQUAL(300, x.back().m_value);
 }
 
-TEST(ListTest, push_back_pop_front)
+TEST(DoublyLinkedListTest, push_back_pop_front)
 {
 	MyList x;
-	Array<MyListItem, 10> a;
+	Array<MyListNode, 10> a;
 
 	for (std::size_t i = 0; i < a.size(); ++i) {
 		a[i].m_value = i;
@@ -137,29 +137,29 @@ TEST(ListTest, push_back_pop_front)
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(ListTest, push_front)
+TEST(DoublyLinkedListTest, push_front)
 {
 	MyList x;
-	MyListItem a(100);
+	MyListNode a(100);
 	x.push_front(a);
 	LONGS_EQUAL(1, x.size());
 	LONGS_EQUAL(100, x.front().m_value);
 
-	MyListItem b(200);
+	MyListNode b(200);
 	x.push_front(b);
 	LONGS_EQUAL(2, x.size());
 	LONGS_EQUAL(200, x.front().m_value);
 
-	MyListItem c(300);
+	MyListNode c(300);
 	x.push_front(c);
 	LONGS_EQUAL(3, x.size());
 	LONGS_EQUAL(300, x.front().m_value);
 }
 
-TEST(ListTest, push_front_pop_back)
+TEST(DoublyLinkedListTest, push_front_pop_back)
 {
 	MyList x;
-	Array<MyListItem, 10> a;
+	Array<MyListNode, 10> a;
 
 	for (std::size_t i = 0; i < a.size(); ++i) {
 		a[i].m_value = i;
@@ -177,32 +177,32 @@ TEST(ListTest, push_front_pop_back)
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(ListTest, insert)
+TEST(DoublyLinkedListTest, insert)
 {
 	MyList x;
 	MyList::iterator it;
-	MyListItem a(100);
+	MyListNode a(100);
 	it = x.insert(x.end(), a);
 	CHECK_EQUAL(x.begin(), it);
 	POINTERS_EQUAL(&a, &*it);
 	LONGS_EQUAL(100, it->m_value);
 	LONGS_EQUAL(1, x.size());
 
-	MyListItem b(200);
+	MyListNode b(200);
 	it = x.insert(x.begin(), b);
 	CHECK_EQUAL(x.begin(), it);
 	POINTERS_EQUAL(&b, &*it);
 	LONGS_EQUAL(200, it->m_value);
 	LONGS_EQUAL(2, x.size());
 
-	MyListItem c(300);
+	MyListNode c(300);
 	it = x.insert(++x.begin(), c);
 	CHECK_EQUAL(++x.begin(), it);
 	POINTERS_EQUAL(&c, &*it);
 	LONGS_EQUAL(300, it->m_value);
 	LONGS_EQUAL(3, x.size());
 
-	MyListItem d(400);
+	MyListNode d(400);
 	it = x.insert(x.end(), d);
 	CHECK_EQUAL(--x.end(), it);
 	POINTERS_EQUAL(&d, &*it);
@@ -211,14 +211,14 @@ TEST(ListTest, insert)
 
 }
 
-TEST(ListTest, erase)
+TEST(DoublyLinkedListTest, erase)
 {
 	MyList x;
 	MyList::iterator it;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
-	MyListItem d(400);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
+	MyListNode d(400);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -242,13 +242,13 @@ TEST(ListTest, erase)
 
 }
 
-TEST(ListTest, begin_end)
+TEST(DoublyLinkedListTest, begin_end)
 {
 	MyList x;
-	MyListItem a(0);
-	MyListItem b(1);
-	MyListItem c(2);
-	MyListItem d(3);
+	MyListNode a(0);
+	MyListNode b(1);
+	MyListNode c(2);
+	MyListNode d(3);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -261,13 +261,13 @@ TEST(ListTest, begin_end)
 	}
 }
 
-TEST(ListTest, begin_end_const)
+TEST(DoublyLinkedListTest, begin_end_const)
 {
 	MyList z;
-	MyListItem a(0);
-	MyListItem b(1);
-	MyListItem c(2);
-	MyListItem d(3);
+	MyListNode a(0);
+	MyListNode b(1);
+	MyListNode c(2);
+	MyListNode d(3);
 	z.push_back(a);
 	z.push_back(b);
 	z.push_back(c);
@@ -281,12 +281,12 @@ TEST(ListTest, begin_end_const)
 	}
 }
 
-TEST(ListTest, front_read)
+TEST(DoublyLinkedListTest, front_read)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -294,12 +294,12 @@ TEST(ListTest, front_read)
 	POINTERS_EQUAL(&a, &x.front());
 }
 
-TEST(ListTest, front_read_const)
+TEST(DoublyLinkedListTest, front_read_const)
 {
 	MyList z;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	z.push_back(a);
 	z.push_back(b);
 	z.push_back(c);
@@ -308,12 +308,12 @@ TEST(ListTest, front_read_const)
 	POINTERS_EQUAL(&a, &x.front());
 }
 
-TEST(ListTest, front_write)
+TEST(DoublyLinkedListTest, front_write)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -322,12 +322,12 @@ TEST(ListTest, front_write)
 	POINTERS_EQUAL(&a, &x.front());
 }
 
-TEST(ListTest, back_read)
+TEST(DoublyLinkedListTest, back_read)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -335,12 +335,12 @@ TEST(ListTest, back_read)
 	POINTERS_EQUAL(&c, &x.back());
 }
 
-TEST(ListTest, back_read_const)
+TEST(DoublyLinkedListTest, back_read_const)
 {
 	MyList z;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	z.push_back(a);
 	z.push_back(b);
 	z.push_back(c);
@@ -349,12 +349,12 @@ TEST(ListTest, back_read_const)
 	POINTERS_EQUAL(&c, &x.back());
 }
 
-TEST(ListTest, back_write)
+TEST(DoublyLinkedListTest, back_write)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -363,19 +363,19 @@ TEST(ListTest, back_write)
 	POINTERS_EQUAL(&c, &x.back());
 }
 
-TEST(ListTest, splice_all)
+TEST(DoublyLinkedListTest, splice_all)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList y;
-	MyListItem d(400);
-	MyListItem e(500);
+	MyListNode d(400);
+	MyListNode e(500);
 	y.push_back(d);
 	y.push_back(e);
 
@@ -392,19 +392,19 @@ TEST(ListTest, splice_all)
 
 }
 
-TEST(ListTest, splice_all2)
+TEST(DoublyLinkedListTest, splice_all2)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList y;
-	MyListItem d(400);
-	MyListItem e(500);
+	MyListNode d(400);
+	MyListNode e(500);
 	y.push_back(d);
 	y.push_back(e);
 
@@ -436,12 +436,12 @@ TEST(ListTest, splice_all2)
 	checkList(expected, y);
 }
 
-TEST(ListTest, splice_all_empty)
+TEST(DoublyLinkedListTest, splice_all_empty)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -454,19 +454,19 @@ TEST(ListTest, splice_all_empty)
 	checkList(expected, x);
 }
 
-TEST(ListTest, splice_iter)
+TEST(DoublyLinkedListTest, splice_iter)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList y;
-	MyListItem d(400);
-	MyListItem e(500);
+	MyListNode d(400);
+	MyListNode e(500);
 	y.push_back(d);
 	y.push_back(e);
 
@@ -481,12 +481,12 @@ TEST(ListTest, splice_iter)
 	checkList(expected, y);
 }
 
-TEST(ListTest, splice_iter_self)
+TEST(DoublyLinkedListTest, splice_iter_self)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -505,12 +505,12 @@ TEST(ListTest, splice_iter_self)
 	checkList(expected, x);
 }
 
-TEST(ListTest, splice_iter_self_do_nothing)
+TEST(DoublyLinkedListTest, splice_iter_self_do_nothing)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -521,12 +521,12 @@ TEST(ListTest, splice_iter_self_do_nothing)
 	checkList(expected, x);
 }
 
-TEST(ListTest, splice_iter_self_do_nothing2)
+TEST(DoublyLinkedListTest, splice_iter_self_do_nothing2)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -537,19 +537,19 @@ TEST(ListTest, splice_iter_self_do_nothing2)
 	checkList(expected, x);
 }
 
-TEST(ListTest, splice_range)
+TEST(DoublyLinkedListTest, splice_range)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList y;
-	MyListItem d(400);
-	MyListItem e(500);
+	MyListNode d(400);
+	MyListNode e(500);
 	y.push_back(d);
 	y.push_back(e);
 
@@ -587,19 +587,19 @@ TEST(ListTest, splice_range)
 	checkList(expected, y);
 }
 
-TEST(ListTest, splice_range_first_equal_last)
+TEST(DoublyLinkedListTest, splice_range_first_equal_last)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList y;
-	MyListItem d(400);
-	MyListItem e(500);
+	MyListNode d(400);
+	MyListNode e(500);
 	y.push_back(d);
 	y.push_back(e);
 
@@ -614,14 +614,14 @@ TEST(ListTest, splice_range_first_equal_last)
 	checkList(expected, y);
 }
 
-TEST(ListTest, splice_range_self)
+TEST(DoublyLinkedListTest, splice_range_self)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
-	MyListItem d(400);
-	MyListItem e(500);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
+	MyListNode d(400);
+	MyListNode e(500);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -654,12 +654,12 @@ TEST(ListTest, splice_range_self)
 	checkList(expected, x);
 }
 
-TEST(ListTest, splice_range_self_do_nothing)
+TEST(DoublyLinkedListTest, splice_range_self_do_nothing)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -671,19 +671,19 @@ TEST(ListTest, splice_range_self_do_nothing)
 
 }
 
-TEST(ListTest, swap)
+TEST(DoublyLinkedListTest, swap)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList y;
-	MyListItem d(400);
-	MyListItem e(500);
+	MyListNode d(400);
+	MyListNode e(500);
 	y.push_back(d);
 	y.push_back(e);
 
@@ -712,12 +712,12 @@ TEST(ListTest, swap)
 	checkList(expected, y);
 }
 
-TEST(ListTest, swap_same)
+TEST(DoublyLinkedListTest, swap_same)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -733,19 +733,19 @@ TEST(ListTest, swap_same)
 
 }
 
-TEST(ListTest, swap_nonmember)
+TEST(DoublyLinkedListTest, swap_nonmember)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList y;
-	MyListItem d(400);
-	MyListItem e(500);
+	MyListNode d(400);
+	MyListNode e(500);
 	y.push_back(d);
 	y.push_back(e);
 
@@ -774,12 +774,12 @@ TEST(ListTest, swap_nonmember)
 	checkList(expected, y);
 }
 
-TEST(ListTest, swap_nonmember_same)
+TEST(DoublyLinkedListTest, swap_nonmember_same)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -795,12 +795,12 @@ TEST(ListTest, swap_nonmember_same)
 
 }
 
-TEST(ListTest, iterator_copy_ctor)
+TEST(DoublyLinkedListTest, iterator_copy_ctor)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -820,12 +820,12 @@ TEST(ListTest, iterator_copy_ctor)
 
 }
 
-TEST(ListTest, iterator_operator_incremant)
+TEST(DoublyLinkedListTest, iterator_operator_incremant)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -837,12 +837,12 @@ TEST(ListTest, iterator_operator_incremant)
 	LONGS_EQUAL(200, it3->m_value);
 }
 
-TEST(ListTest, iterator_operator_decremant)
+TEST(DoublyLinkedListTest, iterator_operator_decremant)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -854,66 +854,66 @@ TEST(ListTest, iterator_operator_decremant)
 	LONGS_EQUAL(300, it3->m_value);
 }
 
-TEST(ListTest, iterator_operator_arrow)
+TEST(DoublyLinkedListTest, iterator_operator_arrow)
 {
 	MyList x;
-	MyListItem a(100);
-	DerivedItem1 b(200);
-	DerivedItem2 c(300);
+	MyListNode a(100);
+	DerivedNode1 b(200);
+	DerivedNode2 c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList::iterator it = x.begin();
-	STRCMP_EQUAL("MyListItem", it->name());
+	STRCMP_EQUAL("MyListNode", it->name());
 	LONGS_EQUAL(100, it->m_value);
 	it->m_value = 1000;
 	LONGS_EQUAL(1000, it->m_value);
 
 	MyList::const_iterator cit(it);
-	STRCMP_EQUAL("MyListItem", cit->name());
+	STRCMP_EQUAL("MyListNode", cit->name());
 	LONGS_EQUAL(1000, cit->m_value);
 
 	++it;
-	STRCMP_EQUAL("DerivedItem1", it->name());
+	STRCMP_EQUAL("DerivedNode1", it->name());
 
 	++it;
-	STRCMP_EQUAL("DerivedItem2", it->name());
+	STRCMP_EQUAL("DerivedNode2", it->name());
 }
 
-TEST(ListTest, iterator_operator_asterisk)
+TEST(DoublyLinkedListTest, iterator_operator_asterisk)
 {
 	MyList x;
-	MyListItem a(100);
-	DerivedItem1 b(200);
-	DerivedItem2 c(300);
+	MyListNode a(100);
+	DerivedNode1 b(200);
+	DerivedNode2 c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
 
 	MyList::iterator it = x.begin();
-	STRCMP_EQUAL("MyListItem", (*it).name());
+	STRCMP_EQUAL("MyListNode", (*it).name());
 	LONGS_EQUAL(100, (*it).m_value);
 	(*it).m_value = 1000;
 	LONGS_EQUAL(1000, (*it).m_value);
 
 	MyList::const_iterator cit(it);
-	STRCMP_EQUAL("MyListItem", (*cit).name());
+	STRCMP_EQUAL("MyListNode", (*cit).name());
 	LONGS_EQUAL(1000, (*cit).m_value);
 
 	++it;
-	STRCMP_EQUAL("DerivedItem1", (*it).name());
+	STRCMP_EQUAL("DerivedNode1", (*it).name());
 
 	++it;
-	STRCMP_EQUAL("DerivedItem2", (*it).name());
+	STRCMP_EQUAL("DerivedNode2", (*it).name());
 }
 
-TEST(ListTest, iterator_operator_equal_true)
+TEST(DoublyLinkedListTest, iterator_operator_equal_true)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -938,12 +938,12 @@ TEST(ListTest, iterator_operator_equal_true)
 
 }
 
-TEST(ListTest, iterator_operator_equal_false)
+TEST(DoublyLinkedListTest, iterator_operator_equal_false)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -952,12 +952,12 @@ TEST(ListTest, iterator_operator_equal_false)
 	CHECK_FALSE(it == it2);
 }
 
-TEST(ListTest, iterator_operator_notequal_true)
+TEST(DoublyLinkedListTest, iterator_operator_notequal_true)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -970,12 +970,12 @@ TEST(ListTest, iterator_operator_notequal_true)
 	CHECK_TRUE(it != it2);
 }
 
-TEST(ListTest, iterator_operator_notequal_false)
+TEST(DoublyLinkedListTest, iterator_operator_notequal_false)
 {
 	MyList x;
-	MyListItem a(100);
-	MyListItem b(200);
-	MyListItem c(300);
+	MyListNode a(100);
+	MyListNode b(200);
+	MyListNode c(300);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -988,18 +988,18 @@ TEST(ListTest, iterator_operator_notequal_false)
 	CHECK_FALSE(it != it2);
 }
 
-TEST(ListTest, new_delete)
+TEST(DoublyLinkedListTest, new_delete)
 {
 	MyList* x = new MyList();
-	MyListItem* a = new MyListItem(100);
-	MyListItem* b = new DerivedItem1(200);
-	MyListItem* c = new DerivedItem2(300);
+	MyListNode* a = new MyListNode(100);
+	MyListNode* b = new DerivedNode1(200);
+	MyListNode* c = new DerivedNode2(300);
 	x->push_back(*a);
 	x->push_back(*b);
 	x->push_back(*c);
 	LONGS_EQUAL(3, x->size());
 	while (!x->empty()) {
-		MyListItem& tmp = x->front();
+		MyListNode& tmp = x->front();
 		x->pop_front();
 		tmp.name();
 		delete &tmp;
@@ -1008,13 +1008,13 @@ TEST(ListTest, new_delete)
 }
 
 #ifndef NO_STD_ITERATOR
-TEST(ListTest, rbegin_rend)
+TEST(DoublyLinkedListTest, rbegin_rend)
 {
 	MyList x;
-	MyListItem a(0);
-	MyListItem b(1);
-	MyListItem c(2);
-	MyListItem d(3);
+	MyListNode a(0);
+	MyListNode b(1);
+	MyListNode c(2);
+	MyListNode d(3);
 	x.push_back(a);
 	x.push_back(b);
 	x.push_back(c);
@@ -1027,13 +1027,13 @@ TEST(ListTest, rbegin_rend)
 	}
 }
 
-TEST(ListTest, rbegin_rend_const)
+TEST(DoublyLinkedListTest, rbegin_rend_const)
 {
 	MyList z;
-	MyListItem a(0);
-	MyListItem b(1);
-	MyListItem c(2);
-	MyListItem d(3);
+	MyListNode a(0);
+	MyListNode b(1);
+	MyListNode c(2);
+	MyListNode d(3);
 	z.push_back(a);
 	z.push_back(b);
 	z.push_back(c);
