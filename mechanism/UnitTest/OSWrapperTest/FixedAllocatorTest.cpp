@@ -24,6 +24,10 @@ public:
 	{
 		mock().actualCall("deallocate").withParameter("p", p).onObject(this);
 	}
+	std::size_t getBlockSize() const
+	{
+		return m_blockSize;
+	}
 };
 
 class TestFixedAllocatorFactory : public FixedAllocatorFactory {
@@ -115,6 +119,15 @@ TEST(FixedAllocatorTest, deallocate_nullptr)
 	mock().expectOneCall("deallocate").onObject(allocator).withParameter("p", p);
 
 	allocator->deallocate(p);
+
+	FixedAllocator::destroy(allocator);
+}
+
+TEST(FixedAllocatorTest, getBlockSize)
+{
+	allocator = FixedAllocator::create(16, sizeof pool, pool);
+
+	LONGS_EQUAL(16, allocator->getBlockSize());
 
 	FixedAllocator::destroy(allocator);
 }
