@@ -23,7 +23,7 @@ TARGET = alltests
 OBJS = main.o
 OBJS += ArrayBenchmark.o
 OBJS += FixedVectorBenchmark.o
-OBJS += RingBufferBenchmark.o
+OBJS += FixedDequeBenchmark.o
 
 all: $(TARGET)
 
