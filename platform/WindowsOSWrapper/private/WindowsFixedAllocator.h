@@ -15,6 +15,8 @@ public:
 
 	virtual void* allocate();
 	virtual void deallocate(void* p);
+
+	virtual std::size_t getBlockSize() const;
 };
 
 }
