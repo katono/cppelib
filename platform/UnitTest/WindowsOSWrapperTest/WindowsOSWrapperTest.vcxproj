@@ -63,7 +63,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\CppUTest\lib;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>CppUTestd.lib;OSWrapper.lib;WindowsOSWrapper.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CppUTestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(TargetPath)</Command>
@@ -92,11 +92,54 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\EventFlag.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\FixedAllocator.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\MessageQueue.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\Mutex.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\Thread.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\Timeout.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\VariableAllocator.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsEventFlag.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsFixedAllocator.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsMutex.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsThread.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsVariableAllocator.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsFixedAllocatorFactory.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsMutexFactory.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsThreadFactory.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsVariableAllocatorFactory.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="WindowsEventFlagTest.cpp" />
     <ClCompile Include="WindowsMessageQueueTest.cpp" />
     <ClCompile Include="WindowsMutexTest.cpp" />
     <ClCompile Include="WindowsThreadTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\EventFlag.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\EventFlagFactory.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\FixedAllocator.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\FixedAllocatorFactory.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\MessageQueue.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\Mutex.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\MutexFactory.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\OSWrapperError.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\Runnable.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\Thread.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\ThreadFactory.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\Timeout.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableAllocator.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableAllocatorFactory.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsEventFlag.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsFixedAllocator.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsMutex.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsThread.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsVariableAllocator.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsFixedAllocatorFactory.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsMutexFactory.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsThreadFactory.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsVariableAllocatorFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

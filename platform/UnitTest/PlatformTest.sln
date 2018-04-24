@@ -8,15 +8,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsOSWrapperTest", "WindowsOSWrapperTest\WindowsOSWrapperTest.vcxproj", "{5806E2FB-2D67-4FB7-99CE-70E3908A470A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F468F539-27BD-468E-BE64-DDE641400B51} = {F468F539-27BD-468E-BE64-DDE641400B51}
-		{87964943-0F36-4687-96B7-31A8414E8185} = {87964943-0F36-4687-96B7-31A8414E8185}
-		{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA} = {3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OSWrapper", "..\..\mechanism\OSWrapper\OSWrapper.vcxproj", "{87964943-0F36-4687-96B7-31A8414E8185}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsOSWrapper", "..\WindowsOSWrapper\WindowsOSWrapper.vcxproj", "{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{87964943-0F36-4687-96B7-31A8414E8185} = {87964943-0F36-4687-96B7-31A8414E8185}
 	EndProjectSection
 EndProject
 Global
@@ -39,22 +30,11 @@ Global
 		{5806E2FB-2D67-4FB7-99CE-70E3908A470A}.Release|x64.ActiveCfg = Release|Win32
 		{5806E2FB-2D67-4FB7-99CE-70E3908A470A}.Release|x86.ActiveCfg = Release|Win32
 		{5806E2FB-2D67-4FB7-99CE-70E3908A470A}.Release|x86.Build.0 = Release|Win32
-		{87964943-0F36-4687-96B7-31A8414E8185}.Debug|x64.ActiveCfg = Debug|Win32
-		{87964943-0F36-4687-96B7-31A8414E8185}.Debug|x86.ActiveCfg = Debug|Win32
-		{87964943-0F36-4687-96B7-31A8414E8185}.Debug|x86.Build.0 = Debug|Win32
-		{87964943-0F36-4687-96B7-31A8414E8185}.Release|x64.ActiveCfg = Release|x64
-		{87964943-0F36-4687-96B7-31A8414E8185}.Release|x64.Build.0 = Release|x64
-		{87964943-0F36-4687-96B7-31A8414E8185}.Release|x86.ActiveCfg = Release|Win32
-		{87964943-0F36-4687-96B7-31A8414E8185}.Release|x86.Build.0 = Release|Win32
-		{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}.Debug|x64.ActiveCfg = Debug|Win32
-		{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}.Debug|x86.ActiveCfg = Debug|Win32
-		{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}.Debug|x86.Build.0 = Debug|Win32
-		{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}.Release|x64.ActiveCfg = Release|x64
-		{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}.Release|x64.Build.0 = Release|x64
-		{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}.Release|x86.ActiveCfg = Release|Win32
-		{3D624C8A-4DF4-4654-AE3A-20BCF6D511BA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D007A05-6824-4996-96F4-0C9C9B21D98F}
 	EndGlobalSection
 EndGlobal
