@@ -35,7 +35,7 @@ public:
 
 	void destroy(VariableAllocator* p)
 	{
-		delete p;
+		delete static_cast<TestVariableAllocator*>(p);
 	}
 };
 

@@ -10,9 +10,10 @@ class VariableAllocatorFactory;
 void registerVariableAllocatorFactory(VariableAllocatorFactory* factory);
 
 class VariableAllocator {
-public:
+protected:
 	virtual ~VariableAllocator() {}
 
+public:
 	static VariableAllocator* create(std::size_t memoryPoolSize, void* memoryPool = 0);
 	static void destroy(VariableAllocator* p);
 

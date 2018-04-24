@@ -23,7 +23,7 @@ OSWrapper::VariableAllocator* WindowsVariableAllocatorFactory::create(std::size_
 void WindowsVariableAllocatorFactory::destroy(OSWrapper::VariableAllocator* p)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	delete p;
+	delete static_cast<WindowsVariableAllocator*>(p);
 }
 
 }
