@@ -40,7 +40,7 @@ public:
 
 	void destroy(FixedAllocator* p)
 	{
-		delete p;
+		delete static_cast<TestFixedAllocator*>(p);
 	}
 };
 

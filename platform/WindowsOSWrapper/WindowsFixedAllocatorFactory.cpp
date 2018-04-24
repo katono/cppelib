@@ -23,7 +23,7 @@ OSWrapper::FixedAllocator* WindowsFixedAllocatorFactory::create(std::size_t bloc
 void WindowsFixedAllocatorFactory::destroy(OSWrapper::FixedAllocator* p)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	delete p;
+	delete static_cast<WindowsFixedAllocator*>(p);
 }
 
 }

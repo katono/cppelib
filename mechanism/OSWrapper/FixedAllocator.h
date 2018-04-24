@@ -10,9 +10,10 @@ class FixedAllocatorFactory;
 void registerFixedAllocatorFactory(FixedAllocatorFactory* factory);
 
 class FixedAllocator {
-public:
+protected:
 	virtual ~FixedAllocator() {}
 
+public:
 	static FixedAllocator* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool = 0);
 	static void destroy(FixedAllocator* p);
 
