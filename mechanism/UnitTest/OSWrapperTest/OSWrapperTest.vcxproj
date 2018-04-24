@@ -63,7 +63,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\CppUTest\lib;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>CppUTestd.lib;OSWrapper.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CppUTestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(TargetPath)</Command>
@@ -92,12 +92,35 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\OSWrapper\EventFlag.cpp" />
+    <ClCompile Include="..\..\OSWrapper\FixedAllocator.cpp" />
+    <ClCompile Include="..\..\OSWrapper\MessageQueue.cpp" />
+    <ClCompile Include="..\..\OSWrapper\Mutex.cpp" />
+    <ClCompile Include="..\..\OSWrapper\Thread.cpp" />
+    <ClCompile Include="..\..\OSWrapper\Timeout.cpp" />
+    <ClCompile Include="..\..\OSWrapper\VariableAllocator.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="EventFlagTest.cpp" />
     <ClCompile Include="FixedAllocatorTest.cpp" />
     <ClCompile Include="MutexTest.cpp" />
     <ClCompile Include="ThreadTest.cpp" />
     <ClCompile Include="VariableAllocatorTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\OSWrapper\EventFlag.h" />
+    <ClInclude Include="..\..\OSWrapper\EventFlagFactory.h" />
+    <ClInclude Include="..\..\OSWrapper\FixedAllocator.h" />
+    <ClInclude Include="..\..\OSWrapper\FixedAllocatorFactory.h" />
+    <ClInclude Include="..\..\OSWrapper\MessageQueue.h" />
+    <ClInclude Include="..\..\OSWrapper\Mutex.h" />
+    <ClInclude Include="..\..\OSWrapper\MutexFactory.h" />
+    <ClInclude Include="..\..\OSWrapper\OSWrapperError.h" />
+    <ClInclude Include="..\..\OSWrapper\Runnable.h" />
+    <ClInclude Include="..\..\OSWrapper\Thread.h" />
+    <ClInclude Include="..\..\OSWrapper\ThreadFactory.h" />
+    <ClInclude Include="..\..\OSWrapper\Timeout.h" />
+    <ClInclude Include="..\..\OSWrapper\VariableAllocator.h" />
+    <ClInclude Include="..\..\OSWrapper\VariableAllocatorFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
