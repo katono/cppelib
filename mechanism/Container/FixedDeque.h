@@ -77,9 +77,9 @@ public:
 		CHECK_PRECOND(m_fd != 0);
 		CHECK_PRECOND(m_fd == x.m_fd);
 		if (*this >= x) {
-			return static_cast<difference_type>(m_fd->distance(x.m_idx, m_idx));
+			return static_cast<difference_type>(m_fd->distance_idx(x.m_idx, m_idx));
 		}
-		return -static_cast<difference_type>(m_fd->distance(m_idx, x.m_idx));
+		return -static_cast<difference_type>(m_fd->distance_idx(m_idx, x.m_idx));
 	}
 
 	FixedDeque_iterator operator-(difference_type n) const
@@ -144,8 +144,8 @@ public:
 		CHECK_PRECOND(m_fd != 0);
 		CHECK_PRECOND(m_fd == x.m_fd);
 		return
-			m_fd->distance(m_fd->m_begin, m_idx) <
-			m_fd->distance(x.m_fd->m_begin, x.m_idx);
+			m_fd->distance_idx(m_fd->m_begin, m_idx) <
+			m_fd->distance_idx(x.m_fd->m_begin, x.m_idx);
 	}
 
 	bool operator>(const FixedDeque_iterator& x) const
@@ -262,7 +262,7 @@ public:
 
 	size_type size() const
 	{
-		return distance(m_begin, m_end);
+		return distance_idx(m_begin, m_end);
 	}
 
 	size_type max_size() const
@@ -534,7 +534,7 @@ private:
 		return BufSize + idx - un;
 	}
 
-	size_type distance(size_type first_idx, size_type last_idx) const
+	size_type distance_idx(size_type first_idx, size_type last_idx) const
 	{
 		if (first_idx <= last_idx) {
 			return last_idx - first_idx;
