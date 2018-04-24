@@ -11,9 +11,10 @@ class MutexFactory;
 void registerMutexFactory(MutexFactory* factory);
 
 class Mutex {
-public:
+protected:
 	virtual ~Mutex() {}
 
+public:
 	static Mutex* create();
 	static Mutex* create(int priorityCeiling);
 	static void destroy(Mutex* m);

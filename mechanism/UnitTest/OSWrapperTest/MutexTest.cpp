@@ -54,7 +54,7 @@ public:
 
 	void destroy(Mutex* m)
 	{
-		delete m;
+		delete static_cast<TestMutex*>(m);
 	}
 };
 

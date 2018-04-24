@@ -29,7 +29,7 @@ OSWrapper::Mutex* WindowsMutexFactory::create(int priorityCeiling)
 void WindowsMutexFactory::destroy(OSWrapper::Mutex* m)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	delete m;
+	delete static_cast<WindowsMutex*>(m);
 }
 
 }
