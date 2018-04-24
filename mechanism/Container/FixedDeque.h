@@ -444,14 +444,10 @@ public:
 	template <typename InputIterator>
 	void assign(InputIterator first, InputIterator last)
 	{
-#ifdef NO_STD_ITERATOR
 		size_type n = 0U;
 		for (InputIterator i = first; i != last; ++i) {
 			++n;
 		}
-#else
-		size_type n = static_cast<size_type>(std::distance(first, last));
-#endif
 		if (max_size() < n) {
 			throw BadAlloc();
 		}
@@ -629,14 +625,10 @@ private:
 	template <typename InputIterator>
 	void insert_range(iterator pos, InputIterator first, InputIterator last)
 	{
-#ifdef NO_STD_ITERATOR
 		size_type n = 0U;
 		for (InputIterator i = first; i != last; ++i) {
 			++n;
 		}
-#else
-		size_type n = static_cast<size_type>(std::distance(first, last));
-#endif
 		if (available_size() < n) {
 			throw BadAlloc();
 		}
@@ -658,13 +650,9 @@ private:
 				}
 			} else {
 				InputIterator mid = first;
-#ifdef NO_STD_ITERATOR
 				for (size_type i = 0U; i < num_elems_pos_to_end; ++i) {
 					++mid;
 				}
-#else
-				std::advance(mid, num_elems_pos_to_end);
-#endif
 				for (size_type i = 0U; i < n - num_elems_pos_to_end; ++i) {
 					construct(&*end(), *mid);
 					++mid;
@@ -695,13 +683,9 @@ private:
 				}
 			} else {
 				InputIterator mid = first;
-#ifdef NO_STD_ITERATOR
 				for (size_type i = 0U; i < n - num_elems_beg_to_pos; ++i) {
 					++mid;
 				}
-#else
-				std::advance(mid, n - num_elems_beg_to_pos);
-#endif
 				InputIterator p = mid;
 				for (size_type i = 0U; i < n - num_elems_beg_to_pos; ++i) {
 					construct(&*(begin() - 1), *--p);
