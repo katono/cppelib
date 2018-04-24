@@ -19,15 +19,18 @@ class MessageQueue {
 public:
 	static MessageQueue* create(std::size_t maxSize)
 	{
-		MessageQueue* m = 0;
-		try {
-			m = new MessageQueue();
-		}
-		catch (...) {
+		VariableAllocator* allocator = getMessageQueueAllocator();
+		if (allocator == 0) {
 			return 0;
 		}
+		void* p = allocator->allocate(sizeof(MessageQueue));
+		if (p == 0) {
+			return 0;
+		}
+
+		MessageQueue* m = new(p) MessageQueue();
 		if (!m->init(maxSize + 1U)) {
-			delete m;
+			destroy(m);
 			return 0;
 		}
 		return m;
@@ -35,7 +38,11 @@ public:
 
 	static void destroy(MessageQueue* m)
 	{
-		delete m;
+		if (m == 0) {
+			return;
+		}
+		m->~MessageQueue();
+		getMessageQueueAllocator()->deallocate(m);
 	}
 
 	Error send(const T& msg)
@@ -216,24 +223,6 @@ private:
 		Mutex::destroy(m_mtxRecv);
 		Mutex::destroy(m_mtxSend);
 		Mutex::destroy(m_mtxRB);
-	}
-
-	void* operator new(std::size_t size)
-	{
-		VariableAllocator* allocator = getMessageQueueAllocator();
-		if (allocator == 0) {
-			throw 0;
-		}
-		void* p = allocator->allocate(size);
-		if (p == 0) {
-			throw 0;
-		}
-		return p;
-	}
-
-	void operator delete(void* p)
-	{
-		getMessageQueueAllocator()->deallocate(p);
 	}
 
 	bool init(std::size_t bufSize)
