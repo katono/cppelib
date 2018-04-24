@@ -13,10 +13,11 @@ class ThreadFactory;
 void registerThreadFactory(ThreadFactory* factory);
 
 class Thread {
+protected:
+	virtual ~Thread() {}
+
 public:
 	static const int INHERIT_PRIORITY;
-
-	virtual ~Thread() {}
 
 	static Thread* create(Runnable* r, std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
 	static void destroy(Thread* t);

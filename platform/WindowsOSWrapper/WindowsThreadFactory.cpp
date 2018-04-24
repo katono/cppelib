@@ -42,9 +42,10 @@ void WindowsThreadFactory::destroy(OSWrapper::Thread* t)
 		return;
 	}
 	std::lock_guard<std::mutex> lock(m_mutex);
-	static_cast<WindowsThread*>(t)->endThread();
-	m_threadIdMap.erase(static_cast<WindowsThread*>(t)->getId());
-	delete t;
+	WindowsThread* winThread = static_cast<WindowsThread*>(t);
+	winThread->endThread();
+	m_threadIdMap.erase(winThread->getId());
+	delete winThread;
 }
 
 void WindowsThreadFactory::exit()

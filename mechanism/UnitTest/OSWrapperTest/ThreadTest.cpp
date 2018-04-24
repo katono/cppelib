@@ -119,7 +119,7 @@ private:
 	{
 		std::size_t count = m_threadSet.erase(t);
 		LONGS_EQUAL(1, count);
-		delete t;
+		delete static_cast<TestThread*>(t);
 	}
 	void exit()
 	{
