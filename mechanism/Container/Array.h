@@ -147,17 +147,6 @@ struct Array {
 		}
 	}
 
-	void swap(Array& other)
-	{
-		if (this == &other) {
-			return;
-		}
-		for (size_type i = 0U; i < size(); ++i) {
-			T tmp = operator[](i);
-			operator[](i) = other[i];
-			other[i] = tmp;
-		}
-	}
 };
 
 template <typename T, std::size_t Size>
@@ -175,12 +164,6 @@ template <typename T, std::size_t Size>
 bool operator!=(const Array<T, Size>& x, const Array<T, Size>& y)
 {
 	return !(x == y);
-}
-
-template <typename T, std::size_t Size>
-void swap(Array<T, Size>& x, Array<T, Size>& y)
-{
-	x.swap(y);
 }
 
 }
