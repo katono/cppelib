@@ -13,6 +13,9 @@ class EventFlagFactory;
 void registerEventFlagFactory(EventFlagFactory* factory);
 
 class EventFlag {
+protected:
+	virtual ~EventFlag() {}
+
 public:
 	enum Mode {
 		OR,
@@ -20,8 +23,6 @@ public:
 	};
 
 	typedef Container::BitPattern<unsigned int> Pattern;
-
-	virtual ~EventFlag() {}
 
 	static EventFlag* create(bool autoReset);
 	static void destroy(EventFlag* e);

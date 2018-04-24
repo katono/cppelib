@@ -23,7 +23,7 @@ OSWrapper::EventFlag* WindowsEventFlagFactory::create(bool autoReset)
 void WindowsEventFlagFactory::destroy(OSWrapper::EventFlag* e)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	delete e;
+	delete static_cast<WindowsEventFlag*>(e);
 }
 
 }

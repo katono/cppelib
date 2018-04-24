@@ -128,7 +128,7 @@ public:
 
 	void destroy(EventFlag* e)
 	{
-		delete e;
+		delete static_cast<TestEventFlag*>(e);
 	}
 };
 
