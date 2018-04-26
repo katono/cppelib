@@ -2,7 +2,6 @@
 #define WINDOWS_OS_WRAPPER_WINDOWS_THREAD_FACTORY_H_INCLUDED
 
 #include "OSWrapper/ThreadFactory.h"
-#include "private/WindowsThread.h"
 #include <unordered_map>
 #include <thread>
 #include <mutex>
@@ -24,7 +23,6 @@ private:
 	virtual int getHighestPriority() const;
 	virtual int getLowestPriority() const;
 
-	WindowsThread m_mainThread;
 	std::unordered_map<std::thread::id, OSWrapper::Thread*> m_threadIdMap;
 	std::mutex m_mutex;
 };

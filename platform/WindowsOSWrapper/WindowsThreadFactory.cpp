@@ -1,16 +1,13 @@
 #include "WindowsThreadFactory.h"
+#include "private/WindowsThread.h"
 #include "Assertion/Assertion.h"
 #include <chrono>
 
 namespace WindowsOSWrapper {
 
 WindowsThreadFactory::WindowsThreadFactory()
-: m_mainThread(nullptr, 0, OSWrapper::Thread::INHERIT_PRIORITY, "MainThread"), 
-  m_threadIdMap(), m_mutex()
-
+: m_threadIdMap(), m_mutex()
 {
-	m_mainThread.setPriority(OSWrapper::Thread::INHERIT_PRIORITY);
-	m_threadIdMap.insert(std::make_pair(std::this_thread::get_id(), &m_mainThread));
 }
 
 OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
@@ -38,9 +35,6 @@ OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::siz
 
 void WindowsThreadFactory::destroy(OSWrapper::Thread* t)
 {
-	if (t == &m_mainThread) {
-		return;
-	}
 	std::lock_guard<std::mutex> lock(m_mutex);
 	WindowsThread* winThread = static_cast<WindowsThread*>(t);
 	winThread->endThread();

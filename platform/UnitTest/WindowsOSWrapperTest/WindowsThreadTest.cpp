@@ -80,18 +80,6 @@ TEST(WindowsThreadTest, create_failed_runnable_nullptr)
 	CHECK_FALSE(thread);
 }
 
-TEST(WindowsThreadTest, getCurrentThread_mainThread)
-{
-	Thread* mainThread = Thread::getCurrentThread();
-
-	LONGS_EQUAL(1024*1024, mainThread->getStackSize());
-	LONGS_EQUAL(4, mainThread->getPriority());
-	STRCMP_EQUAL("MainThread", mainThread->getName());
-
-	// Cannot destroy
-	Thread::destroy(mainThread);
-}
-
 class MockRunnable : public Runnable {
 public:
 	void run()
