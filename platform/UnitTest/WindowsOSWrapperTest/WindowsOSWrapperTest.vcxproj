@@ -101,7 +101,6 @@
     <ClCompile Include="..\..\..\mechanism\OSWrapper\VariableAllocator.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsEventFlag.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsFixedAllocator.cpp" />
-    <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsMutex.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsVariableAllocator.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsFixedAllocatorFactory.cpp" />
@@ -131,7 +130,6 @@
     <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableAllocatorFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsEventFlag.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsFixedAllocator.h" />
-    <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsMutex.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsVariableAllocator.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsFixedAllocatorFactory.h" />

@@ -1,7 +1,75 @@
 #include "WindowsMutexFactory.h"
-#include "private/WindowsMutex.h"
+#include "OSWrapper/Mutex.h"
+#include <chrono>
 
 namespace WindowsOSWrapper {
+
+class WindowsMutex : public OSWrapper::Mutex {
+private:
+	std::timed_mutex m_mutex;
+
+public:
+	WindowsMutex()
+	: m_mutex()
+	{
+	}
+
+	~WindowsMutex()
+	{
+	}
+
+	OSWrapper::Error lock()
+	{
+		try {
+			m_mutex.lock();
+			return OSWrapper::OK;
+		}
+		catch (...) {
+			return OSWrapper::OtherError;
+		}
+	}
+
+	OSWrapper::Error tryLock()
+	{
+		try {
+			if (m_mutex.try_lock()) {
+				return OSWrapper::OK;
+			}
+			return OSWrapper::TimedOut;
+		}
+		catch (...) {
+			return OSWrapper::OtherError;
+		}
+	}
+
+	OSWrapper::Error timedLock(OSWrapper::Timeout tmout)
+	{
+		if (tmout == OSWrapper::Timeout::FOREVER) {
+			return lock();
+		}
+		try {
+			if (m_mutex.try_lock_for(std::chrono::milliseconds(tmout))) {
+				return OSWrapper::OK;
+			}
+			return OSWrapper::TimedOut;
+		}
+		catch (...) {
+			return OSWrapper::OtherError;
+		}
+	}
+
+	OSWrapper::Error unlock()
+	{
+		try {
+			m_mutex.unlock();
+			return OSWrapper::OK;
+		}
+		catch (...) {
+			return OSWrapper::OtherError;
+		}
+	}
+};
+
 
 WindowsMutexFactory::WindowsMutexFactory()
 : m_mutex()
