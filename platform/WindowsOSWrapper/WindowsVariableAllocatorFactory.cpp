@@ -27,6 +27,8 @@ WindowsVariableAllocatorFactory::WindowsVariableAllocatorFactory()
 
 OSWrapper::VariableAllocator* WindowsVariableAllocatorFactory::create(std::size_t memoryPoolSize, void* memoryPool)
 {
+	(void) memoryPoolSize;
+	(void) memoryPool;
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
 		WindowsVariableAllocator* p = new WindowsVariableAllocator();
