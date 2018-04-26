@@ -99,7 +99,6 @@
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Thread.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Timeout.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\VariableAllocator.cpp" />
-    <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsFixedAllocator.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\private\WindowsVariableAllocator.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsFixedAllocatorFactory.cpp" />
@@ -127,7 +126,6 @@
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Timeout.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableAllocator.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableAllocatorFactory.h" />
-    <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsFixedAllocator.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\private\WindowsVariableAllocator.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsFixedAllocatorFactory.h" />

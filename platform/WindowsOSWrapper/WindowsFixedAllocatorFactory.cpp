@@ -1,7 +1,33 @@
 #include "WindowsFixedAllocatorFactory.h"
-#include "private/WindowsFixedAllocator.h"
+#include "OSWrapper/FixedAllocator.h"
+#include <cstdlib>
 
 namespace WindowsOSWrapper {
+
+class WindowsFixedAllocator : public OSWrapper::FixedAllocator {
+private:
+	const std::size_t m_blockSize;
+
+public:
+	WindowsFixedAllocator(std::size_t blockSize) : m_blockSize(blockSize) {}
+	~WindowsFixedAllocator() {}
+
+	void* allocate()
+	{
+		return std::malloc(m_blockSize);
+	}
+
+	void deallocate(void* p)
+	{
+		std::free(p);
+	}
+
+	std::size_t getBlockSize() const
+	{
+		return m_blockSize;
+	}
+};
+
 
 WindowsFixedAllocatorFactory::WindowsFixedAllocatorFactory()
 : m_mutex()
