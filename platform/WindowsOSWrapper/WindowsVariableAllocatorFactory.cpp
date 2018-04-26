@@ -1,7 +1,24 @@
 #include "WindowsVariableAllocatorFactory.h"
-#include "private/WindowsVariableAllocator.h"
+#include "OSWrapper/VariableAllocator.h"
+#include <cstdlib>
 
 namespace WindowsOSWrapper {
+
+class WindowsVariableAllocator : public OSWrapper::VariableAllocator {
+public:
+	WindowsVariableAllocator() {}
+	~WindowsVariableAllocator() {}
+
+	void* allocate(std::size_t size)
+	{
+		return std::malloc(size);
+	}
+
+	void deallocate(void* p)
+	{
+		std::free(p);
+	}
+};
 
 WindowsVariableAllocatorFactory::WindowsVariableAllocatorFactory()
 : m_mutex()
