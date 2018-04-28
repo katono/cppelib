@@ -280,12 +280,12 @@ OSWrapper::Thread* WindowsThreadFactory::getCurrentThread()
 	return iter->second;
 }
 
-int WindowsThreadFactory::getHighestPriority() const
+int WindowsThreadFactory::getMaxPriority() const
 {
 	return static_cast<int>(s_prioList.size()) - 1;
 }
 
-int WindowsThreadFactory::getLowestPriority() const
+int WindowsThreadFactory::getMinPriority() const
 {
 	return 0;
 }

@@ -29,7 +29,7 @@ public:
 			m_stackSize = 1024;
 		}
 		if (priority == Thread::INHERIT_PRIORITY) {
-			m_priority = (Thread::getHighestPriority() + Thread::getLowestPriority()) / 2;
+			m_priority = (Thread::getMaxPriority() + Thread::getMinPriority()) / 2;
 		}
 	}
 
@@ -137,11 +137,11 @@ private:
 	{
 		return (Thread*) mock().actualCall("getCurrentThread").onObject(this).returnPointerValue();
 	}
-	int getHighestPriority() const
+	int getMaxPriority() const
 	{
 		return 10;
 	}
-	int getLowestPriority() const
+	int getMinPriority() const
 	{
 		return 0;
 	}
@@ -157,7 +157,7 @@ TEST_GROUP(ThreadTest) {
 	void setup()
 	{
 		OSWrapper::registerThreadFactory(&testFactory);
-		normalPriority = (Thread::getHighestPriority() + Thread::getLowestPriority()) / 2;
+		normalPriority = (Thread::getMaxPriority() + Thread::getMinPriority()) / 2;
 	}
 	void teardown()
 	{

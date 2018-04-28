@@ -53,16 +53,16 @@ Thread* Thread::getCurrentThread()
 	return s_factory->getCurrentThread();
 }
 
-int Thread::getHighestPriority()
+int Thread::getMaxPriority()
 {
 	CHECK_PRECOND(s_factory);
-	return s_factory->getHighestPriority();
+	return s_factory->getMaxPriority();
 }
 
-int Thread::getLowestPriority()
+int Thread::getMinPriority()
 {
 	CHECK_PRECOND(s_factory);
-	return s_factory->getLowestPriority();
+	return s_factory->getMinPriority();
 }
 
 }
