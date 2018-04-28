@@ -65,4 +65,10 @@ int Thread::getMinPriority()
 	return s_factory->getMinPriority();
 }
 
+int Thread::getNormalPriority()
+{
+	CHECK_PRECOND(s_factory);
+	return (s_factory->getMinPriority() + s_factory->getMaxPriority()) / 2;
+}
+
 }

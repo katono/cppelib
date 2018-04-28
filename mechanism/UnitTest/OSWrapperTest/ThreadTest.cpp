@@ -157,7 +157,7 @@ TEST_GROUP(ThreadTest) {
 	void setup()
 	{
 		OSWrapper::registerThreadFactory(&testFactory);
-		normalPriority = (Thread::getMaxPriority() + Thread::getMinPriority()) / 2;
+		normalPriority = Thread::getNormalPriority();
 	}
 	void teardown()
 	{

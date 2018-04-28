@@ -27,6 +27,7 @@ public:
 	static Thread* getCurrentThread();
 	static int getMaxPriority();
 	static int getMinPriority();
+	static int getNormalPriority();
 
 	virtual void start() = 0;
 	virtual Error wait() = 0;
