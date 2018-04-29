@@ -9,7 +9,7 @@ private:
 	const std::size_t m_blockSize;
 
 public:
-	WindowsFixedAllocator(std::size_t blockSize) : m_blockSize(blockSize) {}
+	explicit WindowsFixedAllocator(std::size_t blockSize) : m_blockSize(blockSize) {}
 	~WindowsFixedAllocator() {}
 
 	void* allocate()
