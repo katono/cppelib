@@ -12,18 +12,6 @@
 
 namespace WindowsOSWrapper {
 
-const std::vector<int> s_prioList = {
-	THREAD_PRIORITY_IDLE,
-	THREAD_PRIORITY_LOWEST - 1,
-	THREAD_PRIORITY_LOWEST,
-	THREAD_PRIORITY_BELOW_NORMAL,
-	THREAD_PRIORITY_NORMAL,
-	THREAD_PRIORITY_ABOVE_NORMAL,
-	THREAD_PRIORITY_HIGHEST,
-	THREAD_PRIORITY_HIGHEST + 1,
-	THREAD_PRIORITY_TIME_CRITICAL,
-};
-
 class WindowsThread : public OSWrapper::Thread {
 private:
 	OSWrapper::Runnable* m_runnable;
@@ -38,6 +26,7 @@ private:
 	bool m_isActive;
 	bool m_endThreadRequested;
 	std::thread::id m_threadId;
+	const std::unordered_map<int, int>& m_prioMap;
 
 	static void threadEntry(WindowsThread* t)
 	{
@@ -89,10 +78,10 @@ public:
 		Exit() {}
 	};
 
-	WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
+	WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name, const std::unordered_map<int, int>& prioMap)
 	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name), 
 	  m_thread(), m_mutex(), m_condStarted(), m_condFinished(), 
-	  m_isActive(false), m_endThreadRequested(false), m_threadId()
+	  m_isActive(false), m_endThreadRequested(false), m_threadId(), m_prioMap(prioMap)
 	{
 	}
 
@@ -174,23 +163,18 @@ public:
 
 	void setPriority(int priority)
 	{
-		if ((0 <= priority) && (priority < static_cast<int>(s_prioList.size()))) {
+		if ((OSWrapper::Thread::getMinPriority() <= priority) && (priority <= OSWrapper::Thread::getMaxPriority())) {
 			std::lock_guard<std::mutex> lock(m_mutex);
 			m_priority = priority;
-			SetThreadPriority(m_thread.native_handle(), s_prioList[priority]);
+			SetThreadPriority(m_thread.native_handle(), m_prioMap.at(priority));
 			return;
 		}
 
 		// INHERIT_PRIORITY
-		const auto winPriority = GetThreadPriority(GetCurrentThread());
-		for (int i = 0; i < static_cast<int>(s_prioList.size()); i++) {
-			if (s_prioList[i] == winPriority) {
-				std::lock_guard<std::mutex> lock(m_mutex);
-				m_priority = i;
-				SetThreadPriority(m_thread.native_handle(), winPriority);
-				break;
-			}
-		}
+		const int this_priority = OSWrapper::Thread::getCurrentThread()->getPriority();
+		std::lock_guard<std::mutex> lock(m_mutex);
+		m_priority = this_priority;
+		SetThreadPriority(m_thread.native_handle(), m_prioMap.at(this_priority));
 	}
 
 	int getPriority() const
@@ -220,17 +204,62 @@ public:
 };
 
 
-WindowsThreadFactory::WindowsThreadFactory()
-: m_threadIdMap(), m_mutex()
+WindowsThreadFactory::WindowsThreadFactory(int lowestPriority, int highestPriority)
+: m_threadIdMap(), m_mutex(), m_lowestPriority(0), m_highestPriority(0), m_prioMap()
 {
+	setPriorityRange(lowestPriority, highestPriority);
+}
+
+void WindowsThreadFactory::setPriorityRange(int lowestPriority, int highestPriority)
+{
+	m_lowestPriority = lowestPriority;
+	m_highestPriority = highestPriority;
+
+	m_prioMap.clear();
+	m_prioMap.insert(std::make_pair(highestPriority, THREAD_PRIORITY_TIME_CRITICAL));
+	m_prioMap.insert(std::make_pair(lowestPriority, THREAD_PRIORITY_IDLE));
+
+	int mid = (lowestPriority + highestPriority) / 2;
+	if (lowestPriority < highestPriority) {
+		int diff = 0;
+		for (int i = mid; i < highestPriority; ++i) {
+			m_prioMap.insert(std::make_pair(i, THREAD_PRIORITY_NORMAL + diff));
+			if ((THREAD_PRIORITY_NORMAL + diff) < THREAD_PRIORITY_HIGHEST) {
+				diff++;
+			}
+		}
+
+		diff = 1;
+		for (int i = mid - 1; i > lowestPriority; --i) {
+			m_prioMap.insert(std::make_pair(i, THREAD_PRIORITY_NORMAL - diff));
+			if ((THREAD_PRIORITY_NORMAL - diff) > THREAD_PRIORITY_LOWEST) {
+				diff++;
+			}
+		}
+	} else {
+		int diff = 0;
+		for (int i = mid; i < lowestPriority; ++i) {
+			m_prioMap.insert(std::make_pair(i, THREAD_PRIORITY_NORMAL - diff));
+			if ((THREAD_PRIORITY_NORMAL - diff) > THREAD_PRIORITY_LOWEST) {
+				diff++;
+			}
+		}
+
+		diff = 1;
+		for (int i = mid - 1; i > highestPriority; --i) {
+			m_prioMap.insert(std::make_pair(i, THREAD_PRIORITY_NORMAL + diff));
+			if ((THREAD_PRIORITY_NORMAL + diff) < THREAD_PRIORITY_HIGHEST) {
+				diff++;
+			}
+		}
+	}
 }
 
 OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
 {
 	WindowsThread* t = nullptr;
-	std::lock_guard<std::mutex> lock(m_mutex);
 	try {
-		t = new WindowsThread(r, stackSize, priority, name);
+		t = new WindowsThread(r, stackSize, priority, name, m_prioMap);
 		t->beginThread();
 	}
 	catch (...) {
@@ -238,6 +267,7 @@ OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::siz
 		return nullptr;
 	}
 	try {
+		std::lock_guard<std::recursive_mutex> lock(m_mutex);
 		m_threadIdMap.insert(std::make_pair(t->getId(), t));
 		return t;
 	}
@@ -250,9 +280,9 @@ OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::siz
 
 void WindowsThreadFactory::destroy(OSWrapper::Thread* t)
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
 	WindowsThread* winThread = static_cast<WindowsThread*>(t);
 	winThread->endThread();
+	std::lock_guard<std::recursive_mutex> lock(m_mutex);
 	m_threadIdMap.erase(winThread->getId());
 	delete winThread;
 }
@@ -274,7 +304,7 @@ void WindowsThreadFactory::yield()
 
 OSWrapper::Thread* WindowsThreadFactory::getCurrentThread()
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_mutex);
 	auto iter = m_threadIdMap.find(std::this_thread::get_id());
 	CHECK_ASSERT(iter != m_threadIdMap.end());
 	return iter->second;
@@ -282,12 +312,20 @@ OSWrapper::Thread* WindowsThreadFactory::getCurrentThread()
 
 int WindowsThreadFactory::getMaxPriority() const
 {
-	return static_cast<int>(s_prioList.size()) - 1;
+	if (m_lowestPriority < m_highestPriority) {
+		return m_highestPriority;
+	} else {
+		return m_lowestPriority;
+	}
 }
 
 int WindowsThreadFactory::getMinPriority() const
 {
-	return 0;
+	if (m_lowestPriority < m_highestPriority) {
+		return m_lowestPriority;
+	} else {
+		return m_highestPriority;
+	}
 }
 
 }

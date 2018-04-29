@@ -73,9 +73,9 @@ TEST_GROUP(WindowsMessageQueueTest) {
 		MQ* mq = MQ::create(SIZE);
 		CHECK(mq);
 		Run1 r1(mq);
-		Thread* thread1 = Thread::create(&r1);
+		Thread* thread1 = Thread::create(&r1, 0, Thread::getNormalPriority());
 		Run2 r2(mq);
-		Thread* thread2 = Thread::create(&r2);
+		Thread* thread2 = Thread::create(&r2, 0, Thread::getNormalPriority());
 
 		thread1->start();
 		thread2->start();
@@ -321,8 +321,8 @@ TEST(WindowsMessageQueueTest, send_receive_many_threads)
 	Thread* thread2[num];
 
 	for (int i = 0; i < num; i++) {
-		thread1[i] = Thread::create(&r1);
-		thread2[i] = Thread::create(&r2);
+		thread1[i] = Thread::create(&r1, 0, Thread::getNormalPriority());
+		thread2[i] = Thread::create(&r2, 0, Thread::getNormalPriority());
 	}
 
 	for (int i = 0; i < num; i++) {

@@ -10,8 +10,10 @@ namespace WindowsOSWrapper {
 
 class WindowsThreadFactory : public OSWrapper::ThreadFactory {
 public:
-	WindowsThreadFactory();
+	WindowsThreadFactory(int lowestPriority = 1, int highestPriority = 9);
 	virtual ~WindowsThreadFactory() {}
+
+	void setPriorityRange(int lowestPriority, int highestPriority);
 
 private:
 	virtual OSWrapper::Thread* create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name);
@@ -24,7 +26,10 @@ private:
 	virtual int getMinPriority() const;
 
 	std::unordered_map<std::thread::id, OSWrapper::Thread*> m_threadIdMap;
-	std::mutex m_mutex;
+	std::recursive_mutex m_mutex;
+	int m_lowestPriority;
+	int m_highestPriority;
+	std::unordered_map<int, int> m_prioMap;
 };
 
 }
