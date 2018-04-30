@@ -223,3 +223,14 @@ TEST(WindowsMutexTest, timedLock_FOREVER)
 
 	s_mutex->unlock();
 }
+
+TEST(WindowsMutexTest, LockGuard_recursive)
+{
+	{
+		LockGuard lock(s_mutex);
+		{
+			LockGuard lock2(s_mutex);
+		}
+	}
+}
+

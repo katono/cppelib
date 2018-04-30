@@ -33,6 +33,7 @@ public:
 
 private:
 	Mutex* m_mutex;
+	Error m_lockErr;
 
 	LockGuard(const LockGuard&);
 	LockGuard& operator=(const LockGuard&);

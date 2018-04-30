@@ -179,3 +179,20 @@ TEST(MutexTest, LockGuard)
 	Mutex::destroy(mutex);
 }
 
+TEST(MutexTest, LockGuard_recursive)
+{
+	mutex = Mutex::create();
+	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::OK);
+	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::LockedRecursively);
+	mock().expectOneCall("unlock").onObject(mutex).andReturnValue(OSWrapper::OK);
+
+	{
+		LockGuard lock(mutex);
+		{
+			LockGuard lock2(mutex);
+		}
+	}
+
+	Mutex::destroy(mutex);
+}
+

@@ -6,7 +6,7 @@ namespace WindowsOSWrapper {
 
 class WindowsMutex : public OSWrapper::Mutex {
 private:
-	std::timed_mutex m_mutex;
+	std::recursive_timed_mutex m_mutex;
 
 public:
 	WindowsMutex()
