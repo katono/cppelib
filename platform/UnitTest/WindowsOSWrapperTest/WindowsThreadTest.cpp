@@ -1,12 +1,9 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
-#include "CppUTest/CommandLineTestRunner.h"
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
-#include "Assertion/Assertion.h"
 #include <mutex>
-#include <stdexcept>
 #include <windows.h>
 
 using OSWrapper::Runnable;

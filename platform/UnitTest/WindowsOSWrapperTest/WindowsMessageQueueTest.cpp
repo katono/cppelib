@@ -1,16 +1,15 @@
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
-#include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "OSWrapper/Mutex.h"
-#include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "OSWrapper/EventFlag.h"
+#include "OSWrapper/MessageQueue.h"
+#include "OSWrapper/VariableAllocator.h"
+#include "WindowsOSWrapper/WindowsThreadFactory.h"
+#include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
 #include "WindowsOSWrapper/WindowsVariableAllocatorFactory.h"
-#include "OSWrapper/MessageQueue.h"
-#include "Assertion/Assertion.h"
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
-#include "CppUTest/CommandLineTestRunner.h"
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
