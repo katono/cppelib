@@ -8,7 +8,6 @@ enum Error {
 	TimedOut,
 	CalledByNonThread,
 	InvalidParameter,
-	LockedRecursively,
 	NotLocked,
 	OtherThreadWaiting,
 	OtherError
