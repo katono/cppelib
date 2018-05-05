@@ -22,7 +22,7 @@ public:
 class TestThread : public Thread {
 public:
 	TestThread(Runnable* r, std::size_t stackSize, int priority, const char* name)
-	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name)
+	: Thread(r, stackSize, priority, name)
 	, m_finished(false)
 	{
 		if (stackSize == 0) {
@@ -92,11 +92,6 @@ public:
 
 
 private:
-	Runnable* m_runnable;
-	std::size_t m_stackSize;
-	int m_priority;
-	const char* m_name;
-
 	bool m_finished;
 };
 
