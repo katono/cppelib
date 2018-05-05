@@ -221,6 +221,12 @@ TEST(WindowsMutexTest, timedLock_FOREVER)
 	s_mutex->unlock();
 }
 
+TEST(WindowsMutexTest, unlock_not_locked)
+{
+	OSWrapper::Error err = s_mutex->unlock();
+	LONGS_EQUAL(OSWrapper::NotLocked, err);
+}
+
 TEST(WindowsMutexTest, LockGuard_recursive)
 {
 	{

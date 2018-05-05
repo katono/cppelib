@@ -1,16 +1,19 @@
 #include "WindowsMutexFactory.h"
 #include "OSWrapper/Mutex.h"
+#include "OSWrapper/Thread.h"
 #include <chrono>
+#include <cstddef>
 
 namespace WindowsOSWrapper {
 
 class WindowsMutex : public OSWrapper::Mutex {
 private:
 	std::recursive_timed_mutex m_mutex;
+	std::size_t m_lockingCount;
 
 public:
 	WindowsMutex()
-	: m_mutex()
+	: m_mutex(), m_lockingCount(0U)
 	{
 	}
 
@@ -22,6 +25,7 @@ public:
 	{
 		try {
 			m_mutex.lock();
+			m_lockingCount++;
 			return OSWrapper::OK;
 		}
 		catch (...) {
@@ -33,6 +37,7 @@ public:
 	{
 		try {
 			if (m_mutex.try_lock()) {
+				m_lockingCount++;
 				return OSWrapper::OK;
 			}
 			return OSWrapper::TimedOut;
@@ -49,6 +54,7 @@ public:
 		}
 		try {
 			if (m_mutex.try_lock_for(std::chrono::milliseconds(tmout))) {
+				m_lockingCount++;
 				return OSWrapper::OK;
 			}
 			return OSWrapper::TimedOut;
@@ -61,6 +67,10 @@ public:
 	OSWrapper::Error unlock()
 	{
 		try {
+			if (m_lockingCount == 0U) {
+				return OSWrapper::NotLocked;
+			}
+			m_lockingCount--;
 			m_mutex.unlock();
 			return OSWrapper::OK;
 		}
