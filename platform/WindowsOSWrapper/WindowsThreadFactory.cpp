@@ -8,7 +8,6 @@
 #include <exception>
 #include <windows.h>
 #include <process.h>
-#include <iostream>
 
 namespace WindowsOSWrapper {
 
@@ -46,24 +45,6 @@ private:
 				m_isActive = false;
 				m_condFinished.notify_all();
 			}
-		}
-	}
-
-	void threadMain()
-	{
-		try {
-			if (m_runnable != nullptr) {
-				m_runnable->run();
-			}
-		}
-		catch (const Exit&) {
-			// do nothing
-		}
-		catch (const std::exception& e) {
-			std::cout << e.what() << std::endl;
-		}
-		catch (...) {
-			std::cout << "Unknown Exception" << std::endl;
 		}
 	}
 

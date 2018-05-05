@@ -1,6 +1,8 @@
 #include "Thread.h"
 #include "ThreadFactory.h"
+#include "Runnable.h"
 #include "Assertion/Assertion.h"
+#include <iostream>
 
 namespace OSWrapper {
 
@@ -11,6 +13,24 @@ static ThreadFactory* s_factory = 0;
 void registerThreadFactory(ThreadFactory* factory)
 {
 	s_factory = factory;
+}
+
+void Thread::threadMain()
+{
+	try {
+		if (m_runnable != 0) {
+			m_runnable->run();
+		}
+	}
+	catch (const Exit&) {
+		// do nothing
+	}
+	catch (const std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+	catch (...) {
+		std::cout << "Unknown Exception" << std::endl;
+	}
 }
 
 Thread* Thread::create(Runnable* r, std::size_t stackSize/*= 0U*/, int priority/*= INHERIT_PRIORITY*/, const char* name/*= ""*/)

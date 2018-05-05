@@ -28,6 +28,8 @@ protected:
 	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name) {}
 	virtual ~Thread() {}
 
+	void threadMain();
+
 public:
 	static const int INHERIT_PRIORITY;
 
