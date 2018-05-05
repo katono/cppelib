@@ -13,7 +13,6 @@ public:
 	virtual ~ThreadFactory() {}
 	virtual Thread* create(Runnable* r, std::size_t stackSize, int priority, const char* name) = 0;
 	virtual void destroy(Thread* t) = 0;
-	virtual void exit() = 0;
 	virtual void sleep(unsigned long millis) = 0;
 	virtual void yield() = 0;
 	virtual Thread* getCurrentThread() = 0;

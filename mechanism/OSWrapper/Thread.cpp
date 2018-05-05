@@ -31,8 +31,7 @@ void Thread::destroy(Thread* t)
 
 void Thread::exit()
 {
-	CHECK_PRECOND(s_factory);
-	s_factory->exit();
+	throw Exit();
 }
 
 void Thread::sleep(unsigned long millis)

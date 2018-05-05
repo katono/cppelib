@@ -73,11 +73,6 @@ private:
 	}
 
 public:
-	class Exit {
-	public:
-		Exit() {}
-	};
-
 	WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name, const std::unordered_map<int, int>& prioMap)
 	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name), 
 	  m_thread(), m_mutex(), m_condStarted(), m_condFinished(), 
@@ -285,11 +280,6 @@ void WindowsThreadFactory::destroy(OSWrapper::Thread* t)
 	std::lock_guard<std::recursive_mutex> lock(m_mutex);
 	m_threadIdMap.erase(winThread->getId());
 	delete winThread;
-}
-
-void WindowsThreadFactory::exit()
-{
-	throw WindowsThread::Exit();
 }
 
 void WindowsThreadFactory::sleep(unsigned long millis)

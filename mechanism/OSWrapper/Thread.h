@@ -16,6 +16,11 @@ class Thread {
 protected:
 	virtual ~Thread() {}
 
+	class Exit {
+	public:
+		Exit() {}
+	};
+
 public:
 	static const int INHERIT_PRIORITY;
 

@@ -121,10 +121,6 @@ private:
 		LONGS_EQUAL(1, count);
 		delete static_cast<TestThread*>(t);
 	}
-	void exit()
-	{
-		mock().actualCall("exit").onObject(this);
-	}
 	void sleep(unsigned long millis)
 	{
 		mock().actualCall("sleep").withParameter("millis", millis).onObject(this);
@@ -188,8 +184,13 @@ TEST(ThreadTest, destroy_nullptr)
 
 TEST(ThreadTest, exit)
 {
-	mock().expectOneCall("exit").onObject(&testFactory);
-	Thread::exit();
+	try {
+		Thread::exit();
+	}
+	catch (...) {
+		return;
+	}
+	FAIL("failed");
 }
 
 TEST(ThreadTest, sleep)

@@ -18,7 +18,6 @@ public:
 private:
 	virtual OSWrapper::Thread* create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name);
 	virtual void destroy(OSWrapper::Thread* t);
-	virtual void exit();
 	virtual void sleep(unsigned long millis);
 	virtual void yield();
 	virtual OSWrapper::Thread* getCurrentThread();
