@@ -2,7 +2,6 @@
 #include "ThreadFactory.h"
 #include "Runnable.h"
 #include "Assertion/Assertion.h"
-#include <iostream>
 
 namespace OSWrapper {
 
@@ -15,6 +14,50 @@ void registerThreadFactory(ThreadFactory* factory)
 	s_factory = factory;
 }
 
+
+Thread::ExceptionHandler* Thread::m_defaultExceptionHandler = 0;
+
+void Thread::setDefaultExceptionHandler(Thread::ExceptionHandler* handler)
+{
+	m_defaultExceptionHandler = handler;
+}
+
+Thread::ExceptionHandler* Thread::getDefaultExceptionHandler()
+{
+	return m_defaultExceptionHandler;
+}
+
+void Thread::setExceptionHandler(Thread::ExceptionHandler* handler)
+{
+	m_exceptionHandler = handler;
+}
+
+Thread::ExceptionHandler* Thread::getExceptionHandler() const
+{
+	return m_exceptionHandler;
+}
+
+void Thread::handleException(const std::exception& e)
+{
+	Thread* t = Thread::getCurrentThread();
+	if (m_exceptionHandler != 0) {
+		m_exceptionHandler->handle(t, e);
+	} else if (m_defaultExceptionHandler != 0) {
+		m_defaultExceptionHandler->handle(t, e);
+	}
+}
+
+class UnknownException : public std::exception {
+public:
+	explicit UnknownException(const char* msg) : m_msg(msg) {}
+	const char* what() const throw()
+	{
+		return m_msg;
+	}
+private:
+	const char* m_msg;
+};
+
 void Thread::threadMain()
 {
 	try {
@@ -26,10 +69,10 @@ void Thread::threadMain()
 		// do nothing
 	}
 	catch (const std::exception& e) {
-		std::cout << e.what() << std::endl;
+		handleException(e);
 	}
 	catch (...) {
-		std::cout << "Unknown Exception" << std::endl;
+		handleException(UnknownException("Unknown Exception"));
 	}
 }
 

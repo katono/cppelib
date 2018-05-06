@@ -2,6 +2,7 @@
 #define OS_WRAPPER_THREAD_H_INCLUDED
 
 #include <cstddef>
+#include <exception>
 #include "Timeout.h"
 #include "OSWrapperError.h"
 
@@ -25,13 +26,22 @@ protected:
 	const char* m_name;
 
 	Thread(Runnable* r, std::size_t stackSize, int priority, const char* name)
-	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name) {}
+	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name), m_exceptionHandler(0) {}
 	virtual ~Thread() {}
 
 	void threadMain();
 
 public:
+	class ExceptionHandler {
+	public:
+		virtual ~ExceptionHandler() {}
+		virtual void handle(Thread* t, const std::exception& e) = 0;
+	};
+
 	static const int INHERIT_PRIORITY;
+
+	static void setDefaultExceptionHandler(ExceptionHandler* handler);
+	static ExceptionHandler* getDefaultExceptionHandler();
 
 	static Thread* create(Runnable* r, std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
 	static void destroy(Thread* t);
@@ -56,6 +66,14 @@ public:
 	virtual std::size_t getStackSize() const = 0;
 	virtual void* getNativeHandle() = 0;
 
+	void setExceptionHandler(ExceptionHandler* handler);
+	ExceptionHandler* getExceptionHandler() const;
+
+private:
+	ExceptionHandler* m_exceptionHandler;
+	static ExceptionHandler* m_defaultExceptionHandler;
+
+	void handleException(const std::exception& e);
 };
 
 }

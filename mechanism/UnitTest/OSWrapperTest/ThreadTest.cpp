@@ -40,7 +40,7 @@ public:
 	void start()
 	{
 		CHECK_PRECOND(m_runnable);
-		m_runnable->run();
+		threadMain();
 		m_finished = false;
 	}
 
@@ -89,7 +89,6 @@ public:
 	{
 		return (void*) 1234;
 	}
-
 
 private:
 	bool m_finished;
@@ -179,13 +178,18 @@ TEST(ThreadTest, destroy_nullptr)
 
 TEST(ThreadTest, exit)
 {
-	try {
-		Thread::exit();
-	}
-	catch (...) {
-		return;
-	}
-	FAIL("failed");
+	class ExitTestRunnable : public Runnable {
+	public:
+		void run()
+		{
+			Thread::exit();
+			FAIL("failed");
+		}
+	};
+	ExitTestRunnable runnable;
+	thread = Thread::create(&runnable);
+	thread->start();
+	Thread::destroy(thread);
 }
 
 TEST(ThreadTest, sleep)
@@ -287,3 +291,101 @@ TEST(ThreadTest, getNativeHandle)
 	Thread::destroy(thread);
 }
 
+class UnknownExceptionTestRunnable : public Runnable {
+public:
+	void run()
+	{
+		throw 1;
+	}
+};
+
+class UnknownExceptionHandler : public Thread::ExceptionHandler {
+public:
+	virtual void handle(Thread* t, const std::exception& e)
+	{
+		mock().actualCall("handle").withParameter("t", t).withParameter("e.what", e.what()).onObject(this);
+	}
+};
+
+TEST(ThreadTest, default_handle_unknown_exception)
+{
+	UnknownExceptionTestRunnable runnable;
+	thread = Thread::create(&runnable);
+	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
+
+	UnknownExceptionHandler handler;
+	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
+	Thread::setDefaultExceptionHandler(&handler);
+	mock().expectOneCall("handle").withParameter("t", thread).withParameter("e.what", "Unknown Exception").onObject(&handler);
+
+	thread->start();
+	Thread::destroy(thread);
+
+	Thread::setDefaultExceptionHandler(old);
+}
+
+TEST(ThreadTest, handle_unknown_exception)
+{
+	UnknownExceptionTestRunnable runnable;
+	thread = Thread::create(&runnable);
+	POINTERS_EQUAL(0, thread->getExceptionHandler());
+	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
+
+	UnknownExceptionHandler handler;
+	thread->setExceptionHandler(&handler);
+	POINTERS_EQUAL(&handler, thread->getExceptionHandler());
+	mock().expectOneCall("handle").withParameter("t", thread).withParameter("e.what", "Unknown Exception").onObject(&handler);
+
+	thread->start();
+	Thread::destroy(thread);
+}
+
+class AssertExceptionTestRunnable : public Runnable {
+public:
+	void run()
+	{
+		CHECK_ASSERT("CHECK_ASSERT_EXCEPTION_TEST" && false);
+	}
+};
+
+class AssertExceptionHandler : public Thread::ExceptionHandler {
+public:
+	virtual void handle(Thread* t, const std::exception& e)
+	{
+		mock().actualCall("handle").withParameter("t", t).onObject(this);
+		STRCMP_CONTAINS("CHECK_ASSERT_EXCEPTION_TEST", e.what());
+	}
+};
+
+TEST(ThreadTest, default_handle_assert_exception)
+{
+	AssertExceptionTestRunnable runnable;
+	thread = Thread::create(&runnable);
+	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
+
+	AssertExceptionHandler handler;
+	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
+	Thread::setDefaultExceptionHandler(&handler);
+	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
+
+	thread->start();
+	Thread::destroy(thread);
+
+	Thread::setDefaultExceptionHandler(old);
+}
+
+TEST(ThreadTest, handle_assert_exception)
+{
+	AssertExceptionTestRunnable runnable;
+	thread = Thread::create(&runnable);
+	POINTERS_EQUAL(0, thread->getExceptionHandler());
+	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
+
+	AssertExceptionHandler handler;
+	thread->setExceptionHandler(&handler);
+	POINTERS_EQUAL(&handler, thread->getExceptionHandler());
+	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
+
+	thread->start();
+	Thread::destroy(thread);
+}
