@@ -1,6 +1,5 @@
 #include "WindowsMutexFactory.h"
 #include "OSWrapper/Mutex.h"
-#include "OSWrapper/Thread.h"
 #include <chrono>
 #include <cstddef>
 

@@ -3,7 +3,6 @@
 
 #include "OSWrapper/ThreadFactory.h"
 #include <unordered_map>
-#include <thread>
 #include <mutex>
 
 namespace WindowsOSWrapper {
