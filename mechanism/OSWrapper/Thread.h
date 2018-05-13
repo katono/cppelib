@@ -15,12 +15,8 @@ void registerThreadFactory(ThreadFactory* factory);
 
 class Thread {
 protected:
-	std::size_t m_stackSize;
-	int m_priority;
-	const char* m_name;
-
-	Thread(Runnable* r, std::size_t stackSize, int priority, const char* name)
-	: m_runnable(r), m_stackSize(stackSize), m_priority(priority), m_name(name), m_exceptionHandler(0) {}
+	Thread(Runnable* r)
+	: m_runnable(r), m_exceptionHandler(0) {}
 	virtual ~Thread() {}
 
 	void threadMain();

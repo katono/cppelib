@@ -20,9 +20,14 @@ public:
 };
 
 class TestThread : public Thread {
+private:
+	std::size_t m_stackSize;
+	int m_priority;
+	const char* m_name;
+
 public:
 	TestThread(Runnable* r, std::size_t stackSize, int priority, const char* name)
-	: Thread(r, stackSize, priority, name)
+	: Thread(r), m_stackSize(stackSize), m_priority(priority), m_name(name)
 	, m_finished(false)
 	{
 		if (stackSize == 0) {

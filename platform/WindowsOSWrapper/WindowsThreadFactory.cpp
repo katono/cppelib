@@ -13,6 +13,10 @@ namespace WindowsOSWrapper {
 
 class WindowsThread : public OSWrapper::Thread {
 private:
+	std::size_t m_stackSize;
+	int m_priority;
+	const char* m_name;
+
 	std::thread m_thread;
 	mutable std::mutex m_mutex;
 	std::condition_variable m_condStarted;
@@ -50,7 +54,7 @@ private:
 
 public:
 	WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name, const std::unordered_map<int, int>& prioMap)
-	: Thread(r, stackSize, priority, name), 
+	: Thread(r), m_stackSize(stackSize), m_priority(priority), m_name(name), 
 	  m_thread(), m_mutex(), m_condStarted(), m_condFinished(), 
 	  m_isActive(false), m_endThreadRequested(false), m_threadId(), m_prioMap(prioMap)
 	{
