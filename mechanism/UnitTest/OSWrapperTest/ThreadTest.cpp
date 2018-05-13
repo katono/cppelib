@@ -39,7 +39,6 @@ public:
 
 	void start()
 	{
-		CHECK_PRECOND(m_runnable);
 		threadMain();
 		m_finished = false;
 	}

@@ -15,7 +15,6 @@ void registerThreadFactory(ThreadFactory* factory);
 
 class Thread {
 protected:
-	Runnable* m_runnable;
 	std::size_t m_stackSize;
 	int m_priority;
 	const char* m_name;
@@ -65,15 +64,17 @@ public:
 	ExceptionHandler* getExceptionHandler() const;
 
 private:
+	Runnable* m_runnable;
+	ExceptionHandler* m_exceptionHandler;
+	static ExceptionHandler* m_defaultExceptionHandler;
+
+	void handleException(const std::exception& e);
+
 	class Exit {
 	public:
 		Exit() {}
 	};
 
-	ExceptionHandler* m_exceptionHandler;
-	static ExceptionHandler* m_defaultExceptionHandler;
-
-	void handleException(const std::exception& e);
 };
 
 }
