@@ -1,8 +1,6 @@
 #ifndef ASSERTION_ASSERTION_H_INCLUDED
 #define ASSERTION_ASSERTION_H_INCLUDED
 
-#include <exception>
-
 #define ASSERTION_ASSERT_STRINGIFY(n) #n
 #define ASSERTION_ASSERT_TOSTRING(n) ASSERTION_ASSERT_STRINGIFY(n)
 
@@ -23,10 +21,10 @@
 
 namespace Assertion {
 
-class Error : public std::exception {
+class Error {
 public:
 	explicit Error(const char* msg) : m_msg(msg) {}
-	const char* what() const throw()
+	const char* message() const
 	{
 		return m_msg;
 	}

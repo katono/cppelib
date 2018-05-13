@@ -90,8 +90,8 @@ TEST(BitPatternTest, set_precondition_failed)
 	try {
 		b.set(32);
 	}
-	catch (const std::exception& e) {
-		STRCMP_CONTAINS("Pre-condition failed", e.what());
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("Pre-condition failed", e.message());
 		return;
 	}
 	FAIL("failed");
@@ -103,8 +103,8 @@ TEST(BitPatternTest, reset_precondition_failed)
 	try {
 		b.reset(32);
 	}
-	catch (const std::exception& e) {
-		STRCMP_CONTAINS("Pre-condition failed", e.what());
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("Pre-condition failed", e.message());
 		return;
 	}
 	FAIL("failed");
@@ -141,8 +141,8 @@ TEST(BitPatternTest, flip_precondition_failed)
 	try {
 		b.flip(32);
 	}
-	catch (const std::exception& e) {
-		STRCMP_CONTAINS("Pre-condition failed", e.what());
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("Pre-condition failed", e.message());
 		return;
 	}
 	FAIL("failed");
@@ -291,8 +291,8 @@ TEST(BitPatternTest, test_precondition_failed)
 	try {
 		b.test(32);
 	}
-	catch (const std::exception& e) {
-		STRCMP_CONTAINS("Pre-condition failed", e.what());
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("Pre-condition failed", e.message());
 		return;
 	}
 	FAIL("failed");

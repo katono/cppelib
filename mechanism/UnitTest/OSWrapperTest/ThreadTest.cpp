@@ -348,7 +348,12 @@ class AssertExceptionTestRunnable : public Runnable {
 public:
 	void run()
 	{
-		CHECK_ASSERT("CHECK_ASSERT_EXCEPTION_TEST" && false);
+		try {
+			CHECK_ASSERT("CHECK_ASSERT_EXCEPTION_TEST" && false);
+		}
+		catch (const std::exception&) {
+			FAIL("NOT std::exception");
+		}
 	}
 };
 

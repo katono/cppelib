@@ -47,9 +47,9 @@ void Thread::handleException(const std::exception& e)
 	}
 }
 
-class UnknownException : public std::exception {
+class OtherException : public std::exception {
 public:
-	explicit UnknownException(const char* msg) : m_msg(msg) {}
+	explicit OtherException(const char* msg) : m_msg(msg) {}
 	const char* what() const throw()
 	{
 		return m_msg;
@@ -71,8 +71,11 @@ void Thread::threadMain()
 	catch (const std::exception& e) {
 		handleException(e);
 	}
+	catch (const Assertion::Error& e) {
+		handleException(OtherException(e.message()));
+	}
 	catch (...) {
-		handleException(UnknownException("Unknown Exception"));
+		handleException(OtherException("Unknown Exception"));
 	}
 }
 
