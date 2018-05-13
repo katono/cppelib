@@ -1,13 +1,13 @@
 #include "CppUTest/TestHarness.h"
-#include "Container/DoublyLinkedList.h"
+#include "Container/IntrusiveList.h"
 #include "Container/Array.h"
 #include <cstdio>
 
-using Container::DoublyLinkedListNode;
-using Container::DoublyLinkedList;
+using Container::IntrusiveListNode;
+using Container::IntrusiveList;
 using Container::Array;
 
-class MyListNode : public DoublyLinkedListNode {
+class MyListNode : public IntrusiveListNode {
 public:
 	int m_value;
 	MyListNode() : m_value(0) {}
@@ -33,8 +33,8 @@ public:
 };
 
 
-TEST_GROUP(DoublyLinkedListTest) {
-	typedef DoublyLinkedList<MyListNode> MyList;
+TEST_GROUP(IntrusiveListTest) {
+	typedef IntrusiveList<MyListNode> MyList;
 	static const std::size_t MAXSIZE = 100;
 	typedef Array<MyListNode*, MAXSIZE> CheckArray;
 
@@ -77,19 +77,19 @@ TEST_GROUP(DoublyLinkedListTest) {
 	}
 };
 
-TEST(DoublyLinkedListTest, size_0)
+TEST(IntrusiveListTest, size_0)
 {
 	MyList x;
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(DoublyLinkedListTest, empty_true)
+TEST(IntrusiveListTest, empty_true)
 {
 	MyList x;
 	CHECK(x.empty());
 }
 
-TEST(DoublyLinkedListTest, empty_false)
+TEST(IntrusiveListTest, empty_false)
 {
 	MyList x;
 	MyListNode a(100);
@@ -97,7 +97,7 @@ TEST(DoublyLinkedListTest, empty_false)
 	CHECK(!x.empty());
 }
 
-TEST(DoublyLinkedListTest, push_back)
+TEST(IntrusiveListTest, push_back)
 {
 	MyList x;
 	MyListNode a(100);
@@ -116,7 +116,7 @@ TEST(DoublyLinkedListTest, push_back)
 	LONGS_EQUAL(300, x.back().m_value);
 }
 
-TEST(DoublyLinkedListTest, push_back_pop_front)
+TEST(IntrusiveListTest, push_back_pop_front)
 {
 	MyList x;
 	Array<MyListNode, 10> a;
@@ -137,7 +137,7 @@ TEST(DoublyLinkedListTest, push_back_pop_front)
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(DoublyLinkedListTest, push_front)
+TEST(IntrusiveListTest, push_front)
 {
 	MyList x;
 	MyListNode a(100);
@@ -156,7 +156,7 @@ TEST(DoublyLinkedListTest, push_front)
 	LONGS_EQUAL(300, x.front().m_value);
 }
 
-TEST(DoublyLinkedListTest, push_front_pop_back)
+TEST(IntrusiveListTest, push_front_pop_back)
 {
 	MyList x;
 	Array<MyListNode, 10> a;
@@ -177,7 +177,7 @@ TEST(DoublyLinkedListTest, push_front_pop_back)
 	LONGS_EQUAL(0, x.size());
 }
 
-TEST(DoublyLinkedListTest, insert)
+TEST(IntrusiveListTest, insert)
 {
 	MyList x;
 	MyList::iterator it;
@@ -211,7 +211,7 @@ TEST(DoublyLinkedListTest, insert)
 
 }
 
-TEST(DoublyLinkedListTest, erase)
+TEST(IntrusiveListTest, erase)
 {
 	MyList x;
 	MyList::iterator it;
@@ -242,7 +242,7 @@ TEST(DoublyLinkedListTest, erase)
 
 }
 
-TEST(DoublyLinkedListTest, begin_end)
+TEST(IntrusiveListTest, begin_end)
 {
 	MyList x;
 	MyListNode a(0);
@@ -261,7 +261,7 @@ TEST(DoublyLinkedListTest, begin_end)
 	}
 }
 
-TEST(DoublyLinkedListTest, begin_end_const)
+TEST(IntrusiveListTest, begin_end_const)
 {
 	MyList z;
 	MyListNode a(0);
@@ -281,7 +281,7 @@ TEST(DoublyLinkedListTest, begin_end_const)
 	}
 }
 
-TEST(DoublyLinkedListTest, front_read)
+TEST(IntrusiveListTest, front_read)
 {
 	MyList x;
 	MyListNode a(100);
@@ -294,7 +294,7 @@ TEST(DoublyLinkedListTest, front_read)
 	POINTERS_EQUAL(&a, &x.front());
 }
 
-TEST(DoublyLinkedListTest, front_read_const)
+TEST(IntrusiveListTest, front_read_const)
 {
 	MyList z;
 	MyListNode a(100);
@@ -308,7 +308,7 @@ TEST(DoublyLinkedListTest, front_read_const)
 	POINTERS_EQUAL(&a, &x.front());
 }
 
-TEST(DoublyLinkedListTest, front_write)
+TEST(IntrusiveListTest, front_write)
 {
 	MyList x;
 	MyListNode a(100);
@@ -322,7 +322,7 @@ TEST(DoublyLinkedListTest, front_write)
 	POINTERS_EQUAL(&a, &x.front());
 }
 
-TEST(DoublyLinkedListTest, back_read)
+TEST(IntrusiveListTest, back_read)
 {
 	MyList x;
 	MyListNode a(100);
@@ -335,7 +335,7 @@ TEST(DoublyLinkedListTest, back_read)
 	POINTERS_EQUAL(&c, &x.back());
 }
 
-TEST(DoublyLinkedListTest, back_read_const)
+TEST(IntrusiveListTest, back_read_const)
 {
 	MyList z;
 	MyListNode a(100);
@@ -349,7 +349,7 @@ TEST(DoublyLinkedListTest, back_read_const)
 	POINTERS_EQUAL(&c, &x.back());
 }
 
-TEST(DoublyLinkedListTest, back_write)
+TEST(IntrusiveListTest, back_write)
 {
 	MyList x;
 	MyListNode a(100);
@@ -363,7 +363,7 @@ TEST(DoublyLinkedListTest, back_write)
 	POINTERS_EQUAL(&c, &x.back());
 }
 
-TEST(DoublyLinkedListTest, splice_all)
+TEST(IntrusiveListTest, splice_all)
 {
 	MyList x;
 	MyListNode a(100);
@@ -392,7 +392,7 @@ TEST(DoublyLinkedListTest, splice_all)
 
 }
 
-TEST(DoublyLinkedListTest, splice_all2)
+TEST(IntrusiveListTest, splice_all2)
 {
 	MyList x;
 	MyListNode a(100);
@@ -436,7 +436,7 @@ TEST(DoublyLinkedListTest, splice_all2)
 	checkList(expected, y);
 }
 
-TEST(DoublyLinkedListTest, splice_all_empty)
+TEST(IntrusiveListTest, splice_all_empty)
 {
 	MyList x;
 	MyListNode a(100);
@@ -454,7 +454,7 @@ TEST(DoublyLinkedListTest, splice_all_empty)
 	checkList(expected, x);
 }
 
-TEST(DoublyLinkedListTest, splice_iter)
+TEST(IntrusiveListTest, splice_iter)
 {
 	MyList x;
 	MyListNode a(100);
@@ -481,7 +481,7 @@ TEST(DoublyLinkedListTest, splice_iter)
 	checkList(expected, y);
 }
 
-TEST(DoublyLinkedListTest, splice_iter_self)
+TEST(IntrusiveListTest, splice_iter_self)
 {
 	MyList x;
 	MyListNode a(100);
@@ -505,7 +505,7 @@ TEST(DoublyLinkedListTest, splice_iter_self)
 	checkList(expected, x);
 }
 
-TEST(DoublyLinkedListTest, splice_iter_self_do_nothing)
+TEST(IntrusiveListTest, splice_iter_self_do_nothing)
 {
 	MyList x;
 	MyListNode a(100);
@@ -521,7 +521,7 @@ TEST(DoublyLinkedListTest, splice_iter_self_do_nothing)
 	checkList(expected, x);
 }
 
-TEST(DoublyLinkedListTest, splice_iter_self_do_nothing2)
+TEST(IntrusiveListTest, splice_iter_self_do_nothing2)
 {
 	MyList x;
 	MyListNode a(100);
@@ -537,7 +537,7 @@ TEST(DoublyLinkedListTest, splice_iter_self_do_nothing2)
 	checkList(expected, x);
 }
 
-TEST(DoublyLinkedListTest, splice_range)
+TEST(IntrusiveListTest, splice_range)
 {
 	MyList x;
 	MyListNode a(100);
@@ -587,7 +587,7 @@ TEST(DoublyLinkedListTest, splice_range)
 	checkList(expected, y);
 }
 
-TEST(DoublyLinkedListTest, splice_range_first_equal_last)
+TEST(IntrusiveListTest, splice_range_first_equal_last)
 {
 	MyList x;
 	MyListNode a(100);
@@ -614,7 +614,7 @@ TEST(DoublyLinkedListTest, splice_range_first_equal_last)
 	checkList(expected, y);
 }
 
-TEST(DoublyLinkedListTest, splice_range_self)
+TEST(IntrusiveListTest, splice_range_self)
 {
 	MyList x;
 	MyListNode a(100);
@@ -654,7 +654,7 @@ TEST(DoublyLinkedListTest, splice_range_self)
 	checkList(expected, x);
 }
 
-TEST(DoublyLinkedListTest, splice_range_self_do_nothing)
+TEST(IntrusiveListTest, splice_range_self_do_nothing)
 {
 	MyList x;
 	MyListNode a(100);
@@ -671,7 +671,7 @@ TEST(DoublyLinkedListTest, splice_range_self_do_nothing)
 
 }
 
-TEST(DoublyLinkedListTest, swap)
+TEST(IntrusiveListTest, swap)
 {
 	MyList x;
 	MyListNode a(100);
@@ -712,7 +712,7 @@ TEST(DoublyLinkedListTest, swap)
 	checkList(expected, y);
 }
 
-TEST(DoublyLinkedListTest, swap_same)
+TEST(IntrusiveListTest, swap_same)
 {
 	MyList x;
 	MyListNode a(100);
@@ -733,7 +733,7 @@ TEST(DoublyLinkedListTest, swap_same)
 
 }
 
-TEST(DoublyLinkedListTest, swap_nonmember)
+TEST(IntrusiveListTest, swap_nonmember)
 {
 	MyList x;
 	MyListNode a(100);
@@ -774,7 +774,7 @@ TEST(DoublyLinkedListTest, swap_nonmember)
 	checkList(expected, y);
 }
 
-TEST(DoublyLinkedListTest, swap_nonmember_same)
+TEST(IntrusiveListTest, swap_nonmember_same)
 {
 	MyList x;
 	MyListNode a(100);
@@ -795,7 +795,7 @@ TEST(DoublyLinkedListTest, swap_nonmember_same)
 
 }
 
-TEST(DoublyLinkedListTest, iterator_copy_ctor)
+TEST(IntrusiveListTest, iterator_copy_ctor)
 {
 	MyList x;
 	MyListNode a(100);
@@ -820,7 +820,7 @@ TEST(DoublyLinkedListTest, iterator_copy_ctor)
 
 }
 
-TEST(DoublyLinkedListTest, iterator_operator_incremant)
+TEST(IntrusiveListTest, iterator_operator_incremant)
 {
 	MyList x;
 	MyListNode a(100);
@@ -837,7 +837,7 @@ TEST(DoublyLinkedListTest, iterator_operator_incremant)
 	LONGS_EQUAL(200, it3->m_value);
 }
 
-TEST(DoublyLinkedListTest, iterator_operator_decremant)
+TEST(IntrusiveListTest, iterator_operator_decremant)
 {
 	MyList x;
 	MyListNode a(100);
@@ -854,7 +854,7 @@ TEST(DoublyLinkedListTest, iterator_operator_decremant)
 	LONGS_EQUAL(300, it3->m_value);
 }
 
-TEST(DoublyLinkedListTest, iterator_operator_arrow)
+TEST(IntrusiveListTest, iterator_operator_arrow)
 {
 	MyList x;
 	MyListNode a(100);
@@ -881,7 +881,7 @@ TEST(DoublyLinkedListTest, iterator_operator_arrow)
 	STRCMP_EQUAL("DerivedNode2", it->name());
 }
 
-TEST(DoublyLinkedListTest, iterator_operator_asterisk)
+TEST(IntrusiveListTest, iterator_operator_asterisk)
 {
 	MyList x;
 	MyListNode a(100);
@@ -908,7 +908,7 @@ TEST(DoublyLinkedListTest, iterator_operator_asterisk)
 	STRCMP_EQUAL("DerivedNode2", (*it).name());
 }
 
-TEST(DoublyLinkedListTest, iterator_operator_equal_true)
+TEST(IntrusiveListTest, iterator_operator_equal_true)
 {
 	MyList x;
 	MyListNode a(100);
@@ -938,7 +938,7 @@ TEST(DoublyLinkedListTest, iterator_operator_equal_true)
 
 }
 
-TEST(DoublyLinkedListTest, iterator_operator_equal_false)
+TEST(IntrusiveListTest, iterator_operator_equal_false)
 {
 	MyList x;
 	MyListNode a(100);
@@ -952,7 +952,7 @@ TEST(DoublyLinkedListTest, iterator_operator_equal_false)
 	CHECK_FALSE(it == it2);
 }
 
-TEST(DoublyLinkedListTest, iterator_operator_notequal_true)
+TEST(IntrusiveListTest, iterator_operator_notequal_true)
 {
 	MyList x;
 	MyListNode a(100);
@@ -970,7 +970,7 @@ TEST(DoublyLinkedListTest, iterator_operator_notequal_true)
 	CHECK_TRUE(it != it2);
 }
 
-TEST(DoublyLinkedListTest, iterator_operator_notequal_false)
+TEST(IntrusiveListTest, iterator_operator_notequal_false)
 {
 	MyList x;
 	MyListNode a(100);
@@ -988,7 +988,7 @@ TEST(DoublyLinkedListTest, iterator_operator_notequal_false)
 	CHECK_FALSE(it != it2);
 }
 
-TEST(DoublyLinkedListTest, new_delete)
+TEST(IntrusiveListTest, new_delete)
 {
 	MyList* x = new MyList();
 	MyListNode* a = new MyListNode(100);
@@ -1008,7 +1008,7 @@ TEST(DoublyLinkedListTest, new_delete)
 }
 
 #ifndef NO_STD_ITERATOR
-TEST(DoublyLinkedListTest, rbegin_rend)
+TEST(IntrusiveListTest, rbegin_rend)
 {
 	MyList x;
 	MyListNode a(0);
@@ -1027,7 +1027,7 @@ TEST(DoublyLinkedListTest, rbegin_rend)
 	}
 }
 
-TEST(DoublyLinkedListTest, rbegin_rend_const)
+TEST(IntrusiveListTest, rbegin_rend_const)
 {
 	MyList z;
 	MyListNode a(0);

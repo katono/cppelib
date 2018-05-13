@@ -1,5 +1,5 @@
-#ifndef CONTAINER_DOUBLY_LINKED_LIST_H_INCLUDED
-#define CONTAINER_DOUBLY_LINKED_LIST_H_INCLUDED
+#ifndef CONTAINER_INTRUSIVE_LIST_H_INCLUDED
+#define CONTAINER_INTRUSIVE_LIST_H_INCLUDED
 
 #include <cstddef>
 #ifndef NO_STD_ITERATOR
@@ -9,29 +9,29 @@
 
 namespace Container {
 
-class DoublyLinkedListNode {
+class IntrusiveListNode {
 private:
-	DoublyLinkedListNode* m_nextListNode;
-	DoublyLinkedListNode* m_prevListNode;
+	IntrusiveListNode* m_nextListNode;
+	IntrusiveListNode* m_prevListNode;
 
-	template <typename T, typename Ref, typename Ptr, typename DoublyLinkedListNodePtr>
-	friend class DoublyLinkedList_iterator;
+	template <typename T, typename Ref, typename Ptr, typename IntrusiveListNodePtr>
+	friend class IntrusiveList_iterator;
 
 	template <typename T>
-	friend class DoublyLinkedList;
+	friend class IntrusiveList;
 
 protected:
-	DoublyLinkedListNode() : m_nextListNode(), m_prevListNode() {}
+	IntrusiveListNode() : m_nextListNode(), m_prevListNode() {}
 };
 
-template <typename T, typename Ref, typename Ptr, typename DoublyLinkedListNodePtr>
-class DoublyLinkedList_iterator {
+template <typename T, typename Ref, typename Ptr, typename IntrusiveListNodePtr>
+class IntrusiveList_iterator {
 public:
 	typedef T value_type;
 	typedef std::size_t size_type;
 	typedef std::ptrdiff_t difference_type;
-	typedef DoublyLinkedList_iterator<T, T&, T*, DoublyLinkedListNode*> iterator;
-	typedef DoublyLinkedList_iterator<T, const T&, const T*, const DoublyLinkedListNode*> const_iterator;
+	typedef IntrusiveList_iterator<T, T&, T*, IntrusiveListNode*> iterator;
+	typedef IntrusiveList_iterator<T, const T&, const T*, const IntrusiveListNode*> const_iterator;
 	typedef Ref reference;
 	typedef const Ref const_reference;
 	typedef Ptr pointer;
@@ -40,40 +40,40 @@ public:
 	typedef std::bidirectional_iterator_tag iterator_category;
 #endif
 
-	DoublyLinkedList_iterator() : m_node(0) {}
+	IntrusiveList_iterator() : m_node(0) {}
 
-	DoublyLinkedList_iterator(const iterator& x) : m_node(x.m_node) {}
+	IntrusiveList_iterator(const iterator& x) : m_node(x.m_node) {}
 
-	DoublyLinkedList_iterator& operator=(const iterator& x)
+	IntrusiveList_iterator& operator=(const iterator& x)
 	{
 		m_node = x.m_node;
 		return *this;
 	}
 
-	DoublyLinkedList_iterator& operator++()
+	IntrusiveList_iterator& operator++()
 	{
 		CHECK_PRECOND(m_node != 0);
 		m_node = m_node->m_nextListNode;
 		return *this;
 	}
 
-	DoublyLinkedList_iterator& operator--()
+	IntrusiveList_iterator& operator--()
 	{
 		CHECK_PRECOND(m_node != 0);
 		m_node = m_node->m_prevListNode;
 		return *this;
 	}
 
-	DoublyLinkedList_iterator operator++(int)
+	IntrusiveList_iterator operator++(int)
 	{
-		DoublyLinkedList_iterator tmp = *this;
+		IntrusiveList_iterator tmp = *this;
 		++*this;
 		return tmp;
 	}
 
-	DoublyLinkedList_iterator operator--(int)
+	IntrusiveList_iterator operator--(int)
 	{
-		DoublyLinkedList_iterator tmp = *this;
+		IntrusiveList_iterator tmp = *this;
 		--*this;
 		return tmp;
 	}
@@ -90,36 +90,36 @@ public:
 		return static_cast<pointer>(m_node);
 	}
 
-	bool operator==(const DoublyLinkedList_iterator& x) const
+	bool operator==(const IntrusiveList_iterator& x) const
 	{
 		return m_node == x.m_node;
 	}
 
-	bool operator!=(const DoublyLinkedList_iterator& x) const
+	bool operator!=(const IntrusiveList_iterator& x) const
 	{
 		return !(*this == x);
 	}
 
 private:
 	template <typename U>
-	friend class DoublyLinkedList;
+	friend class IntrusiveList;
 
-	template <typename U, typename RefX, typename PtrX, typename DoublyLinkedListNodePtrX>
-	friend class DoublyLinkedList_iterator;
+	template <typename U, typename RefX, typename PtrX, typename IntrusiveListNodePtrX>
+	friend class IntrusiveList_iterator;
 
-	DoublyLinkedListNodePtr m_node;
+	IntrusiveListNodePtr m_node;
 
-	explicit DoublyLinkedList_iterator(DoublyLinkedListNodePtr node) : m_node(node) {}
+	explicit IntrusiveList_iterator(IntrusiveListNodePtr node) : m_node(node) {}
 };
 
 template <typename T>
-class DoublyLinkedList {
+class IntrusiveList {
 public:
 	typedef T value_type;
 	typedef std::size_t size_type;
 	typedef std::ptrdiff_t difference_type;
-	typedef DoublyLinkedList_iterator<T, T&, T*, DoublyLinkedListNode*> iterator;
-	typedef DoublyLinkedList_iterator<T, const T&, const T*, const DoublyLinkedListNode*> const_iterator;
+	typedef IntrusiveList_iterator<T, T&, T*, IntrusiveListNode*> iterator;
+	typedef IntrusiveList_iterator<T, const T&, const T*, const IntrusiveListNode*> const_iterator;
 	typedef value_type& reference;
 	typedef const value_type& const_reference;
 	typedef value_type* pointer;
@@ -129,7 +129,7 @@ public:
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 #endif
 
-	DoublyLinkedList() : m_terminator()
+	IntrusiveList() : m_terminator()
 	{
 		m_terminator.m_nextListNode = &m_terminator;
 		m_terminator.m_prevListNode = &m_terminator;
@@ -251,13 +251,13 @@ public:
 	{
 		CHECK_PRECOND(!empty());
 		CHECK_PRECOND(pos.m_node != 0);
-		DoublyLinkedListNode* node = pos.m_node->m_nextListNode;
+		IntrusiveListNode* node = pos.m_node->m_nextListNode;
 		pos.m_node->m_prevListNode->m_nextListNode = pos.m_node->m_nextListNode;
 		pos.m_node->m_nextListNode->m_prevListNode = pos.m_node->m_prevListNode;
 		return iterator(node);
 	}
 
-	void splice(iterator pos, DoublyLinkedList& x)
+	void splice(iterator pos, IntrusiveList& x)
 	{
 		CHECK_PRECOND(this != &x);
 		if (x.empty()) {
@@ -266,7 +266,7 @@ public:
 		splice(pos, x, x.begin(), x.end());
 	}
 
-	void splice(iterator pos, DoublyLinkedList& x, iterator i)
+	void splice(iterator pos, IntrusiveList& x, iterator i)
 	{
 		CHECK_PRECOND(i != end());
 		CHECK_PRECOND(i != x.end());
@@ -281,7 +281,7 @@ public:
 		splice(pos, x, i, j);
 	}
 
-	void splice(iterator pos, DoublyLinkedList& x, iterator first, iterator last)
+	void splice(iterator pos, IntrusiveList& x, iterator first, iterator last)
 	{
 		CHECK_PRECOND(pos.m_node != 0);
 		CHECK_PRECOND(first.m_node != 0);
@@ -298,36 +298,36 @@ public:
 		first.m_node->m_prevListNode->m_nextListNode = last.m_node;
 		pos.m_node->m_prevListNode->m_nextListNode = first.m_node;
 
-		DoublyLinkedListNode* tmp = pos.m_node->m_prevListNode;
+		IntrusiveListNode* tmp = pos.m_node->m_prevListNode;
 		pos.m_node->m_prevListNode = last.m_node->m_prevListNode;
 		last.m_node->m_prevListNode = first.m_node->m_prevListNode;
 		first.m_node->m_prevListNode = tmp;
 	}
 
-	void swap(DoublyLinkedList& other)
+	void swap(IntrusiveList& other)
 	{
 		if (this == &other) {
 			return;
 		}
-		DoublyLinkedList tmp;
+		IntrusiveList tmp;
 		tmp.splice(tmp.end(), other);
 		other.splice(other.end(), *this);
 		splice(end(), tmp);
 	}
 
 private:
-	DoublyLinkedListNode m_terminator;
+	IntrusiveListNode m_terminator;
 
-	DoublyLinkedList(const DoublyLinkedList& x);
-	DoublyLinkedList& operator=(const DoublyLinkedList& x);
+	IntrusiveList(const IntrusiveList& x);
+	IntrusiveList& operator=(const IntrusiveList& x);
 };
 
 template <typename T>
-void swap(DoublyLinkedList<T>& x, DoublyLinkedList<T>& y)
+void swap(IntrusiveList<T>& x, IntrusiveList<T>& y)
 {
 	x.swap(y);
 }
 
 }
 
-#endif // CONTAINER_DOUBLY_LINKED_LIST_H_INCLUDED
+#endif // CONTAINER_INTRUSIVE_LIST_H_INCLUDED
