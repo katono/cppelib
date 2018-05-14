@@ -19,6 +19,14 @@
 		(void)0 :\
 		throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Post-condition failed (" #x ")")
 
+
+#ifdef NDEBUG
+#define DEBUG_ASSERT(x)
+#else
+#define DEBUG_ASSERT(x)  CHECK_ASSERT(x)
+#endif
+
+
 namespace Assertion {
 
 class Error {

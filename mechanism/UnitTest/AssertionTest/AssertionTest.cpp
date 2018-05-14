@@ -54,6 +54,26 @@ TEST(AssertionTest, assert_false)
 	FAIL("failed");
 }
 
+#ifndef NDEBUG
+TEST(AssertionTest, debug_assert_false)
+{
+	try {
+		try {
+			bool a = false;
+			DEBUG_ASSERT(a);
+		}
+		catch (const std::exception&) {
+			FAIL("NOT std::exception");
+		}
+	}
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("Assertion failed", e.message());
+		return;
+	}
+	FAIL("failed");
+}
+#endif
+
 TEST(AssertionTest, precondition_OK)
 {
 	try {
