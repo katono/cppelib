@@ -195,25 +195,25 @@ public:
 
 	reference front()
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		return *begin();
 	}
 
 	const_reference front() const
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		return *begin();
 	}
 
 	reference back()
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		return *(end() - 1);
 	}
 
 	const_reference back() const
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		return *(end() - 1);
 	}
 
@@ -245,7 +245,7 @@ public:
 
 	void pop_back()
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		destroy(&*(end() - 1));
 		--m_end;
 	}
@@ -277,36 +277,36 @@ public:
 
 	iterator insert(iterator pos, const T& data)
 	{
-		CHECK_PRECOND((begin() <= pos) && (pos <= end()));
+		DEBUG_ASSERT((begin() <= pos) && (pos <= end()));
 		insert_n(pos, 1U, data);
 		return pos;
 	}
 
 	void insert(iterator pos, size_type n, const T& data)
 	{
-		CHECK_PRECOND((begin() <= pos) && (pos <= end()));
+		DEBUG_ASSERT((begin() <= pos) && (pos <= end()));
 		insert_n(pos, n, data);
 	}
 
 	template <typename InputIterator>
 	void insert(iterator pos, InputIterator first, InputIterator last)
 	{
-		CHECK_PRECOND((begin() <= pos) && (pos <= end()));
+		DEBUG_ASSERT((begin() <= pos) && (pos <= end()));
 		typedef typename IsInteger<InputIterator>::Integral Integral;
 		insert_dispatch(pos, first, last, Integral());
 	}
 
 	iterator erase(iterator pos)
 	{
-		CHECK_PRECOND((begin() <= pos) && (pos < end()));
+		DEBUG_ASSERT((begin() <= pos) && (pos < end()));
 		return erase(pos, pos + 1);
 	}
 
 	iterator erase(iterator first, iterator last)
 	{
-		CHECK_PRECOND(first < last);
-		CHECK_PRECOND((begin() <= first) && (first < end()));
-		CHECK_PRECOND((begin() <= last) && (last <= end()));
+		DEBUG_ASSERT(first < last);
+		DEBUG_ASSERT((begin() <= first) && (first < end()));
+		DEBUG_ASSERT((begin() <= last) && (last <= end()));
 		const difference_type n = last - first;
 		for (iterator i = last; i != end(); ++i) {
 			*(i - n) = *i;

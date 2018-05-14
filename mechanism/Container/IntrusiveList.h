@@ -52,14 +52,14 @@ public:
 
 	IntrusiveList_iterator& operator++()
 	{
-		CHECK_PRECOND(m_node != 0);
+		DEBUG_ASSERT(m_node != 0);
 		m_node = m_node->m_nextListNode;
 		return *this;
 	}
 
 	IntrusiveList_iterator& operator--()
 	{
-		CHECK_PRECOND(m_node != 0);
+		DEBUG_ASSERT(m_node != 0);
 		m_node = m_node->m_prevListNode;
 		return *this;
 	}
@@ -80,13 +80,13 @@ public:
 
 	reference operator*() const
 	{
-		CHECK_PRECOND(m_node != 0);
+		DEBUG_ASSERT(m_node != 0);
 		return *static_cast<pointer>(m_node);
 	}
 
 	pointer operator->() const
 	{
-		CHECK_PRECOND(m_node != 0);
+		DEBUG_ASSERT(m_node != 0);
 		return static_cast<pointer>(m_node);
 	}
 
@@ -193,25 +193,25 @@ public:
 
 	reference front()
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		return *begin();
 	}
 
 	const_reference front() const
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		return *begin();
 	}
 
 	reference back()
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		return *--end();
 	}
 
 	const_reference back() const
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		return *--end();
 	}
 
@@ -222,7 +222,7 @@ public:
 
 	void pop_back()
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		erase(--end());
 	}
 
@@ -233,13 +233,13 @@ public:
 
 	void pop_front()
 	{
-		CHECK_PRECOND(!empty());
+		DEBUG_ASSERT(!empty());
 		erase(begin());
 	}
 
 	iterator insert(iterator pos, T& data)
 	{
-		CHECK_PRECOND(pos.m_node != 0);
+		DEBUG_ASSERT(pos.m_node != 0);
 		data.m_nextListNode = pos.m_node;
 		data.m_prevListNode = pos.m_node->m_prevListNode;
 		pos.m_node->m_prevListNode = &data;
@@ -249,8 +249,8 @@ public:
 
 	iterator erase(iterator pos)
 	{
-		CHECK_PRECOND(!empty());
-		CHECK_PRECOND(pos.m_node != 0);
+		DEBUG_ASSERT(!empty());
+		DEBUG_ASSERT(pos.m_node != 0);
 		IntrusiveListNode* node = pos.m_node->m_nextListNode;
 		pos.m_node->m_prevListNode->m_nextListNode = pos.m_node->m_nextListNode;
 		pos.m_node->m_nextListNode->m_prevListNode = pos.m_node->m_prevListNode;
@@ -259,7 +259,7 @@ public:
 
 	void splice(iterator pos, IntrusiveList& x)
 	{
-		CHECK_PRECOND(this != &x);
+		DEBUG_ASSERT(this != &x);
 		if (x.empty()) {
 			return;
 		}
@@ -268,8 +268,8 @@ public:
 
 	void splice(iterator pos, IntrusiveList& x, iterator i)
 	{
-		CHECK_PRECOND(i != end());
-		CHECK_PRECOND(i != x.end());
+		DEBUG_ASSERT(i != end());
+		DEBUG_ASSERT(i != x.end());
 		if (pos == i) {
 			return;
 		}
@@ -283,11 +283,11 @@ public:
 
 	void splice(iterator pos, IntrusiveList& x, iterator first, iterator last)
 	{
-		CHECK_PRECOND(pos.m_node != 0);
-		CHECK_PRECOND(first.m_node != 0);
-		CHECK_PRECOND(last.m_node != 0);
-		CHECK_PRECOND(first != end());
-		CHECK_PRECOND(first != x.end());
+		DEBUG_ASSERT(pos.m_node != 0);
+		DEBUG_ASSERT(first.m_node != 0);
+		DEBUG_ASSERT(last.m_node != 0);
+		DEBUG_ASSERT(first != end());
+		DEBUG_ASSERT(first != x.end());
 		if (first == last) {
 			return;
 		}
