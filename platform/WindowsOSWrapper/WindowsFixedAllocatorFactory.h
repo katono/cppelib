@@ -17,6 +17,9 @@ public:
 private:
 	virtual OSWrapper::FixedAllocator* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool);
 	virtual void destroy(OSWrapper::FixedAllocator* p);
+
+	WindowsFixedAllocatorFactory(const WindowsFixedAllocatorFactory&);
+	WindowsFixedAllocatorFactory& operator=(const WindowsFixedAllocatorFactory&);
 };
 
 }

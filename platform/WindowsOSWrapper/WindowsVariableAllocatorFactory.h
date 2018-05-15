@@ -17,6 +17,9 @@ public:
 private:
 	virtual OSWrapper::VariableAllocator* create(std::size_t memoryPoolSize, void* memoryPool);
 	virtual void destroy(OSWrapper::VariableAllocator* p);
+
+	WindowsVariableAllocatorFactory(const WindowsVariableAllocatorFactory&);
+	WindowsVariableAllocatorFactory& operator=(const WindowsVariableAllocatorFactory&);
 };
 
 }

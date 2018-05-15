@@ -15,6 +15,9 @@ private:
 	virtual OSWrapper::EventFlag* create(bool autoReset);
 	virtual void destroy(OSWrapper::EventFlag* e);
 
+	WindowsEventFlagFactory(const WindowsEventFlagFactory&);
+	WindowsEventFlagFactory& operator=(const WindowsEventFlagFactory&);
+
 	std::mutex m_mutex;
 };
 

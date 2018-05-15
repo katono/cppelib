@@ -23,6 +23,9 @@ private:
 	virtual int getMaxPriority() const;
 	virtual int getMinPriority() const;
 
+	WindowsThreadFactory(const WindowsThreadFactory&);
+	WindowsThreadFactory& operator=(const WindowsThreadFactory&);
+
 	std::unordered_map<std::thread::id, OSWrapper::Thread*> m_threadIdMap;
 	std::recursive_mutex m_mutex;
 	int m_lowestPriority;

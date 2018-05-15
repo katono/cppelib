@@ -16,6 +16,9 @@ private:
 	virtual OSWrapper::Mutex* create(int priorityCeiling);
 	virtual void destroy(OSWrapper::Mutex* m);
 
+	WindowsMutexFactory(const WindowsMutexFactory&);
+	WindowsMutexFactory& operator=(const WindowsMutexFactory&);
+
 	std::mutex m_mutex;
 };
 
