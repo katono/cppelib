@@ -1,23 +1,23 @@
-#include "FixedAllocator.h"
-#include "FixedAllocatorFactory.h"
+#include "FixedMemoryPool.h"
+#include "FixedMemoryPoolFactory.h"
 #include "Assertion/Assertion.h"
 
 namespace OSWrapper {
 
-static FixedAllocatorFactory* s_factory = 0;
+static FixedMemoryPoolFactory* s_factory = 0;
 
-void registerFixedAllocatorFactory(FixedAllocatorFactory* factory)
+void registerFixedMemoryPoolFactory(FixedMemoryPoolFactory* factory)
 {
 	s_factory = factory;
 }
 
-FixedAllocator* FixedAllocator::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool/*= 0*/)
+FixedMemoryPool* FixedMemoryPool::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool/*= 0*/)
 {
 	CHECK_PRECOND(s_factory);
 	return s_factory->create(blockSize, memoryPoolSize, memoryPool);
 }
 
-void FixedAllocator::destroy(FixedAllocator* p)
+void FixedMemoryPool::destroy(FixedMemoryPool* p)
 {
 	if ((s_factory != 0) && (p != 0)) {
 		s_factory->destroy(p);

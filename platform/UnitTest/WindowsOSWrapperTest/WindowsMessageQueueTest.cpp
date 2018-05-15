@@ -3,11 +3,11 @@
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/MessageQueue.h"
-#include "OSWrapper/VariableAllocator.h"
+#include "OSWrapper/VariableMemoryPool.h"
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
-#include "WindowsOSWrapper/WindowsVariableAllocatorFactory.h"
+#include "WindowsOSWrapper/WindowsVariableMemoryPoolFactory.h"
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
@@ -15,14 +15,14 @@ using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
 using OSWrapper::EventFlag;
-using OSWrapper::VariableAllocator;
+using OSWrapper::VariableMemoryPool;
 using OSWrapper::MessageQueue;
 using OSWrapper::Timeout;
 using OSWrapper::LockGuard;
 using WindowsOSWrapper::WindowsThreadFactory;
 using WindowsOSWrapper::WindowsMutexFactory;
 using WindowsOSWrapper::WindowsEventFlagFactory;
-using WindowsOSWrapper::WindowsVariableAllocatorFactory;
+using WindowsOSWrapper::WindowsVariableMemoryPoolFactory;
 
 static Mutex* s_mutex;
 
@@ -30,8 +30,8 @@ TEST_GROUP(WindowsMessageQueueTest) {
 	WindowsThreadFactory testThreadFactory;
 	WindowsMutexFactory testMutexFactory;
 	WindowsEventFlagFactory testEventFlagFactory;
-	WindowsVariableAllocatorFactory testVariableAllocatorFactory;
-	VariableAllocator* allocator;
+	WindowsVariableMemoryPoolFactory testVariableMemoryPoolFactory;
+	VariableMemoryPool* allocator;
 
 	static const std::size_t SIZE = 10;
 	typedef MessageQueue<int> IntMQ;
@@ -49,19 +49,19 @@ TEST_GROUP(WindowsMessageQueueTest) {
 		OSWrapper::registerThreadFactory(&testThreadFactory);
 		OSWrapper::registerMutexFactory(&testMutexFactory);
 		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
-		OSWrapper::registerVariableAllocatorFactory(&testVariableAllocatorFactory);
+		OSWrapper::registerVariableMemoryPoolFactory(&testVariableMemoryPoolFactory);
 
 		const std::size_t dummy_size = 1000;
-		allocator = VariableAllocator::create(dummy_size);
+		allocator = VariableMemoryPool::create(dummy_size);
 		CHECK(allocator);
-		OSWrapper::registerMessageQueueAllocator(allocator);
+		OSWrapper::registerMessageQueueMemoryPool(allocator);
 
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
-		VariableAllocator::destroy(allocator);
+		VariableMemoryPool::destroy(allocator);
 		mock().checkExpectations();
 		mock().clear();
 	}
@@ -103,7 +103,7 @@ TEST(WindowsMessageQueueTest, destroy_nullptr)
 
 TEST(WindowsMessageQueueTest, create_failed)
 {
-	OSWrapper::registerMessageQueueAllocator(0);
+	OSWrapper::registerMessageQueueMemoryPool(0);
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
 	CHECK_FALSE(mq);
 }

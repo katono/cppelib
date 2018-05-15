@@ -1,21 +1,21 @@
-#ifndef OS_WRAPPER_VARIABLE_ALLOCATOR_H_INCLUDED
-#define OS_WRAPPER_VARIABLE_ALLOCATOR_H_INCLUDED
+#ifndef OS_WRAPPER_VARIABLE_MEMORY_POOL_H_INCLUDED
+#define OS_WRAPPER_VARIABLE_MEMORY_POOL_H_INCLUDED
 
 #include <cstddef>
 
 namespace OSWrapper {
 
-class VariableAllocatorFactory;
+class VariableMemoryPoolFactory;
 
-void registerVariableAllocatorFactory(VariableAllocatorFactory* factory);
+void registerVariableMemoryPoolFactory(VariableMemoryPoolFactory* factory);
 
-class VariableAllocator {
+class VariableMemoryPool {
 protected:
-	virtual ~VariableAllocator() {}
+	virtual ~VariableMemoryPool() {}
 
 public:
-	static VariableAllocator* create(std::size_t memoryPoolSize, void* memoryPool = 0);
-	static void destroy(VariableAllocator* p);
+	static VariableMemoryPool* create(std::size_t memoryPoolSize, void* memoryPool = 0);
+	static void destroy(VariableMemoryPool* p);
 
 	virtual void* allocate(std::size_t size) = 0;
 	virtual void deallocate(void* p) = 0;
@@ -24,4 +24,4 @@ public:
 
 }
 
-#endif // OS_WRAPPER_VARIABLE_ALLOCATOR_H_INCLUDED
+#endif // OS_WRAPPER_VARIABLE_MEMORY_POOL_H_INCLUDED

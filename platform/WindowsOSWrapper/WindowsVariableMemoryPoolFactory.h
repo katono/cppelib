@@ -1,27 +1,27 @@
-#ifndef WINDOWS_OS_WRAPPER_WINDOWS_VARIABLE_ALLOCATOR_FACTORY_H_INCLUDED
-#define WINDOWS_OS_WRAPPER_WINDOWS_VARIABLE_ALLOCATOR_FACTORY_H_INCLUDED
+#ifndef WINDOWS_OS_WRAPPER_WINDOWS_VARIABLE_MEMORY_POOL_FACTORY_H_INCLUDED
+#define WINDOWS_OS_WRAPPER_WINDOWS_VARIABLE_MEMORY_POOL_FACTORY_H_INCLUDED
 
-#include "OSWrapper/VariableAllocatorFactory.h"
+#include "OSWrapper/VariableMemoryPoolFactory.h"
 #include <mutex>
 
 namespace WindowsOSWrapper {
 
-class WindowsVariableAllocatorFactory : public OSWrapper::VariableAllocatorFactory {
+class WindowsVariableMemoryPoolFactory : public OSWrapper::VariableMemoryPoolFactory {
 private:
 	mutable std::mutex m_mutex;
 
 public:
-	WindowsVariableAllocatorFactory();
-	virtual ~WindowsVariableAllocatorFactory() {}
+	WindowsVariableMemoryPoolFactory();
+	virtual ~WindowsVariableMemoryPoolFactory() {}
 
 private:
-	virtual OSWrapper::VariableAllocator* create(std::size_t memoryPoolSize, void* memoryPool);
-	virtual void destroy(OSWrapper::VariableAllocator* p);
+	virtual OSWrapper::VariableMemoryPool* create(std::size_t memoryPoolSize, void* memoryPool);
+	virtual void destroy(OSWrapper::VariableMemoryPool* p);
 
-	WindowsVariableAllocatorFactory(const WindowsVariableAllocatorFactory&);
-	WindowsVariableAllocatorFactory& operator=(const WindowsVariableAllocatorFactory&);
+	WindowsVariableMemoryPoolFactory(const WindowsVariableMemoryPoolFactory&);
+	WindowsVariableMemoryPoolFactory& operator=(const WindowsVariableMemoryPoolFactory&);
 };
 
 }
 
-#endif // WINDOWS_OS_WRAPPER_WINDOWS_VARIABLE_ALLOCATOR_FACTORY_H_INCLUDED
+#endif // WINDOWS_OS_WRAPPER_WINDOWS_VARIABLE_MEMORY_POOL_FACTORY_H_INCLUDED

@@ -1,18 +1,18 @@
 #include "MessageQueue.h"
-#include "VariableAllocator.h"
+#include "VariableMemoryPool.h"
 
 namespace OSWrapper {
 
-static VariableAllocator* s_allocator = 0;
+static VariableMemoryPool* s_pool = 0;
 
-void registerMessageQueueAllocator(VariableAllocator* allocator)
+void registerMessageQueueMemoryPool(VariableMemoryPool* pool)
 {
-	s_allocator = allocator;
+	s_pool = pool;
 }
 
-VariableAllocator* getMessageQueueAllocator()
+VariableMemoryPool* getMessageQueueMemoryPool()
 {
-	return s_allocator;
+	return s_pool;
 }
 
 }

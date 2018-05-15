@@ -93,17 +93,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\mechanism\OSWrapper\EventFlag.cpp" />
-    <ClCompile Include="..\..\..\mechanism\OSWrapper\FixedAllocator.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\FixedMemoryPool.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\MessageQueue.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Mutex.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Thread.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Timeout.cpp" />
-    <ClCompile Include="..\..\..\mechanism\OSWrapper\VariableAllocator.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\VariableMemoryPool.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.cpp" />
-    <ClCompile Include="..\..\WindowsOSWrapper\WindowsFixedAllocatorFactory.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsFixedMemoryPoolFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsMutexFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsThreadFactory.cpp" />
-    <ClCompile Include="..\..\WindowsOSWrapper\WindowsVariableAllocatorFactory.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsVariableMemoryPoolFactory.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="WindowsEventFlagTest.cpp" />
     <ClCompile Include="WindowsMessageQueueTest.cpp" />
@@ -113,8 +113,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\mechanism\OSWrapper\EventFlag.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\EventFlagFactory.h" />
-    <ClInclude Include="..\..\..\mechanism\OSWrapper\FixedAllocator.h" />
-    <ClInclude Include="..\..\..\mechanism\OSWrapper\FixedAllocatorFactory.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\FixedMemoryPool.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\FixedMemoryPoolFactory.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\MessageQueue.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Mutex.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\MutexFactory.h" />
@@ -123,13 +123,13 @@
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Thread.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\ThreadFactory.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Timeout.h" />
-    <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableAllocator.h" />
-    <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableAllocatorFactory.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableMemoryPool.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableMemoryPoolFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.h" />
-    <ClInclude Include="..\..\WindowsOSWrapper\WindowsFixedAllocatorFactory.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsFixedMemoryPoolFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsMutexFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsThreadFactory.h" />
-    <ClInclude Include="..\..\WindowsOSWrapper\WindowsVariableAllocatorFactory.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsVariableMemoryPoolFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

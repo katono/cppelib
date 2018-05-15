@@ -1,13 +1,13 @@
-#include "WindowsVariableAllocatorFactory.h"
-#include "OSWrapper/VariableAllocator.h"
+#include "WindowsVariableMemoryPoolFactory.h"
+#include "OSWrapper/VariableMemoryPool.h"
 #include <cstdlib>
 
 namespace WindowsOSWrapper {
 
-class WindowsVariableAllocator : public OSWrapper::VariableAllocator {
+class WindowsVariableMemoryPool : public OSWrapper::VariableMemoryPool {
 public:
-	WindowsVariableAllocator() {}
-	~WindowsVariableAllocator() {}
+	WindowsVariableMemoryPool() {}
+	~WindowsVariableMemoryPool() {}
 
 	void* allocate(std::size_t size)
 	{
@@ -20,18 +20,18 @@ public:
 	}
 };
 
-WindowsVariableAllocatorFactory::WindowsVariableAllocatorFactory()
+WindowsVariableMemoryPoolFactory::WindowsVariableMemoryPoolFactory()
 : m_mutex()
 {
 }
 
-OSWrapper::VariableAllocator* WindowsVariableAllocatorFactory::create(std::size_t memoryPoolSize, void* memoryPool)
+OSWrapper::VariableMemoryPool* WindowsVariableMemoryPoolFactory::create(std::size_t memoryPoolSize, void* memoryPool)
 {
 	(void) memoryPoolSize;
 	(void) memoryPool;
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
-		WindowsVariableAllocator* p = new WindowsVariableAllocator();
+		WindowsVariableMemoryPool* p = new WindowsVariableMemoryPool();
 		return p;
 	}
 	catch (...) {
@@ -39,10 +39,10 @@ OSWrapper::VariableAllocator* WindowsVariableAllocatorFactory::create(std::size_
 	}
 }
 
-void WindowsVariableAllocatorFactory::destroy(OSWrapper::VariableAllocator* p)
+void WindowsVariableMemoryPoolFactory::destroy(OSWrapper::VariableMemoryPool* p)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	delete static_cast<WindowsVariableAllocator*>(p);
+	delete static_cast<WindowsVariableMemoryPool*>(p);
 }
 
 }

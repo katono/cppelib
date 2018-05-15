@@ -1,21 +1,21 @@
-#ifndef OS_WRAPPER_FIXED_ALLOCATOR_H_INCLUDED
-#define OS_WRAPPER_FIXED_ALLOCATOR_H_INCLUDED
+#ifndef OS_WRAPPER_FIXED_MEMORY_POOL_H_INCLUDED
+#define OS_WRAPPER_FIXED_MEMORY_POOL_H_INCLUDED
 
 #include <cstddef>
 
 namespace OSWrapper {
 
-class FixedAllocatorFactory;
+class FixedMemoryPoolFactory;
 
-void registerFixedAllocatorFactory(FixedAllocatorFactory* factory);
+void registerFixedMemoryPoolFactory(FixedMemoryPoolFactory* factory);
 
-class FixedAllocator {
+class FixedMemoryPool {
 protected:
-	virtual ~FixedAllocator() {}
+	virtual ~FixedMemoryPool() {}
 
 public:
-	static FixedAllocator* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool = 0);
-	static void destroy(FixedAllocator* p);
+	static FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool = 0);
+	static void destroy(FixedMemoryPool* p);
 
 	virtual void* allocate() = 0;
 	virtual void deallocate(void* p) = 0;
@@ -25,4 +25,4 @@ public:
 
 }
 
-#endif // OS_WRAPPER_FIXED_ALLOCATOR_H_INCLUDED
+#endif // OS_WRAPPER_FIXED_MEMORY_POOL_H_INCLUDED

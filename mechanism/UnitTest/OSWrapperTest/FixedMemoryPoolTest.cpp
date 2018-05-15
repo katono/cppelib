@@ -1,20 +1,20 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
-#include "OSWrapper/FixedAllocator.h"
-#include "OSWrapper/FixedAllocatorFactory.h"
+#include "OSWrapper/FixedMemoryPool.h"
+#include "OSWrapper/FixedMemoryPoolFactory.h"
 
-using OSWrapper::FixedAllocator;
-using OSWrapper::FixedAllocatorFactory;
+using OSWrapper::FixedMemoryPool;
+using OSWrapper::FixedMemoryPoolFactory;
 
-class TestFixedAllocator : public FixedAllocator {
+class TestFixedMemoryPool : public FixedMemoryPool {
 private:
 	std::size_t m_blockSize;
 	std::size_t m_memoryPoolSize;
 	void* m_memoryPool;
 public:
-	TestFixedAllocator(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
+	TestFixedMemoryPool(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
 	: m_blockSize(blockSize), m_memoryPoolSize(memoryPoolSize), m_memoryPool(memoryPool) {}
-	~TestFixedAllocator() {}
+	~TestFixedMemoryPool() {}
 
 	void* allocate()
 	{
@@ -30,28 +30,28 @@ public:
 	}
 };
 
-class TestFixedAllocatorFactory : public FixedAllocatorFactory {
+class TestFixedMemoryPoolFactory : public FixedMemoryPoolFactory {
 public:
-	FixedAllocator* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
+	FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
 	{
-		FixedAllocator* p = new TestFixedAllocator(blockSize, memoryPoolSize, memoryPool);
+		FixedMemoryPool* p = new TestFixedMemoryPool(blockSize, memoryPoolSize, memoryPool);
 		return p;
 	}
 
-	void destroy(FixedAllocator* p)
+	void destroy(FixedMemoryPool* p)
 	{
-		delete static_cast<TestFixedAllocator*>(p);
+		delete static_cast<TestFixedMemoryPool*>(p);
 	}
 };
 
-TEST_GROUP(FixedAllocatorTest) {
-	TestFixedAllocatorFactory testFactory;
-	FixedAllocator* allocator;
+TEST_GROUP(FixedMemoryPoolTest) {
+	TestFixedMemoryPoolFactory testFactory;
+	FixedMemoryPool* allocator;
 	char pool[100];
 
 	void setup()
 	{
-		OSWrapper::registerFixedAllocatorFactory(&testFactory);
+		OSWrapper::registerFixedMemoryPoolFactory(&testFactory);
 	}
 	void teardown()
 	{
@@ -60,75 +60,75 @@ TEST_GROUP(FixedAllocatorTest) {
 	}
 };
 
-TEST(FixedAllocatorTest, create_destroy)
+TEST(FixedMemoryPoolTest, create_destroy)
 {
-	allocator = FixedAllocator::create(16, sizeof pool, pool);
+	allocator = FixedMemoryPool::create(16, sizeof pool, pool);
 	CHECK(allocator);
-	FixedAllocator::destroy(allocator);
+	FixedMemoryPool::destroy(allocator);
 }
 
-TEST(FixedAllocatorTest, create_no_param_pool)
+TEST(FixedMemoryPoolTest, create_no_param_pool)
 {
-	allocator = FixedAllocator::create(16, sizeof pool);
+	allocator = FixedMemoryPool::create(16, sizeof pool);
 	CHECK(allocator);
-	FixedAllocator::destroy(allocator);
+	FixedMemoryPool::destroy(allocator);
 }
 
-TEST(FixedAllocatorTest, destroy_nullptr)
+TEST(FixedMemoryPoolTest, destroy_nullptr)
 {
-	FixedAllocator::destroy(0);
+	FixedMemoryPool::destroy(0);
 }
 
-TEST(FixedAllocatorTest, allocate)
+TEST(FixedMemoryPoolTest, allocate)
 {
-	allocator = FixedAllocator::create(16, sizeof pool, pool);
+	allocator = FixedMemoryPool::create(16, sizeof pool, pool);
 	mock().expectOneCall("allocate").onObject(allocator).andReturnValue(static_cast<void*>(pool));
 
 	void* p = allocator->allocate();
 	POINTERS_EQUAL(pool, p);
 
-	FixedAllocator::destroy(allocator);
+	FixedMemoryPool::destroy(allocator);
 }
 
-TEST(FixedAllocatorTest, allocate_failed)
+TEST(FixedMemoryPoolTest, allocate_failed)
 {
-	allocator = FixedAllocator::create(16, sizeof pool, pool);
+	allocator = FixedMemoryPool::create(16, sizeof pool, pool);
 	mock().expectOneCall("allocate").onObject(allocator);
 
 	void* p = allocator->allocate();
 	POINTERS_EQUAL(0, p);
 
-	FixedAllocator::destroy(allocator);
+	FixedMemoryPool::destroy(allocator);
 }
 
-TEST(FixedAllocatorTest, deallocate)
+TEST(FixedMemoryPoolTest, deallocate)
 {
-	allocator = FixedAllocator::create(16, sizeof pool, pool);
+	allocator = FixedMemoryPool::create(16, sizeof pool, pool);
 	void* p = pool;
 	mock().expectOneCall("deallocate").onObject(allocator).withParameter("p", p);
 
 	allocator->deallocate(p);
 
-	FixedAllocator::destroy(allocator);
+	FixedMemoryPool::destroy(allocator);
 }
 
-TEST(FixedAllocatorTest, deallocate_nullptr)
+TEST(FixedMemoryPoolTest, deallocate_nullptr)
 {
-	allocator = FixedAllocator::create(16, sizeof pool, pool);
+	allocator = FixedMemoryPool::create(16, sizeof pool, pool);
 	void* p = 0;
 	mock().expectOneCall("deallocate").onObject(allocator).withParameter("p", p);
 
 	allocator->deallocate(p);
 
-	FixedAllocator::destroy(allocator);
+	FixedMemoryPool::destroy(allocator);
 }
 
-TEST(FixedAllocatorTest, getBlockSize)
+TEST(FixedMemoryPoolTest, getBlockSize)
 {
-	allocator = FixedAllocator::create(16, sizeof pool, pool);
+	allocator = FixedMemoryPool::create(16, sizeof pool, pool);
 
 	LONGS_EQUAL(16, allocator->getBlockSize());
 
-	FixedAllocator::destroy(allocator);
+	FixedMemoryPool::destroy(allocator);
 }
 

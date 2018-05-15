@@ -1,23 +1,23 @@
-#include "VariableAllocator.h"
-#include "VariableAllocatorFactory.h"
+#include "VariableMemoryPool.h"
+#include "VariableMemoryPoolFactory.h"
 #include "Assertion/Assertion.h"
 
 namespace OSWrapper {
 
-static VariableAllocatorFactory* s_factory = 0;
+static VariableMemoryPoolFactory* s_factory = 0;
 
-void registerVariableAllocatorFactory(VariableAllocatorFactory* factory)
+void registerVariableMemoryPoolFactory(VariableMemoryPoolFactory* factory)
 {
 	s_factory = factory;
 }
 
-VariableAllocator* VariableAllocator::create(std::size_t memoryPoolSize, void* memoryPool/*= 0*/)
+VariableMemoryPool* VariableMemoryPool::create(std::size_t memoryPoolSize, void* memoryPool/*= 0*/)
 {
 	CHECK_PRECOND(s_factory);
 	return s_factory->create(memoryPoolSize, memoryPool);
 }
 
-void VariableAllocator::destroy(VariableAllocator* p)
+void VariableMemoryPool::destroy(VariableMemoryPool* p)
 {
 	if ((s_factory != 0) && (p != 0)) {
 		s_factory->destroy(p);

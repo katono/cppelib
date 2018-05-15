@@ -1,16 +1,16 @@
-#include "WindowsFixedAllocatorFactory.h"
-#include "OSWrapper/FixedAllocator.h"
+#include "WindowsFixedMemoryPoolFactory.h"
+#include "OSWrapper/FixedMemoryPool.h"
 #include <cstdlib>
 
 namespace WindowsOSWrapper {
 
-class WindowsFixedAllocator : public OSWrapper::FixedAllocator {
+class WindowsFixedMemoryPool : public OSWrapper::FixedMemoryPool {
 private:
 	const std::size_t m_blockSize;
 
 public:
-	explicit WindowsFixedAllocator(std::size_t blockSize) : m_blockSize(blockSize) {}
-	~WindowsFixedAllocator() {}
+	explicit WindowsFixedMemoryPool(std::size_t blockSize) : m_blockSize(blockSize) {}
+	~WindowsFixedMemoryPool() {}
 
 	void* allocate()
 	{
@@ -29,18 +29,18 @@ public:
 };
 
 
-WindowsFixedAllocatorFactory::WindowsFixedAllocatorFactory()
+WindowsFixedMemoryPoolFactory::WindowsFixedMemoryPoolFactory()
 : m_mutex()
 {
 }
 
-OSWrapper::FixedAllocator* WindowsFixedAllocatorFactory::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
+OSWrapper::FixedMemoryPool* WindowsFixedMemoryPoolFactory::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
 {
 	(void) memoryPoolSize;
 	(void) memoryPool;
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
-		WindowsFixedAllocator* p = new WindowsFixedAllocator(blockSize);
+		WindowsFixedMemoryPool* p = new WindowsFixedMemoryPool(blockSize);
 		return p;
 	}
 	catch (...) {
@@ -48,10 +48,10 @@ OSWrapper::FixedAllocator* WindowsFixedAllocatorFactory::create(std::size_t bloc
 	}
 }
 
-void WindowsFixedAllocatorFactory::destroy(OSWrapper::FixedAllocator* p)
+void WindowsFixedMemoryPoolFactory::destroy(OSWrapper::FixedMemoryPool* p)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	delete static_cast<WindowsFixedAllocator*>(p);
+	delete static_cast<WindowsFixedMemoryPool*>(p);
 }
 
 }

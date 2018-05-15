@@ -1,27 +1,27 @@
-#ifndef WINDOWS_OS_WRAPPER_WINDOWS_FIXED_ALLOCATOR_FACTORY_H_INCLUDED
-#define WINDOWS_OS_WRAPPER_WINDOWS_FIXED_ALLOCATOR_FACTORY_H_INCLUDED
+#ifndef WINDOWS_OS_WRAPPER_WINDOWS_FIXED_MEMORY_POOL_FACTORY_H_INCLUDED
+#define WINDOWS_OS_WRAPPER_WINDOWS_FIXED_MEMORY_POOL_FACTORY_H_INCLUDED
 
-#include "OSWrapper/FixedAllocatorFactory.h"
+#include "OSWrapper/FixedMemoryPoolFactory.h"
 #include <mutex>
 
 namespace WindowsOSWrapper {
 
-class WindowsFixedAllocatorFactory : public OSWrapper::FixedAllocatorFactory {
+class WindowsFixedMemoryPoolFactory : public OSWrapper::FixedMemoryPoolFactory {
 private:
 	mutable std::mutex m_mutex;
 
 public:
-	WindowsFixedAllocatorFactory();
-	virtual ~WindowsFixedAllocatorFactory() {}
+	WindowsFixedMemoryPoolFactory();
+	virtual ~WindowsFixedMemoryPoolFactory() {}
 
 private:
-	virtual OSWrapper::FixedAllocator* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool);
-	virtual void destroy(OSWrapper::FixedAllocator* p);
+	virtual OSWrapper::FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool);
+	virtual void destroy(OSWrapper::FixedMemoryPool* p);
 
-	WindowsFixedAllocatorFactory(const WindowsFixedAllocatorFactory&);
-	WindowsFixedAllocatorFactory& operator=(const WindowsFixedAllocatorFactory&);
+	WindowsFixedMemoryPoolFactory(const WindowsFixedMemoryPoolFactory&);
+	WindowsFixedMemoryPoolFactory& operator=(const WindowsFixedMemoryPoolFactory&);
 };
 
 }
 
-#endif // WINDOWS_OS_WRAPPER_WINDOWS_FIXED_ALLOCATOR_FACTORY_H_INCLUDED
+#endif // WINDOWS_OS_WRAPPER_WINDOWS_FIXED_MEMORY_POOL_FACTORY_H_INCLUDED

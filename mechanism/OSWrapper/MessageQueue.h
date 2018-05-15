@@ -7,23 +7,23 @@
 #include "OSWrapperError.h"
 #include "Mutex.h"
 #include "EventFlag.h"
-#include "VariableAllocator.h"
+#include "VariableMemoryPool.h"
 
 namespace OSWrapper {
 
-void registerMessageQueueAllocator(VariableAllocator* allocator);
-VariableAllocator* getMessageQueueAllocator();
+void registerMessageQueueMemoryPool(VariableMemoryPool* pool);
+VariableMemoryPool* getMessageQueueMemoryPool();
 
 template <typename T>
 class MessageQueue {
 public:
 	static MessageQueue* create(std::size_t maxSize)
 	{
-		VariableAllocator* allocator = getMessageQueueAllocator();
-		if (allocator == 0) {
+		VariableMemoryPool* pool = getMessageQueueMemoryPool();
+		if (pool == 0) {
 			return 0;
 		}
-		void* p = allocator->allocate(sizeof(MessageQueue));
+		void* p = pool->allocate(sizeof(MessageQueue));
 		if (p == 0) {
 			return 0;
 		}
@@ -42,7 +42,7 @@ public:
 			return;
 		}
 		m->~MessageQueue();
-		getMessageQueueAllocator()->deallocate(m);
+		getMessageQueueMemoryPool()->deallocate(m);
 	}
 
 	Error send(const T& msg)
@@ -155,7 +155,7 @@ private:
 
 		~RingBuf()
 		{
-			getMessageQueueAllocator()->deallocate(m_buf);
+			getMessageQueueMemoryPool()->deallocate(m_buf);
 		}
 
 		void setBuffer(T* buf, std::size_t bufSize)
@@ -227,7 +227,7 @@ private:
 
 	bool init(std::size_t bufSize)
 	{
-		T* rb_buffer = static_cast<T*>(getMessageQueueAllocator()->allocate(sizeof(T) * bufSize));
+		T* rb_buffer = static_cast<T*>(getMessageQueueMemoryPool()->allocate(sizeof(T) * bufSize));
 		if (rb_buffer == 0) {
 			return false;
 		}
