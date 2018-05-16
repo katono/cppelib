@@ -10,10 +10,10 @@ class TestFixedMemoryPool : public FixedMemoryPool {
 private:
 	std::size_t m_blockSize;
 	std::size_t m_memoryPoolSize;
-	void* m_memoryPool;
+	void* m_memoryPoolAddress;
 public:
-	TestFixedMemoryPool(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
-	: m_blockSize(blockSize), m_memoryPoolSize(memoryPoolSize), m_memoryPool(memoryPool) {}
+	TestFixedMemoryPool(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress)
+	: m_blockSize(blockSize), m_memoryPoolSize(memoryPoolSize), m_memoryPoolAddress(memoryPoolAddress) {}
 	~TestFixedMemoryPool() {}
 
 	void* allocate()
@@ -32,9 +32,9 @@ public:
 
 class TestFixedMemoryPoolFactory : public FixedMemoryPoolFactory {
 public:
-	FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
+	FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress)
 	{
-		FixedMemoryPool* p = new TestFixedMemoryPool(blockSize, memoryPoolSize, memoryPool);
+		FixedMemoryPool* p = new TestFixedMemoryPool(blockSize, memoryPoolSize, memoryPoolAddress);
 		return p;
 	}
 

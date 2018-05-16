@@ -10,7 +10,7 @@ class VariableMemoryPool;
 class VariableMemoryPoolFactory {
 public:
 	virtual ~VariableMemoryPoolFactory() {}
-	virtual VariableMemoryPool* create(std::size_t memoryPoolSize, void* memoryPool) = 0;
+	virtual VariableMemoryPool* create(std::size_t memoryPoolSize, void* memoryPoolAddress) = 0;
 	virtual void destroy(VariableMemoryPool* p) = 0;
 };
 

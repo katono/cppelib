@@ -34,10 +34,10 @@ WindowsFixedMemoryPoolFactory::WindowsFixedMemoryPoolFactory()
 {
 }
 
-OSWrapper::FixedMemoryPool* WindowsFixedMemoryPoolFactory::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool)
+OSWrapper::FixedMemoryPool* WindowsFixedMemoryPoolFactory::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress)
 {
 	(void) memoryPoolSize;
-	(void) memoryPool;
+	(void) memoryPoolAddress;
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
 		WindowsFixedMemoryPool* p = new WindowsFixedMemoryPool(blockSize);

@@ -25,10 +25,10 @@ WindowsVariableMemoryPoolFactory::WindowsVariableMemoryPoolFactory()
 {
 }
 
-OSWrapper::VariableMemoryPool* WindowsVariableMemoryPoolFactory::create(std::size_t memoryPoolSize, void* memoryPool)
+OSWrapper::VariableMemoryPool* WindowsVariableMemoryPoolFactory::create(std::size_t memoryPoolSize, void* memoryPoolAddress)
 {
 	(void) memoryPoolSize;
-	(void) memoryPool;
+	(void) memoryPoolAddress;
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
 		WindowsVariableMemoryPool* p = new WindowsVariableMemoryPool();

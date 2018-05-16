@@ -11,10 +11,10 @@ void registerFixedMemoryPoolFactory(FixedMemoryPoolFactory* factory)
 	s_factory = factory;
 }
 
-FixedMemoryPool* FixedMemoryPool::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool/*= 0*/)
+FixedMemoryPool* FixedMemoryPool::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress/*= 0*/)
 {
 	CHECK_PRECOND(s_factory);
-	return s_factory->create(blockSize, memoryPoolSize, memoryPool);
+	return s_factory->create(blockSize, memoryPoolSize, memoryPoolAddress);
 }
 
 void FixedMemoryPool::destroy(FixedMemoryPool* p)

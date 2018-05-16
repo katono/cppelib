@@ -9,10 +9,10 @@ using OSWrapper::VariableMemoryPoolFactory;
 class TestVariableMemoryPool : public VariableMemoryPool {
 private:
 	std::size_t m_memoryPoolSize;
-	void* m_memoryPool;
+	void* m_memoryPoolAddress;
 public:
-	TestVariableMemoryPool(std::size_t memoryPoolSize, void* memoryPool)
-	: m_memoryPoolSize(memoryPoolSize), m_memoryPool(memoryPool) {}
+	TestVariableMemoryPool(std::size_t memoryPoolSize, void* memoryPoolAddress)
+	: m_memoryPoolSize(memoryPoolSize), m_memoryPoolAddress(memoryPoolAddress) {}
 	~TestVariableMemoryPool() {}
 
 	void* allocate(std::size_t size)
@@ -27,9 +27,9 @@ public:
 
 class TestVariableMemoryPoolFactory : public VariableMemoryPoolFactory {
 public:
-	VariableMemoryPool* create(std::size_t memoryPoolSize, void* memoryPool)
+	VariableMemoryPool* create(std::size_t memoryPoolSize, void* memoryPoolAddress)
 	{
-		VariableMemoryPool* p = new TestVariableMemoryPool(memoryPoolSize, memoryPool);
+		VariableMemoryPool* p = new TestVariableMemoryPool(memoryPoolSize, memoryPoolAddress);
 		return p;
 	}
 

@@ -10,7 +10,7 @@ class FixedMemoryPool;
 class FixedMemoryPoolFactory {
 public:
 	virtual ~FixedMemoryPoolFactory() {}
-	virtual FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool) = 0;
+	virtual FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress) = 0;
 	virtual void destroy(FixedMemoryPool* p) = 0;
 };
 

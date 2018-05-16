@@ -7,19 +7,18 @@
 namespace WindowsOSWrapper {
 
 class WindowsFixedMemoryPoolFactory : public OSWrapper::FixedMemoryPoolFactory {
-private:
-	mutable std::mutex m_mutex;
-
 public:
 	WindowsFixedMemoryPoolFactory();
 	virtual ~WindowsFixedMemoryPoolFactory() {}
 
 private:
-	virtual OSWrapper::FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool);
+	virtual OSWrapper::FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress);
 	virtual void destroy(OSWrapper::FixedMemoryPool* p);
 
 	WindowsFixedMemoryPoolFactory(const WindowsFixedMemoryPoolFactory&);
 	WindowsFixedMemoryPoolFactory& operator=(const WindowsFixedMemoryPoolFactory&);
+
+	mutable std::mutex m_mutex;
 };
 
 }

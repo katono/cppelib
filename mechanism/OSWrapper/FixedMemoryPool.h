@@ -14,7 +14,7 @@ protected:
 	virtual ~FixedMemoryPool() {}
 
 public:
-	static FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPool = 0);
+	static FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress = 0);
 	static void destroy(FixedMemoryPool* p);
 
 	virtual void* allocate() = 0;

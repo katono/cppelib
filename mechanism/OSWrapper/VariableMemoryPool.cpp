@@ -11,10 +11,10 @@ void registerVariableMemoryPoolFactory(VariableMemoryPoolFactory* factory)
 	s_factory = factory;
 }
 
-VariableMemoryPool* VariableMemoryPool::create(std::size_t memoryPoolSize, void* memoryPool/*= 0*/)
+VariableMemoryPool* VariableMemoryPool::create(std::size_t memoryPoolSize, void* memoryPoolAddress/*= 0*/)
 {
 	CHECK_PRECOND(s_factory);
-	return s_factory->create(memoryPoolSize, memoryPool);
+	return s_factory->create(memoryPoolSize, memoryPoolAddress);
 }
 
 void VariableMemoryPool::destroy(VariableMemoryPool* p)

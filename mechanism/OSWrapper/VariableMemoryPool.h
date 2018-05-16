@@ -14,7 +14,7 @@ protected:
 	virtual ~VariableMemoryPool() {}
 
 public:
-	static VariableMemoryPool* create(std::size_t memoryPoolSize, void* memoryPool = 0);
+	static VariableMemoryPool* create(std::size_t memoryPoolSize, void* memoryPoolAddress = 0);
 	static void destroy(VariableMemoryPool* p);
 
 	virtual void* allocate(std::size_t size) = 0;
