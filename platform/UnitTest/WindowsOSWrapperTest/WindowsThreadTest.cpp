@@ -3,7 +3,9 @@
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
+#include "Assertion/Assertion.h"
 #include <mutex>
+#include <stdexcept>
 #include <windows.h>
 
 using OSWrapper::Runnable;
@@ -185,32 +187,75 @@ TEST(WindowsThreadTest, stackSize)
 }
 
 class ThrowExceptionRunnable : public Runnable {
-	bool m_isStdException;
 public:
-	ThrowExceptionRunnable(bool isStdException) : m_isStdException(isStdException) {}
+	enum Kind {
+		Std,
+		Assert,
+		Integer,
+	};
+	ThrowExceptionRunnable(Kind kind) : m_kind(kind) {}
 	void run()
 	{
 		std::lock_guard<std::mutex> lock(s_mutex);
-		if (m_isStdException) {
+		switch (m_kind) {
+		case Std:
 			throw std::runtime_error("Exception Test");
-		} else {
+			break;
+		case Assert:
+			CHECK_ASSERT("CHECK_ASSERT_EXCEPTION_TEST" && false);
+			break;
+		case Integer:
 			throw 1;
+			break;
 		}
+	}
+private:
+	Kind m_kind;
+};
+
+class MyExceptionHandler : public Thread::ExceptionHandler {
+public:
+	virtual void handle(Thread* t, const std::exception&)
+	{
+		mock().actualCall("handle").withParameter("t", t).onObject(this);
 	}
 };
 
 TEST(WindowsThreadTest, exception_std)
 {
-	ThrowExceptionRunnable runnable(true);
+	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
 	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+
+	MyExceptionHandler handler;
+	thread->setExceptionHandler(&handler);
+	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
+
+	thread->start();
+	Thread::destroy(thread);
+}
+
+TEST(WindowsThreadTest, exception_assert)
+{
+	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
+	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+
+	MyExceptionHandler handler;
+	thread->setExceptionHandler(&handler);
+	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
+
 	thread->start();
 	Thread::destroy(thread);
 }
 
 TEST(WindowsThreadTest, exception_unknown)
 {
-	ThrowExceptionRunnable runnable(false);
+	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
 	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+
+	MyExceptionHandler handler;
+	thread->setExceptionHandler(&handler);
+	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
+
 	thread->start();
 	Thread::destroy(thread);
 }

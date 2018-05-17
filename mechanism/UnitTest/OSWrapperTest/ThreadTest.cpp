@@ -5,6 +5,7 @@
 #include "OSWrapper/ThreadFactory.h"
 #include "Assertion/Assertion.h"
 #include <set>
+#include <stdexcept>
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -391,6 +392,56 @@ TEST(ThreadTest, handle_assert_exception)
 	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 
 	AssertExceptionHandler handler;
+	thread->setExceptionHandler(&handler);
+	POINTERS_EQUAL(&handler, thread->getExceptionHandler());
+	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
+
+	thread->start();
+	Thread::destroy(thread);
+}
+
+class StdExceptionTestRunnable : public Runnable {
+public:
+	void run()
+	{
+		throw std::runtime_error("Exception Test");
+	}
+};
+
+class StdExceptionHandler : public Thread::ExceptionHandler {
+public:
+	virtual void handle(Thread* t, const std::exception& e)
+	{
+		mock().actualCall("handle").withParameter("t", t).onObject(this);
+		STRCMP_CONTAINS("Exception Test", e.what());
+	}
+};
+
+TEST(ThreadTest, default_handle_std_exception)
+{
+	StdExceptionTestRunnable runnable;
+	thread = Thread::create(&runnable);
+	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
+
+	StdExceptionHandler handler;
+	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
+	Thread::setDefaultExceptionHandler(&handler);
+	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
+
+	thread->start();
+	Thread::destroy(thread);
+
+	Thread::setDefaultExceptionHandler(old);
+}
+
+TEST(ThreadTest, handle_std_exception)
+{
+	StdExceptionTestRunnable runnable;
+	thread = Thread::create(&runnable);
+	POINTERS_EQUAL(0, thread->getExceptionHandler());
+	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
+
+	StdExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
 	POINTERS_EQUAL(&handler, thread->getExceptionHandler());
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
