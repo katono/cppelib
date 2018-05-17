@@ -31,7 +31,7 @@ TEST_GROUP(WindowsMessageQueueTest) {
 	WindowsMutexFactory testMutexFactory;
 	WindowsEventFlagFactory testEventFlagFactory;
 	WindowsVariableMemoryPoolFactory testVariableMemoryPoolFactory;
-	VariableMemoryPool* allocator;
+	VariableMemoryPool* pool;
 
 	static const std::size_t SIZE = 10;
 	typedef MessageQueue<int> IntMQ;
@@ -52,16 +52,16 @@ TEST_GROUP(WindowsMessageQueueTest) {
 		OSWrapper::registerVariableMemoryPoolFactory(&testVariableMemoryPoolFactory);
 
 		const std::size_t dummy_size = 1000;
-		allocator = VariableMemoryPool::create(dummy_size);
-		CHECK(allocator);
-		OSWrapper::registerMessageQueueMemoryPool(allocator);
+		pool = VariableMemoryPool::create(dummy_size);
+		CHECK(pool);
+		OSWrapper::registerMessageQueueMemoryPool(pool);
 
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
-		VariableMemoryPool::destroy(allocator);
+		VariableMemoryPool::destroy(pool);
 		mock().checkExpectations();
 		mock().clear();
 	}

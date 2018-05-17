@@ -41,8 +41,8 @@ public:
 
 TEST_GROUP(VariableMemoryPoolTest) {
 	TestVariableMemoryPoolFactory testFactory;
-	VariableMemoryPool* allocator;
-	char pool[100];
+	VariableMemoryPool* pool;
+	double poolBuf[100];
 
 	void setup()
 	{
@@ -57,16 +57,16 @@ TEST_GROUP(VariableMemoryPoolTest) {
 
 TEST(VariableMemoryPoolTest, create_destroy)
 {
-	allocator = VariableMemoryPool::create(sizeof pool, pool);
-	CHECK(allocator);
-	VariableMemoryPool::destroy(allocator);
+	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	VariableMemoryPool::destroy(pool);
 }
 
 TEST(VariableMemoryPoolTest, create_no_param_pool)
 {
-	allocator = VariableMemoryPool::create(sizeof pool);
-	CHECK(allocator);
-	VariableMemoryPool::destroy(allocator);
+	pool = VariableMemoryPool::create(sizeof poolBuf);
+	CHECK(pool);
+	VariableMemoryPool::destroy(pool);
 }
 
 TEST(VariableMemoryPoolTest, destroy_nullptr)
@@ -76,47 +76,47 @@ TEST(VariableMemoryPoolTest, destroy_nullptr)
 
 TEST(VariableMemoryPoolTest, allocate)
 {
-	allocator = VariableMemoryPool::create(sizeof pool, pool);
+	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	std::size_t size = 10;
-	mock().expectOneCall("allocate").onObject(allocator).withParameter("size", size).andReturnValue(static_cast<void*>(pool));
+	mock().expectOneCall("allocate").onObject(pool).withParameter("size", size).andReturnValue(static_cast<void*>(poolBuf));
 
-	void* p = allocator->allocate(size);
-	POINTERS_EQUAL(pool, p);
+	void* p = pool->allocate(size);
+	POINTERS_EQUAL(poolBuf, p);
 
-	VariableMemoryPool::destroy(allocator);
+	VariableMemoryPool::destroy(pool);
 }
 
 TEST(VariableMemoryPoolTest, allocate_failed)
 {
-	allocator = VariableMemoryPool::create(sizeof pool, pool);
+	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	std::size_t size = 10;
-	mock().expectOneCall("allocate").onObject(allocator).withParameter("size", size);
+	mock().expectOneCall("allocate").onObject(pool).withParameter("size", size);
 
-	void* p = allocator->allocate(size);
+	void* p = pool->allocate(size);
 	POINTERS_EQUAL(0, p);
 
-	VariableMemoryPool::destroy(allocator);
+	VariableMemoryPool::destroy(pool);
 }
 
 TEST(VariableMemoryPoolTest, deallocate)
 {
-	allocator = VariableMemoryPool::create(sizeof pool, pool);
-	void* p = pool;
-	mock().expectOneCall("deallocate").onObject(allocator).withParameter("p", p);
+	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	void* p = poolBuf;
+	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
 
-	allocator->deallocate(p);
+	pool->deallocate(p);
 
-	VariableMemoryPool::destroy(allocator);
+	VariableMemoryPool::destroy(pool);
 }
 
 TEST(VariableMemoryPoolTest, deallocate_nullptr)
 {
-	allocator = VariableMemoryPool::create(sizeof pool, pool);
+	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	void* p = 0;
-	mock().expectOneCall("deallocate").onObject(allocator).withParameter("p", p);
+	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
 
-	allocator->deallocate(p);
+	pool->deallocate(p);
 
-	VariableMemoryPool::destroy(allocator);
+	VariableMemoryPool::destroy(pool);
 }
 
