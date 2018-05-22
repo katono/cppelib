@@ -33,7 +33,7 @@ public:
 	static void setDefaultExceptionHandler(ExceptionHandler* handler);
 	static ExceptionHandler* getDefaultExceptionHandler();
 
-	static Thread* create(Runnable* r, std::size_t stackSize = 0U, int priority = INHERIT_PRIORITY, const char* name = "");
+	static Thread* create(Runnable* r, int priority = INHERIT_PRIORITY, std::size_t stackSize = 0U, void* stackAddress = 0, const char* name = "");
 	static void destroy(Thread* t);
 	static void exit();
 	static void sleep(unsigned long millis);

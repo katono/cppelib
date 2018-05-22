@@ -79,13 +79,13 @@ void Thread::threadMain()
 	}
 }
 
-Thread* Thread::create(Runnable* r, std::size_t stackSize/*= 0U*/, int priority/*= INHERIT_PRIORITY*/, const char* name/*= ""*/)
+Thread* Thread::create(Runnable* r, int priority/*= INHERIT_PRIORITY*/, std::size_t stackSize/*= 0U*/, void* stackAddress/*= 0*/, const char* name/*= ""*/)
 {
 	CHECK_PRECOND(s_factory);
 	if (r == 0) {
 		return 0;
 	}
-	return s_factory->create(r, stackSize, priority, name);
+	return s_factory->create(r, priority, stackSize, stackAddress, name);
 }
 
 void Thread::destroy(Thread* t)
