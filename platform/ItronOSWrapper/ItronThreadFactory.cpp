@@ -4,6 +4,10 @@
 #include "private/ItronLock.h"
 #include <new>
 
+#ifndef DEFAULT_STACK_SIZE
+#define DEFAULT_STACK_SIZE (256U)
+#endif
+
 namespace ItronOSWrapper {
 
 class ItronThread : public OSWrapper::Thread {
@@ -78,7 +82,7 @@ public:
 		ctsk.task = (FP) &threadEntry;
 		ctsk.itskpri = m_initialPriority;
 		if (m_stackSize == 0U) {
-			m_stackSize = 256U;
+			m_stackSize = DEFAULT_STACK_SIZE;
 		}
 		ctsk.stksz = m_stackSize;
 		ctsk.stk = stackAddress;
