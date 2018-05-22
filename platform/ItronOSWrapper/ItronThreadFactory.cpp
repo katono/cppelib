@@ -8,8 +8,8 @@ namespace ItronOSWrapper {
 
 class ItronThread : public OSWrapper::Thread {
 private:
-	std::size_t m_stackSize;
 	int m_priority;
+	std::size_t m_stackSize;
 	const char* m_name;
 
 	ID m_taskId;
@@ -64,8 +64,8 @@ public:
 		set_flg(m_evWait, 1U);
 	}
 
-	ItronThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
-	: Thread(r), m_stackSize(stackSize), m_priority(priority), m_name(name), 
+	ItronThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name)
+	: Thread(r), m_priority(priority), m_stackSize(stackSize), m_name(name), 
 	  m_taskId(0), m_evWait(0)
 	{
 		m_priority = getInheritPriority(m_priority);
@@ -79,7 +79,7 @@ public:
 			m_stackSize = 256U;
 		}
 		ctsk.stksz = m_stackSize;
-		ctsk.stk = 0;
+		ctsk.stk = stackAddress;
 		ER_ID tsk = acre_tsk(&ctsk);
 		if (tsk <= 0) {
 			return;
@@ -237,7 +237,7 @@ ItronThreadFactory::~ItronThreadFactory()
 	}
 }
 
-OSWrapper::Thread* ItronThreadFactory::create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
+OSWrapper::Thread* ItronThreadFactory::create(OSWrapper::Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name)
 {
 	Lock lk(m_mtxId);
 	if (m_mpfId <= 0) {
@@ -257,7 +257,7 @@ OSWrapper::Thread* ItronThreadFactory::create(OSWrapper::Runnable* r, std::size_
 		return 0;
 	}
 
-	ItronThread* t = new(p) ItronThread(r, stackSize, priority, name);
+	ItronThread* t = new(p) ItronThread(r, priority, stackSize, stackAddress, name);
 	if (!t->isCreated()) {
 		t->~ItronThread();
 		rel_mpf(m_mpfId, t);

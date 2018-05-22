@@ -108,7 +108,7 @@ TEST(ItronMutexTest, shared_data_lock)
 
 	Thread* t[num];
 	for (int i = 0; i < num; i++) {
-		t[i] = Thread::create(&runnable[i], 0, Thread::getNormalPriority());
+		t[i] = Thread::create(&runnable[i], Thread::getNormalPriority());
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -143,7 +143,7 @@ TEST(ItronMutexTest, shared_data_lock_LockGuard)
 
 	Thread* t[num];
 	for (int i = 0; i < num; i++) {
-		t[i] = Thread::create(&runnable[i], 0, Thread::getNormalPriority());
+		t[i] = Thread::create(&runnable[i], Thread::getNormalPriority());
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -176,7 +176,7 @@ TEST(ItronMutexTest, tryLock)
 	LONGS_EQUAL(OSWrapper::OK, err);
 
 	TryLockFailedTestRunnable runnable;
-	Thread* t = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	Thread* t = Thread::create(&runnable, Thread::getNormalPriority());
 	t->start();
 	t->wait();
 	Thread::destroy(t);
@@ -201,7 +201,7 @@ TEST(ItronMutexTest, timedLock)
 	LONGS_EQUAL(OSWrapper::OK, err);
 
 	TimedLockFailedTestRunnable runnable(Timeout(10));
-	Thread* t = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	Thread* t = Thread::create(&runnable, Thread::getNormalPriority());
 	t->start();
 	t->wait();
 	Thread::destroy(t);
@@ -215,7 +215,7 @@ TEST(ItronMutexTest, timedLock_FOREVER)
 	LONGS_EQUAL(OSWrapper::OK, err);
 
 	TimedLockFailedTestRunnable runnable(Timeout::POLLING);
-	Thread* t = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	Thread* t = Thread::create(&runnable, Thread::getNormalPriority());
 	t->start();
 	t->wait();
 	Thread::destroy(t);

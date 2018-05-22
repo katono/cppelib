@@ -63,7 +63,7 @@ public:
 TEST(ItronThreadTest, create_destroy)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::getNormalPriority(), "ItronThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "ItronThread");
 	CHECK(thread);
 	Thread::destroy(thread);
 }
@@ -71,7 +71,7 @@ TEST(ItronThreadTest, create_destroy)
 TEST(ItronThreadTest, start_wait_isFinished)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::getNormalPriority(), "ItronThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "ItronThread");
 	runnable.setThread(thread);
 	thread->start();
 
@@ -85,7 +85,7 @@ TEST(ItronThreadTest, start_wait_isFinished)
 
 TEST(ItronThreadTest, create_failed_runnable_nullptr)
 {
-	thread = Thread::create(0, 4096, Thread::getNormalPriority(), "TestThread");
+	thread = Thread::create(0, Thread::getNormalPriority(), 4096, 0, "ItronThread");
 	CHECK_FALSE(thread);
 }
 
@@ -110,7 +110,7 @@ TEST(ItronThreadTest, many_threads)
 
 	Thread* t[num];
 	for (int i = 0; i < num; i++) {
-		t[i] = Thread::create(&runnable[i], 0, Thread::getNormalPriority());
+		t[i] = Thread::create(&runnable[i], Thread::getNormalPriority());
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -129,7 +129,7 @@ TEST(ItronThreadTest, many_threads)
 TEST(ItronThreadTest, repeat_start)
 {
 	MockRunnable runnable;
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 	mock().expectNCalls(2, "run");
 
 	thread->start();
@@ -147,7 +147,7 @@ TEST(ItronThreadTest, repeat_start)
 TEST(ItronThreadTest, name)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::getNormalPriority(), "TestThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 
 	STRCMP_EQUAL("TestThread", thread->getName());
 	thread->setName("foo");
@@ -158,7 +158,7 @@ TEST(ItronThreadTest, name)
 TEST(ItronThreadTest, priority)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, 1, "TestThread");
+	thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
 	LONGS_EQUAL(1, thread->getPriority());
 	runnable.setThread(thread);
 	thread->start();
@@ -185,7 +185,7 @@ public:
 TEST(ItronThreadTest, getNativeHandle)
 {
 	NativeHandleTestRunnable runnable;
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 	thread->start();
 
 	thread->wait();
@@ -195,7 +195,7 @@ TEST(ItronThreadTest, getNativeHandle)
 TEST(ItronThreadTest, stackSize)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::getNormalPriority(), "TestThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 
 	LONGS_EQUAL(4096, thread->getStackSize());
 	Thread::destroy(thread);
@@ -239,7 +239,7 @@ public:
 TEST(ItronThreadTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
@@ -252,7 +252,7 @@ TEST(ItronThreadTest, exception_std)
 TEST(ItronThreadTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
@@ -265,7 +265,7 @@ TEST(ItronThreadTest, exception_assert)
 TEST(ItronThreadTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
@@ -291,7 +291,7 @@ TEST(ItronThreadTest, setPriority_inherit)
 		void run()
 		{
 			Child runnable;
-			Thread* t = Thread::create(&runnable, 0, Thread::INHERIT_PRIORITY);
+			Thread* t = Thread::create(&runnable, Thread::INHERIT_PRIORITY);
 			{
 				LockGuard lock(s_mutex);
 				CHECK(t);
@@ -301,7 +301,7 @@ TEST(ItronThreadTest, setPriority_inherit)
 		}
 	};
 	Parent runnable;
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority() + 1);
+	thread = Thread::create(&runnable, Thread::getNormalPriority() + 1);
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);
