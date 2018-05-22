@@ -15,7 +15,7 @@ public:
 	void setPriorityRange(int lowestPriority, int highestPriority);
 
 private:
-	virtual OSWrapper::Thread* create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name);
+	virtual OSWrapper::Thread* create(OSWrapper::Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name);
 	virtual void destroy(OSWrapper::Thread* t);
 	virtual void sleep(unsigned long millis);
 	virtual void yield();

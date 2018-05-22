@@ -13,8 +13,8 @@ namespace WindowsOSWrapper {
 
 class WindowsThread : public OSWrapper::Thread {
 private:
-	std::size_t m_stackSize;
 	int m_priority;
+	std::size_t m_stackSize;
 	const char* m_name;
 
 	std::thread m_thread;
@@ -53,8 +53,8 @@ private:
 	}
 
 public:
-	WindowsThread(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name, const std::unordered_map<int, int>& prioMap)
-	: Thread(r), m_stackSize(stackSize), m_priority(priority), m_name(name), 
+	WindowsThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, const char* name, const std::unordered_map<int, int>& prioMap)
+	: Thread(r), m_priority(priority), m_stackSize(stackSize), m_name(name), 
 	  m_thread(), m_mutex(), m_condStarted(), m_condFinished(), 
 	  m_isActive(false), m_endThreadRequested(false), m_threadId(), m_prioMap(prioMap)
 	{
@@ -230,11 +230,12 @@ void WindowsThreadFactory::setPriorityRange(int lowestPriority, int highestPrior
 	}
 }
 
-OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, std::size_t stackSize, int priority, const char* name)
+OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name)
 {
+	(void)stackAddress;
 	WindowsThread* t = nullptr;
 	try {
-		t = new WindowsThread(r, stackSize, priority, name, m_prioMap);
+		t = new WindowsThread(r, priority, stackSize, name, m_prioMap);
 		t->beginThread();
 	}
 	catch (...) {

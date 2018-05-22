@@ -54,7 +54,7 @@ public:
 TEST(WindowsThreadTest, create_destroy)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::getNormalPriority(), "WindowsThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "WindowsThread");
 	CHECK(thread);
 	Thread::destroy(thread);
 }
@@ -62,7 +62,7 @@ TEST(WindowsThreadTest, create_destroy)
 TEST(WindowsThreadTest, start_wait_isFinished)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::getNormalPriority(), "WindowsThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "WindowsThread");
 	runnable.setThread(thread);
 	thread->start();
 
@@ -76,7 +76,7 @@ TEST(WindowsThreadTest, start_wait_isFinished)
 
 TEST(WindowsThreadTest, create_failed_runnable_nullptr)
 {
-	thread = Thread::create(0, 4096, Thread::getNormalPriority(), "TestThread");
+	thread = Thread::create(0, Thread::getNormalPriority(), 4096, 0, "WindowsThread");
 	CHECK_FALSE(thread);
 }
 
@@ -101,7 +101,7 @@ TEST(WindowsThreadTest, many_threads)
 
 	Thread* t[num];
 	for (int i = 0; i < num; i++) {
-		t[i] = Thread::create(&runnable[i], 0, Thread::getNormalPriority());
+		t[i] = Thread::create(&runnable[i], Thread::getNormalPriority());
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -120,7 +120,7 @@ TEST(WindowsThreadTest, many_threads)
 TEST(WindowsThreadTest, repeat_start)
 {
 	MockRunnable runnable;
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 	mock().expectNCalls(2, "run");
 
 	thread->start();
@@ -137,7 +137,7 @@ TEST(WindowsThreadTest, repeat_start)
 TEST(WindowsThreadTest, name)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::getNormalPriority(), "TestThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 
 	STRCMP_EQUAL("TestThread", thread->getName());
 	thread->setName("foo");
@@ -148,7 +148,7 @@ TEST(WindowsThreadTest, name)
 TEST(WindowsThreadTest, priority)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, 1, "TestThread");
+	thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
 
 	LONGS_EQUAL(1, thread->getPriority());
 	const int prio = (Thread::getMaxPriority() + Thread::getMinPriority()) / 2;
@@ -170,7 +170,7 @@ public:
 TEST(WindowsThreadTest, getNativeHandle)
 {
 	NativeHandleTestRunnable runnable;
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 	thread->start();
 
 	thread->wait();
@@ -180,7 +180,7 @@ TEST(WindowsThreadTest, getNativeHandle)
 TEST(WindowsThreadTest, stackSize)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 4096, Thread::getNormalPriority(), "TestThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 
 	LONGS_EQUAL(4096, thread->getStackSize());
 	Thread::destroy(thread);
@@ -224,7 +224,7 @@ public:
 TEST(WindowsThreadTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
@@ -237,7 +237,7 @@ TEST(WindowsThreadTest, exception_std)
 TEST(WindowsThreadTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
@@ -250,7 +250,7 @@ TEST(WindowsThreadTest, exception_assert)
 TEST(WindowsThreadTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
@@ -315,7 +315,7 @@ TEST(WindowsThreadTest, setPriorityRange_highest_priority_is_max_value)
 	};
 
 	CheckPrioRangeRunnable runnable;
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);
@@ -376,7 +376,7 @@ TEST(WindowsThreadTest, setPriorityRange_highest_priority_is_min_value)
 	};
 
 	CheckPrioRangeRunnable runnable;
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority());
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);
@@ -398,7 +398,7 @@ TEST(WindowsThreadTest, setPriority_inherit)
 		void run()
 		{
 			Child runnable;
-			Thread* t = Thread::create(&runnable, 0, Thread::INHERIT_PRIORITY);
+			Thread* t = Thread::create(&runnable, Thread::INHERIT_PRIORITY);
 			{
 				std::lock_guard<std::mutex> lock(s_mutex);
 				CHECK(t);
@@ -408,7 +408,7 @@ TEST(WindowsThreadTest, setPriority_inherit)
 		}
 	};
 	Parent runnable;
-	thread = Thread::create(&runnable, 0, Thread::getNormalPriority() + 1);
+	thread = Thread::create(&runnable, Thread::getNormalPriority() + 1);
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);

@@ -36,9 +36,9 @@ TEST_GROUP(WindowsEventFlagTest) {
 	{
 		EventFlag* ef = EventFlag::create(autoReset);
 		Run1 r1(ef);
-		Thread* thread1 = Thread::create(&r1, 0, Thread::getNormalPriority());
+		Thread* thread1 = Thread::create(&r1, Thread::getNormalPriority());
 		Run2 r2(ef);
-		Thread* thread2 = Thread::create(&r2, 0, Thread::getNormalPriority());
+		Thread* thread2 = Thread::create(&r2, Thread::getNormalPriority());
 
 		thread1->start();
 		thread2->start();
