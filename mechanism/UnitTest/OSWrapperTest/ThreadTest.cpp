@@ -23,13 +23,14 @@ public:
 class TestThread : public Thread {
 private:
 	int m_priority;
+	int m_initialPriority;
 	std::size_t m_stackSize;
 	void* m_stackAddress;
 	const char* m_name;
 
 public:
 	TestThread(Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name)
-	: Thread(r), m_priority(priority), m_stackSize(stackSize), m_stackAddress(stackAddress), m_name(name)
+	: Thread(r), m_priority(priority), m_initialPriority(priority), m_stackSize(stackSize), m_stackAddress(stackAddress), m_name(name)
 	, m_finished(false)
 	{
 		if (stackSize == 0) {
@@ -37,6 +38,7 @@ public:
 		}
 		if (priority == Thread::INHERIT_PRIORITY) {
 			m_priority = (Thread::getMaxPriority() + Thread::getMinPriority()) / 2;
+			m_initialPriority = m_priority;
 		}
 	}
 
@@ -86,6 +88,10 @@ public:
 	int getPriority() const
 	{
 		return m_priority;
+	}
+	int getInitialPriority() const
+	{
+		return m_initialPriority;
 	}
 	std::size_t getStackSize() const
 	{
@@ -266,6 +272,7 @@ TEST(ThreadTest, priority)
 	LONGS_EQUAL(normalPriority, thread->getPriority());
 	thread->setPriority(normalPriority + 1);
 	LONGS_EQUAL(normalPriority + 1, thread->getPriority());
+	LONGS_EQUAL(normalPriority, thread->getInitialPriority());
 	Thread::destroy(thread);
 }
 

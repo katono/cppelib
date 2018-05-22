@@ -53,6 +53,7 @@ public:
 	virtual const char* getName() const = 0;
 	virtual void setPriority(int priority) = 0;
 	virtual int getPriority() const = 0;
+	virtual int getInitialPriority() const = 0;
 	virtual std::size_t getStackSize() const = 0;
 	virtual void* getNativeHandle() = 0;
 
