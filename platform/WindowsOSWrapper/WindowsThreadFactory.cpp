@@ -14,6 +14,7 @@ namespace WindowsOSWrapper {
 class WindowsThread : public OSWrapper::Thread {
 private:
 	int m_priority;
+	int m_initialPriority;
 	std::size_t m_stackSize;
 	const char* m_name;
 
@@ -54,7 +55,7 @@ private:
 
 public:
 	WindowsThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, const char* name, const std::unordered_map<int, int>& prioMap)
-	: Thread(r), m_priority(priority), m_stackSize(stackSize), m_name(name), 
+	: Thread(r), m_priority(priority), m_initialPriority(priority), m_stackSize(stackSize), m_name(name), 
 	  m_thread(), m_mutex(), m_condStarted(), m_condFinished(), 
 	  m_isActive(false), m_endThreadRequested(false), m_threadId(), m_prioMap(prioMap)
 	{
@@ -70,6 +71,7 @@ public:
 		t.swap(m_thread);
 		m_threadId = m_thread.get_id();
 		setPriority(m_priority);
+		m_initialPriority = m_priority;
 	}
 
 	void endThread()
@@ -156,6 +158,12 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		return m_priority;
+	}
+
+	int getInitialPriority() const
+	{
+		std::lock_guard<std::mutex> lock(m_mutex);
+		return m_initialPriority;
 	}
 
 	std::size_t getStackSize() const

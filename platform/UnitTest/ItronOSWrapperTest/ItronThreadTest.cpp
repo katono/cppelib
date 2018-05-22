@@ -165,6 +165,7 @@ TEST(ItronThreadTest, priority)
 	const int prio = Thread::getNormalPriority();
 	thread->setPriority(prio);
 	LONGS_EQUAL(prio, thread->getPriority());
+	LONGS_EQUAL(1, thread->getInitialPriority());
 	Thread::destroy(thread);
 }
 

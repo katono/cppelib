@@ -9,6 +9,7 @@ namespace ItronOSWrapper {
 class ItronThread : public OSWrapper::Thread {
 private:
 	int m_priority;
+	int m_initialPriority;
 	std::size_t m_stackSize;
 	const char* m_name;
 
@@ -65,16 +66,17 @@ public:
 	}
 
 	ItronThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name)
-	: Thread(r), m_priority(priority), m_stackSize(stackSize), m_name(name), 
+	: Thread(r), m_priority(priority), m_initialPriority(priority), m_stackSize(stackSize), m_name(name), 
 	  m_taskId(0), m_evWait(0)
 	{
-		m_priority = getInheritPriority(m_priority);
+		m_initialPriority = getInheritPriority(m_initialPriority);
+		m_priority = m_initialPriority;
 
 		T_CTSK ctsk = {0};
 		ctsk.tskatr = TA_HLNG;
 		ctsk.exinf = 0;
 		ctsk.task = (FP) &threadEntry;
-		ctsk.itskpri = m_priority;
+		ctsk.itskpri = m_initialPriority;
 		if (m_stackSize == 0U) {
 			m_stackSize = 256U;
 		}
@@ -184,6 +186,12 @@ public:
 			return 0;
 		}
 		return rtsk.tskbpri;
+	}
+
+	int getInitialPriority() const
+	{
+		Lock lk(m_mtxId);
+		return m_initialPriority;
 	}
 
 	std::size_t getStackSize() const

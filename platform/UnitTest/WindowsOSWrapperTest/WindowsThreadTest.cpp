@@ -154,6 +154,7 @@ TEST(WindowsThreadTest, priority)
 	const int prio = (Thread::getMaxPriority() + Thread::getMinPriority()) / 2;
 	thread->setPriority(prio);
 	LONGS_EQUAL(prio, thread->getPriority());
+	LONGS_EQUAL(1, thread->getInitialPriority());
 	Thread::destroy(thread);
 }
 
