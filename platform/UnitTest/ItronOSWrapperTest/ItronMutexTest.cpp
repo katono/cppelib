@@ -45,7 +45,7 @@ TEST(ItronMutexTest, create_destroy)
 
 TEST(ItronMutexTest, create_destroy_priorityCeiling)
 {
-	Mutex* mutex = Mutex::create(10);
+	Mutex* mutex = Mutex::create(1);
 	CHECK(mutex);
 	Mutex::destroy(mutex);
 }
