@@ -19,41 +19,50 @@ private:
 
 	ID m_taskId;
 	ID m_evWait;
+	ID m_mtxId;
 
-	static ID m_mtxId;
+	int getTaskBasePriority(ID taskId) const
+	{
+		T_RTSK rtsk = {0};
+		ER err = ref_tsk(taskId, &rtsk);
+		if ((err != E_OK) || (rtsk.tskstat == TTS_DMT)) {
+			return 0;
+		}
+		return rtsk.tskbpri;
+	}
 
-	int getInheritPriority(int priority)
+	int getInheritPriority(int priority) const
 	{
 		if ((Thread::getMinPriority() <= priority) && (priority <= Thread::getMaxPriority())) {
 			return priority;
 		}
 
 		// INHERIT_PRIORITY
-		PRI this_priority;
-		ER err = get_pri(TSK_SELF, &this_priority);
+		return getTaskBasePriority(TSK_SELF);
+	}
+
+	bool isDormant() const
+	{
+		T_RTST rtst = {0};
+		ER err = ref_tst(m_taskId, &rtst);
 		if (err != E_OK) {
-			return priority;
+			return false;
 		}
-		return this_priority;
+		if (rtst.tskstat == TTS_DMT) {
+			return true;
+		}
+		return false;
 	}
 
 	void waitUntilDormant()
 	{
 		while (true) {
-			T_RTST rtst = {0};
-			ER err = ref_tst(m_taskId, &rtst);
-			if (err != E_OK) {
-				break;
-			}
-			if (rtst.tskstat == TTS_DMT) {
+			if (isDormant()) {
 				break;
 			}
 			dly_tsk(0U);
 		}
 	}
-
-public:
-	static void setMutex(ID mtxId) { m_mtxId = mtxId; }
 
 	static void threadEntry(void* arg)
 	{
@@ -65,13 +74,18 @@ public:
 
 	void ItronThreadMain()
 	{
+		{
+			// wait for start() is done
+			volatile Lock lk(m_mtxId);
+		}
 		threadMain();
 		set_flg(m_evWait, 1U);
 	}
 
+public:
 	ItronThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name)
 	: Thread(r), m_priority(priority), m_initialPriority(priority), m_stackSize(stackSize), m_name(name), 
-	  m_taskId(0), m_evWait(0)
+	  m_taskId(0), m_evWait(0), m_mtxId(0)
 	{
 		m_initialPriority = getInheritPriority(m_initialPriority);
 		m_priority = m_initialPriority;
@@ -97,8 +111,19 @@ public:
 			del_tsk(tsk);
 			return;
 		}
+
+		T_CMTX cmtx = {0};
+		cmtx.mtxatr = TA_INHERIT;
+		ER_ID mtx = acre_mtx(&cmtx);
+		if (mtx <= 0) {
+			del_flg(flg);
+			del_tsk(tsk);
+			return;
+		}
+
 		m_taskId = tsk;
 		m_evWait = flg;
+		m_mtxId = mtx;
 	}
 
 	~ItronThread()
@@ -106,6 +131,7 @@ public:
 		if (isCreated()) {
 			del_tsk(m_taskId);
 			del_flg(m_evWait);
+			del_mtx(m_mtxId);
 		}
 	}
 
@@ -116,12 +142,18 @@ public:
 	void start()
 	{
 		Lock lk(m_mtxId);
+		if (!isFinished()) {
+			return;
+		}
+		clr_flg(m_evWait, 0U);
 		ER err = sta_tsk(m_taskId, this);
 		if (err != E_OK) {
 			return;
 		}
-		chg_pri(m_taskId, m_priority);
-		clr_flg(m_evWait, 0U);
+		const int basePrio = getTaskBasePriority(m_taskId);
+		if (basePrio != m_priority) {
+			chg_pri(m_taskId, m_priority);
+		}
 	}
 
 	OSWrapper::Error wait()
@@ -151,13 +183,15 @@ public:
 
 	bool isFinished() const
 	{
-		Lock lk(m_mtxId);
 		T_RFLG rflg = {0};
 		ER err = ref_flg(m_evWait, &rflg);
 		if (err != E_OK) {
+			return false;
+		}
+		if ((rflg.flgptn != 0U) && isDormant()) {
 			return true;
 		}
-		return rflg.flgptn != 0U;
+		return false;
 	}
 
 	void setName(const char* name)
@@ -184,17 +218,11 @@ public:
 	int getPriority() const
 	{
 		Lock lk(m_mtxId);
-		T_RTSK rtsk = {0};
-		ER err = ref_tsk(m_taskId, &rtsk);
-		if (err != E_OK) {
-			return 0;
-		}
-		return rtsk.tskbpri;
+		return m_priority;
 	}
 
 	int getInitialPriority() const
 	{
-		Lock lk(m_mtxId);
 		return m_initialPriority;
 	}
 
@@ -209,8 +237,6 @@ public:
 	}
 
 };
-
-ID ItronThread::m_mtxId = 0;
 
 
 ItronThreadFactory::ItronThreadFactory()
@@ -235,8 +261,6 @@ ItronThreadFactory::ItronThreadFactory()
 		return;
 	}
 	m_mtxId = mtxId;
-
-	ItronThread::setMutex(m_mtxId);
 }
 
 ItronThreadFactory::~ItronThreadFactory()

@@ -160,6 +160,9 @@ TEST(ItronThreadTest, priority)
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
 	LONGS_EQUAL(1, thread->getPriority());
+	thread->setPriority(2);
+	LONGS_EQUAL(2, thread->getPriority());
+
 	runnable.setThread(thread);
 	thread->start();
 	const int prio = Thread::getNormalPriority();
