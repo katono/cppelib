@@ -63,7 +63,7 @@ public:
 		}
 
 		if (isFull()) {
-			err = m_evNotFull->timedWaitAny(tmout);
+			err = m_event->timedWait(EV_NOT_FULL, EventFlag::OR, 0, tmout);
 			if (err != OK) {
 				m_mtxSend->unlock();
 				return err;
@@ -99,7 +99,7 @@ public:
 		}
 
 		if (isEmpty()) {
-			err = m_evNotEmpty->timedWaitAny(tmout);
+			err = m_event->timedWait(EV_NOT_EMPTY, EventFlag::OR, 0, tmout);
 			if (err != OK) {
 				m_mtxRecv->unlock();
 				return err;
@@ -208,18 +208,19 @@ private:
 	Mutex* m_mtxRB;
 	Mutex* m_mtxSend;
 	Mutex* m_mtxRecv;
-	EventFlag* m_evNotEmpty;
-	EventFlag* m_evNotFull;
+	EventFlag* m_event;
+
+	static const EventFlag::Pattern EV_NOT_EMPTY;
+	static const EventFlag::Pattern EV_NOT_FULL;
 
 	MessageQueue()
-	: m_rb(), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_evNotEmpty(0), m_evNotFull(0)
+	: m_rb(), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_event(0)
 	{
 	}
 
 	~MessageQueue()
 	{
-		EventFlag::destroy(m_evNotFull);
-		EventFlag::destroy(m_evNotEmpty);
+		EventFlag::destroy(m_event);
 		Mutex::destroy(m_mtxRecv);
 		Mutex::destroy(m_mtxSend);
 		Mutex::destroy(m_mtxRB);
@@ -245,12 +246,8 @@ private:
 		if (m_mtxRecv == 0) {
 			return false;
 		}
-		m_evNotEmpty = EventFlag::create(true);
-		if (m_evNotEmpty == 0) {
-			return false;
-		}
-		m_evNotFull = EventFlag::create(true);
-		if (m_evNotFull == 0) {
+		m_event = EventFlag::create(false);
+		if (m_event == 0) {
 			return false;
 		}
 		return true;
@@ -261,7 +258,7 @@ private:
 		LockGuard lock(m_mtxRB);
 		const bool is_empty = m_rb.isEmpty();
 		if (is_empty) {
-			m_evNotEmpty->resetAll();
+			m_event->reset(EV_NOT_EMPTY);
 		}
 		return is_empty;
 	}
@@ -271,7 +268,7 @@ private:
 		LockGuard lock(m_mtxRB);
 		const bool is_full = m_rb.isFull();
 		if (is_full) {
-			m_evNotFull->resetAll();
+			m_event->reset(EV_NOT_FULL);
 		}
 		return is_full;
 	}
@@ -280,19 +277,25 @@ private:
 	{
 		LockGuard lock(m_mtxRB);
 		m_rb.push(msg);
-		m_evNotEmpty->setAll();
+		m_event->set(EV_NOT_EMPTY);
 	}
 
 	void pop(T* msg)
 	{
 		LockGuard lock(m_mtxRB);
 		m_rb.pop(msg);
-		m_evNotFull->setAll();
+		m_event->set(EV_NOT_FULL);
 	}
 
 	MessageQueue(const MessageQueue&);
 	MessageQueue& operator=(const MessageQueue&);
 };
+
+template <typename T>
+const EventFlag::Pattern MessageQueue<T>::EV_NOT_EMPTY = 0x0001U;
+
+template <typename T>
+const EventFlag::Pattern MessageQueue<T>::EV_NOT_FULL = 0x0002U;
 
 }
 
