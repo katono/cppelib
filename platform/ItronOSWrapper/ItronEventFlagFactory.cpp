@@ -21,7 +21,7 @@ public:
 	: m_flgId(0)
 	{
 		T_CFLG cflg = {0};
-		cflg.flgatr = TA_TPRI | TA_WSGL | (autoReset ? TA_CLR : 0);
+		cflg.flgatr = TA_TPRI | TA_WMUL | (autoReset ? TA_CLR : 0);
 		cflg.iflgptn = 0;
 		ER_ID flg = acre_flg(&cflg);
 		if (flg <= 0) {
@@ -106,8 +106,6 @@ public:
 			return OSWrapper::CalledByNonThread;
 		case E_PAR:
 			return OSWrapper::InvalidParameter;
-		case E_ILUSE:
-			return OSWrapper::OtherThreadWaiting;
 		default:
 			return OSWrapper::OtherError;
 		}

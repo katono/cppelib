@@ -15,11 +15,10 @@ private:
 
 	mutable std::mutex m_mutex;
 	std::condition_variable m_cond;
-	bool m_waiting;
 
 public:
 	WindowsEventFlag(bool autoReset)
-	: m_autoReset(autoReset), m_pattern(), m_mutex(), m_cond(), m_waiting(false)
+	: m_autoReset(autoReset), m_pattern(), m_mutex(), m_cond()
 	{
 	}
 
@@ -80,10 +79,6 @@ public:
 		}
 
 		std::unique_lock<std::mutex> lock(m_mutex);
-		if (m_waiting) {
-			return OSWrapper::OtherThreadWaiting;
-		}
-		m_waiting = true;
 
 		if (tmout == Timeout::FOREVER) {
 			if (waitMode == EventFlag::OR) {
@@ -95,13 +90,11 @@ public:
 			if (waitMode == EventFlag::OR) {
 				if (!m_cond.wait_for(lock, std::chrono::milliseconds(tmout),
 							[&] { return EventFlag::Pattern(bitPattern & m_pattern).any(); })) {
-					m_waiting = false;
 					return OSWrapper::TimedOut;
 				}
 			} else {
 				if (!m_cond.wait_for(lock, std::chrono::milliseconds(tmout),
 							[&] { return (bitPattern & m_pattern) == bitPattern; })) {
-					m_waiting = false;
 					return OSWrapper::TimedOut;
 				}
 			}
@@ -113,7 +106,6 @@ public:
 		if (m_autoReset) {
 			m_pattern.reset();
 		}
-		m_waiting = false;
 		return OSWrapper::OK;
 	}
 
