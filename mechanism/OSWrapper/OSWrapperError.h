@@ -9,7 +9,6 @@ enum Error {
 	CalledByNonThread,
 	InvalidParameter,
 	NotLocked,
-	OtherThreadWaiting,
 	OtherError
 };
 

@@ -481,50 +481,6 @@ TEST(ItronEventFlagTest, tryWait_set_reset_OR_TimedOut)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
-IGNORE_TEST(ItronEventFlagTest, wait_OtherThreadWaiting)
-{
-	class WaitOK : public BaseRunnable {
-	public:
-		WaitOK(EventFlag* e) : BaseRunnable(e) {}
-		virtual void run()
-		{
-			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
-			{
-				LockGuard lock(s_mutex);
-				LONGS_EQUAL(OSWrapper::OK, err);
-				LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
-			}
-
-			err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
-			{
-				LockGuard lock(s_mutex);
-				LONGS_EQUAL(OSWrapper::OK, err);
-				LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
-
-				err = m_ef->reset(EventFlag::Pattern(0x01));
-				LONGS_EQUAL(OSWrapper::OK, err);
-				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
-			}
-		}
-	};
-
-	class WaitFailed : public BaseRunnable {
-	public:
-		WaitFailed(EventFlag* e) : BaseRunnable(e) {}
-		virtual void run()
-		{
-			Thread::sleep(10);
-			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, 0);
-			LONGS_EQUAL(OSWrapper::OtherThreadWaiting, err);
-
-			err = m_ef->set(EventFlag::Pattern(0x01));
-			LockGuard lock(s_mutex);
-			LONGS_EQUAL(OSWrapper::OK, err);
-		}
-	};
-	testTwoThreadsSharingOneEventFlag<WaitOK, WaitFailed>(false);
-}
-
 TEST(ItronEventFlagTest, wait_TwoThreadsWaiting)
 {
 	class Set2 : public BaseRunnable {
