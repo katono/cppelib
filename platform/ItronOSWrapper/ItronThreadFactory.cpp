@@ -21,6 +21,9 @@ private:
 	ID m_evWait;
 	ID m_mtxId;
 
+	static const FLGPTN EV_STARTED  = 0x0001U;
+	static const FLGPTN EV_FINISHED = 0x0002U;
+
 	int getTaskBasePriority(ID taskId) const
 	{
 		T_RTSK rtsk = {0};
@@ -74,12 +77,12 @@ private:
 
 	void ItronThreadMain()
 	{
-		{
-			// wait for start() is done
-			volatile Lock lk(m_mtxId);
-		}
+		FLGPTN ptn = 0U;
+		wai_flg(m_evWait, EV_STARTED, TWF_ORW, &ptn);
+		clr_flg(m_evWait, ~EV_STARTED);
+
 		threadMain();
-		set_flg(m_evWait, 1U);
+		set_flg(m_evWait, EV_FINISHED);
 	}
 
 public:
@@ -105,7 +108,7 @@ public:
 			return;
 		}
 
-		T_CFLG cflg = { TA_TPRI | TA_WMUL, 1U };
+		T_CFLG cflg = { TA_TPRI | TA_WMUL, EV_FINISHED };
 		ER_ID flg = acre_flg(&cflg);
 		if (flg <= 0) {
 			del_tsk(tsk);
@@ -141,19 +144,22 @@ public:
 
 	void start()
 	{
-		Lock lk(m_mtxId);
-		if (!isFinished()) {
-			return;
+		{
+			Lock lk(m_mtxId);
+			if (!isFinished()) {
+				return;
+			}
+			clr_flg(m_evWait, ~EV_FINISHED);
+			ER err = sta_tsk(m_taskId, this);
+			if (err != E_OK) {
+				return;
+			}
+			const int basePrio = getTaskBasePriority(m_taskId);
+			if (basePrio != m_priority) {
+				chg_pri(m_taskId, m_priority);
+			}
 		}
-		clr_flg(m_evWait, 0U);
-		ER err = sta_tsk(m_taskId, this);
-		if (err != E_OK) {
-			return;
-		}
-		const int basePrio = getTaskBasePriority(m_taskId);
-		if (basePrio != m_priority) {
-			chg_pri(m_taskId, m_priority);
-		}
+		set_flg(m_evWait, EV_STARTED);
 	}
 
 	OSWrapper::Error wait()
@@ -169,7 +175,7 @@ public:
 	OSWrapper::Error timedWait(OSWrapper::Timeout tmout)
 	{
 		FLGPTN ptn = 0U;
-		ER err = twai_flg(m_evWait, 1U, TWF_ORW, &ptn, static_cast<TMO>(tmout));
+		ER err = twai_flg(m_evWait, EV_FINISHED, TWF_ORW, &ptn, static_cast<TMO>(tmout));
 		switch (err) {
 		case E_OK:
 			waitUntilDormant();
@@ -188,7 +194,7 @@ public:
 		if (err != E_OK) {
 			return false;
 		}
-		if ((rflg.flgptn != 0U) && isDormant()) {
+		if (((rflg.flgptn & EV_FINISHED) != 0U) && isDormant()) {
 			return true;
 		}
 		return false;
