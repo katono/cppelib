@@ -12,6 +12,7 @@ public:
 	virtual ~FixedMemoryPoolFactory() {}
 	virtual FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress) = 0;
 	virtual void destroy(FixedMemoryPool* p) = 0;
+	virtual std::size_t getRequiredMemorySize(std::size_t blockSize, std::size_t numBlocks) = 0;
 };
 
 }

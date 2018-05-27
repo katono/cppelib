@@ -42,6 +42,11 @@ public:
 	{
 		delete static_cast<TestFixedMemoryPool*>(p);
 	}
+
+	std::size_t getRequiredMemorySize(std::size_t blockSize, std::size_t numBlocks)
+	{
+		return blockSize * numBlocks;
+	}
 };
 
 TEST_GROUP(FixedMemoryPoolTest) {
@@ -77,6 +82,12 @@ TEST(FixedMemoryPoolTest, create_no_param_pool)
 TEST(FixedMemoryPoolTest, destroy_nullptr)
 {
 	FixedMemoryPool::destroy(0);
+}
+
+TEST(FixedMemoryPoolTest, getRequiredMemorySize)
+{
+	std::size_t size = FixedMemoryPool::getRequiredMemorySize(sizeof(int), 100);
+	CHECK(size >= sizeof(int) * 100);
 }
 
 TEST(FixedMemoryPoolTest, allocate)

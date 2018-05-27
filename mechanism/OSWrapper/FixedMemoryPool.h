@@ -16,6 +16,7 @@ protected:
 public:
 	static FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress = 0);
 	static void destroy(FixedMemoryPool* p);
+	static std::size_t getRequiredMemorySize(std::size_t blockSize, std::size_t numBlocks);
 
 	virtual void* allocate() = 0;
 	virtual void deallocate(void* p) = 0;

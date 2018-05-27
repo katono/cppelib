@@ -51,6 +51,12 @@ TEST(ItronFixedMemoryPoolTest, destroy_nullptr)
 	FixedMemoryPool::destroy(0);
 }
 
+TEST(ItronFixedMemoryPoolTest, getRequiredMemorySize)
+{
+	std::size_t size = FixedMemoryPool::getRequiredMemorySize(sizeof(int), 100);
+	CHECK(size >= sizeof(int) * 100);
+}
+
 TEST(ItronFixedMemoryPoolTest, allocate_deallocate)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);

@@ -97,4 +97,9 @@ void ItronFixedMemoryPoolFactory::destroy(OSWrapper::FixedMemoryPool* p)
 	x->deinit();
 }
 
+std::size_t ItronFixedMemoryPoolFactory::getRequiredMemorySize(std::size_t blockSize, std::size_t numBlocks)
+{
+	return TSZ_MPF(numBlocks, blockSize);
+}
+
 }

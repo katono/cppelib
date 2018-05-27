@@ -24,4 +24,10 @@ void FixedMemoryPool::destroy(FixedMemoryPool* p)
 	}
 }
 
+std::size_t FixedMemoryPool::getRequiredMemorySize(std::size_t blockSize, std::size_t numBlocks)
+{
+	CHECK_PRECOND(s_factory);
+	return s_factory->getRequiredMemorySize(blockSize, numBlocks);
+}
+
 }

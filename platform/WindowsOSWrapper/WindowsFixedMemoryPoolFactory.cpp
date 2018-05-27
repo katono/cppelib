@@ -54,4 +54,9 @@ void WindowsFixedMemoryPoolFactory::destroy(OSWrapper::FixedMemoryPool* p)
 	delete static_cast<WindowsFixedMemoryPool*>(p);
 }
 
+std::size_t WindowsFixedMemoryPoolFactory::getRequiredMemorySize(std::size_t blockSize, std::size_t numBlocks)
+{
+	return blockSize * numBlocks;
+}
+
 }
