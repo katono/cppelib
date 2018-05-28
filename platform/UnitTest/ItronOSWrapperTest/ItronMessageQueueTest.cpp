@@ -3,11 +3,11 @@
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/MessageQueue.h"
-#include "OSWrapper/VariableMemoryPool.h"
+#include "OSWrapper/FixedMemoryPool.h"
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
 #include "ItronOSWrapper/ItronEventFlagFactory.h"
-#include "ItronOSWrapper/ItronVariableMemoryPoolFactory.h"
+#include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
@@ -15,14 +15,14 @@ using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
 using OSWrapper::EventFlag;
-using OSWrapper::VariableMemoryPool;
+using OSWrapper::FixedMemoryPool;
 using OSWrapper::MessageQueue;
 using OSWrapper::Timeout;
 using OSWrapper::LockGuard;
 using ItronOSWrapper::ItronThreadFactory;
 using ItronOSWrapper::ItronMutexFactory;
 using ItronOSWrapper::ItronEventFlagFactory;
-using ItronOSWrapper::ItronVariableMemoryPoolFactory;
+using ItronOSWrapper::ItronFixedMemoryPoolFactory;
 
 static Mutex* s_mutex;
 
@@ -30,8 +30,7 @@ TEST_GROUP(ItronMessageQueueTest) {
 	ItronThreadFactory testThreadFactory;
 	ItronMutexFactory testMutexFactory;
 	ItronEventFlagFactory testEventFlagFactory;
-	ItronVariableMemoryPoolFactory testVariableMemoryPoolFactory;
-	VariableMemoryPool* pool;
+	ItronFixedMemoryPoolFactory testFixedMemoryPoolFactory;
 
 	static const std::size_t SIZE = 10;
 	typedef MessageQueue<int> IntMQ;
@@ -49,19 +48,13 @@ TEST_GROUP(ItronMessageQueueTest) {
 		OSWrapper::registerThreadFactory(&testThreadFactory);
 		OSWrapper::registerMutexFactory(&testMutexFactory);
 		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
-		OSWrapper::registerVariableMemoryPoolFactory(&testVariableMemoryPoolFactory);
-
-		const std::size_t dummy_size = 1000;
-		pool = VariableMemoryPool::create(dummy_size);
-		CHECK(pool);
-		OSWrapper::registerMessageQueueMemoryPool(pool);
+		OSWrapper::registerFixedMemoryPoolFactory(&testFixedMemoryPoolFactory);
 
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
-		VariableMemoryPool::destroy(pool);
 		mock().checkExpectations();
 		mock().clear();
 	}
@@ -99,13 +92,6 @@ TEST(ItronMessageQueueTest, create_destroy)
 TEST(ItronMessageQueueTest, destroy_nullptr)
 {
 	MessageQueue<int>::destroy(0);
-}
-
-TEST(ItronMessageQueueTest, create_failed)
-{
-	OSWrapper::registerMessageQueueMemoryPool(0);
-	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
-	CHECK_FALSE(mq);
 }
 
 TEST(ItronMessageQueueTest, getMaxSize)

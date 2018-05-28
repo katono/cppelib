@@ -94,7 +94,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\mechanism\OSWrapper\EventFlag.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\FixedMemoryPool.cpp" />
-    <ClCompile Include="..\..\..\mechanism\OSWrapper\MessageQueue.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Mutex.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Thread.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Timeout.cpp" />

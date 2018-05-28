@@ -7,29 +7,34 @@
 #include "OSWrapperError.h"
 #include "Mutex.h"
 #include "EventFlag.h"
-#include "VariableMemoryPool.h"
+#include "FixedMemoryPool.h"
 
 namespace OSWrapper {
-
-void registerMessageQueueMemoryPool(VariableMemoryPool* pool);
-VariableMemoryPool* getMessageQueueMemoryPool();
 
 template <typename T>
 class MessageQueue {
 public:
 	static MessageQueue* create(std::size_t maxSize)
 	{
-		VariableMemoryPool* pool = getMessageQueueMemoryPool();
+		const std::size_t alignedMQSize =
+			(sizeof(MessageQueue) + (sizeof(double) - 1)) & ~(sizeof(double) - 1);
+		const std::size_t rbBufSize = maxSize + 1U;
+		const std::size_t poolBufSize = alignedMQSize + (sizeof(T) * rbBufSize);
+
+		FixedMemoryPool* pool = FixedMemoryPool::create(poolBufSize,
+				FixedMemoryPool::getRequiredMemorySize(poolBufSize, 1U));
 		if (pool == 0) {
 			return 0;
 		}
-		void* p = pool->allocate(sizeof(MessageQueue));
+
+		void* p = pool->allocate();
 		if (p == 0) {
+			FixedMemoryPool::destroy(pool);
 			return 0;
 		}
 
-		MessageQueue* m = new(p) MessageQueue();
-		if (!m->init(maxSize + 1U)) {
+		MessageQueue* m = new(p) MessageQueue(pool);
+		if (!m->init(static_cast<unsigned char*>(p) + alignedMQSize, rbBufSize)) {
 			destroy(m);
 			return 0;
 		}
@@ -41,8 +46,10 @@ public:
 		if (m == 0) {
 			return;
 		}
+		FixedMemoryPool* pool = m->m_pool;
 		m->~MessageQueue();
-		getMessageQueueMemoryPool()->deallocate(m);
+		pool->deallocate(m);
+		FixedMemoryPool::destroy(pool);
 	}
 
 	Error send(const T& msg)
@@ -155,7 +162,6 @@ private:
 
 		~RingBuf()
 		{
-			getMessageQueueMemoryPool()->deallocate(m_buf);
 		}
 
 		void setBuffer(T* buf, std::size_t bufSize)
@@ -205,6 +211,7 @@ private:
 	};
 	RingBuf m_rb;
 
+	FixedMemoryPool* m_pool;
 	Mutex* m_mtxRB;
 	Mutex* m_mtxSend;
 	Mutex* m_mtxRecv;
@@ -213,8 +220,8 @@ private:
 	static const EventFlag::Pattern EV_NOT_EMPTY;
 	static const EventFlag::Pattern EV_NOT_FULL;
 
-	MessageQueue()
-	: m_rb(), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_event(0)
+	explicit MessageQueue(FixedMemoryPool* pool)
+	: m_rb(), m_pool(pool), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_event(0)
 	{
 	}
 
@@ -226,13 +233,9 @@ private:
 		Mutex::destroy(m_mtxRB);
 	}
 
-	bool init(std::size_t bufSize)
+	bool init(void* rbBuffer, std::size_t rbBufSize)
 	{
-		T* rb_buffer = static_cast<T*>(getMessageQueueMemoryPool()->allocate(sizeof(T) * bufSize));
-		if (rb_buffer == 0) {
-			return false;
-		}
-		m_rb.setBuffer(rb_buffer, bufSize);
+		m_rb.setBuffer(static_cast<T*>(rbBuffer), rbBufSize);
 
 		m_mtxRB = Mutex::create();
 		if (m_mtxRB == 0) {

@@ -3,11 +3,11 @@
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/MessageQueue.h"
-#include "OSWrapper/VariableMemoryPool.h"
+#include "OSWrapper/FixedMemoryPool.h"
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
-#include "WindowsOSWrapper/WindowsVariableMemoryPoolFactory.h"
+#include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
@@ -15,14 +15,14 @@ using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
 using OSWrapper::EventFlag;
-using OSWrapper::VariableMemoryPool;
+using OSWrapper::FixedMemoryPool;
 using OSWrapper::MessageQueue;
 using OSWrapper::Timeout;
 using OSWrapper::LockGuard;
 using WindowsOSWrapper::WindowsThreadFactory;
 using WindowsOSWrapper::WindowsMutexFactory;
 using WindowsOSWrapper::WindowsEventFlagFactory;
-using WindowsOSWrapper::WindowsVariableMemoryPoolFactory;
+using WindowsOSWrapper::WindowsFixedMemoryPoolFactory;
 
 static Mutex* s_mutex;
 
@@ -30,8 +30,7 @@ TEST_GROUP(WindowsMessageQueueTest) {
 	WindowsThreadFactory testThreadFactory;
 	WindowsMutexFactory testMutexFactory;
 	WindowsEventFlagFactory testEventFlagFactory;
-	WindowsVariableMemoryPoolFactory testVariableMemoryPoolFactory;
-	VariableMemoryPool* pool;
+	WindowsFixedMemoryPoolFactory testFixedMemoryPoolFactory;
 
 	static const std::size_t SIZE = 10;
 	typedef MessageQueue<int> IntMQ;
@@ -49,19 +48,13 @@ TEST_GROUP(WindowsMessageQueueTest) {
 		OSWrapper::registerThreadFactory(&testThreadFactory);
 		OSWrapper::registerMutexFactory(&testMutexFactory);
 		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
-		OSWrapper::registerVariableMemoryPoolFactory(&testVariableMemoryPoolFactory);
-
-		const std::size_t dummy_size = 1000;
-		pool = VariableMemoryPool::create(dummy_size);
-		CHECK(pool);
-		OSWrapper::registerMessageQueueMemoryPool(pool);
+		OSWrapper::registerFixedMemoryPoolFactory(&testFixedMemoryPoolFactory);
 
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
-		VariableMemoryPool::destroy(pool);
 		mock().checkExpectations();
 		mock().clear();
 	}
@@ -99,13 +92,6 @@ TEST(WindowsMessageQueueTest, create_destroy)
 TEST(WindowsMessageQueueTest, destroy_nullptr)
 {
 	MessageQueue<int>::destroy(0);
-}
-
-TEST(WindowsMessageQueueTest, create_failed)
-{
-	OSWrapper::registerMessageQueueMemoryPool(0);
-	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
-	CHECK_FALSE(mq);
 }
 
 TEST(WindowsMessageQueueTest, getMaxSize)
