@@ -17,7 +17,7 @@ private:
 	ID m_flgId;
 
 public:
-	ItronEventFlag(bool autoReset)
+	explicit ItronEventFlag(bool autoReset)
 	: m_flgId(0)
 	{
 		T_CFLG cflg = {0};
