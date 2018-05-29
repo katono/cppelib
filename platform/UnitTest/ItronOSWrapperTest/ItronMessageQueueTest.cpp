@@ -10,6 +10,7 @@
 #include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
+#include <exception>
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -334,7 +335,7 @@ TEST(ItronMessageQueueTest, send_receive_many_threads)
 struct Elem {
 	unsigned int data;
 	static const unsigned int EXCEPTION_DATA = 0;
-	class Exception {};
+	class Exception : public std::exception {};
 
 	Elem() : data(100) {}
 	Elem(const Elem& x) : data(x.data)

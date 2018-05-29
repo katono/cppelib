@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <new>
+#include <exception>
 #include "Timeout.h"
 #include "OSWrapperError.h"
 #include "Mutex.h"
@@ -82,7 +83,7 @@ public:
 		try {
 			push(msg);
 		}
-		catch (...) {
+		catch (const std::exception&) {
 			err = OtherError;
 		}
 		m_mtxSend->unlock();
@@ -118,7 +119,7 @@ public:
 		try {
 			pop(msg);
 		}
-		catch (...) {
+		catch (const std::exception&) {
 			err = OtherError;
 		}
 		m_mtxRecv->unlock();
