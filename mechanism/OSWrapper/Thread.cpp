@@ -81,7 +81,7 @@ void Thread::threadMain()
 
 Thread* Thread::create(Runnable* r, int priority/*= INHERIT_PRIORITY*/, std::size_t stackSize/*= 0U*/, void* stackAddress/*= 0*/, const char* name/*= ""*/)
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	if (r == 0) {
 		return 0;
 	}
@@ -102,37 +102,37 @@ void Thread::exit()
 
 void Thread::sleep(unsigned long millis)
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	s_factory->sleep(millis);
 }
 
 void Thread::yield()
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	s_factory->yield();
 }
 
 Thread* Thread::getCurrentThread()
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return s_factory->getCurrentThread();
 }
 
 int Thread::getMaxPriority()
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return s_factory->getMaxPriority();
 }
 
 int Thread::getMinPriority()
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return s_factory->getMinPriority();
 }
 
 int Thread::getNormalPriority()
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return (s_factory->getMinPriority() + s_factory->getMaxPriority()) / 2;
 }
 

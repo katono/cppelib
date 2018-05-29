@@ -13,13 +13,13 @@ void registerMutexFactory(MutexFactory* factory)
 
 Mutex* Mutex::create()
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return s_factory->create();
 }
 
 Mutex* Mutex::create(int priorityCeiling)
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return s_factory->create(priorityCeiling);
 }
 

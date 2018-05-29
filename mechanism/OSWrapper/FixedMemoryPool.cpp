@@ -13,7 +13,7 @@ void registerFixedMemoryPoolFactory(FixedMemoryPoolFactory* factory)
 
 FixedMemoryPool* FixedMemoryPool::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress/*= 0*/)
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return s_factory->create(blockSize, memoryPoolSize, memoryPoolAddress);
 }
 
@@ -26,7 +26,7 @@ void FixedMemoryPool::destroy(FixedMemoryPool* p)
 
 std::size_t FixedMemoryPool::getRequiredMemorySize(std::size_t blockSize, std::size_t numBlocks)
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return s_factory->getRequiredMemorySize(blockSize, numBlocks);
 }
 

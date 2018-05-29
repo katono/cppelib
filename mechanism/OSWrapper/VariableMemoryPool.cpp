@@ -13,7 +13,7 @@ void registerVariableMemoryPoolFactory(VariableMemoryPoolFactory* factory)
 
 VariableMemoryPool* VariableMemoryPool::create(std::size_t memoryPoolSize, void* memoryPoolAddress/*= 0*/)
 {
-	CHECK_PRECOND(s_factory);
+	CHECK_ASSERT(s_factory);
 	return s_factory->create(memoryPoolSize, memoryPoolAddress);
 }
 

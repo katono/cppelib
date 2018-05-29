@@ -4,19 +4,6 @@
 
 
 TEST_GROUP(AssertionTest) {
-	class Test {
-		std::string m_str;
-	public:
-		void foo(const char* str)
-		{
-			CHECK_PRECOND(str);
-			m_str = str;
-		}
-		void bar()
-		{
-			CHECK_POSTCOND(m_str.length() > 0);
-		}
-	};
 	void setup()
 	{
 	}
@@ -73,53 +60,4 @@ TEST(AssertionTest, debug_assert_false)
 	FAIL("failed");
 }
 #endif
-
-TEST(AssertionTest, precondition_OK)
-{
-	try {
-		Test t;
-		t.foo("foo");
-	}
-	catch (...) {
-		FAIL("failed");
-	}
-}
-
-TEST(AssertionTest, precondition_failed)
-{
-	try {
-		Test t;
-		t.foo(0);
-	}
-	catch (const Assertion::Error& e) {
-		STRCMP_CONTAINS("Pre-condition failed", e.message());
-		return;
-	}
-	FAIL("failed");
-}
-
-TEST(AssertionTest, postcondition_OK)
-{
-	try {
-		Test t;
-		t.foo("foo");
-		t.bar();
-	}
-	catch (...) {
-		FAIL("failed");
-	}
-}
-
-TEST(AssertionTest, postcondition_failed)
-{
-	try {
-		Test t;
-		t.bar();
-	}
-	catch (const Assertion::Error& e) {
-		STRCMP_CONTAINS("Post-condition failed", e.message());
-		return;
-	}
-	FAIL("failed");
-}
 

@@ -9,16 +9,6 @@
 		(void)0 :\
 		throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")")
 
-#define CHECK_PRECOND(x)\
-	(x) ? \
-		(void)0 :\
-		throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Pre-condition failed (" #x ")")
-
-#define CHECK_POSTCOND(x)\
-	(x) ? \
-		(void)0 :\
-		throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Post-condition failed (" #x ")")
-
 
 #ifdef NDEBUG
 #define DEBUG_ASSERT(x)
