@@ -72,6 +72,17 @@ private:
 		Exit() {}
 	};
 
+	class OtherException : public std::exception {
+	public:
+		explicit OtherException(const char* msg) : m_msg(msg) {}
+		const char* what() const throw()
+		{
+			return m_msg;
+		}
+	private:
+		const char* m_msg;
+	};
+
 };
 
 }
