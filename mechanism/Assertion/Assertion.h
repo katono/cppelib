@@ -5,9 +5,11 @@
 #define ASSERTION_ASSERT_TOSTRING(n) ASSERTION_ASSERT_STRINGIFY(n)
 
 #define CHECK_ASSERT(x)\
-	(x) ? \
-		(void)0 :\
-		throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")")
+	do {\
+		if (!(x)) {\
+			throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")");\
+		}\
+	} while (false)
 
 
 #ifdef NDEBUG
