@@ -33,8 +33,9 @@ public:
 			return 0;
 		}
 
-		MessageQueue* m = new(p) MessageQueue(pool);
-		if (!m->init(static_cast<unsigned char*>(p) + alignedMQSize, rbBufSize)) {
+		MessageQueue* m = new(p) MessageQueue(pool, 
+				reinterpret_cast<T*>(static_cast<unsigned char*>(p) + alignedMQSize), rbBufSize);
+		if (!m->createOSObjects()) {
 			destroy(m);
 			return 0;
 		}
@@ -158,17 +159,9 @@ private:
 		RingBuf(const RingBuf&);
 		RingBuf& operator=(const RingBuf&);
 	public:
-		RingBuf() : m_begin(0U), m_end(0U), m_bufSize(0U), m_buf(0) {}
+		RingBuf(T* buf, std::size_t bufSize) : m_begin(0U), m_end(0U), m_bufSize(bufSize), m_buf(buf) {}
 
-		~RingBuf()
-		{
-		}
-
-		void setBuffer(T* buf, std::size_t bufSize)
-		{
-			m_buf = buf;
-			m_bufSize = bufSize;
-		}
+		~RingBuf() {}
 
 		std::size_t getSize() const
 		{
@@ -220,8 +213,8 @@ private:
 	static const EventFlag::Pattern EV_NOT_EMPTY;
 	static const EventFlag::Pattern EV_NOT_FULL;
 
-	explicit MessageQueue(FixedMemoryPool* pool)
-	: m_rb(), m_pool(pool), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_event(0)
+	MessageQueue(FixedMemoryPool* pool, T* rbBuffer, std::size_t rbBufSize)
+	: m_rb(rbBuffer, rbBufSize), m_pool(pool), m_mtxRB(0), m_mtxSend(0), m_mtxRecv(0), m_event(0)
 	{
 	}
 
@@ -233,10 +226,8 @@ private:
 		Mutex::destroy(m_mtxRB);
 	}
 
-	bool init(void* rbBuffer, std::size_t rbBufSize)
+	bool createOSObjects()
 	{
-		m_rb.setBuffer(static_cast<T*>(rbBuffer), rbBufSize);
-
 		m_mtxRB = Mutex::create();
 		if (m_mtxRB == 0) {
 			return false;
