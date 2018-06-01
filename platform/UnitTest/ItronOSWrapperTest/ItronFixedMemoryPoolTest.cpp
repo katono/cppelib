@@ -7,7 +7,7 @@ using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;
 using ItronOSWrapper::ItronFixedMemoryPoolFactory;
 
-TEST_GROUP(ItronFixedMemoryPoolTest) {
+TEST_GROUP(PlatformFixedMemoryPoolTest) {
 	ItronFixedMemoryPoolFactory testFactory;
 	FixedMemoryPool* pool;
 	double poolBuf[100];
@@ -23,21 +23,21 @@ TEST_GROUP(ItronFixedMemoryPoolTest) {
 	}
 };
 
-TEST(ItronFixedMemoryPoolTest, create_destroy)
+TEST(PlatformFixedMemoryPoolTest, create_destroy)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	FixedMemoryPool::destroy(pool);
 }
 
-TEST(ItronFixedMemoryPoolTest, create_no_param_pool)
+TEST(PlatformFixedMemoryPoolTest, create_no_param_pool)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf);
 	CHECK(pool);
 	FixedMemoryPool::destroy(pool);
 }
 
-TEST(ItronFixedMemoryPoolTest, create_failed_parameter)
+TEST(PlatformFixedMemoryPoolTest, create_failed_parameter)
 {
 	pool = FixedMemoryPool::create(0, 100);
 	CHECK(!pool);
@@ -46,18 +46,18 @@ TEST(ItronFixedMemoryPoolTest, create_failed_parameter)
 	CHECK(!pool);
 }
 
-TEST(ItronFixedMemoryPoolTest, destroy_nullptr)
+TEST(PlatformFixedMemoryPoolTest, destroy_nullptr)
 {
 	FixedMemoryPool::destroy(0);
 }
 
-TEST(ItronFixedMemoryPoolTest, getRequiredMemorySize)
+TEST(PlatformFixedMemoryPoolTest, getRequiredMemorySize)
 {
 	std::size_t size = FixedMemoryPool::getRequiredMemorySize(sizeof(int), 100);
 	CHECK(size >= sizeof(int) * 100);
 }
 
-TEST(ItronFixedMemoryPoolTest, allocate_deallocate)
+TEST(PlatformFixedMemoryPoolTest, allocate_deallocate)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
@@ -70,7 +70,7 @@ TEST(ItronFixedMemoryPoolTest, allocate_deallocate)
 	FixedMemoryPool::destroy(pool);
 }
 
-TEST(ItronFixedMemoryPoolTest, allocate_failed)
+TEST(PlatformFixedMemoryPoolTest, allocate_failed)
 {
 	pool = FixedMemoryPool::create(16, 16);
 	CHECK(pool);
@@ -90,7 +90,7 @@ TEST(ItronFixedMemoryPoolTest, allocate_failed)
 	FixedMemoryPool::destroy(pool);
 }
 
-TEST(ItronFixedMemoryPoolTest, deallocate_nullptr)
+TEST(PlatformFixedMemoryPoolTest, deallocate_nullptr)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	void* p = 0;
@@ -100,7 +100,7 @@ TEST(ItronFixedMemoryPoolTest, deallocate_nullptr)
 	FixedMemoryPool::destroy(pool);
 }
 
-TEST(ItronFixedMemoryPoolTest, getBlockSize)
+TEST(PlatformFixedMemoryPoolTest, getBlockSize)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 

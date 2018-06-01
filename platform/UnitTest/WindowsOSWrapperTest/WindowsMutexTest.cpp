@@ -16,7 +16,7 @@ using WindowsOSWrapper::WindowsMutexFactory;
 
 static Mutex* s_mutex;
 
-TEST_GROUP(WindowsMutexTest) {
+TEST_GROUP(PlatformMutexTest) {
 	WindowsThreadFactory testThreadFactory;
 	WindowsMutexFactory testMutexFactory;
 
@@ -34,21 +34,21 @@ TEST_GROUP(WindowsMutexTest) {
 	}
 };
 
-TEST(WindowsMutexTest, create_destroy)
+TEST(PlatformMutexTest, create_destroy)
 {
 	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	Mutex::destroy(mutex);
 }
 
-TEST(WindowsMutexTest, create_destroy_priorityCeiling)
+TEST(PlatformMutexTest, create_destroy_priorityCeiling)
 {
 	Mutex* mutex = Mutex::create(10);
 	CHECK(mutex);
 	Mutex::destroy(mutex);
 }
 
-TEST(WindowsMutexTest, lock_unlock)
+TEST(PlatformMutexTest, lock_unlock)
 {
 	Mutex* mutex = Mutex::create();
 
@@ -98,7 +98,7 @@ protected:
 int FibonacciTestRunnable::data;
 int FibonacciTestRunnable::count;
 
-TEST(WindowsMutexTest, shared_data_lock)
+TEST(PlatformMutexTest, shared_data_lock)
 {
 	FibonacciTestRunnable::init();
 	const int num = 10;
@@ -133,7 +133,7 @@ public:
 	}
 };
 
-TEST(WindowsMutexTest, shared_data_lock_LockGuard)
+TEST(PlatformMutexTest, shared_data_lock_LockGuard)
 {
 	FibonacciTestRunnable::init();
 	const int num = 10;
@@ -168,7 +168,7 @@ public:
 	}
 };
 
-TEST(WindowsMutexTest, tryLock)
+TEST(PlatformMutexTest, tryLock)
 {
 	OSWrapper::Error err = s_mutex->tryLock();
 	LONGS_EQUAL(OSWrapper::OK, err);
@@ -193,7 +193,7 @@ public:
 	}
 };
 
-TEST(WindowsMutexTest, timedLock)
+TEST(PlatformMutexTest, timedLock)
 {
 	OSWrapper::Error err = s_mutex->timedLock(Timeout(100));
 	LONGS_EQUAL(OSWrapper::OK, err);
@@ -207,7 +207,7 @@ TEST(WindowsMutexTest, timedLock)
 	s_mutex->unlock();
 }
 
-TEST(WindowsMutexTest, timedLock_FOREVER)
+TEST(PlatformMutexTest, timedLock_FOREVER)
 {
 	OSWrapper::Error err = s_mutex->timedLock(Timeout::FOREVER);
 	LONGS_EQUAL(OSWrapper::OK, err);
@@ -221,13 +221,13 @@ TEST(WindowsMutexTest, timedLock_FOREVER)
 	s_mutex->unlock();
 }
 
-TEST(WindowsMutexTest, unlock_not_locked)
+TEST(PlatformMutexTest, unlock_not_locked)
 {
 	OSWrapper::Error err = s_mutex->unlock();
 	LONGS_EQUAL(OSWrapper::NotLocked, err);
 }
 
-TEST(WindowsMutexTest, LockGuard_recursive)
+TEST(PlatformMutexTest, LockGuard_recursive)
 {
 	{
 		LockGuard lock(s_mutex);

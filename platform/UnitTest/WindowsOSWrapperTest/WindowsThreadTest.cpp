@@ -14,7 +14,7 @@ using WindowsOSWrapper::WindowsThreadFactory;
 
 static std::mutex s_mutex;
 
-TEST_GROUP(WindowsThreadTest) {
+TEST_GROUP(PlatformThreadTest) {
 	WindowsThreadFactory testFactory;
 	Thread* thread;
 
@@ -51,18 +51,18 @@ public:
 };
 
 
-TEST(WindowsThreadTest, create_destroy)
+TEST(PlatformThreadTest, create_destroy)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "WindowsThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK(thread);
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, start_wait_isFinished)
+TEST(PlatformThreadTest, start_wait_isFinished)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "WindowsThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	runnable.setThread(thread);
 	thread->start();
 
@@ -74,9 +74,9 @@ TEST(WindowsThreadTest, start_wait_isFinished)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, create_failed_runnable_nullptr)
+TEST(PlatformThreadTest, create_failed_runnable_nullptr)
 {
-	thread = Thread::create(0, Thread::getNormalPriority(), 4096, 0, "WindowsThread");
+	thread = Thread::create(0, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK_FALSE(thread);
 }
 
@@ -93,7 +93,7 @@ public:
 	}
 };
 
-TEST(WindowsThreadTest, many_threads)
+TEST(PlatformThreadTest, many_threads)
 {
 	const int num = 100;
 	MockRunnable runnable[num];
@@ -117,7 +117,7 @@ TEST(WindowsThreadTest, many_threads)
 	}
 }
 
-TEST(WindowsThreadTest, repeat_start)
+TEST(PlatformThreadTest, repeat_start)
 {
 	MockRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -134,7 +134,7 @@ TEST(WindowsThreadTest, repeat_start)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, name)
+TEST(PlatformThreadTest, name)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
@@ -145,7 +145,7 @@ TEST(WindowsThreadTest, name)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, priority)
+TEST(PlatformThreadTest, priority)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
@@ -168,7 +168,7 @@ public:
 	}
 };
 
-TEST(WindowsThreadTest, getNativeHandle)
+TEST(PlatformThreadTest, getNativeHandle)
 {
 	NativeHandleTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -178,7 +178,7 @@ TEST(WindowsThreadTest, getNativeHandle)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, stackSize)
+TEST(PlatformThreadTest, stackSize)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
@@ -222,7 +222,7 @@ public:
 	}
 };
 
-TEST(WindowsThreadTest, exception_std)
+TEST(PlatformThreadTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -235,7 +235,7 @@ TEST(WindowsThreadTest, exception_std)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, exception_assert)
+TEST(PlatformThreadTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -248,7 +248,7 @@ TEST(WindowsThreadTest, exception_assert)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, exception_unknown)
+TEST(PlatformThreadTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -261,7 +261,7 @@ TEST(WindowsThreadTest, exception_unknown)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, setPriorityRange_highest_priority_is_max_value)
+TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 {
 	testFactory.setPriorityRange(1, 9);
 	LONGS_EQUAL(1, Thread::getMinPriority());
@@ -322,7 +322,7 @@ TEST(WindowsThreadTest, setPriorityRange_highest_priority_is_max_value)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, setPriorityRange_highest_priority_is_min_value)
+TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 {
 	testFactory.setPriorityRange(9, 1);
 	LONGS_EQUAL(1, Thread::getMinPriority());
@@ -383,7 +383,7 @@ TEST(WindowsThreadTest, setPriorityRange_highest_priority_is_min_value)
 	Thread::destroy(thread);
 }
 
-TEST(WindowsThreadTest, setPriority_inherit)
+TEST(PlatformThreadTest, setPriority_inherit)
 {
 	class Child : public Runnable {
 	public:

@@ -27,7 +27,7 @@ using ItronOSWrapper::ItronFixedMemoryPoolFactory;
 
 static Mutex* s_mutex;
 
-TEST_GROUP(ItronMessageQueueTest) {
+TEST_GROUP(PlatformMessageQueueTest) {
 	ItronThreadFactory testThreadFactory;
 	ItronMutexFactory testMutexFactory;
 	ItronEventFlagFactory testEventFlagFactory;
@@ -83,33 +83,33 @@ TEST_GROUP(ItronMessageQueueTest) {
 	}
 };
 
-TEST(ItronMessageQueueTest, create_destroy)
+TEST(PlatformMessageQueueTest, create_destroy)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
 	CHECK(mq);
 	MessageQueue<int>::destroy(mq);
 }
 
-TEST(ItronMessageQueueTest, destroy_nullptr)
+TEST(PlatformMessageQueueTest, destroy_nullptr)
 {
 	MessageQueue<int>::destroy(0);
 }
 
-TEST(ItronMessageQueueTest, getMaxSize)
+TEST(PlatformMessageQueueTest, getMaxSize)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
 	LONGS_EQUAL(SIZE, mq->getMaxSize());
 	MessageQueue<int>::destroy(mq);
 }
 
-TEST(ItronMessageQueueTest, getSize_0)
+TEST(PlatformMessageQueueTest, getSize_0)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
 	LONGS_EQUAL(0, mq->getSize());
 	MessageQueue<int>::destroy(mq);
 }
 
-TEST(ItronMessageQueueTest, tryReceive_TimedOut)
+TEST(PlatformMessageQueueTest, tryReceive_TimedOut)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
 	int data = 0;
@@ -118,7 +118,7 @@ TEST(ItronMessageQueueTest, tryReceive_TimedOut)
 	MessageQueue<int>::destroy(mq);
 }
 
-TEST(ItronMessageQueueTest, timedReceive_Timeout10)
+TEST(PlatformMessageQueueTest, timedReceive_Timeout10)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
 	int data = 0;
@@ -127,7 +127,7 @@ TEST(ItronMessageQueueTest, timedReceive_Timeout10)
 	MessageQueue<int>::destroy(mq);
 }
 
-TEST(ItronMessageQueueTest, send_receive)
+TEST(PlatformMessageQueueTest, send_receive)
 {
 	class Sender : public BaseRunnable {
 	public:
@@ -156,7 +156,7 @@ TEST(ItronMessageQueueTest, send_receive)
 	testTwoThreadsSharingOneMQ<Sender, Receiver, IntMQ>();
 }
 
-TEST(ItronMessageQueueTest, send_receive_nullptr)
+TEST(PlatformMessageQueueTest, send_receive_nullptr)
 {
 	class Sender : public BaseRunnable {
 	public:
@@ -183,7 +183,7 @@ TEST(ItronMessageQueueTest, send_receive_nullptr)
 	testTwoThreadsSharingOneMQ<Sender, Receiver, IntMQ>();
 }
 
-TEST(ItronMessageQueueTest, trySend_TimedOut_receive)
+TEST(PlatformMessageQueueTest, trySend_TimedOut_receive)
 {
 	class Sender : public BaseRunnable {
 	public:
@@ -231,7 +231,7 @@ TEST(ItronMessageQueueTest, trySend_TimedOut_receive)
 	testTwoThreadsSharingOneMQ<Sender, Receiver, IntMQ>();
 }
 
-TEST(ItronMessageQueueTest, send_receive_many_msgs)
+TEST(PlatformMessageQueueTest, send_receive_many_msgs)
 {
 	static const int num = SIZE + 1000;
 	class Sender : public BaseRunnable {
@@ -264,7 +264,7 @@ TEST(ItronMessageQueueTest, send_receive_many_msgs)
 	testTwoThreadsSharingOneMQ<Sender, Receiver, IntMQ>();
 }
 
-TEST(ItronMessageQueueTest, send_receive_many_threads)
+TEST(PlatformMessageQueueTest, send_receive_many_threads)
 {
 	static int send_count = 0;
 	static int recv_count = 0;
@@ -353,7 +353,7 @@ struct Elem {
 	}
 };
 
-TEST(ItronMessageQueueTest, send_receive_exception)
+TEST(PlatformMessageQueueTest, send_receive_exception)
 {
 	MessageQueue<Elem>* mq = MessageQueue<Elem>::create(SIZE);
 	CHECK(mq);

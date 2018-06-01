@@ -7,7 +7,7 @@ using OSWrapper::VariableMemoryPool;
 using OSWrapper::VariableMemoryPoolFactory;
 using ItronOSWrapper::ItronVariableMemoryPoolFactory;
 
-TEST_GROUP(ItronVariableMemoryPoolTest) {
+TEST_GROUP(PlatformVariableMemoryPoolTest) {
 	ItronVariableMemoryPoolFactory testFactory;
 	VariableMemoryPool* pool;
 	double poolBuf[100];
@@ -23,26 +23,26 @@ TEST_GROUP(ItronVariableMemoryPoolTest) {
 	}
 };
 
-TEST(ItronVariableMemoryPoolTest, create_destroy)
+TEST(PlatformVariableMemoryPoolTest, create_destroy)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	VariableMemoryPool::destroy(pool);
 }
 
-TEST(ItronVariableMemoryPoolTest, create_no_param_pool)
+TEST(PlatformVariableMemoryPoolTest, create_no_param_pool)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf);
 	CHECK(pool);
 	VariableMemoryPool::destroy(pool);
 }
 
-TEST(ItronVariableMemoryPoolTest, destroy_nullptr)
+TEST(PlatformVariableMemoryPoolTest, destroy_nullptr)
 {
 	VariableMemoryPool::destroy(0);
 }
 
-TEST(ItronVariableMemoryPoolTest, allocate)
+TEST(PlatformVariableMemoryPoolTest, allocate)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	std::size_t size = 10;
@@ -55,7 +55,7 @@ TEST(ItronVariableMemoryPoolTest, allocate)
 	VariableMemoryPool::destroy(pool);
 }
 
-TEST(ItronVariableMemoryPoolTest, allocate_failed)
+TEST(PlatformVariableMemoryPoolTest, allocate_failed)
 {
 	pool = VariableMemoryPool::create(18);
 	std::size_t size = 10;
@@ -75,7 +75,7 @@ TEST(ItronVariableMemoryPoolTest, allocate_failed)
 	VariableMemoryPool::destroy(pool);
 }
 
-TEST(ItronVariableMemoryPoolTest, deallocate_nullptr)
+TEST(PlatformVariableMemoryPoolTest, deallocate_nullptr)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	void* p = 0;

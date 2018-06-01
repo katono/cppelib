@@ -20,7 +20,7 @@ using ItronOSWrapper::ItronEventFlagFactory;
 
 static Mutex* s_mutex;
 
-TEST_GROUP(ItronEventFlagTest) {
+TEST_GROUP(PlatformEventFlagTest) {
 	ItronThreadFactory testThreadFactory;
 	ItronMutexFactory testMutexFactory;
 	ItronEventFlagFactory testEventFlagFactory;
@@ -72,14 +72,14 @@ TEST_GROUP(ItronEventFlagTest) {
 
 };
 
-TEST(ItronEventFlagTest, create_destroy)
+TEST(PlatformEventFlagTest, create_destroy)
 {
 	EventFlag* ef = EventFlag::create(true);
 	CHECK(ef);
 	EventFlag::destroy(ef);
 }
 
-TEST(ItronEventFlagTest, waitAny_setAll_autoReset)
+TEST(PlatformEventFlagTest, waitAny_setAll_autoReset)
 {
 	class WaitAnyAutoReset : public BaseRunnable {
 	public:
@@ -106,7 +106,7 @@ TEST(ItronEventFlagTest, waitAny_setAll_autoReset)
 	testTwoThreadsSharingOneEventFlag<WaitAnyAutoReset, SetAll>(true);
 }
 
-TEST(ItronEventFlagTest, tryWaitAny_setAll_autoReset)
+TEST(PlatformEventFlagTest, tryWaitAny_setAll_autoReset)
 {
 	class WaitAnyAutoReset : public BaseRunnable {
 	public:
@@ -133,7 +133,7 @@ TEST(ItronEventFlagTest, tryWaitAny_setAll_autoReset)
 	testTwoThreadsSharingOneEventFlag<WaitAnyAutoReset, SetAll>(true);
 }
 
-TEST(ItronEventFlagTest, waitAny_setAll_resetAll)
+TEST(PlatformEventFlagTest, waitAny_setAll_resetAll)
 {
 	class WaitAnyManualReset : public BaseRunnable {
 	public:
@@ -163,7 +163,7 @@ TEST(ItronEventFlagTest, waitAny_setAll_resetAll)
 	testTwoThreadsSharingOneEventFlag<WaitAnyManualReset, SetAll>(false);
 }
 
-TEST(ItronEventFlagTest, waitOne_setOne_resetOne)
+TEST(PlatformEventFlagTest, waitOne_setOne_resetOne)
 {
 	class WaitOne : public BaseRunnable {
 	public:
@@ -195,7 +195,7 @@ TEST(ItronEventFlagTest, waitOne_setOne_resetOne)
 	testTwoThreadsSharingOneEventFlag<WaitOne, SetOne>(false);
 }
 
-TEST(ItronEventFlagTest, tryWaitOne_setOne_resetOne)
+TEST(PlatformEventFlagTest, tryWaitOne_setOne_resetOne)
 {
 	class WaitOne : public BaseRunnable {
 	public:
@@ -227,7 +227,7 @@ TEST(ItronEventFlagTest, tryWaitOne_setOne_resetOne)
 	testTwoThreadsSharingOneEventFlag<WaitOne, SetOne>(false);
 }
 
-TEST(ItronEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
+TEST(PlatformEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
 {
 	class WaitOne : public BaseRunnable {
 	public:
@@ -256,7 +256,7 @@ TEST(ItronEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
 	testTwoThreadsSharingOneEventFlag<WaitOne, SetOne>(false);
 }
 
-TEST(ItronEventFlagTest, wait_set_reset_AND)
+TEST(PlatformEventFlagTest, wait_set_reset_AND)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -301,7 +301,7 @@ TEST(ItronEventFlagTest, wait_set_reset_AND)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(false);
 }
 
-TEST(ItronEventFlagTest, timedWait_set_reset_AND_Timeout100)
+TEST(PlatformEventFlagTest, timedWait_set_reset_AND_Timeout100)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -336,7 +336,7 @@ TEST(ItronEventFlagTest, timedWait_set_reset_AND_Timeout100)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
-TEST(ItronEventFlagTest, tryWait_set_reset_AND_TimedOut)
+TEST(PlatformEventFlagTest, tryWait_set_reset_AND_TimedOut)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -379,7 +379,7 @@ TEST(ItronEventFlagTest, tryWait_set_reset_AND_TimedOut)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
-TEST(ItronEventFlagTest, wait_set_reset_OR)
+TEST(PlatformEventFlagTest, wait_set_reset_OR)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -413,7 +413,7 @@ TEST(ItronEventFlagTest, wait_set_reset_OR)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(false);
 }
 
-TEST(ItronEventFlagTest, timedWait_set_reset_OR_Timeout100)
+TEST(PlatformEventFlagTest, timedWait_set_reset_OR_Timeout100)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -443,7 +443,7 @@ TEST(ItronEventFlagTest, timedWait_set_reset_OR_Timeout100)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
-TEST(ItronEventFlagTest, tryWait_set_reset_OR_TimedOut)
+TEST(PlatformEventFlagTest, tryWait_set_reset_OR_TimedOut)
 {
 	class WaitPattern : public BaseRunnable {
 	public:
@@ -481,7 +481,7 @@ TEST(ItronEventFlagTest, tryWait_set_reset_OR_TimedOut)
 	testTwoThreadsSharingOneEventFlag<WaitPattern, SetPattern>(true);
 }
 
-TEST(ItronEventFlagTest, wait_TwoThreadsWaiting)
+TEST(PlatformEventFlagTest, wait_TwoThreadsWaiting)
 {
 	class Set2 : public BaseRunnable {
 	public:
@@ -541,7 +541,7 @@ TEST(ItronEventFlagTest, wait_TwoThreadsWaiting)
 	testTwoThreadsSharingOneEventFlag<Wait1, Wait2>(false);
 }
 
-TEST(ItronEventFlagTest, waitPattern_InvalidParameter)
+TEST(PlatformEventFlagTest, waitPattern_InvalidParameter)
 {
 	class WaitFailedInvalidMode : public BaseRunnable {
 	public:

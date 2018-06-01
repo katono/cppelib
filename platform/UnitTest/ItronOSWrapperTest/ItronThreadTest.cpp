@@ -17,7 +17,7 @@ using ItronOSWrapper::ItronMutexFactory;
 
 static Mutex* s_mutex;
 
-TEST_GROUP(ItronThreadTest) {
+TEST_GROUP(PlatformThreadTest) {
 	ItronThreadFactory testThreadFactory;
 	ItronMutexFactory testMutexFactory;
 
@@ -60,18 +60,18 @@ public:
 };
 
 
-TEST(ItronThreadTest, create_destroy)
+TEST(PlatformThreadTest, create_destroy)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "ItronThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK(thread);
 	Thread::destroy(thread);
 }
 
-TEST(ItronThreadTest, start_wait_isFinished)
+TEST(PlatformThreadTest, start_wait_isFinished)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "ItronThread");
+	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	runnable.setThread(thread);
 	thread->start();
 
@@ -83,9 +83,9 @@ TEST(ItronThreadTest, start_wait_isFinished)
 	Thread::destroy(thread);
 }
 
-TEST(ItronThreadTest, create_failed_runnable_nullptr)
+TEST(PlatformThreadTest, create_failed_runnable_nullptr)
 {
-	thread = Thread::create(0, Thread::getNormalPriority(), 4096, 0, "ItronThread");
+	thread = Thread::create(0, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK_FALSE(thread);
 }
 
@@ -102,7 +102,7 @@ public:
 	}
 };
 
-TEST(ItronThreadTest, many_threads)
+TEST(PlatformThreadTest, many_threads)
 {
 	const int num = 5;
 	MockRunnable runnable[num];
@@ -126,7 +126,7 @@ TEST(ItronThreadTest, many_threads)
 	}
 }
 
-TEST(ItronThreadTest, repeat_start)
+TEST(PlatformThreadTest, repeat_start)
 {
 	MockRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -144,7 +144,7 @@ TEST(ItronThreadTest, repeat_start)
 	Thread::destroy(thread);
 }
 
-TEST(ItronThreadTest, name)
+TEST(PlatformThreadTest, name)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
@@ -155,7 +155,7 @@ TEST(ItronThreadTest, name)
 	Thread::destroy(thread);
 }
 
-TEST(ItronThreadTest, priority)
+TEST(PlatformThreadTest, priority)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
@@ -186,7 +186,7 @@ public:
 	}
 };
 
-TEST(ItronThreadTest, getNativeHandle)
+TEST(PlatformThreadTest, getNativeHandle)
 {
 	NativeHandleTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -196,7 +196,7 @@ TEST(ItronThreadTest, getNativeHandle)
 	Thread::destroy(thread);
 }
 
-TEST(ItronThreadTest, stackSize)
+TEST(PlatformThreadTest, stackSize)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
@@ -240,7 +240,7 @@ public:
 	}
 };
 
-TEST(ItronThreadTest, exception_std)
+TEST(PlatformThreadTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -253,7 +253,7 @@ TEST(ItronThreadTest, exception_std)
 	Thread::destroy(thread);
 }
 
-TEST(ItronThreadTest, exception_assert)
+TEST(PlatformThreadTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -266,7 +266,7 @@ TEST(ItronThreadTest, exception_assert)
 	Thread::destroy(thread);
 }
 
-TEST(ItronThreadTest, exception_unknown)
+TEST(PlatformThreadTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
@@ -279,7 +279,7 @@ TEST(ItronThreadTest, exception_unknown)
 	Thread::destroy(thread);
 }
 
-TEST(ItronThreadTest, setPriority_inherit)
+TEST(PlatformThreadTest, setPriority_inherit)
 {
 	class Child : public Runnable {
 	public:
