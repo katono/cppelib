@@ -27,8 +27,10 @@ WindowsVariableMemoryPoolFactory::WindowsVariableMemoryPoolFactory()
 
 OSWrapper::VariableMemoryPool* WindowsVariableMemoryPoolFactory::create(std::size_t memoryPoolSize, void* memoryPoolAddress)
 {
-	(void) memoryPoolSize;
 	(void) memoryPoolAddress;
+	if (memoryPoolSize == 0U) {
+		return nullptr;
+	}
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
 		WindowsVariableMemoryPool* p = new WindowsVariableMemoryPool();

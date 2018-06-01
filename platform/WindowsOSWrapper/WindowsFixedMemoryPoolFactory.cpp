@@ -36,8 +36,10 @@ WindowsFixedMemoryPoolFactory::WindowsFixedMemoryPoolFactory()
 
 OSWrapper::FixedMemoryPool* WindowsFixedMemoryPoolFactory::create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress)
 {
-	(void) memoryPoolSize;
 	(void) memoryPoolAddress;
+	if ((blockSize == 0U) || (memoryPoolSize == 0U)) {
+		return nullptr;
+	}
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
 		WindowsFixedMemoryPool* p = new WindowsFixedMemoryPool(blockSize);
