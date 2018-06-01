@@ -2,29 +2,41 @@
 #include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
-#include "WindowsOSWrapper/WindowsThreadFactory.h"
+#include "OSWrapper/Mutex.h"
 #include "Assertion/Assertion.h"
-#include <mutex>
 #include <stdexcept>
+
 #include <windows.h>
+#include "WindowsOSWrapper/WindowsThreadFactory.h"
+#include "WindowsOSWrapper/WindowsMutexFactory.h"
+using WindowsOSWrapper::WindowsThreadFactory;
+using WindowsOSWrapper::WindowsMutexFactory;
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
-using WindowsOSWrapper::WindowsThreadFactory;
+using OSWrapper::Mutex;
+using OSWrapper::LockGuard;
 
-static std::mutex s_mutex;
+static Mutex* s_mutex;
 
 TEST_GROUP(PlatformThreadTest) {
-	WindowsThreadFactory testFactory;
+	WindowsThreadFactory testThreadFactory;
+	WindowsMutexFactory testMutexFactory;
+
 	Thread* thread;
 
 	void setup()
 	{
-		testFactory.setPriorityRange(1, 9);
-		OSWrapper::registerThreadFactory(&testFactory);
+		testThreadFactory.setPriorityRange(1, 9);
+		OSWrapper::registerMutexFactory(&testMutexFactory);
+		OSWrapper::registerThreadFactory(&testThreadFactory);
+
+		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
+		Mutex::destroy(s_mutex);
+
 		mock().checkExpectations();
 		mock().clear();
 	}
@@ -40,7 +52,7 @@ public:
 	}
 	void run()
 	{
-		std::lock_guard<std::mutex> lock(s_mutex);
+		LockGuard lock(s_mutex);
 		Thread* t = Thread::getCurrentThread();
 		POINTERS_EQUAL(m_thread, t);
 		Thread::yield();
@@ -85,7 +97,7 @@ public:
 	void run()
 	{
 		{
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			mock().actualCall("run");
 		}
 		Thread::yield();
@@ -126,6 +138,7 @@ TEST(PlatformThreadTest, repeat_start)
 	thread->start();
 	thread->start();
 	thread->wait();
+	Thread::sleep(10);
 
 	thread->start();
 	thread->start();
@@ -149,9 +162,13 @@ TEST(PlatformThreadTest, priority)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
-
 	LONGS_EQUAL(1, thread->getPriority());
-	const int prio = (Thread::getMaxPriority() + Thread::getMinPriority()) / 2;
+	thread->setPriority(2);
+	LONGS_EQUAL(2, thread->getPriority());
+
+	runnable.setThread(thread);
+	thread->start();
+	const int prio = Thread::getNormalPriority();
 	thread->setPriority(prio);
 	LONGS_EQUAL(prio, thread->getPriority());
 	LONGS_EQUAL(1, thread->getInitialPriority());
@@ -162,7 +179,7 @@ class NativeHandleTestRunnable : public Runnable {
 public:
 	void run()
 	{
-		std::lock_guard<std::mutex> lock(s_mutex);
+		LockGuard lock(s_mutex);
 		Thread* t = Thread::getCurrentThread();
 		LONGS_EQUAL(GetCurrentThreadId(), GetThreadId((HANDLE)t->getNativeHandle()));
 	}
@@ -197,7 +214,7 @@ public:
 	ThrowExceptionRunnable(Kind kind) : m_kind(kind) {}
 	void run()
 	{
-		std::lock_guard<std::mutex> lock(s_mutex);
+		LockGuard lock(s_mutex);
 		switch (m_kind) {
 		case Std:
 			throw std::runtime_error("Exception Test");
@@ -263,7 +280,7 @@ TEST(PlatformThreadTest, exception_unknown)
 
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 {
-	testFactory.setPriorityRange(1, 9);
+	testThreadFactory.setPriorityRange(1, 9);
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(5, Thread::getNormalPriority());
@@ -272,7 +289,7 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 	public:
 		void run()
 		{
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			Thread* t = Thread::getCurrentThread();
 			int winPriority;
 
@@ -324,7 +341,7 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 {
-	testFactory.setPriorityRange(9, 1);
+	testThreadFactory.setPriorityRange(9, 1);
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(5, Thread::getNormalPriority());
@@ -333,7 +350,7 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 	public:
 		void run()
 		{
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			Thread* t = Thread::getCurrentThread();
 			int winPriority;
 
@@ -389,7 +406,7 @@ TEST(PlatformThreadTest, setPriority_inherit)
 	public:
 		void run()
 		{
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			Thread* t = Thread::getCurrentThread();
 			LONGS_EQUAL(Thread::getNormalPriority() + 1, t->getPriority());
 		}
@@ -401,7 +418,7 @@ TEST(PlatformThreadTest, setPriority_inherit)
 			Child runnable;
 			Thread* t = Thread::create(&runnable, Thread::INHERIT_PRIORITY);
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				CHECK(t);
 			}
 			t->start();

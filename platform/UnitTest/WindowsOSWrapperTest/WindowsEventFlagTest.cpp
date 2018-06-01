@@ -2,31 +2,42 @@
 #include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
+#include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
+
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
+#include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
-#include <mutex>
+using WindowsOSWrapper::WindowsThreadFactory;
+using WindowsOSWrapper::WindowsMutexFactory;
+using WindowsOSWrapper::WindowsEventFlagFactory;
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
+using OSWrapper::Mutex;
 using OSWrapper::EventFlag;
 using OSWrapper::Timeout;
-using WindowsOSWrapper::WindowsThreadFactory;
-using WindowsOSWrapper::WindowsEventFlagFactory;
+using OSWrapper::LockGuard;
 
-static std::mutex s_mutex;
+static Mutex* s_mutex;
 
 TEST_GROUP(PlatformEventFlagTest) {
 	WindowsThreadFactory testThreadFactory;
+	WindowsMutexFactory testMutexFactory;
 	WindowsEventFlagFactory testEventFlagFactory;
 
 	void setup()
 	{
 		OSWrapper::registerThreadFactory(&testThreadFactory);
+		OSWrapper::registerMutexFactory(&testMutexFactory);
 		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
+
+		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
+		Mutex::destroy(s_mutex);
+
 		mock().checkExpectations();
 		mock().clear();
 	}
@@ -77,7 +88,7 @@ TEST(PlatformEventFlagTest, waitAny_setAll_autoReset)
 		virtual void run()
 		{
 			OSWrapper::Error err = m_ef->waitAny();
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
@@ -89,7 +100,7 @@ TEST(PlatformEventFlagTest, waitAny_setAll_autoReset)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->setAll();
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -105,7 +116,7 @@ TEST(PlatformEventFlagTest, tryWaitAny_setAll_autoReset)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->tryWaitAny();
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0, m_ef->getCurrentPattern());
 		}
@@ -116,7 +127,7 @@ TEST(PlatformEventFlagTest, tryWaitAny_setAll_autoReset)
 		virtual void run()
 		{
 			OSWrapper::Error err = m_ef->setAll();
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -131,7 +142,7 @@ TEST(PlatformEventFlagTest, waitAny_setAll_resetAll)
 		virtual void run()
 		{
 			OSWrapper::Error err = m_ef->waitAny();
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(EventFlag::Pattern().set(), m_ef->getCurrentPattern());
 			err = m_ef->resetAll();
@@ -146,7 +157,7 @@ TEST(PlatformEventFlagTest, waitAny_setAll_resetAll)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->setAll();
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -161,7 +172,7 @@ TEST(PlatformEventFlagTest, waitOne_setOne_resetOne)
 		virtual void run()
 		{
 			OSWrapper::Error err = m_ef->waitOne(2);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(1 << 2, m_ef->getCurrentPattern());
 
@@ -178,7 +189,7 @@ TEST(PlatformEventFlagTest, waitOne_setOne_resetOne)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->setOne(2);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -194,7 +205,7 @@ TEST(PlatformEventFlagTest, tryWaitOne_setOne_resetOne)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->tryWaitOne(2);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(1 << 2, m_ef->getCurrentPattern());
 
@@ -210,7 +221,7 @@ TEST(PlatformEventFlagTest, tryWaitOne_setOne_resetOne)
 		virtual void run()
 		{
 			OSWrapper::Error err = m_ef->setOne(2);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -225,7 +236,7 @@ TEST(PlatformEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
 		virtual void run()
 		{
 			OSWrapper::Error err = m_ef->waitOne(EventFlag::Pattern().size());
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 
 			err = m_ef->resetOne(EventFlag::Pattern().size());
@@ -239,7 +250,7 @@ TEST(PlatformEventFlagTest, waitOne_setOne_resetOne_InvalidParameter)
 		virtual void run()
 		{
 			OSWrapper::Error err = m_ef->setOne(EventFlag::Pattern().size());
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 		}
 	};
@@ -255,7 +266,7 @@ TEST(PlatformEventFlagTest, wait_set_reset_AND)
 		{
 			EventFlag::Pattern ptn;
 			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x0F, ptn);
 			LONGS_EQUAL(0x0F, m_ef->getCurrentPattern());
@@ -280,7 +291,7 @@ TEST(PlatformEventFlagTest, wait_set_reset_AND)
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			Thread::sleep(10);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
@@ -300,7 +311,7 @@ TEST(PlatformEventFlagTest, timedWait_set_reset_AND_Timeout100)
 		{
 			EventFlag::Pattern ptn;
 			OSWrapper::Error err = m_ef->timedWait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn, Timeout(100));
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x0F, ptn);
 			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
@@ -315,7 +326,7 @@ TEST(PlatformEventFlagTest, timedWait_set_reset_AND_Timeout100)
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			Thread::sleep(10);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
@@ -336,13 +347,13 @@ TEST(PlatformEventFlagTest, tryWait_set_reset_AND_TimedOut)
 			EventFlag::Pattern ptn;
 			OSWrapper::Error err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn);
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::TimedOut, err);
 			}
 			Thread::sleep(50);
 			err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::AND, &ptn);
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 				LONGS_EQUAL(0x0F, ptn);
 				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
@@ -358,7 +369,7 @@ TEST(PlatformEventFlagTest, tryWait_set_reset_AND_TimedOut)
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			Thread::sleep(10);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
 
@@ -378,7 +389,7 @@ TEST(PlatformEventFlagTest, wait_set_reset_OR)
 		{
 			EventFlag::Pattern ptn;
 			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, ptn);
 			LONGS_EQUAL(0x01, m_ef->getCurrentPattern());
@@ -396,7 +407,7 @@ TEST(PlatformEventFlagTest, wait_set_reset_OR)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -412,7 +423,7 @@ TEST(PlatformEventFlagTest, timedWait_set_reset_OR_Timeout100)
 		{
 			EventFlag::Pattern ptn;
 			OSWrapper::Error err = m_ef->timedWait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn, Timeout(100));
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 			LONGS_EQUAL(0x01, ptn);
 			LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
@@ -426,7 +437,7 @@ TEST(PlatformEventFlagTest, timedWait_set_reset_OR_Timeout100)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -443,13 +454,13 @@ TEST(PlatformEventFlagTest, tryWait_set_reset_OR_TimedOut)
 			EventFlag::Pattern ptn;
 			OSWrapper::Error err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::TimedOut, err);
 			}
 			Thread::sleep(50);
 			err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 				LONGS_EQUAL(0x01, ptn);
 				LONGS_EQUAL(0x00, m_ef->getCurrentPattern());
@@ -464,7 +475,7 @@ TEST(PlatformEventFlagTest, tryWait_set_reset_OR_TimedOut)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -480,7 +491,7 @@ TEST(PlatformEventFlagTest, wait_TwoThreadsWaiting)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x02));
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
 		}
 	};
@@ -497,12 +508,12 @@ TEST(PlatformEventFlagTest, wait_TwoThreadsWaiting)
 
 			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x01), EventFlag::OR, 0);
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 			}
 			err = m_ef->reset(EventFlag::Pattern(0x01));
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 			}
 
@@ -517,13 +528,13 @@ TEST(PlatformEventFlagTest, wait_TwoThreadsWaiting)
 		{
 			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x02), EventFlag::OR, 0);
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 			}
 
 			err = m_ef->set(EventFlag::Pattern(0x01));
 			{
-				std::lock_guard<std::mutex> lock(s_mutex);
+				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 			}
 		}
@@ -539,7 +550,7 @@ TEST(PlatformEventFlagTest, waitPattern_InvalidParameter)
 		virtual void run()
 		{
 			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x0F), (EventFlag::Mode)-1, 0);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 		}
 	};
@@ -551,7 +562,7 @@ TEST(PlatformEventFlagTest, waitPattern_InvalidParameter)
 		{
 			Thread::sleep(10);
 			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x00), EventFlag::OR, 0);
-			std::lock_guard<std::mutex> lock(s_mutex);
+			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::InvalidParameter, err);
 		}
 	};

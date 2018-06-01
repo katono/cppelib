@@ -1,11 +1,12 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/FixedMemoryPool.h"
+
 #include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
+using ItronOSWrapper::ItronFixedMemoryPoolFactory;
 
 using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;
-using ItronOSWrapper::ItronFixedMemoryPoolFactory;
 
 TEST_GROUP(PlatformFixedMemoryPoolTest) {
 	ItronFixedMemoryPoolFactory testFactory;

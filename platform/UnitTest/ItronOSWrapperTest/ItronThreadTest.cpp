@@ -1,19 +1,20 @@
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
-#include "ItronOSWrapper/ItronThreadFactory.h"
-#include "ItronOSWrapper/ItronMutexFactory.h"
 #include "Assertion/Assertion.h"
 #include <stdexcept>
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
+
+#include "ItronOSWrapper/ItronThreadFactory.h"
+#include "ItronOSWrapper/ItronMutexFactory.h"
+using ItronOSWrapper::ItronThreadFactory;
+using ItronOSWrapper::ItronMutexFactory;
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
 using OSWrapper::LockGuard;
-using ItronOSWrapper::ItronThreadFactory;
-using ItronOSWrapper::ItronMutexFactory;
 
 static Mutex* s_mutex;
 
@@ -32,10 +33,10 @@ TEST_GROUP(PlatformThreadTest) {
 	}
 	void teardown()
 	{
+		Mutex::destroy(s_mutex);
+
 		mock().checkExpectations();
 		mock().clear();
-
-		Mutex::destroy(s_mutex);
 	}
 };
 

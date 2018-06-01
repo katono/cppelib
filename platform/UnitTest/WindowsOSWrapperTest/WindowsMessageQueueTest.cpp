@@ -4,13 +4,18 @@
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/MessageQueue.h"
 #include "OSWrapper/FixedMemoryPool.h"
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
+#include <exception>
+
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
 #include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
-#include <exception>
+using WindowsOSWrapper::WindowsThreadFactory;
+using WindowsOSWrapper::WindowsMutexFactory;
+using WindowsOSWrapper::WindowsEventFlagFactory;
+using WindowsOSWrapper::WindowsFixedMemoryPoolFactory;
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -20,10 +25,6 @@ using OSWrapper::FixedMemoryPool;
 using OSWrapper::MessageQueue;
 using OSWrapper::Timeout;
 using OSWrapper::LockGuard;
-using WindowsOSWrapper::WindowsThreadFactory;
-using WindowsOSWrapper::WindowsMutexFactory;
-using WindowsOSWrapper::WindowsEventFlagFactory;
-using WindowsOSWrapper::WindowsFixedMemoryPoolFactory;
 
 static Mutex* s_mutex;
 
@@ -56,6 +57,7 @@ TEST_GROUP(PlatformMessageQueueTest) {
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
+
 		mock().checkExpectations();
 		mock().clear();
 	}

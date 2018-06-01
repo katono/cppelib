@@ -3,16 +3,17 @@
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
+
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
+using WindowsOSWrapper::WindowsThreadFactory;
+using WindowsOSWrapper::WindowsMutexFactory;
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
 using OSWrapper::Timeout;
 using OSWrapper::LockGuard;
-using WindowsOSWrapper::WindowsThreadFactory;
-using WindowsOSWrapper::WindowsMutexFactory;
 
 static Mutex* s_mutex;
 
@@ -24,13 +25,15 @@ TEST_GROUP(PlatformMutexTest) {
 	{
 		OSWrapper::registerThreadFactory(&testThreadFactory);
 		OSWrapper::registerMutexFactory(&testMutexFactory);
+
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
+		Mutex::destroy(s_mutex);
+
 		mock().checkExpectations();
 		mock().clear();
-		Mutex::destroy(s_mutex);
 	}
 };
 

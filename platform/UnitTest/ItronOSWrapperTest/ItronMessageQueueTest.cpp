@@ -4,13 +4,18 @@
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/MessageQueue.h"
 #include "OSWrapper/FixedMemoryPool.h"
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
+#include <exception>
+
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
 #include "ItronOSWrapper/ItronEventFlagFactory.h"
 #include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
-#include <exception>
+using ItronOSWrapper::ItronThreadFactory;
+using ItronOSWrapper::ItronMutexFactory;
+using ItronOSWrapper::ItronEventFlagFactory;
+using ItronOSWrapper::ItronFixedMemoryPoolFactory;
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -20,10 +25,6 @@ using OSWrapper::FixedMemoryPool;
 using OSWrapper::MessageQueue;
 using OSWrapper::Timeout;
 using OSWrapper::LockGuard;
-using ItronOSWrapper::ItronThreadFactory;
-using ItronOSWrapper::ItronMutexFactory;
-using ItronOSWrapper::ItronEventFlagFactory;
-using ItronOSWrapper::ItronFixedMemoryPoolFactory;
 
 static Mutex* s_mutex;
 
@@ -56,6 +57,7 @@ TEST_GROUP(PlatformMessageQueueTest) {
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
+
 		mock().checkExpectations();
 		mock().clear();
 	}
@@ -307,8 +309,8 @@ TEST(PlatformMessageQueueTest, send_receive_many_threads)
 	Thread* thread2[num];
 
 	for (int i = 0; i < num; i++) {
-		thread1[i] = Thread::create(&r1, 0, Thread::getNormalPriority());
-		thread2[i] = Thread::create(&r2, 0, Thread::getNormalPriority());
+		thread1[i] = Thread::create(&r1, Thread::getNormalPriority());
+		thread2[i] = Thread::create(&r2, Thread::getNormalPriority());
 	}
 
 	for (int i = 0; i < num; i++) {
