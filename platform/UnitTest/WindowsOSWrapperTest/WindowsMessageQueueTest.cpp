@@ -8,14 +8,26 @@
 #include "CppUTestExt/MockSupport.h"
 #include <exception>
 
+#define PLATFORM_OS_WINDOWS
+#ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
 #include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
-using WindowsOSWrapper::WindowsThreadFactory;
-using WindowsOSWrapper::WindowsMutexFactory;
-using WindowsOSWrapper::WindowsEventFlagFactory;
-using WindowsOSWrapper::WindowsFixedMemoryPoolFactory;
+typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
+typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
+typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
+typedef WindowsOSWrapper::WindowsFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
+#elif PLATFORM_OS_ITRON
+#include "ItronOSWrapper/ItronThreadFactory.h"
+#include "ItronOSWrapper/ItronMutexFactory.h"
+#include "ItronOSWrapper/ItronEventFlagFactory.h"
+#include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
+typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
+typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
+typedef ItronOSWrapper::ItronEventFlagFactory PlatformEventFlagFactory;
+typedef ItronOSWrapper::ItronFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
+#endif
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -29,10 +41,10 @@ using OSWrapper::LockGuard;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformMessageQueueTest) {
-	WindowsThreadFactory testThreadFactory;
-	WindowsMutexFactory testMutexFactory;
-	WindowsEventFlagFactory testEventFlagFactory;
-	WindowsFixedMemoryPoolFactory testFixedMemoryPoolFactory;
+	PlatformThreadFactory testThreadFactory;
+	PlatformMutexFactory testMutexFactory;
+	PlatformEventFlagFactory testEventFlagFactory;
+	PlatformFixedMemoryPoolFactory testFixedMemoryPoolFactory;
 
 	static const std::size_t SIZE = 10;
 	typedef MessageQueue<int> IntMQ;

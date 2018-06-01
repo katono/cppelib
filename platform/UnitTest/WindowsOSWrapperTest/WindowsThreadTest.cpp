@@ -6,11 +6,19 @@
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
+#define PLATFORM_OS_WINDOWS
+#ifdef PLATFORM_OS_WINDOWS
 #include <windows.h>
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
-using WindowsOSWrapper::WindowsThreadFactory;
-using WindowsOSWrapper::WindowsMutexFactory;
+typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
+typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
+#elif PLATFORM_OS_ITRON
+#include "ItronOSWrapper/ItronThreadFactory.h"
+#include "ItronOSWrapper/ItronMutexFactory.h"
+typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
+typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
+#endif
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -20,14 +28,16 @@ using OSWrapper::LockGuard;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformThreadTest) {
-	WindowsThreadFactory testThreadFactory;
-	WindowsMutexFactory testMutexFactory;
+	PlatformThreadFactory testThreadFactory;
+	PlatformMutexFactory testMutexFactory;
 
 	Thread* thread;
 
 	void setup()
 	{
+#ifdef PLATFORM_OS_WINDOWS
 		testThreadFactory.setPriorityRange(1, 9);
+#endif
 		OSWrapper::registerMutexFactory(&testMutexFactory);
 		OSWrapper::registerThreadFactory(&testThreadFactory);
 
@@ -181,7 +191,15 @@ public:
 	{
 		LockGuard lock(s_mutex);
 		Thread* t = Thread::getCurrentThread();
+#ifdef PLATFORM_OS_WINDOWS
 		LONGS_EQUAL(GetCurrentThreadId(), GetThreadId((HANDLE)t->getNativeHandle()));
+#elif PLATFORM_OS_ITRON
+		ID tskid = (ID)t->getNativeHandle();
+		T_RTSK rtsk = {0};
+		ER err = ref_tsk(tskid, &rtsk);
+		LONGS_EQUAL(E_OK, err);
+		LONGS_EQUAL(TTS_RUN, rtsk.tskstat);
+#endif
 	}
 };
 
@@ -278,6 +296,39 @@ TEST(PlatformThreadTest, exception_unknown)
 	Thread::destroy(thread);
 }
 
+TEST(PlatformThreadTest, setPriority_inherit)
+{
+	class Child : public Runnable {
+	public:
+		void run()
+		{
+			LockGuard lock(s_mutex);
+			Thread* t = Thread::getCurrentThread();
+			LONGS_EQUAL(Thread::getNormalPriority() + 1, t->getPriority());
+		}
+	};
+	class Parent : public Runnable {
+	public:
+		void run()
+		{
+			Child runnable;
+			Thread* t = Thread::create(&runnable, Thread::INHERIT_PRIORITY);
+			{
+				LockGuard lock(s_mutex);
+				CHECK(t);
+			}
+			t->start();
+			Thread::destroy(t);
+		}
+	};
+	Parent runnable;
+	thread = Thread::create(&runnable, Thread::getNormalPriority() + 1);
+	CHECK(thread);
+	thread->start();
+	Thread::destroy(thread);
+}
+
+#ifdef PLATFORM_OS_WINDOWS
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 {
 	testThreadFactory.setPriorityRange(1, 9);
@@ -399,36 +450,4 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 	thread->start();
 	Thread::destroy(thread);
 }
-
-TEST(PlatformThreadTest, setPriority_inherit)
-{
-	class Child : public Runnable {
-	public:
-		void run()
-		{
-			LockGuard lock(s_mutex);
-			Thread* t = Thread::getCurrentThread();
-			LONGS_EQUAL(Thread::getNormalPriority() + 1, t->getPriority());
-		}
-	};
-	class Parent : public Runnable {
-	public:
-		void run()
-		{
-			Child runnable;
-			Thread* t = Thread::create(&runnable, Thread::INHERIT_PRIORITY);
-			{
-				LockGuard lock(s_mutex);
-				CHECK(t);
-			}
-			t->start();
-			Thread::destroy(t);
-		}
-	};
-	Parent runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority() + 1);
-	CHECK(thread);
-	thread->start();
-	Thread::destroy(thread);
-}
-
+#endif

@@ -5,12 +5,22 @@
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 
+#define PLATFORM_OS_WINDOWS
+#ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
-using WindowsOSWrapper::WindowsThreadFactory;
-using WindowsOSWrapper::WindowsMutexFactory;
-using WindowsOSWrapper::WindowsEventFlagFactory;
+typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
+typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
+typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
+#elif PLATFORM_OS_ITRON
+#include "ItronOSWrapper/ItronThreadFactory.h"
+#include "ItronOSWrapper/ItronMutexFactory.h"
+#include "ItronOSWrapper/ItronEventFlagFactory.h"
+typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
+typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
+typedef ItronOSWrapper::ItronEventFlagFactory PlatformEventFlagFactory;
+#endif
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -22,9 +32,9 @@ using OSWrapper::LockGuard;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformEventFlagTest) {
-	WindowsThreadFactory testThreadFactory;
-	WindowsMutexFactory testMutexFactory;
-	WindowsEventFlagFactory testEventFlagFactory;
+	PlatformThreadFactory testThreadFactory;
+	PlatformMutexFactory testMutexFactory;
+	PlatformEventFlagFactory testEventFlagFactory;
 
 	void setup()
 	{

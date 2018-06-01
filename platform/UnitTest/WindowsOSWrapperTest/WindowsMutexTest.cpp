@@ -4,10 +4,20 @@
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
 
+#define PLATFORM_OS_WINDOWS
+#ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
-using WindowsOSWrapper::WindowsThreadFactory;
-using WindowsOSWrapper::WindowsMutexFactory;
+typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
+typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
+const int PRIORITY_CEILING = 10;
+#elif PLATFORM_OS_ITRON
+#include "ItronOSWrapper/ItronThreadFactory.h"
+#include "ItronOSWrapper/ItronMutexFactory.h"
+typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
+typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
+const int PRIORITY_CEILING = 1;
+#endif
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -18,8 +28,8 @@ using OSWrapper::LockGuard;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformMutexTest) {
-	WindowsThreadFactory testThreadFactory;
-	WindowsMutexFactory testMutexFactory;
+	PlatformThreadFactory testThreadFactory;
+	PlatformMutexFactory testMutexFactory;
 
 	void setup()
 	{
@@ -46,7 +56,7 @@ TEST(PlatformMutexTest, create_destroy)
 
 TEST(PlatformMutexTest, create_destroy_priorityCeiling)
 {
-	Mutex* mutex = Mutex::create(10);
+	Mutex* mutex = Mutex::create(PRIORITY_CEILING);
 	CHECK(mutex);
 	Mutex::destroy(mutex);
 }
