@@ -6,7 +6,6 @@
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
-#define PLATFORM_OS_WINDOWS
 #ifdef PLATFORM_OS_WINDOWS
 #include <windows.h>
 #include "WindowsOSWrapper/WindowsThreadFactory.h"

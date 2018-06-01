@@ -2,7 +2,6 @@
 #include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/FixedMemoryPool.h"
 
-#define PLATFORM_OS_WINDOWS
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
 typedef WindowsOSWrapper::WindowsFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;

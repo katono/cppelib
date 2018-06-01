@@ -4,7 +4,6 @@
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
 
-#define PLATFORM_OS_WINDOWS
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"

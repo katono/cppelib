@@ -8,7 +8,6 @@
 #include "CppUTestExt/MockSupport.h"
 #include <exception>
 
-#define PLATFORM_OS_WINDOWS
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"

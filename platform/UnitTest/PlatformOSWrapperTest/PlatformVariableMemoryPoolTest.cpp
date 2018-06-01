@@ -2,7 +2,6 @@
 #include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/VariableMemoryPool.h"
 
-#define PLATFORM_OS_WINDOWS
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsVariableMemoryPoolFactory.h"
 typedef WindowsOSWrapper::WindowsVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
