@@ -104,10 +104,10 @@
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsThreadFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsVariableMemoryPoolFactory.cpp" />
     <ClCompile Include="..\main.cpp" />
-    <ClCompile Include="WindowsEventFlagTest.cpp" />
-    <ClCompile Include="WindowsMessageQueueTest.cpp" />
-    <ClCompile Include="WindowsMutexTest.cpp" />
-    <ClCompile Include="WindowsThreadTest.cpp" />
+    <ClCompile Include="PlatformEventFlagTest.cpp" />
+    <ClCompile Include="PlatformMessageQueueTest.cpp" />
+    <ClCompile Include="PlatformMutexTest.cpp" />
+    <ClCompile Include="PlatformThreadTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\mechanism\OSWrapper\EventFlag.h" />
