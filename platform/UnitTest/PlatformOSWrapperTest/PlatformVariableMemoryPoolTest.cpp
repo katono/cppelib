@@ -2,20 +2,26 @@
 #include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/VariableMemoryPool.h"
 
+#define PLATFORM_OS_WINDOWS
+#ifdef PLATFORM_OS_WINDOWS
+#include "WindowsOSWrapper/WindowsVariableMemoryPoolFactory.h"
+typedef WindowsOSWrapper::WindowsVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
+#elif PLATFORM_OS_ITRON
 #include "ItronOSWrapper/ItronVariableMemoryPoolFactory.h"
-using ItronOSWrapper::ItronVariableMemoryPoolFactory;
+typedef ItronOSWrapper::ItronVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
+#endif
 
 using OSWrapper::VariableMemoryPool;
 using OSWrapper::VariableMemoryPoolFactory;
 
 TEST_GROUP(PlatformVariableMemoryPoolTest) {
-	ItronVariableMemoryPoolFactory testFactory;
+	PlatformVariableMemoryPoolFactory testVariableMemoryPoolFactory;
 	VariableMemoryPool* pool;
 	double poolBuf[100];
 
 	void setup()
 	{
-		OSWrapper::registerVariableMemoryPoolFactory(&testFactory);
+		OSWrapper::registerVariableMemoryPoolFactory(&testVariableMemoryPoolFactory);
 	}
 	void teardown()
 	{
@@ -56,6 +62,7 @@ TEST(PlatformVariableMemoryPoolTest, allocate)
 	VariableMemoryPool::destroy(pool);
 }
 
+#ifndef PLATFORM_OS_WINDOWS
 TEST(PlatformVariableMemoryPoolTest, allocate_failed)
 {
 	pool = VariableMemoryPool::create(18);
@@ -75,6 +82,7 @@ TEST(PlatformVariableMemoryPoolTest, allocate_failed)
 
 	VariableMemoryPool::destroy(pool);
 }
+#endif
 
 TEST(PlatformVariableMemoryPoolTest, deallocate_nullptr)
 {

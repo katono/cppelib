@@ -2,20 +2,26 @@
 #include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/FixedMemoryPool.h"
 
+#define PLATFORM_OS_WINDOWS
+#ifdef PLATFORM_OS_WINDOWS
+#include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
+typedef WindowsOSWrapper::WindowsFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
+#elif PLATFORM_OS_ITRON
 #include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
-using ItronOSWrapper::ItronFixedMemoryPoolFactory;
+typedef ItronOSWrapper::ItronFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
+#endif
 
 using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;
 
 TEST_GROUP(PlatformFixedMemoryPoolTest) {
-	ItronFixedMemoryPoolFactory testFactory;
+	PlatformFixedMemoryPoolFactory testFixedMemoryPoolFactory;
 	FixedMemoryPool* pool;
 	double poolBuf[100];
 
 	void setup()
 	{
-		OSWrapper::registerFixedMemoryPoolFactory(&testFactory);
+		OSWrapper::registerFixedMemoryPoolFactory(&testFixedMemoryPoolFactory);
 	}
 	void teardown()
 	{
@@ -71,6 +77,7 @@ TEST(PlatformFixedMemoryPoolTest, allocate_deallocate)
 	FixedMemoryPool::destroy(pool);
 }
 
+#ifndef PLATFORM_OS_WINDOWS
 TEST(PlatformFixedMemoryPoolTest, allocate_failed)
 {
 	pool = FixedMemoryPool::create(16, 16);
@@ -90,6 +97,7 @@ TEST(PlatformFixedMemoryPoolTest, allocate_failed)
 
 	FixedMemoryPool::destroy(pool);
 }
+#endif
 
 TEST(PlatformFixedMemoryPoolTest, deallocate_nullptr)
 {
