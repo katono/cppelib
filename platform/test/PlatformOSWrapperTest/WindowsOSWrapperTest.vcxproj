@@ -101,6 +101,7 @@
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsFixedMemoryPoolFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsMutexFactory.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsOSWrapperFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsThreadFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsVariableMemoryPoolFactory.cpp" />
     <ClCompile Include="..\main.cpp" />
@@ -129,6 +130,7 @@
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsEventFlagFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsFixedMemoryPoolFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsMutexFactory.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsOSWrapperFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsThreadFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsVariableMemoryPoolFactory.h" />
   </ItemGroup>
