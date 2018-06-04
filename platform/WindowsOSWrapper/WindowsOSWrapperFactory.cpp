@@ -12,9 +12,9 @@
 
 namespace WindowsOSWrapper {
 
-void registerFactory()
+void registerFactory(int lowestPriority, int highestPriority)
 {
-	static WindowsThreadFactory theThreadFactory;
+	static WindowsThreadFactory theThreadFactory(lowestPriority, highestPriority);
 	static WindowsMutexFactory theMutexFactory;
 	static WindowsEventFlagFactory theEventFlagFactory;
 	static WindowsFixedMemoryPoolFactory theFixedMemoryPoolFactory;

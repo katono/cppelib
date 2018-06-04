@@ -3,7 +3,7 @@
 
 namespace WindowsOSWrapper {
 
-void registerFactory();
+void registerFactory(int lowestPriority, int highestPriority);
 
 }
 
