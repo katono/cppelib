@@ -324,7 +324,6 @@ TEST(ThreadTest, default_handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
-	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 
 	UnknownExceptionHandler handler;
 	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
@@ -342,7 +341,6 @@ TEST(ThreadTest, handle_unknown_exception)
 	UnknownExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
 	POINTERS_EQUAL(0, thread->getExceptionHandler());
-	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 
 	UnknownExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
@@ -379,7 +377,6 @@ TEST(ThreadTest, default_handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
-	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 
 	AssertExceptionHandler handler;
 	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
@@ -397,7 +394,6 @@ TEST(ThreadTest, handle_assert_exception)
 	AssertExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
 	POINTERS_EQUAL(0, thread->getExceptionHandler());
-	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 
 	AssertExceptionHandler handler;
 	thread->setExceptionHandler(&handler);
@@ -429,7 +425,6 @@ TEST(ThreadTest, default_handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
-	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 
 	StdExceptionHandler handler;
 	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
@@ -447,7 +442,6 @@ TEST(ThreadTest, handle_std_exception)
 	StdExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
 	POINTERS_EQUAL(0, thread->getExceptionHandler());
-	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 
 	StdExceptionHandler handler;
 	thread->setExceptionHandler(&handler);

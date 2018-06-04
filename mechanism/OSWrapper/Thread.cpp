@@ -39,11 +39,10 @@ Thread::ExceptionHandler* Thread::getExceptionHandler() const
 
 void Thread::handleException(const std::exception& e)
 {
-	Thread* t = Thread::getCurrentThread();
 	if (m_exceptionHandler != 0) {
-		m_exceptionHandler->handle(t, e);
+		m_exceptionHandler->handle(this, e);
 	} else if (m_defaultExceptionHandler != 0) {
-		m_defaultExceptionHandler->handle(t, e);
+		m_defaultExceptionHandler->handle(this, e);
 	}
 }
 
