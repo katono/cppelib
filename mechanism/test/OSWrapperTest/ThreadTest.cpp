@@ -1,11 +1,11 @@
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/ThreadFactory.h"
 #include "Assertion/Assertion.h"
 #include <set>
 #include <stdexcept>
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
@@ -299,7 +299,7 @@ TEST(ThreadTest, getNativeHandle)
 {
 	thread = Thread::create(&testRun);
 
-	LONGS_EQUAL(1234, (int)thread->getNativeHandle());
+	LONGS_EQUAL(1234, (long)thread->getNativeHandle());
 
 	Thread::destroy(thread);
 }
