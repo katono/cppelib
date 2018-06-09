@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+enable_testing()
+
 project(mechanism_test)
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11)
@@ -36,7 +39,7 @@ set(OSWrapperTestSrc
 	OSWrapperTest/VariableMemoryPoolTest.cpp
 )
 
-add_executable(mechanism_test
+add_executable(alltests
 	main.cpp
 	${AssertionTestSrc}
 	${ContainerTestSrc}
@@ -44,4 +47,8 @@ add_executable(mechanism_test
 	${OSWrapperTestSrc}
 )
 
-target_link_libraries(mechanism_test CppUTest CppUTestExt)
+target_link_libraries(alltests CppUTest CppUTestExt)
+
+add_test(NAME mechanism_test
+	COMMAND alltests
+)

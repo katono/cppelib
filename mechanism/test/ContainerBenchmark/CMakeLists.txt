@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+enable_testing()
+
 project(ContainerBenchmark)
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11)
@@ -13,9 +16,13 @@ set(ContainerBenchmarkSrc
 	FixedVectorBenchmark.cpp
 )
 
-add_executable(ContainerBenchmark
+add_executable(alltests
 	../main.cpp
 	${ContainerBenchmarkSrc}
 )
 
-target_link_libraries(ContainerBenchmark CppUTest CppUTestExt)
+target_link_libraries(alltests CppUTest CppUTestExt)
+
+add_test(NAME ContainerBenchmark
+	COMMAND alltests
+)
