@@ -84,32 +84,6 @@ TEST(BitPatternTest, set_reset_return_this)
 	UNSIGNED_LONGS_EQUAL(0x0, b);
 }
 
-TEST(BitPatternTest, set_precondition_failed)
-{
-	BitPattern<std::uint32_t> b;
-	try {
-		b.set(32);
-	}
-	catch (const Assertion::Error& e) {
-		STRCMP_CONTAINS("failed", e.message());
-		return;
-	}
-	FAIL("failed");
-}
-
-TEST(BitPatternTest, reset_precondition_failed)
-{
-	BitPattern<std::uint32_t> b;
-	try {
-		b.reset(32);
-	}
-	catch (const Assertion::Error& e) {
-		STRCMP_CONTAINS("failed", e.message());
-		return;
-	}
-	FAIL("failed");
-}
-
 TEST(BitPatternTest, flip_all)
 {
 	BitPattern<std::uint32_t> b(0x12345678);
@@ -133,19 +107,6 @@ TEST(BitPatternTest, flip_return_this)
 	BitPattern<std::uint32_t> b(0x12345678);
 	b.flip(0).flip(1).flip(2).flip(3);
 	UNSIGNED_LONGS_EQUAL(0x12345677, b);
-}
-
-TEST(BitPatternTest, flip_precondition_failed)
-{
-	BitPattern<std::uint32_t> b;
-	try {
-		b.flip(32);
-	}
-	catch (const Assertion::Error& e) {
-		STRCMP_CONTAINS("failed", e.message());
-		return;
-	}
-	FAIL("failed");
 }
 
 TEST(BitPatternTest, operator_tilde)
@@ -285,19 +246,6 @@ TEST(BitPatternTest, test)
 	CHECK(a.test(3));
 }
 
-TEST(BitPatternTest, test_precondition_failed)
-{
-	BitPattern<std::uint32_t> b;
-	try {
-		b.test(32);
-	}
-	catch (const Assertion::Error& e) {
-		STRCMP_CONTAINS("failed", e.message());
-		return;
-	}
-	FAIL("failed");
-}
-
 TEST(BitPatternTest, all_true)
 {
 	BitPattern<std::uint32_t> a(0xFFFFFFFF);
@@ -385,3 +333,56 @@ TEST(BitPatternTest, operator_xor)
 	UNSIGNED_LONGS_EQUAL(0x2828EBEB, f);
 }
 
+#ifndef NDEBUG
+TEST(BitPatternTest, set_precondition_failed)
+{
+	BitPattern<std::uint32_t> b;
+	try {
+		b.set(32);
+	}
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("failed", e.message());
+		return;
+	}
+	FAIL("failed");
+}
+
+TEST(BitPatternTest, reset_precondition_failed)
+{
+	BitPattern<std::uint32_t> b;
+	try {
+		b.reset(32);
+	}
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("failed", e.message());
+		return;
+	}
+	FAIL("failed");
+}
+
+TEST(BitPatternTest, flip_precondition_failed)
+{
+	BitPattern<std::uint32_t> b;
+	try {
+		b.flip(32);
+	}
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("failed", e.message());
+		return;
+	}
+	FAIL("failed");
+}
+
+TEST(BitPatternTest, test_precondition_failed)
+{
+	BitPattern<std::uint32_t> b;
+	try {
+		b.test(32);
+	}
+	catch (const Assertion::Error& e) {
+		STRCMP_CONTAINS("failed", e.message());
+		return;
+	}
+	FAIL("failed");
+}
+#endif
