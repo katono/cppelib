@@ -288,6 +288,7 @@ public:
 		DEBUG_ASSERT(last.m_node != 0);
 		DEBUG_ASSERT(first != end());
 		DEBUG_ASSERT(first != x.end());
+		(void) x;
 		if (first == last) {
 			return;
 		}
