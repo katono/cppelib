@@ -40,10 +40,15 @@ Thread::UncaughtExceptionHandler* Thread::getUncaughtExceptionHandler() const
 
 void Thread::handleException(const char* msg)
 {
-	if (m_uncaughtExceptionHandler != 0) {
-		m_uncaughtExceptionHandler->handle(this, msg);
-	} else if (m_defaultUncaughtExceptionHandler != 0) {
-		m_defaultUncaughtExceptionHandler->handle(this, msg);
+	try {
+		if (m_uncaughtExceptionHandler != 0) {
+			m_uncaughtExceptionHandler->handle(this, msg);
+		} else if (m_defaultUncaughtExceptionHandler != 0) {
+			m_defaultUncaughtExceptionHandler->handle(this, msg);
+		}
+	}
+	catch (...) {
+		// ignore exception
 	}
 }
 

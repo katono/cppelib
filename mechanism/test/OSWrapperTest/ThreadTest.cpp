@@ -451,3 +451,24 @@ TEST(ThreadTest, handle_std_exception)
 	thread->start();
 	Thread::destroy(thread);
 }
+
+class ThrowExceptionHandler : public Thread::UncaughtExceptionHandler {
+public:
+	virtual void handle(Thread*, const char*)
+	{
+		throw 0;
+	}
+};
+
+TEST(ThreadTest, ExceptionHandler_throws_exception)
+{
+	StdExceptionTestRunnable runnable;
+	thread = Thread::create(&runnable);
+
+	ThrowExceptionHandler handler;
+	thread->setUncaughtExceptionHandler(&handler);
+
+	thread->start();
+	Thread::destroy(thread);
+}
+
