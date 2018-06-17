@@ -2,6 +2,7 @@
 #include "ThreadFactory.h"
 #include "Runnable.h"
 #include "Assertion/Assertion.h"
+#include <exception>
 
 namespace OSWrapper {
 
@@ -37,12 +38,12 @@ Thread::UncaughtExceptionHandler* Thread::getUncaughtExceptionHandler() const
 	return m_uncaughtExceptionHandler;
 }
 
-void Thread::handleException(const std::exception& e)
+void Thread::handleException(const char* msg)
 {
 	if (m_uncaughtExceptionHandler != 0) {
-		m_uncaughtExceptionHandler->handle(this, e);
+		m_uncaughtExceptionHandler->handle(this, msg);
 	} else if (m_defaultUncaughtExceptionHandler != 0) {
-		m_defaultUncaughtExceptionHandler->handle(this, e);
+		m_defaultUncaughtExceptionHandler->handle(this, msg);
 	}
 }
 
@@ -57,13 +58,13 @@ void Thread::threadMain()
 		// do nothing
 	}
 	catch (const std::exception& e) {
-		handleException(e);
+		handleException(e.what());
 	}
 	catch (const Assertion::Error& e) {
-		handleException(OtherException(e.message()));
+		handleException(e.message());
 	}
 	catch (...) {
-		handleException(OtherException("Unknown Exception"));
+		handleException("Unknown Exception");
 	}
 }
 

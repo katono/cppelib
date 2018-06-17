@@ -249,10 +249,13 @@ private:
 };
 
 class MyExceptionHandler : public Thread::UncaughtExceptionHandler {
+	const char* m_expectedMsg;
 public:
-	virtual void handle(Thread* t, const std::exception&)
+	explicit MyExceptionHandler(const char* expectedMsg) : m_expectedMsg(expectedMsg) {}
+	virtual void handle(Thread* t, const char* expectedMsg)
 	{
 		mock().actualCall("handle").withParameter("t", t).onObject(this);
+		STRCMP_CONTAINS(m_expectedMsg, expectedMsg);
 	}
 };
 
@@ -261,7 +264,7 @@ TEST(PlatformThreadTest, exception_std)
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
-	MyExceptionHandler handler;
+	MyExceptionHandler handler("Exception Test");
 	thread->setUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
@@ -274,7 +277,7 @@ TEST(PlatformThreadTest, exception_assert)
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
-	MyExceptionHandler handler;
+	MyExceptionHandler handler("CHECK_ASSERT_EXCEPTION_TEST");
 	thread->setUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
@@ -287,7 +290,7 @@ TEST(PlatformThreadTest, exception_unknown)
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
-	MyExceptionHandler handler;
+	MyExceptionHandler handler("Unknown Exception");
 	thread->setUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 

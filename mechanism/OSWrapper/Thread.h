@@ -2,7 +2,6 @@
 #define OS_WRAPPER_THREAD_H_INCLUDED
 
 #include <cstddef>
-#include <exception>
 #include "Timeout.h"
 #include "OSWrapperError.h"
 
@@ -25,7 +24,7 @@ public:
 	class UncaughtExceptionHandler {
 	public:
 		virtual ~UncaughtExceptionHandler() {}
-		virtual void handle(Thread* t, const std::exception& e) = 0;
+		virtual void handle(Thread* t, const char* msg) = 0;
 	};
 
 	static const int INHERIT_PRIORITY;
@@ -65,22 +64,11 @@ private:
 	UncaughtExceptionHandler* m_uncaughtExceptionHandler;
 	static UncaughtExceptionHandler* m_defaultUncaughtExceptionHandler;
 
-	void handleException(const std::exception& e);
+	void handleException(const char* msg);
 
 	class Exit {
 	public:
 		Exit() {}
-	};
-
-	class OtherException : public std::exception {
-	public:
-		explicit OtherException(const char* msg) : m_msg(msg) {}
-		const char* what() const throw()
-		{
-			return m_msg;
-		}
-	private:
-		const char* m_msg;
 	};
 
 };

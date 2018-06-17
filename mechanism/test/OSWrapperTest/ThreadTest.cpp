@@ -314,9 +314,9 @@ public:
 
 class UnknownExceptionHandler : public Thread::UncaughtExceptionHandler {
 public:
-	virtual void handle(Thread* t, const std::exception& e)
+	virtual void handle(Thread* t, const char* msg)
 	{
-		mock().actualCall("handle").withParameter("t", t).withParameter("e.what", e.what()).onObject(this);
+		mock().actualCall("handle").withParameter("t", t).withParameter("msg", msg).onObject(this);
 	}
 };
 
@@ -328,7 +328,7 @@ TEST(ThreadTest, default_handle_unknown_exception)
 	UnknownExceptionHandler handler;
 	Thread::UncaughtExceptionHandler* old = Thread::getDefaultUncaughtExceptionHandler();
 	Thread::setDefaultUncaughtExceptionHandler(&handler);
-	mock().expectOneCall("handle").withParameter("t", thread).withParameter("e.what", "Unknown Exception").onObject(&handler);
+	mock().expectOneCall("handle").withParameter("t", thread).withParameter("msg", "Unknown Exception").onObject(&handler);
 
 	thread->start();
 	Thread::destroy(thread);
@@ -345,7 +345,7 @@ TEST(ThreadTest, handle_unknown_exception)
 	UnknownExceptionHandler handler;
 	thread->setUncaughtExceptionHandler(&handler);
 	POINTERS_EQUAL(&handler, thread->getUncaughtExceptionHandler());
-	mock().expectOneCall("handle").withParameter("t", thread).withParameter("e.what", "Unknown Exception").onObject(&handler);
+	mock().expectOneCall("handle").withParameter("t", thread).withParameter("msg", "Unknown Exception").onObject(&handler);
 
 	thread->start();
 	Thread::destroy(thread);
@@ -366,10 +366,10 @@ public:
 
 class AssertExceptionHandler : public Thread::UncaughtExceptionHandler {
 public:
-	virtual void handle(Thread* t, const std::exception& e)
+	virtual void handle(Thread* t, const char* msg)
 	{
 		mock().actualCall("handle").withParameter("t", t).onObject(this);
-		STRCMP_CONTAINS("CHECK_ASSERT_EXCEPTION_TEST", e.what());
+		STRCMP_CONTAINS("CHECK_ASSERT_EXCEPTION_TEST", msg);
 	}
 };
 
@@ -414,10 +414,10 @@ public:
 
 class StdExceptionHandler : public Thread::UncaughtExceptionHandler {
 public:
-	virtual void handle(Thread* t, const std::exception& e)
+	virtual void handle(Thread* t, const char* msg)
 	{
 		mock().actualCall("handle").withParameter("t", t).onObject(this);
-		STRCMP_CONTAINS("Exception Test", e.what());
+		STRCMP_CONTAINS("Exception Test", msg);
 	}
 };
 
