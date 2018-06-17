@@ -248,7 +248,7 @@ private:
 	Kind m_kind;
 };
 
-class MyExceptionHandler : public Thread::ExceptionHandler {
+class MyExceptionHandler : public Thread::UncaughtExceptionHandler {
 public:
 	virtual void handle(Thread* t, const std::exception&)
 	{
@@ -262,7 +262,7 @@ TEST(PlatformThreadTest, exception_std)
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
-	thread->setExceptionHandler(&handler);
+	thread->setUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
 	thread->start();
@@ -275,7 +275,7 @@ TEST(PlatformThreadTest, exception_assert)
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
-	thread->setExceptionHandler(&handler);
+	thread->setUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
 	thread->start();
@@ -288,7 +288,7 @@ TEST(PlatformThreadTest, exception_unknown)
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
 
 	MyExceptionHandler handler;
-	thread->setExceptionHandler(&handler);
+	thread->setUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
 	thread->start();

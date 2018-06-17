@@ -16,22 +16,22 @@ void registerThreadFactory(ThreadFactory* factory);
 class Thread {
 protected:
 	Thread(Runnable* r)
-	: m_runnable(r), m_exceptionHandler(0) {}
+	: m_runnable(r), m_uncaughtExceptionHandler(0) {}
 	virtual ~Thread() {}
 
 	void threadMain();
 
 public:
-	class ExceptionHandler {
+	class UncaughtExceptionHandler {
 	public:
-		virtual ~ExceptionHandler() {}
+		virtual ~UncaughtExceptionHandler() {}
 		virtual void handle(Thread* t, const std::exception& e) = 0;
 	};
 
 	static const int INHERIT_PRIORITY;
 
-	static void setDefaultExceptionHandler(ExceptionHandler* handler);
-	static ExceptionHandler* getDefaultExceptionHandler();
+	static void setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler* handler);
+	static UncaughtExceptionHandler* getDefaultUncaughtExceptionHandler();
 
 	static Thread* create(Runnable* r, int priority = INHERIT_PRIORITY, std::size_t stackSize = 0U, void* stackAddress = 0, const char* name = "");
 	static void destroy(Thread* t);
@@ -57,13 +57,13 @@ public:
 	virtual std::size_t getStackSize() const = 0;
 	virtual void* getNativeHandle() = 0;
 
-	void setExceptionHandler(ExceptionHandler* handler);
-	ExceptionHandler* getExceptionHandler() const;
+	void setUncaughtExceptionHandler(UncaughtExceptionHandler* handler);
+	UncaughtExceptionHandler* getUncaughtExceptionHandler() const;
 
 private:
 	Runnable* m_runnable;
-	ExceptionHandler* m_exceptionHandler;
-	static ExceptionHandler* m_defaultExceptionHandler;
+	UncaughtExceptionHandler* m_uncaughtExceptionHandler;
+	static UncaughtExceptionHandler* m_defaultUncaughtExceptionHandler;
 
 	void handleException(const std::exception& e);
 

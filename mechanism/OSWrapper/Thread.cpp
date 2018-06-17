@@ -15,34 +15,34 @@ void registerThreadFactory(ThreadFactory* factory)
 }
 
 
-Thread::ExceptionHandler* Thread::m_defaultExceptionHandler = 0;
+Thread::UncaughtExceptionHandler* Thread::m_defaultUncaughtExceptionHandler = 0;
 
-void Thread::setDefaultExceptionHandler(Thread::ExceptionHandler* handler)
+void Thread::setDefaultUncaughtExceptionHandler(Thread::UncaughtExceptionHandler* handler)
 {
-	m_defaultExceptionHandler = handler;
+	m_defaultUncaughtExceptionHandler = handler;
 }
 
-Thread::ExceptionHandler* Thread::getDefaultExceptionHandler()
+Thread::UncaughtExceptionHandler* Thread::getDefaultUncaughtExceptionHandler()
 {
-	return m_defaultExceptionHandler;
+	return m_defaultUncaughtExceptionHandler;
 }
 
-void Thread::setExceptionHandler(Thread::ExceptionHandler* handler)
+void Thread::setUncaughtExceptionHandler(Thread::UncaughtExceptionHandler* handler)
 {
-	m_exceptionHandler = handler;
+	m_uncaughtExceptionHandler = handler;
 }
 
-Thread::ExceptionHandler* Thread::getExceptionHandler() const
+Thread::UncaughtExceptionHandler* Thread::getUncaughtExceptionHandler() const
 {
-	return m_exceptionHandler;
+	return m_uncaughtExceptionHandler;
 }
 
 void Thread::handleException(const std::exception& e)
 {
-	if (m_exceptionHandler != 0) {
-		m_exceptionHandler->handle(this, e);
-	} else if (m_defaultExceptionHandler != 0) {
-		m_defaultExceptionHandler->handle(this, e);
+	if (m_uncaughtExceptionHandler != 0) {
+		m_uncaughtExceptionHandler->handle(this, e);
+	} else if (m_defaultUncaughtExceptionHandler != 0) {
+		m_defaultUncaughtExceptionHandler->handle(this, e);
 	}
 }
 

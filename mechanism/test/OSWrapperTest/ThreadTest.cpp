@@ -312,7 +312,7 @@ public:
 	}
 };
 
-class UnknownExceptionHandler : public Thread::ExceptionHandler {
+class UnknownExceptionHandler : public Thread::UncaughtExceptionHandler {
 public:
 	virtual void handle(Thread* t, const std::exception& e)
 	{
@@ -326,25 +326,25 @@ TEST(ThreadTest, default_handle_unknown_exception)
 	thread = Thread::create(&runnable);
 
 	UnknownExceptionHandler handler;
-	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
-	Thread::setDefaultExceptionHandler(&handler);
+	Thread::UncaughtExceptionHandler* old = Thread::getDefaultUncaughtExceptionHandler();
+	Thread::setDefaultUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).withParameter("e.what", "Unknown Exception").onObject(&handler);
 
 	thread->start();
 	Thread::destroy(thread);
 
-	Thread::setDefaultExceptionHandler(old);
+	Thread::setDefaultUncaughtExceptionHandler(old);
 }
 
 TEST(ThreadTest, handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
-	POINTERS_EQUAL(0, thread->getExceptionHandler());
+	POINTERS_EQUAL(0, thread->getUncaughtExceptionHandler());
 
 	UnknownExceptionHandler handler;
-	thread->setExceptionHandler(&handler);
-	POINTERS_EQUAL(&handler, thread->getExceptionHandler());
+	thread->setUncaughtExceptionHandler(&handler);
+	POINTERS_EQUAL(&handler, thread->getUncaughtExceptionHandler());
 	mock().expectOneCall("handle").withParameter("t", thread).withParameter("e.what", "Unknown Exception").onObject(&handler);
 
 	thread->start();
@@ -364,7 +364,7 @@ public:
 	}
 };
 
-class AssertExceptionHandler : public Thread::ExceptionHandler {
+class AssertExceptionHandler : public Thread::UncaughtExceptionHandler {
 public:
 	virtual void handle(Thread* t, const std::exception& e)
 	{
@@ -379,25 +379,25 @@ TEST(ThreadTest, default_handle_assert_exception)
 	thread = Thread::create(&runnable);
 
 	AssertExceptionHandler handler;
-	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
-	Thread::setDefaultExceptionHandler(&handler);
+	Thread::UncaughtExceptionHandler* old = Thread::getDefaultUncaughtExceptionHandler();
+	Thread::setDefaultUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
 	thread->start();
 	Thread::destroy(thread);
 
-	Thread::setDefaultExceptionHandler(old);
+	Thread::setDefaultUncaughtExceptionHandler(old);
 }
 
 TEST(ThreadTest, handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
-	POINTERS_EQUAL(0, thread->getExceptionHandler());
+	POINTERS_EQUAL(0, thread->getUncaughtExceptionHandler());
 
 	AssertExceptionHandler handler;
-	thread->setExceptionHandler(&handler);
-	POINTERS_EQUAL(&handler, thread->getExceptionHandler());
+	thread->setUncaughtExceptionHandler(&handler);
+	POINTERS_EQUAL(&handler, thread->getUncaughtExceptionHandler());
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
 	thread->start();
@@ -412,7 +412,7 @@ public:
 	}
 };
 
-class StdExceptionHandler : public Thread::ExceptionHandler {
+class StdExceptionHandler : public Thread::UncaughtExceptionHandler {
 public:
 	virtual void handle(Thread* t, const std::exception& e)
 	{
@@ -427,25 +427,25 @@ TEST(ThreadTest, default_handle_std_exception)
 	thread = Thread::create(&runnable);
 
 	StdExceptionHandler handler;
-	Thread::ExceptionHandler* old = Thread::getDefaultExceptionHandler();
-	Thread::setDefaultExceptionHandler(&handler);
+	Thread::UncaughtExceptionHandler* old = Thread::getDefaultUncaughtExceptionHandler();
+	Thread::setDefaultUncaughtExceptionHandler(&handler);
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
 	thread->start();
 	Thread::destroy(thread);
 
-	Thread::setDefaultExceptionHandler(old);
+	Thread::setDefaultUncaughtExceptionHandler(old);
 }
 
 TEST(ThreadTest, handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
-	POINTERS_EQUAL(0, thread->getExceptionHandler());
+	POINTERS_EQUAL(0, thread->getUncaughtExceptionHandler());
 
 	StdExceptionHandler handler;
-	thread->setExceptionHandler(&handler);
-	POINTERS_EQUAL(&handler, thread->getExceptionHandler());
+	thread->setUncaughtExceptionHandler(&handler);
+	POINTERS_EQUAL(&handler, thread->getUncaughtExceptionHandler());
 	mock().expectOneCall("handle").withParameter("t", thread).onObject(&handler);
 
 	thread->start();
