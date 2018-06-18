@@ -1,7 +1,7 @@
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/VariableMemoryPool.h"
 #include "OSWrapper/VariableMemoryPoolFactory.h"
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using OSWrapper::VariableMemoryPool;
 using OSWrapper::VariableMemoryPoolFactory;

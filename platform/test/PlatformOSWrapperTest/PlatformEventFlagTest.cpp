@@ -1,5 +1,3 @@
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
@@ -20,6 +18,9 @@ typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
 typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
 typedef ItronOSWrapper::ItronEventFlagFactory PlatformEventFlagFactory;
 #endif
+
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;

@@ -1,5 +1,3 @@
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/VariableMemoryPool.h"
 
 #ifdef PLATFORM_OS_WINDOWS
@@ -9,6 +7,9 @@ typedef WindowsOSWrapper::WindowsVariableMemoryPoolFactory PlatformVariableMemor
 #include "ItronOSWrapper/ItronVariableMemoryPoolFactory.h"
 typedef ItronOSWrapper::ItronVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
 #endif
+
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using OSWrapper::VariableMemoryPool;
 using OSWrapper::VariableMemoryPoolFactory;

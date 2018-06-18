@@ -1,3 +1,4 @@
+#include <exception>
 #include "CppUTest/CommandLineTestRunner.h"
 
 int main(int argc, char **argv)

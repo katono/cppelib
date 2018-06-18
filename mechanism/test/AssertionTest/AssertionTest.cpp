@@ -1,6 +1,6 @@
-#include "CppUTest/TestHarness.h"
 #include "Assertion/Assertion.h"
 #include <string>
+#include "CppUTest/TestHarness.h"
 
 
 TEST_GROUP(AssertionTest) {

@@ -1,7 +1,7 @@
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/FixedMemoryPool.h"
 #include "OSWrapper/FixedMemoryPoolFactory.h"
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;

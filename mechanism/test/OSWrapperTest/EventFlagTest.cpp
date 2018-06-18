@@ -1,7 +1,7 @@
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/EventFlagFactory.h"
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using OSWrapper::EventFlag;
 using OSWrapper::EventFlagFactory;

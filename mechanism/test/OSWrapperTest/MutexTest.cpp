@@ -1,7 +1,7 @@
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/MutexFactory.h"
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using OSWrapper::Mutex;
 using OSWrapper::MutexFactory;

@@ -1,9 +1,9 @@
-#include "CppUTest/TestHarness.h"
 #include "Container/Array.h"
 #ifndef NO_STD_ALGORITHM
 #include <algorithm>
 #include <functional>
 #endif
+#include "CppUTest/TestHarness.h"
 
 using Container::Array;
 

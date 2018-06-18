@@ -1,7 +1,7 @@
-#include "CppUTest/TestHarness.h"
 #include "Container/IntrusiveList.h"
 #include "Container/Array.h"
 #include <cstdio>
+#include "CppUTest/TestHarness.h"
 
 using Container::IntrusiveListNode;
 using Container::IntrusiveList;

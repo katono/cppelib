@@ -4,8 +4,6 @@
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/MessageQueue.h"
 #include "OSWrapper/FixedMemoryPool.h"
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
 #include <exception>
 
 #ifdef PLATFORM_OS_WINDOWS
@@ -27,6 +25,9 @@ typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
 typedef ItronOSWrapper::ItronEventFlagFactory PlatformEventFlagFactory;
 typedef ItronOSWrapper::ItronFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
 #endif
+
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 using OSWrapper::Runnable;
 using OSWrapper::Thread;

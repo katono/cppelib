@@ -1,6 +1,6 @@
-#include "CppUTest/TestHarness.h"
 #include "Container/BitPattern.h"
 #include <cstdint>
+#include "CppUTest/TestHarness.h"
 
 using Container::BitPattern;
 
