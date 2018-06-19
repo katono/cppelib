@@ -65,7 +65,7 @@ void Thread::threadMain()
 	catch (const std::exception& e) {
 		handleException(e.what());
 	}
-	catch (const Assertion::Error& e) {
+	catch (const Assertion::Failure& e) {
 		handleException(e.message());
 	}
 	catch (...) {

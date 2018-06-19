@@ -7,7 +7,7 @@
 #define CHECK_ASSERT(x)\
 	do {\
 		if (!(x)) {\
-			throw Assertion::Error(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")");\
+			throw Assertion::Failure(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")");\
 		}\
 	} while (false)
 
@@ -21,9 +21,9 @@
 
 namespace Assertion {
 
-class Error {
+class Failure {
 public:
-	explicit Error(const char* msg) : m_msg(msg) {}
+	explicit Failure(const char* msg) : m_msg(msg) {}
 	const char* message() const
 	{
 		return m_msg;

@@ -34,7 +34,7 @@ TEST(AssertionTest, assert_false)
 			FAIL("NOT std::exception");
 		}
 	}
-	catch (const Assertion::Error& e) {
+	catch (const Assertion::Failure& e) {
 		STRCMP_CONTAINS("Assertion failed", e.message());
 		return;
 	}
@@ -53,7 +53,7 @@ TEST(AssertionTest, debug_assert_false)
 			FAIL("NOT std::exception");
 		}
 	}
-	catch (const Assertion::Error& e) {
+	catch (const Assertion::Failure& e) {
 		STRCMP_CONTAINS("Assertion failed", e.message());
 		return;
 	}
