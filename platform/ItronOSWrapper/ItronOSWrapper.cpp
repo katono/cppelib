@@ -1,4 +1,4 @@
-#include "ItronOSWrapperFactory.h"
+#include "ItronOSWrapper.h"
 #include "ItronThreadFactory.h"
 #include "ItronMutexFactory.h"
 #include "ItronEventFlagFactory.h"
@@ -12,7 +12,7 @@
 
 namespace ItronOSWrapper {
 
-void registerFactory()
+void init()
 {
 	static ItronThreadFactory theThreadFactory;
 	static ItronMutexFactory theMutexFactory;

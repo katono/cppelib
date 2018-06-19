@@ -1,4 +1,4 @@
-#include "WindowsOSWrapperFactory.h"
+#include "WindowsOSWrapper.h"
 #include "WindowsThreadFactory.h"
 #include "WindowsMutexFactory.h"
 #include "WindowsEventFlagFactory.h"
@@ -12,7 +12,7 @@
 
 namespace WindowsOSWrapper {
 
-void registerFactory(int lowestPriority, int highestPriority)
+void init(int lowestPriority, int highestPriority)
 {
 	static WindowsThreadFactory theThreadFactory(lowestPriority, highestPriority);
 	static WindowsMutexFactory theMutexFactory;
