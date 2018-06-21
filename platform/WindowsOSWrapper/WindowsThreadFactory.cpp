@@ -246,6 +246,9 @@ OSWrapper::Thread* WindowsThreadFactory::create(OSWrapper::Runnable* r, int prio
 		t = new WindowsThread(r, priority, stackSize, name, m_prioMap);
 		t->beginThread();
 	}
+	catch (const Assertion::Failure&) {
+		throw;
+	}
 	catch (...) {
 		delete t;
 		return nullptr;
