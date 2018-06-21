@@ -341,6 +341,10 @@ void ItronThreadFactory::yield()
 
 OSWrapper::Thread* ItronThreadFactory::getCurrentThread()
 {
+	if (sns_ctx() != FALSE) {
+		// Non-task context
+		return 0;
+	}
 	ID tid = 0;
 	get_tid(&tid);
 	Lock lk(m_mtxId);
