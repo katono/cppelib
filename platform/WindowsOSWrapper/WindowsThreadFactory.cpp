@@ -148,7 +148,13 @@ public:
 		}
 
 		// INHERIT_PRIORITY
-		const int this_priority = OSWrapper::Thread::getCurrentThread()->getPriority();
+		OSWrapper::Thread* t = OSWrapper::Thread::getCurrentThread();
+		int this_priority;
+		if (t == nullptr) {
+			this_priority = OSWrapper::Thread::getNormalPriority();
+		} else {
+			this_priority = t->getPriority();
+		}
 		std::lock_guard<std::mutex> lock(m_mutex);
 		m_priority = this_priority;
 		SetThreadPriority(m_thread.native_handle(), m_prioMap.at(this_priority));
@@ -288,7 +294,9 @@ OSWrapper::Thread* WindowsThreadFactory::getCurrentThread()
 {
 	std::lock_guard<std::recursive_mutex> lock(m_mutex);
 	auto iter = m_threadIdMap.find(std::this_thread::get_id());
-	CHECK_ASSERT(iter != m_threadIdMap.end());
+	if (iter == m_threadIdMap.end()) {
+		return nullptr;
+	}
 	return iter->second;
 }
 
