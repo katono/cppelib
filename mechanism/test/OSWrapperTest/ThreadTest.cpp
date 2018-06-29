@@ -283,6 +283,13 @@ TEST(ThreadTest, priority)
 	thread->setPriority(normalPriority + 1);
 	LONGS_EQUAL(normalPriority + 1, thread->getPriority());
 	LONGS_EQUAL(normalPriority, thread->getInitialPriority());
+
+	LONGS_EQUAL(0, Thread::getMinPriority());
+	LONGS_EQUAL(10, Thread::getMaxPriority());
+
+	LONGS_EQUAL(0, Thread::getLowestPriority());
+	LONGS_EQUAL(10, Thread::getHighestPriority());
+
 	Thread::destroy(thread);
 }
 
