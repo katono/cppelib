@@ -130,4 +130,16 @@ int Thread::getNormalPriority()
 	return (s_factory->getMinPriority() + s_factory->getMaxPriority()) / 2;
 }
 
+int Thread::getHighestPriority()
+{
+	CHECK_ASSERT(s_factory);
+	return s_factory->getHighestPriority();
+}
+
+int Thread::getLowestPriority()
+{
+	CHECK_ASSERT(s_factory);
+	return s_factory->getLowestPriority();
+}
+
 }

@@ -41,6 +41,8 @@ public:
 	static int getMaxPriority();
 	static int getMinPriority();
 	static int getNormalPriority();
+	static int getHighestPriority();
+	static int getLowestPriority();
 
 	virtual void start() = 0;
 	virtual Error wait() = 0;

@@ -147,6 +147,14 @@ private:
 	{
 		return 0;
 	}
+	int getHighestPriority() const
+	{
+		return 10;
+	}
+	int getLowestPriority() const
+	{
+		return 0;
+	}
 
 };
 

@@ -18,6 +18,8 @@ public:
 	virtual Thread* getCurrentThread() = 0;
 	virtual int getMaxPriority() const = 0;
 	virtual int getMinPriority() const = 0;
+	virtual int getHighestPriority() const = 0;
+	virtual int getLowestPriority() const = 0;
 };
 
 }
