@@ -7,6 +7,8 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace ThreadTest {
+
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::ThreadFactory;
@@ -480,3 +482,4 @@ TEST(ThreadTest, ExceptionHandler_throws_exception)
 	Thread::destroy(thread);
 }
 
+} // namespace ThreadTest

@@ -20,6 +20,8 @@ typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace PlatformThreadTest {
+
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
@@ -454,3 +456,5 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 	Thread::destroy(thread);
 }
 #endif
+
+} // namespace PlatformThreadTest

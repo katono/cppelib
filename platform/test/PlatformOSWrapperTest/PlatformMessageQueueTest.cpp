@@ -29,6 +29,8 @@ typedef ItronOSWrapper::ItronFixedMemoryPoolFactory PlatformFixedMemoryPoolFacto
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace PlatformMessageQueueTest {
+
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
@@ -392,3 +394,4 @@ TEST(PlatformMessageQueueTest, send_receive_exception)
 	MessageQueue<Elem>::destroy(mq);
 }
 
+} // namespace PlatformMessageQueueTest

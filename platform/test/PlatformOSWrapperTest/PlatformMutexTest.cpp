@@ -19,6 +19,8 @@ const int PRIORITY_CEILING = 1;
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace PlatformMutexTest {
+
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
@@ -250,3 +252,4 @@ TEST(PlatformMutexTest, LockGuard_recursive)
 	}
 }
 
+} // namespace PlatformMutexTest
