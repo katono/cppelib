@@ -22,6 +22,8 @@ private:
 	virtual OSWrapper::Thread* getCurrentThread();
 	virtual int getMaxPriority() const;
 	virtual int getMinPriority() const;
+	virtual int getHighestPriority() const;
+	virtual int getLowestPriority() const;
 
 	WindowsThreadFactory(const WindowsThreadFactory&);
 	WindowsThreadFactory& operator=(const WindowsThreadFactory&);

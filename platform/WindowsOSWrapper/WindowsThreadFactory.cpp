@@ -318,4 +318,14 @@ int WindowsThreadFactory::getMinPriority() const
 	}
 }
 
+int WindowsThreadFactory::getHighestPriority() const
+{
+	return m_highestPriority;
+}
+
+int WindowsThreadFactory::getLowestPriority() const
+{
+	return m_lowestPriority;
+}
+
 }

@@ -366,4 +366,14 @@ int ItronThreadFactory::getMinPriority() const
 	return TMIN_TPRI;
 }
 
+int ItronThreadFactory::getHighestPriority() const
+{
+	return TMIN_TPRI;
+}
+
+int ItronThreadFactory::getLowestPriority() const
+{
+	return TMAX_TPRI;
+}
+
 }

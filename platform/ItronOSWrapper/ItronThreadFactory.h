@@ -26,6 +26,8 @@ private:
 	virtual OSWrapper::Thread* getCurrentThread();
 	virtual int getMaxPriority() const;
 	virtual int getMinPriority() const;
+	virtual int getHighestPriority() const;
+	virtual int getLowestPriority() const;
 
 	ItronThreadFactory(const ItronThreadFactory&);
 	ItronThreadFactory& operator=(const ItronThreadFactory&);
