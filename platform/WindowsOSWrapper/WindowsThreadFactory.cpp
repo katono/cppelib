@@ -3,7 +3,6 @@
 #include "OSWrapper/Runnable.h"
 #include "Assertion/Assertion.h"
 #include <thread>
-#include <vector>
 #include <condition_variable>
 #include <chrono>
 #include <windows.h>
