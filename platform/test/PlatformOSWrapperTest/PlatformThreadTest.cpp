@@ -187,6 +187,21 @@ TEST(PlatformThreadTest, priority)
 	Thread::destroy(thread);
 }
 
+TEST(PlatformThreadTest, priority_max_min_highest_lowest)
+{
+#ifdef PLATFORM_OS_WINDOWS
+	LONGS_EQUAL(9, Thread::getMaxPriority());
+	LONGS_EQUAL(1, Thread::getMinPriority());
+	LONGS_EQUAL(9, Thread::getHighestPriority());
+	LONGS_EQUAL(1, Thread::getLowestPriority());
+#elif PLATFORM_OS_ITRON
+	LONGS_EQUAL(TMAX_TPRI, Thread::getMaxPriority());
+	LONGS_EQUAL(TMIN_TPRI, Thread::getMinPriority());
+	LONGS_EQUAL(TMIN_TPRI, Thread::getHighestPriority());
+	LONGS_EQUAL(TMAX_TPRI, Thread::getLowestPriority());
+#endif
+}
+
 class NativeHandleTestRunnable : public Runnable {
 public:
 	void run()

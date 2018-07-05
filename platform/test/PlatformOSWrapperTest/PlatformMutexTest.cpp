@@ -67,8 +67,36 @@ TEST(PlatformMutexTest, lock_unlock)
 {
 	Mutex* mutex = Mutex::create();
 
-	mutex->lock();
-	mutex->unlock();
+	OSWrapper::Error err;
+	err = mutex->lock();
+	LONGS_EQUAL(OSWrapper::OK, err);
+	err = mutex->unlock();
+	LONGS_EQUAL(OSWrapper::OK, err);
+
+	Mutex::destroy(mutex);
+}
+
+TEST(PlatformMutexTest, lock_unlock_recursive)
+{
+	Mutex* mutex = Mutex::create();
+
+	OSWrapper::Error err;
+	err = mutex->lock();
+	LONGS_EQUAL(OSWrapper::OK, err);
+	err = mutex->lock();
+	LONGS_EQUAL(OSWrapper::OK, err);
+	err = mutex->lock();
+	LONGS_EQUAL(OSWrapper::OK, err);
+
+	err = mutex->unlock();
+	LONGS_EQUAL(OSWrapper::OK, err);
+	err = mutex->unlock();
+	LONGS_EQUAL(OSWrapper::OK, err);
+	err = mutex->unlock();
+	LONGS_EQUAL(OSWrapper::OK, err);
+
+	err = mutex->unlock();
+	LONGS_EQUAL(OSWrapper::NotLocked, err);
 
 	Mutex::destroy(mutex);
 }
