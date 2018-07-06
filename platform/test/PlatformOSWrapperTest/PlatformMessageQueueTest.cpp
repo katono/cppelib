@@ -4,6 +4,7 @@
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/MessageQueue.h"
 #include "OSWrapper/FixedMemoryPool.h"
+#include "Assertion/Assertion.h"
 #include <exception>
 
 #ifdef PLATFORM_OS_WINDOWS
@@ -350,26 +351,33 @@ TEST(PlatformMessageQueueTest, send_receive_many_threads)
 
 struct Elem {
 	unsigned int data;
-	static const unsigned int EXCEPTION_DATA = 0;
-	class Exception : public std::exception {};
+
+	static const unsigned int STD_EXCEPTION_DATA = 0;
+	class StdException : public std::exception {};
+
+	static const unsigned int ASSERTION_FAIL_DATA = 1;
 
 	Elem() : data(100) {}
 	Elem(const Elem& x) : data(x.data)
 	{
-		if (x.data == EXCEPTION_DATA) {
-			throw Exception();
+		if (x.data == STD_EXCEPTION_DATA) {
+			throw StdException();
+		} else if (x.data == ASSERTION_FAIL_DATA) {
+			CHECK_ASSERT(false);
 		}
 	}
 	Elem& operator=(const Elem&)
 	{
-		if (data == EXCEPTION_DATA) {
-			throw Exception();
+		if (data == STD_EXCEPTION_DATA) {
+			throw StdException();
+		} else if (data == ASSERTION_FAIL_DATA) {
+			CHECK_ASSERT(false);
 		}
 		return *this;
 	}
 };
 
-TEST(PlatformMessageQueueTest, send_receive_exception)
+TEST(PlatformMessageQueueTest, send_receive_std_exception)
 {
 	MessageQueue<Elem>* mq = MessageQueue<Elem>::create(SIZE);
 	CHECK(mq);
@@ -380,15 +388,52 @@ TEST(PlatformMessageQueueTest, send_receive_exception)
 	LONGS_EQUAL(OSWrapper::OK, err);
 	LONGS_EQUAL(1, mq->getSize());
 
-	a.data = Elem::EXCEPTION_DATA;
+	a.data = Elem::STD_EXCEPTION_DATA;
 	err = mq->send(a);
 	LONGS_EQUAL(OSWrapper::OtherError, err);
 	LONGS_EQUAL(1, mq->getSize());
 
 	Elem b;
-	b.data = Elem::EXCEPTION_DATA;
+	b.data = Elem::STD_EXCEPTION_DATA;
 	err = mq->receive(&b);
 	LONGS_EQUAL(OSWrapper::OtherError, err);
+	LONGS_EQUAL(1, mq->getSize());
+
+	MessageQueue<Elem>::destroy(mq);
+}
+
+TEST(PlatformMessageQueueTest, send_receive_assertion_failure)
+{
+	MessageQueue<Elem>* mq = MessageQueue<Elem>::create(SIZE);
+	CHECK(mq);
+	Elem a;
+
+	OSWrapper::Error err;
+	err = mq->send(a);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	LONGS_EQUAL(1, mq->getSize());
+
+	bool exception_occurred = false;
+	a.data = Elem::ASSERTION_FAIL_DATA;
+	try {
+		err = mq->send(a);
+	}
+	catch (const Assertion::Failure&) {
+		exception_occurred = true;
+	}
+	CHECK(exception_occurred);
+	LONGS_EQUAL(1, mq->getSize());
+
+	exception_occurred = false;
+	Elem b;
+	b.data = Elem::ASSERTION_FAIL_DATA;
+	try {
+		err = mq->receive(&b);
+	}
+	catch (const Assertion::Failure&) {
+		exception_occurred = true;
+	}
+	CHECK(exception_occurred);
 	LONGS_EQUAL(1, mq->getSize());
 
 	MessageQueue<Elem>::destroy(mq);

@@ -3,12 +3,12 @@
 
 #include <cstddef>
 #include <new>
-#include <exception>
 #include "Timeout.h"
 #include "OSWrapperError.h"
 #include "Mutex.h"
 #include "EventFlag.h"
 #include "FixedMemoryPool.h"
+#include "Assertion/Assertion.h"
 
 namespace OSWrapper {
 
@@ -83,7 +83,10 @@ public:
 		try {
 			push(msg);
 		}
-		catch (const std::exception&) {
+		catch (const Assertion::Failure&) {
+			throw;
+		}
+		catch (...) {
 			err = OtherError;
 		}
 		return err;
@@ -118,7 +121,10 @@ public:
 		try {
 			pop(msg);
 		}
-		catch (const std::exception&) {
+		catch (const Assertion::Failure&) {
+			throw;
+		}
+		catch (...) {
 			err = OtherError;
 		}
 		return err;
