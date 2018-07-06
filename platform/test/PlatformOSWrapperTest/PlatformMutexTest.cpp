@@ -42,6 +42,9 @@ TEST_GROUP(PlatformMutexTest) {
 	}
 	void teardown()
 	{
+		OSWrapper::Error err = s_mutex->unlock();
+		LONGS_EQUAL(OSWrapper::NotLocked, err);
+
 		Mutex::destroy(s_mutex);
 
 		mock().checkExpectations();
@@ -277,6 +280,16 @@ TEST(PlatformMutexTest, LockGuard_recursive)
 		{
 			LockGuard lock2(s_mutex);
 		}
+	}
+}
+
+TEST(PlatformMutexTest, LockGuard_AdoptLock)
+{
+	{
+		OSWrapper::Error err = s_mutex->tryLock();
+		LONGS_EQUAL(OSWrapper::OK, err);
+
+		LockGuard lock(s_mutex, OSWrapper::AdoptLock);
 	}
 }
 
