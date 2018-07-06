@@ -32,11 +32,18 @@ void Mutex::destroy(Mutex* m)
 
 
 LockGuard::LockGuard(Mutex* m)
-: m_mutex(m), m_lockErr(OK)
+: m_mutex(m), m_lockErr(OtherError)
 {
 	if (m_mutex != 0) {
 		m_lockErr = m_mutex->lock();
 	}
+}
+
+const AdoptLock_t AdoptLock;
+
+LockGuard::LockGuard(Mutex* m, AdoptLock_t)
+: m_mutex(m), m_lockErr(OK)
+{
 }
 
 LockGuard::~LockGuard()

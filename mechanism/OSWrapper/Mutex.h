@@ -26,9 +26,13 @@ public:
 
 };
 
+struct AdoptLock_t {};
+extern const AdoptLock_t AdoptLock;
+
 class LockGuard {
 public:
 	explicit LockGuard(Mutex* m);
+	LockGuard(Mutex* m, AdoptLock_t);
 	~LockGuard();
 
 private:
