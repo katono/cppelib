@@ -70,11 +70,11 @@ public:
 		if (err != OK) {
 			return err;
 		}
+		LockGuard lock(m_mtxSend, AdoptLock);
 
 		if (isFull()) {
 			err = m_event->timedWait(EV_NOT_FULL, EventFlag::OR, 0, tmout);
 			if (err != OK) {
-				m_mtxSend->unlock();
 				return err;
 			}
 		}
@@ -86,7 +86,6 @@ public:
 		catch (const std::exception&) {
 			err = OtherError;
 		}
-		m_mtxSend->unlock();
 		return err;
 	}
 
@@ -106,11 +105,11 @@ public:
 		if (err != OK) {
 			return err;
 		}
+		LockGuard lock(m_mtxRecv, AdoptLock);
 
 		if (isEmpty()) {
 			err = m_event->timedWait(EV_NOT_EMPTY, EventFlag::OR, 0, tmout);
 			if (err != OK) {
-				m_mtxRecv->unlock();
 				return err;
 			}
 		}
@@ -122,7 +121,6 @@ public:
 		catch (const std::exception&) {
 			err = OtherError;
 		}
-		m_mtxRecv->unlock();
 		return err;
 	}
 
