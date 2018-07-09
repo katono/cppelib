@@ -197,7 +197,7 @@ TEST(MutexTest, LockGuard_recursive)
 	Mutex::destroy(mutex);
 }
 
-TEST(MutexTest, LockGuard_AdoptLock)
+TEST(MutexTest, LockGuard_ADOPT_LOCK)
 {
 	mutex = Mutex::create();
 	mock().expectOneCall("tryLock").onObject(mutex).andReturnValue(OSWrapper::OK);
@@ -207,7 +207,7 @@ TEST(MutexTest, LockGuard_AdoptLock)
 		OSWrapper::Error err = mutex->tryLock();
 		LONGS_EQUAL(OSWrapper::OK, err);
 
-		LockGuard lock(mutex, OSWrapper::AdoptLock);
+		LockGuard lock(mutex, LockGuard::ADOPT_LOCK);
 	}
 
 	Mutex::destroy(mutex);

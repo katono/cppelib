@@ -283,13 +283,13 @@ TEST(PlatformMutexTest, LockGuard_recursive)
 	}
 }
 
-TEST(PlatformMutexTest, LockGuard_AdoptLock)
+TEST(PlatformMutexTest, LockGuard_ADOPT_LOCK)
 {
 	{
 		OSWrapper::Error err = s_mutex->tryLock();
 		LONGS_EQUAL(OSWrapper::OK, err);
 
-		LockGuard lock(s_mutex, OSWrapper::AdoptLock);
+		LockGuard lock(s_mutex, LockGuard::ADOPT_LOCK);
 	}
 }
 

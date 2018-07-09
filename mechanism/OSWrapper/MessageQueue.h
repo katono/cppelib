@@ -70,7 +70,7 @@ public:
 		if (err != OK) {
 			return err;
 		}
-		LockGuard lock(m_mtxSend, AdoptLock);
+		LockGuard lock(m_mtxSend, LockGuard::ADOPT_LOCK);
 
 		if (isFull()) {
 			err = m_event->timedWait(EV_NOT_FULL, EventFlag::OR, 0, tmout);
@@ -108,7 +108,7 @@ public:
 		if (err != OK) {
 			return err;
 		}
-		LockGuard lock(m_mtxRecv, AdoptLock);
+		LockGuard lock(m_mtxRecv, LockGuard::ADOPT_LOCK);
 
 		if (isEmpty()) {
 			err = m_event->timedWait(EV_NOT_EMPTY, EventFlag::OR, 0, tmout);

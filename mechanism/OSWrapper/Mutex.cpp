@@ -39,9 +39,9 @@ LockGuard::LockGuard(Mutex* m)
 	}
 }
 
-const AdoptLock_t AdoptLock;
+const LockGuard::AdoptLock LockGuard::ADOPT_LOCK;
 
-LockGuard::LockGuard(Mutex* m, AdoptLock_t)
+LockGuard::LockGuard(Mutex* m, AdoptLock)
 : m_mutex(m), m_lockErr(OK)
 {
 }
