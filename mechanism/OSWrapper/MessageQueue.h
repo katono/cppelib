@@ -18,7 +18,7 @@ public:
 	static MessageQueue* create(std::size_t maxSize)
 	{
 		const std::size_t alignedMQSize =
-			(sizeof(MessageQueue) + (sizeof(double) - 1)) & ~(sizeof(double) - 1);
+			(sizeof(MessageQueue) + (sizeof(double) - 1U)) & ~(sizeof(double) - 1U);
 		const std::size_t rbBufSize = maxSize + 1U;
 		const std::size_t poolBufSize = alignedMQSize + (sizeof(T) * rbBufSize);
 
