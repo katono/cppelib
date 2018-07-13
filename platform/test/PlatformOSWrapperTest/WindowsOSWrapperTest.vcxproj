@@ -95,6 +95,7 @@
     <ClCompile Include="..\..\..\mechanism\OSWrapper\EventFlag.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\FixedMemoryPool.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Mutex.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\PeriodicTimer.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Thread.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Timeout.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\VariableMemoryPool.cpp" />
@@ -102,6 +103,7 @@
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsFixedMemoryPoolFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsMutexFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsOSWrapper.cpp" />
+    <ClCompile Include="..\..\WindowsOSWrapper\WindowsPeriodicTimerFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsThreadFactory.cpp" />
     <ClCompile Include="..\..\WindowsOSWrapper\WindowsVariableMemoryPoolFactory.cpp" />
     <ClCompile Include="..\main.cpp" />
@@ -109,6 +111,7 @@
     <ClCompile Include="PlatformFixedMemoryPoolTest.cpp" />
     <ClCompile Include="PlatformMessageQueueTest.cpp" />
     <ClCompile Include="PlatformMutexTest.cpp" />
+    <ClCompile Include="PlatformPeriodicTimerTest.cpp" />
     <ClCompile Include="PlatformThreadTest.cpp" />
     <ClCompile Include="PlatformVariableMemoryPoolTest.cpp" />
   </ItemGroup>
@@ -121,6 +124,8 @@
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Mutex.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\MutexFactory.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\OSWrapperError.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\PeriodicTimer.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\PeriodicTimerFactory.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Runnable.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Thread.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\ThreadFactory.h" />
@@ -131,6 +136,7 @@
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsFixedMemoryPoolFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsMutexFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsOSWrapper.h" />
+    <ClInclude Include="..\..\WindowsOSWrapper\WindowsPeriodicTimerFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsThreadFactory.h" />
     <ClInclude Include="..\..\WindowsOSWrapper\WindowsVariableMemoryPoolFactory.h" />
   </ItemGroup>
