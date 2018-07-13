@@ -54,6 +54,7 @@ set(OSWrapperSrc
 	../OSWrapper/EventFlag.cpp
 	../OSWrapper/FixedMemoryPool.cpp
 	../OSWrapper/Mutex.cpp
+	../OSWrapper/PeriodicTimer.cpp
 	../OSWrapper/Thread.cpp
 	../OSWrapper/Timeout.cpp
 	../OSWrapper/VariableMemoryPool.cpp
@@ -63,6 +64,7 @@ set(OSWrapperTestSrc
 	OSWrapperTest/EventFlagTest.cpp
 	OSWrapperTest/FixedMemoryPoolTest.cpp
 	OSWrapperTest/MutexTest.cpp
+	OSWrapperTest/PeriodicTimerTest.cpp
 	OSWrapperTest/ThreadTest.cpp
 	OSWrapperTest/VariableMemoryPoolTest.cpp
 )
