@@ -77,7 +77,6 @@ class TimerRunnable : public Runnable {
 		auto now = std::chrono::system_clock::now();
 		auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
 		return static_cast<unsigned long>(now_ms.count());
-
 #elif PLATFORM_OS_ITRON
 		SYSTIM tim;
 		get_tim(&tim);
@@ -90,6 +89,7 @@ class TimerRunnable : public Runnable {
 public:
 	TimerRunnable(unsigned long period) : m_period(period), m_prevTime(0) {}
 	unsigned long getPeriod() const { return m_period; }
+	void setStartTime() { m_prevTime = getTime(); }
 	void run()
 	{
 		if (m_prevTime == 0) {
@@ -142,6 +142,7 @@ TEST(PlatformPeriodicTimerTest, start_isStarted_stop)
 	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	CHECK(!timer->isStarted());
+	runnable.setStartTime();
 	timer->start();
 
 	CHECK(timer->isStarted());
@@ -159,6 +160,7 @@ TEST(PlatformPeriodicTimerTest, repeat_start_stop)
 	TimerRunnable runnable(100);
 	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
+	runnable.setStartTime();
 	timer->start();
 	timer->start();
 
