@@ -69,16 +69,16 @@ void PeriodicTimer::timerMain()
 	}
 }
 
-PeriodicTimer* PeriodicTimer::create(Runnable* r, unsigned long periodicMillis, const char* name/*= ""*/)
+PeriodicTimer* PeriodicTimer::create(Runnable* r, unsigned long periodInMillis, const char* name/*= ""*/)
 {
 	CHECK_ASSERT(s_factory);
 	if (r == 0) {
 		return 0;
 	}
-	if (periodicMillis == 0U) {
+	if (periodInMillis == 0U) {
 		return 0;
 	}
-	return s_factory->create(r, periodicMillis, name);
+	return s_factory->create(r, periodInMillis, name);
 }
 
 void PeriodicTimer::destroy(PeriodicTimer* t)
