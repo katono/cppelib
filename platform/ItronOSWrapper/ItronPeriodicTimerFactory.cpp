@@ -31,7 +31,7 @@ public:
 		ccyc.exinf = this;
 		ccyc.cychdr = (FP) &timerCallback;
 		ccyc.cyctim = periodInMillis;
-		ccyc.cycphs = 0U;;
+		ccyc.cycphs = 0U;
 		ER_ID cyc = acre_cyc(&ccyc);
 		if (cyc <= 0) {
 			return;
@@ -89,7 +89,7 @@ public:
 
 
 ItronPeriodicTimerFactory::ItronPeriodicTimerFactory()
-: m_mpfId(0), m_mtxId(0), m_timerIdVec()
+: m_mpfId(0), m_mtxId(0)
 {
 	T_CMPF cmpf = {0};
 	cmpf.mpfatr = TA_TFIFO;
@@ -129,10 +129,6 @@ OSWrapper::PeriodicTimer* ItronPeriodicTimerFactory::create(OSWrapper::Runnable*
 		return 0;
 	}
 
-	if (m_timerIdVec.full()) {
-		return 0;
-	}
-
 	VP p = 0;
 	ER err = pget_mpf(m_mpfId, &p);
 	if (err != E_OK) {
@@ -149,8 +145,6 @@ OSWrapper::PeriodicTimer* ItronPeriodicTimerFactory::create(OSWrapper::Runnable*
 		return 0;
 	}
 
-	m_timerIdVec.push_back(t->getId());
-
 	return t;
 }
 
@@ -159,12 +153,6 @@ void ItronPeriodicTimerFactory::destroy(OSWrapper::PeriodicTimer* t)
 	ItronPeriodicTimer* timer = static_cast<ItronPeriodicTimer*>(t);
 	timer->stop();
 	Lock lk(m_mtxId);
-	for (TimerIDVector::iterator i = m_timerIdVec.begin(); i != m_timerIdVec.end(); ++i) {
-		if (*i == timer->getId()) {
-			m_timerIdVec.erase(i);
-			break;
-		}
-	}
 	timer->~ItronPeriodicTimer();
 	rel_mpf(m_mpfId, timer);
 }

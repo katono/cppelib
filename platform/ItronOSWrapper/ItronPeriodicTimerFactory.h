@@ -2,7 +2,6 @@
 #define ITRON_OS_WRAPPER_ITRON_PERIODIC_TIMER_FACTORY_H_INCLUDED
 
 #include "OSWrapper/PeriodicTimerFactory.h"
-#include "Container/FixedVector.h"
 #include "kernel.h"
 
 #ifndef MAX_PERIODIC_TIMERS
@@ -25,9 +24,6 @@ private:
 
 	ID m_mpfId;
 	ID m_mtxId;
-
-	typedef Container::FixedVector<ID, MAX_PERIODIC_TIMERS> TimerIDVector;
-	TimerIDVector m_timerIdVec;
 };
 
 }
