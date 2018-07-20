@@ -217,6 +217,9 @@ OSWrapper::EventFlag* ItronEventFlagFactory::create(bool autoReset)
 	if (err != E_OK) {
 		return 0;
 	}
+	if (p == 0) {
+		return 0;
+	}
 
 	ItronEventFlag* e = new(p) ItronEventFlag(autoReset);
 	if (!e->isCreated()) {

@@ -171,6 +171,9 @@ OSWrapper::Mutex* ItronMutexFactory::create(int priorityCeiling)
 	if (err != E_OK) {
 		return 0;
 	}
+	if (p == 0) {
+		return 0;
+	}
 
 	ItronMutex* m = new(p) ItronMutex(priorityCeiling);
 	if (!m->isCreated()) {
