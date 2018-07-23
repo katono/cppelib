@@ -48,8 +48,6 @@ public:
 
 	bool isCreated() { return m_timerId > 0; }
 
-	ID getId() { return m_timerId; }
-
 	void start()
 	{
 		sta_cyc(m_timerId);
