@@ -3,26 +3,6 @@ enable_testing()
 
 set(CPPUTEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../tool/CppUTest)
 
-if(NOT EXISTS ${CPPUTEST_DIR}/src)
-	message("Start: Get CppUTest")
-	execute_process(
-		COMMAND git submodule update --init
-	)
-	message("Done: Get CppUTest")
-endif()
-
-message("Start: Build CppUTest")
-execute_process(
-	COMMAND ${CMAKE_COMMAND} .
-	WORKING_DIRECTORY ${CPPUTEST_DIR}
-)
-execute_process(
-	COMMAND ${CMAKE_MAKE_PROGRAM} CppUTest CppUTestExt
-	WORKING_DIRECTORY ${CPPUTEST_DIR}
-)
-message("Done: Build CppUTest")
-
-
 project(mechanism_test)
 
 enable_language(CXX)
@@ -76,6 +56,26 @@ add_executable(alltests
 	${OSWrapperSrc}
 	${OSWrapperTestSrc}
 )
+
+if(NOT EXISTS ${CPPUTEST_DIR}/src)
+	message("Start: Get CppUTest")
+	execute_process(
+		COMMAND git submodule update --init
+	)
+	message("Done: Get CppUTest")
+endif()
+
+message("Start: Build CppUTest")
+execute_process(
+	COMMAND ${CMAKE_COMMAND} .
+	WORKING_DIRECTORY ${CPPUTEST_DIR}
+)
+execute_process(
+	COMMAND ${CMAKE_MAKE_PROGRAM} CppUTest CppUTestExt
+	WORKING_DIRECTORY ${CPPUTEST_DIR}
+)
+message("Done: Build CppUTest")
+
 
 target_link_libraries(alltests CppUTest CppUTestExt)
 
