@@ -1,13 +1,21 @@
 #ifndef WINDOWS_OS_WRAPPER_WINDOWS_THREAD_FACTORY_H_INCLUDED
 #define WINDOWS_OS_WRAPPER_WINDOWS_THREAD_FACTORY_H_INCLUDED
 
-#include "OSWrapper/ThreadFactory.h"
-#include <unordered_map>
-#include <mutex>
+#include "StdCppOSWrapper/StdCppThreadFactory.h"
 
 namespace WindowsOSWrapper {
 
-class WindowsThreadFactory : public OSWrapper::ThreadFactory {
+class WindowsThreadFactory : public StdCppOSWrapper::StdCppThreadFactory {
+private:
+	class WindowsThread : public StdCppOSWrapper::StdCppThreadFactory::StdCppThread {
+	private:
+		const std::unordered_map<int, int>& m_prioMap;
+	public:
+		WindowsThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, const char* name, const std::unordered_map<int, int>& prioMap);
+		virtual ~WindowsThread() {}
+
+		virtual void setPriority(int priority);
+	};
 public:
 	WindowsThreadFactory(int lowestPriority = 1, int highestPriority = 9);
 	virtual ~WindowsThreadFactory() {}
@@ -15,21 +23,13 @@ public:
 	void setPriorityRange(int lowestPriority, int highestPriority);
 
 private:
-	virtual OSWrapper::Thread* create(OSWrapper::Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name);
-	virtual void destroy(OSWrapper::Thread* t);
-	virtual void sleep(unsigned long millis);
-	virtual void yield();
-	virtual OSWrapper::Thread* getCurrentThread();
 	virtual int getMaxPriority() const;
 	virtual int getMinPriority() const;
 	virtual int getHighestPriority() const;
 	virtual int getLowestPriority() const;
 
-	WindowsThreadFactory(const WindowsThreadFactory&);
-	WindowsThreadFactory& operator=(const WindowsThreadFactory&);
+	virtual StdCppOSWrapper::StdCppThreadFactory::StdCppThread* createStdCppThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, const char* name);
 
-	std::unordered_map<std::thread::id, OSWrapper::Thread*> m_threadIdMap;
-	std::recursive_mutex m_mutex;
 	int m_lowestPriority;
 	int m_highestPriority;
 	std::unordered_map<int, int> m_prioMap;
