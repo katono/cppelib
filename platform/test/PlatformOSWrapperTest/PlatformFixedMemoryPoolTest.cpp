@@ -3,6 +3,9 @@
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
 typedef WindowsOSWrapper::WindowsFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
+#elif PLATFORM_OS_STDCPP
+#include "StdCppOSWrapper/StdCppFixedMemoryPoolFactory.h"
+typedef StdCppOSWrapper::StdCppFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
 #elif PLATFORM_OS_ITRON
 #include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
 typedef ItronOSWrapper::ItronFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
@@ -77,7 +80,7 @@ TEST(PlatformFixedMemoryPoolTest, allocate_deallocate)
 	FixedMemoryPool::destroy(pool);
 }
 
-#ifndef PLATFORM_OS_WINDOWS
+#ifdef PLATFORM_OS_ITRON
 TEST(PlatformFixedMemoryPoolTest, allocate_failed)
 {
 	pool = FixedMemoryPool::create(16, 16);

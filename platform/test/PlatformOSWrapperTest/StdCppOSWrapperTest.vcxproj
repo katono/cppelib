@@ -46,9 +46,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(ProjectName)$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(ProjectName)$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -95,7 +97,6 @@
     <ClCompile Include="..\..\..\mechanism\OSWrapper\EventFlag.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\FixedMemoryPool.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Mutex.cpp" />
-    <ClCompile Include="..\..\..\mechanism\OSWrapper\PeriodicTimer.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Thread.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Timeout.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\VariableMemoryPool.cpp" />
@@ -110,7 +111,6 @@
     <ClCompile Include="PlatformFixedMemoryPoolTest.cpp" />
     <ClCompile Include="PlatformMessageQueueTest.cpp" />
     <ClCompile Include="PlatformMutexTest.cpp" />
-    <ClCompile Include="PlatformPeriodicTimerTest.cpp" />
     <ClCompile Include="PlatformThreadTest.cpp" />
     <ClCompile Include="PlatformVariableMemoryPoolTest.cpp" />
   </ItemGroup>
@@ -123,8 +123,6 @@
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Mutex.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\MutexFactory.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\OSWrapperError.h" />
-    <ClInclude Include="..\..\..\mechanism\OSWrapper\PeriodicTimer.h" />
-    <ClInclude Include="..\..\..\mechanism\OSWrapper\PeriodicTimerFactory.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Runnable.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Thread.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\ThreadFactory.h" />

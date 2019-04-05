@@ -3,6 +3,9 @@
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsVariableMemoryPoolFactory.h"
 typedef WindowsOSWrapper::WindowsVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
+#elif PLATFORM_OS_STDCPP
+#include "StdCppOSWrapper/StdCppVariableMemoryPoolFactory.h"
+typedef StdCppOSWrapper::StdCppVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
 #elif PLATFORM_OS_ITRON
 #include "ItronOSWrapper/ItronVariableMemoryPoolFactory.h"
 typedef ItronOSWrapper::ItronVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
@@ -62,7 +65,7 @@ TEST(PlatformVariableMemoryPoolTest, allocate)
 	VariableMemoryPool::destroy(pool);
 }
 
-#ifndef PLATFORM_OS_WINDOWS
+#ifdef PLATFORM_OS_ITRON
 TEST(PlatformVariableMemoryPoolTest, allocate_failed)
 {
 	pool = VariableMemoryPool::create(18);

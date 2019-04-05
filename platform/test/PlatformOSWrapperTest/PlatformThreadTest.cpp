@@ -10,6 +10,11 @@
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
+#elif PLATFORM_OS_STDCPP
+#include "StdCppOSWrapper/StdCppThreadFactory.h"
+#include "StdCppOSWrapper/StdCppMutexFactory.h"
+typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
+typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
 #elif PLATFORM_OS_ITRON
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
@@ -210,6 +215,8 @@ public:
 		Thread* t = Thread::getCurrentThread();
 #ifdef PLATFORM_OS_WINDOWS
 		LONGS_EQUAL(GetCurrentThreadId(), GetThreadId((HANDLE)t->getNativeHandle()));
+#elif PLATFORM_OS_STDCPP
+		CHECK(t->getNativeHandle());
 #elif PLATFORM_OS_ITRON
 		ID tskid = (ID)t->getNativeHandle();
 		T_RTSK rtsk = {0};

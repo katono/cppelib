@@ -10,6 +10,13 @@
 typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
+#elif PLATFORM_OS_STDCPP
+#include "StdCppOSWrapper/StdCppThreadFactory.h"
+#include "StdCppOSWrapper/StdCppMutexFactory.h"
+#include "StdCppOSWrapper/StdCppEventFlagFactory.h"
+typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
+typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
+typedef StdCppOSWrapper::StdCppEventFlagFactory PlatformEventFlagFactory;
 #elif PLATFORM_OS_ITRON
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"

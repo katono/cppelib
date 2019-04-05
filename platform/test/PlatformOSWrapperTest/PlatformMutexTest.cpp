@@ -8,6 +8,12 @@
 typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 const int PRIORITY_CEILING = 10;
+#elif PLATFORM_OS_STDCPP
+#include "StdCppOSWrapper/StdCppThreadFactory.h"
+#include "StdCppOSWrapper/StdCppMutexFactory.h"
+typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
+typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
+const int PRIORITY_CEILING = 1;
 #elif PLATFORM_OS_ITRON
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
