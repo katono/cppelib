@@ -97,7 +97,15 @@ TEST(PlatformThreadTest, start_wait_isFinished)
 
 	CHECK(!thread->isFinished());
 
-	thread->wait();
+	OSWrapper::Error err = thread->tryWait();
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+
+	err = thread->timedWait(OSWrapper::Timeout(10));
+	LONGS_EQUAL(OSWrapper::TimedOut, err);
+
+	err = thread->wait();
+	LONGS_EQUAL(OSWrapper::OK, err);
+
 	CHECK(thread->isFinished());
 
 	Thread::destroy(thread);
