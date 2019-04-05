@@ -114,8 +114,21 @@ const char* StdCppThreadFactory::StdCppThread::getName() const
 void StdCppThreadFactory::StdCppThread::setPriority(int priority)
 {
 	// Can not set real priority by this class
+	if (priority != OSWrapper::Thread::INHERIT_PRIORITY) {
+		std::lock_guard<std::mutex> lock(m_mutex);
+		m_priority = priority;
+		return;
+	}
+	// INHERIT_PRIORITY
+	OSWrapper::Thread* t = OSWrapper::Thread::getCurrentThread();
+	int this_priority;
+	if (t == nullptr) {
+		this_priority = OSWrapper::Thread::getNormalPriority();
+	} else {
+		this_priority = t->getPriority();
+	}
 	std::lock_guard<std::mutex> lock(m_mutex);
-	m_priority = priority;
+	m_priority = this_priority;
 }
 
 int StdCppThreadFactory::StdCppThread::getPriority() const
