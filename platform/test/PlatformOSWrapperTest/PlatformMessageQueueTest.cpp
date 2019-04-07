@@ -216,7 +216,7 @@ TEST(PlatformMessageQueueTest, trySend_TimedOut_receive)
 		Sender(IntMQ* mq) : BaseRunnable(mq) {}
 		virtual void run()
 		{
-			for (int i = 0; i < SIZE; i++) {
+			for (std::size_t i = 0; i < SIZE; i++) {
 				OSWrapper::Error err = m_mq->trySend(i);
 				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
@@ -245,7 +245,7 @@ TEST(PlatformMessageQueueTest, trySend_TimedOut_receive)
 		virtual void run()
 		{
 			Thread::sleep(100);
-			for (int i = 0; i < SIZE + 1; i++) {
+			for (std::size_t i = 0; i < SIZE + 1; i++) {
 				int data = 0;
 				OSWrapper::Error err = m_mq->receive(&data);
 				LockGuard lock(s_mutex);
@@ -300,7 +300,7 @@ TEST(PlatformMessageQueueTest, send_receive_many_threads)
 		Sender(IntMQ* mq) : BaseRunnable(mq) {}
 		virtual void run()
 		{
-			for (int i = 0; i < SIZE; i++) {
+			for (std::size_t i = 0; i < SIZE; i++) {
 				OSWrapper::Error err = m_mq->send(i);
 				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
@@ -314,7 +314,7 @@ TEST(PlatformMessageQueueTest, send_receive_many_threads)
 		Receiver(IntMQ* mq) : BaseRunnable(mq) {}
 		virtual void run()
 		{
-			for (int i = 0; i < SIZE; i++) {
+			for (std::size_t i = 0; i < SIZE; i++) {
 				int data = 0;
 				OSWrapper::Error err = m_mq->receive(&data);
 				LockGuard lock(s_mutex);
