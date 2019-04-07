@@ -111,6 +111,7 @@
     <ClCompile Include="PlatformFixedMemoryPoolTest.cpp" />
     <ClCompile Include="PlatformMessageQueueTest.cpp" />
     <ClCompile Include="PlatformMutexTest.cpp" />
+    <ClCompile Include="PlatformOSWrapperInitTest.cpp" />
     <ClCompile Include="PlatformThreadTest.cpp" />
     <ClCompile Include="PlatformVariableMemoryPoolTest.cpp" />
   </ItemGroup>
