@@ -155,7 +155,7 @@ std::size_t StdCppThreadFactory::StdCppThread::getStackSize() const
 void* StdCppThreadFactory::StdCppThread::getNativeHandle()
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	return m_thread.native_handle();
+	return reinterpret_cast<void*>(m_thread.native_handle());
 }
 
 
