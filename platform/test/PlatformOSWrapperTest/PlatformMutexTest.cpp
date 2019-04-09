@@ -8,6 +8,12 @@
 typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 const int PRIORITY_CEILING = 10;
+#elif PLATFORM_OS_POSIX
+#include "PosixOSWrapper/PosixThreadFactory.h"
+#include "PosixOSWrapper/PosixMutexFactory.h"
+typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
+typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
+const int PRIORITY_CEILING = 10;
 #elif PLATFORM_OS_STDCPP
 #include "StdCppOSWrapper/StdCppThreadFactory.h"
 #include "StdCppOSWrapper/StdCppMutexFactory.h"

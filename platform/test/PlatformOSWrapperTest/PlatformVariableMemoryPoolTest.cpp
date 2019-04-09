@@ -3,6 +3,9 @@
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsVariableMemoryPoolFactory.h"
 typedef WindowsOSWrapper::WindowsVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
+#elif PLATFORM_OS_POSIX
+#include "PosixOSWrapper/PosixVariableMemoryPoolFactory.h"
+typedef PosixOSWrapper::PosixVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
 #elif PLATFORM_OS_STDCPP
 #include "StdCppOSWrapper/StdCppVariableMemoryPoolFactory.h"
 typedef StdCppOSWrapper::StdCppVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;

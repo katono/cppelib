@@ -3,6 +3,9 @@
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
 typedef WindowsOSWrapper::WindowsFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
+#elif PLATFORM_OS_POSIX
+#include "PosixOSWrapper/PosixFixedMemoryPoolFactory.h"
+typedef PosixOSWrapper::PosixFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
 #elif PLATFORM_OS_STDCPP
 #include "StdCppOSWrapper/StdCppFixedMemoryPoolFactory.h"
 typedef StdCppOSWrapper::StdCppFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;

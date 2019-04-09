@@ -10,6 +10,12 @@
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
+#elif PLATFORM_OS_POSIX
+#include <pthread.h>
+#include "PosixOSWrapper/PosixThreadFactory.h"
+#include "PosixOSWrapper/PosixMutexFactory.h"
+typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
+typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
 #elif PLATFORM_OS_STDCPP
 #include "StdCppOSWrapper/StdCppThreadFactory.h"
 #include "StdCppOSWrapper/StdCppMutexFactory.h"
@@ -42,7 +48,7 @@ TEST_GROUP(PlatformThreadTest) {
 
 	void setup()
 	{
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX)
 		testThreadFactory.setPriorityRange(1, 9);
 #endif
 		OSWrapper::registerMutexFactory(&testMutexFactory);
@@ -202,7 +208,7 @@ TEST(PlatformThreadTest, priority)
 
 TEST(PlatformThreadTest, priority_max_min_highest_lowest)
 {
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX)
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getHighestPriority());
@@ -223,6 +229,8 @@ public:
 		Thread* t = Thread::getCurrentThread();
 #ifdef PLATFORM_OS_WINDOWS
 		LONGS_EQUAL(GetCurrentThreadId(), GetThreadId((HANDLE)t->getNativeHandle()));
+#elif PLATFORM_OS_POSIX
+		CHECK(pthread_equal(pthread_self(), reinterpret_cast<pthread_t>(t->getNativeHandle())) != 0);
 #elif PLATFORM_OS_STDCPP
 		CHECK(t->getNativeHandle());
 #elif PLATFORM_OS_ITRON

@@ -16,6 +16,15 @@ typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
 typedef WindowsOSWrapper::WindowsFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
+#elif PLATFORM_OS_POSIX
+#include "PosixOSWrapper/PosixThreadFactory.h"
+#include "PosixOSWrapper/PosixMutexFactory.h"
+#include "PosixOSWrapper/PosixEventFlagFactory.h"
+#include "PosixOSWrapper/PosixFixedMemoryPoolFactory.h"
+typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
+typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
+typedef PosixOSWrapper::PosixEventFlagFactory PlatformEventFlagFactory;
+typedef PosixOSWrapper::PosixFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
 #elif PLATFORM_OS_STDCPP
 #include "StdCppOSWrapper/StdCppThreadFactory.h"
 #include "StdCppOSWrapper/StdCppMutexFactory.h"

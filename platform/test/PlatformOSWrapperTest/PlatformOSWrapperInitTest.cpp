@@ -11,6 +11,8 @@
 
 #ifdef PLATFORM_OS_WINDOWS
 #include "WindowsOSWrapper/WindowsOSWrapper.h"
+#elif PLATFORM_OS_POSIX
+#include "PosixOSWrapper/PosixOSWrapper.h"
 #elif PLATFORM_OS_STDCPP
 #include "StdCppOSWrapper/StdCppOSWrapper.h"
 #elif PLATFORM_OS_ITRON
@@ -43,6 +45,8 @@ TEST_GROUP(PlatformOSWrapperInitTest) {
 
 #ifdef PLATFORM_OS_WINDOWS
 		WindowsOSWrapper::init(1, 9);
+#elif PLATFORM_OS_POSIX
+		PosixOSWrapper::init(1, 9);
 #elif PLATFORM_OS_STDCPP
 		StdCppOSWrapper::init();
 #elif PLATFORM_OS_ITRON
