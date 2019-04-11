@@ -294,6 +294,8 @@ TEST(PlatformMessageQueueTest, send_receive_many_threads)
 {
 	static int send_count = 0;
 	static int recv_count = 0;
+	send_count = 0;
+	recv_count = 0;
 
 	class Sender : public BaseRunnable {
 	public:
