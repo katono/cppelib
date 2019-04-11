@@ -2,6 +2,7 @@
 #include "OSWrapper/PeriodicTimer.h"
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/EventFlag.h"
+#include "OSWrapper/Thread.h"
 #include <memory>
 #include <time.h>
 #include <signal.h>
@@ -49,6 +50,8 @@ public:
 	{
 		m_evFinished->waitAny();
 		timer_delete(m_timer);
+		OSWrapper::Thread::sleep(m_periodInMillis);
+		m_evFinished->waitAny();
 	}
 
 	void start()
