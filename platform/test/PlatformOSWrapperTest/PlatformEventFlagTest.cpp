@@ -474,7 +474,7 @@ TEST(PlatformEventFlagTest, tryWait_set_reset_OR_TimedOut)
 				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::TimedOut, err);
 			}
-			Thread::sleep(50);
+			Thread::sleep(100);
 			err = m_ef->tryWait(EventFlag::Pattern(0x0F), EventFlag::OR, &ptn);
 			{
 				LockGuard lock(s_mutex);
@@ -490,7 +490,7 @@ TEST(PlatformEventFlagTest, tryWait_set_reset_OR_TimedOut)
 		SetPattern(EventFlag* e) : BaseRunnable(e) {}
 		virtual void run()
 		{
-			Thread::sleep(10);
+			Thread::sleep(50);
 			OSWrapper::Error err = m_ef->set(EventFlag::Pattern(0x01));
 			LockGuard lock(s_mutex);
 			LONGS_EQUAL(OSWrapper::OK, err);
