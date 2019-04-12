@@ -38,6 +38,7 @@ public:
 
 	~WindowsPeriodicTimer()
 	{
+		stop();
 		m_evFinished->waitAny();
 	}
 
