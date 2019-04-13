@@ -28,6 +28,16 @@ typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
 typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
 typedef PosixOSWrapper::PosixEventFlagFactory PlatformEventFlagFactory;
 typedef PosixOSWrapper::PosixPeriodicTimerFactory PlatformPeriodicTimerFactory;
+#elif PLATFORM_OS_STDCPP
+#include <chrono>
+#include "StdCppOSWrapper/StdCppThreadFactory.h"
+#include "StdCppOSWrapper/StdCppMutexFactory.h"
+#include "StdCppOSWrapper/StdCppEventFlagFactory.h"
+#include "StdCppOSWrapper/StdCppPeriodicTimerFactory.h"
+typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
+typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
+typedef StdCppOSWrapper::StdCppEventFlagFactory PlatformEventFlagFactory;
+typedef StdCppOSWrapper::StdCppPeriodicTimerFactory PlatformPeriodicTimerFactory;
 #elif PLATFORM_OS_ITRON
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
@@ -84,7 +94,7 @@ class TimerRunnable : public Runnable {
 	unsigned long m_prevTime;
 	unsigned long getTime()
 	{
-#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX)
+#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX) || defined(PLATFORM_OS_STDCPP)
 		auto now = std::chrono::system_clock::now();
 		auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
 		return static_cast<unsigned long>(now_ms.count());
@@ -109,7 +119,7 @@ public:
 		}
 		unsigned long time = getTime();
 		unsigned long diff = time - m_prevTime;
-#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX)
+#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX) || defined(PLATFORM_OS_STDCPP)
 		unsigned long tolerance = 10;
 #else
 		unsigned long tolerance = 3;
