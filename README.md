@@ -38,7 +38,7 @@ https://github.com/katono/cppelib
 ## Requirements
 
 * `mechanism`: C++98 or later (freestanding)
-* `platform` of Windows: C++11 or later
+* `platform` of Windows and POSIX: C++11 or later
 * C++ Exception enabled
 
 
