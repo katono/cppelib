@@ -218,6 +218,30 @@ TEST(PlatformPeriodicTimerTest, restart)
 	PeriodicTimer::destroy(timer);
 }
 
+TEST(PlatformPeriodicTimerTest, start_stop_continuously_at_once)
+{
+	TimerRunnable runnable(100);
+	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	CHECK(timer);
+	runnable.setStartTime();
+
+	timer->start();
+	timer->stop();
+
+	runnable.setStartTime();
+
+	timer->start();
+	timer->stop();
+
+	runnable.setStartTime();
+
+	timer->start();
+	Thread::sleep(200);
+	timer->stop();
+
+	PeriodicTimer::destroy(timer);
+}
+
 TEST(PlatformPeriodicTimerTest, start_destroy)
 {
 	TimerRunnable runnable(100);
@@ -229,6 +253,17 @@ TEST(PlatformPeriodicTimerTest, start_destroy)
 
 	Thread::sleep(100);
 
+	PeriodicTimer::destroy(timer);
+}
+
+TEST(PlatformPeriodicTimerTest, start_destroy_at_once)
+{
+	TimerRunnable runnable(100);
+	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	CHECK(timer);
+	runnable.setStartTime();
+
+	timer->start();
 	PeriodicTimer::destroy(timer);
 }
 
