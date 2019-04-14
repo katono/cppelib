@@ -157,7 +157,6 @@ public:
 	}
 };
 
-#ifndef PLATFORM_OS_STDCPP
 TEST(PlatformOSWrapperInitTest, testPeriodicTimer)
 {
 	TimerRunnable runnable;
@@ -170,6 +169,5 @@ TEST(PlatformOSWrapperInitTest, testPeriodicTimer)
 
 	PeriodicTimer::destroy(timer);
 }
-#endif
 
 } // namespace PlatformOSWrapperInitTest
