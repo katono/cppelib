@@ -37,13 +37,13 @@ set(StdCppOSWrapperSrc
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppEventFlagFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppFixedMemoryPoolFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppMutexFactory.cpp
+	${PLATFORM_DIR}/StdCppOSWrapper/StdCppPeriodicTimerFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppThreadFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppVariableMemoryPoolFactory.cpp
 )
 
 set(PosixOSWrapperSrc
 	${PLATFORM_DIR}/PosixOSWrapper/PosixThreadFactory.cpp
-	${PLATFORM_DIR}/PosixOSWrapper/PosixPeriodicTimerFactory.cpp
 	${PLATFORM_DIR}/PosixOSWrapper/PosixOSWrapper.cpp
 )
 
@@ -88,7 +88,7 @@ message("Done: Build CppUTest")
 
 find_package(Threads REQUIRED)
 
-target_link_libraries(alltests CppUTest CppUTestExt ${CMAKE_THREAD_LIBS_INIT} rt)
+target_link_libraries(alltests CppUTest CppUTestExt ${CMAKE_THREAD_LIBS_INIT})
 
 add_test(NAME platform_test
 	COMMAND alltests
