@@ -3,6 +3,8 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace EventFlagTest {
+
 using OSWrapper::EventFlag;
 using OSWrapper::EventFlagFactory;
 using OSWrapper::Timeout;
@@ -531,3 +533,4 @@ TEST(EventFlagTest, autoReset_false_AND)
 	EventFlag::destroy(ef);
 }
 
+} // namespace EventFlagTest

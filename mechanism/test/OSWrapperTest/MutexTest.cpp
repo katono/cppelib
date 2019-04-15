@@ -3,6 +3,8 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace MutexTest {
+
 using OSWrapper::Mutex;
 using OSWrapper::MutexFactory;
 using OSWrapper::Timeout;
@@ -213,3 +215,4 @@ TEST(MutexTest, LockGuard_ADOPT_LOCK)
 	Mutex::destroy(mutex);
 }
 
+} // namespace MutexTest

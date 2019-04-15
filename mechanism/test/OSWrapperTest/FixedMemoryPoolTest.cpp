@@ -3,6 +3,8 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace FixedMemoryPoolTest {
+
 using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;
 
@@ -143,3 +145,4 @@ TEST(FixedMemoryPoolTest, getBlockSize)
 	FixedMemoryPool::destroy(pool);
 }
 
+} // namespace FixedMemoryPoolTest

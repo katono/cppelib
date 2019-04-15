@@ -36,6 +36,8 @@ typedef ItronOSWrapper::ItronEventFlagFactory PlatformEventFlagFactory;
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace PlatformEventFlagTest {
+
 using OSWrapper::Runnable;
 using OSWrapper::Thread;
 using OSWrapper::Mutex;
@@ -593,3 +595,4 @@ TEST(PlatformEventFlagTest, waitPattern_InvalidParameter)
 	testTwoThreadsSharingOneEventFlag<WaitFailedInvalidMode, WaitFailedInvalidPattern>(true);
 }
 
+} // namespace PlatformEventFlagTest

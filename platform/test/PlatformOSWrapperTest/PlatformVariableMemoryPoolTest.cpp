@@ -17,6 +17,8 @@ typedef ItronOSWrapper::ItronVariableMemoryPoolFactory PlatformVariableMemoryPoo
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace PlatformVariableMemoryPoolTest {
+
 using OSWrapper::VariableMemoryPool;
 using OSWrapper::VariableMemoryPoolFactory;
 
@@ -100,3 +102,4 @@ TEST(PlatformVariableMemoryPoolTest, deallocate_nullptr)
 	VariableMemoryPool::destroy(pool);
 }
 
+} // namespace PlatformVariableMemoryPoolTest

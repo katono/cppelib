@@ -6,6 +6,8 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace PeriodicTimerTest {
+
 using OSWrapper::Runnable;
 using OSWrapper::PeriodicTimer;
 using OSWrapper::PeriodicTimerFactory;
@@ -327,3 +329,5 @@ TEST(PeriodicTimerTest, ExceptionHandler_throws_exception)
 	timer->stop();
 	PeriodicTimer::destroy(timer);
 }
+
+} // namespace PeriodicTimerTest

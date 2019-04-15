@@ -17,6 +17,8 @@ typedef ItronOSWrapper::ItronFixedMemoryPoolFactory PlatformFixedMemoryPoolFacto
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace PlatformFixedMemoryPoolTest {
+
 using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;
 
@@ -124,3 +126,4 @@ TEST(PlatformFixedMemoryPoolTest, getBlockSize)
 	FixedMemoryPool::destroy(pool);
 }
 
+} // namespace PlatformFixedMemoryPoolTest

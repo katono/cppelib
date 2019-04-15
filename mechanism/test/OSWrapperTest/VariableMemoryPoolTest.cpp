@@ -3,6 +3,8 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
+namespace VariableMemoryPoolTest {
+
 using OSWrapper::VariableMemoryPool;
 using OSWrapper::VariableMemoryPoolFactory;
 
@@ -120,3 +122,4 @@ TEST(VariableMemoryPoolTest, deallocate_nullptr)
 	VariableMemoryPool::destroy(pool);
 }
 
+} // namespace VariableMemoryPoolTest
