@@ -36,6 +36,7 @@ set(OSWrapperSrc
 	${MECHANISM_DIR}/OSWrapper/EventFlag.cpp
 	${MECHANISM_DIR}/OSWrapper/FixedMemoryPool.cpp
 	${MECHANISM_DIR}/OSWrapper/Mutex.cpp
+	${MECHANISM_DIR}/OSWrapper/OneShotTimer.cpp
 	${MECHANISM_DIR}/OSWrapper/PeriodicTimer.cpp
 	${MECHANISM_DIR}/OSWrapper/Thread.cpp
 	${MECHANISM_DIR}/OSWrapper/Timeout.cpp
@@ -46,6 +47,7 @@ set(OSWrapperTestSrc
 	${MECHANISM_DIR}/test/OSWrapperTest/EventFlagTest.cpp
 	${MECHANISM_DIR}/test/OSWrapperTest/FixedMemoryPoolTest.cpp
 	${MECHANISM_DIR}/test/OSWrapperTest/MutexTest.cpp
+	${MECHANISM_DIR}/test/OSWrapperTest/OneShotTimerTest.cpp
 	${MECHANISM_DIR}/test/OSWrapperTest/PeriodicTimerTest.cpp
 	${MECHANISM_DIR}/test/OSWrapperTest/ThreadTest.cpp
 	${MECHANISM_DIR}/test/OSWrapperTest/VariableMemoryPoolTest.cpp
