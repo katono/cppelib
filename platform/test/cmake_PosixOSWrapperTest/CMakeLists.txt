@@ -27,6 +27,7 @@ set(OSWrapperSrc
 	${MECHANISM_DIR}/OSWrapper/EventFlag.cpp
 	${MECHANISM_DIR}/OSWrapper/FixedMemoryPool.cpp
 	${MECHANISM_DIR}/OSWrapper/Mutex.cpp
+	${MECHANISM_DIR}/OSWrapper/OneShotTimer.cpp
 	${MECHANISM_DIR}/OSWrapper/PeriodicTimer.cpp
 	${MECHANISM_DIR}/OSWrapper/Thread.cpp
 	${MECHANISM_DIR}/OSWrapper/Timeout.cpp
@@ -37,6 +38,7 @@ set(StdCppOSWrapperSrc
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppEventFlagFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppFixedMemoryPoolFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppMutexFactory.cpp
+	${PLATFORM_DIR}/StdCppOSWrapper/StdCppOneShotTimerFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppPeriodicTimerFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppThreadFactory.cpp
 	${PLATFORM_DIR}/StdCppOSWrapper/StdCppVariableMemoryPoolFactory.cpp
@@ -53,6 +55,7 @@ set(PlatformOSWrapperTestSrc
 	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformFixedMemoryPoolTest.cpp
 	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformMessageQueueTest.cpp
 	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformMutexTest.cpp
+	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformOneShotTimerTest.cpp
 	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformPeriodicTimerTest.cpp
 	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformThreadTest.cpp
 	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformVariableMemoryPoolTest.cpp
