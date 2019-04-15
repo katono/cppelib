@@ -95,6 +95,7 @@
     <ClCompile Include="..\..\OSWrapper\EventFlag.cpp" />
     <ClCompile Include="..\..\OSWrapper\FixedMemoryPool.cpp" />
     <ClCompile Include="..\..\OSWrapper\Mutex.cpp" />
+    <ClCompile Include="..\..\OSWrapper\OneShotTimer.cpp" />
     <ClCompile Include="..\..\OSWrapper\PeriodicTimer.cpp" />
     <ClCompile Include="..\..\OSWrapper\Thread.cpp" />
     <ClCompile Include="..\..\OSWrapper\Timeout.cpp" />
@@ -103,6 +104,7 @@
     <ClCompile Include="EventFlagTest.cpp" />
     <ClCompile Include="FixedMemoryPoolTest.cpp" />
     <ClCompile Include="MutexTest.cpp" />
+    <ClCompile Include="OneShotTimerTest.cpp" />
     <ClCompile Include="PeriodicTimerTest.cpp" />
     <ClCompile Include="ThreadTest.cpp" />
     <ClCompile Include="VariableMemoryPoolTest.cpp" />
@@ -115,6 +117,8 @@
     <ClInclude Include="..\..\OSWrapper\MessageQueue.h" />
     <ClInclude Include="..\..\OSWrapper\Mutex.h" />
     <ClInclude Include="..\..\OSWrapper\MutexFactory.h" />
+    <ClInclude Include="..\..\OSWrapper\OneShotTimer.h" />
+    <ClInclude Include="..\..\OSWrapper\OneShotTimerFactory.h" />
     <ClInclude Include="..\..\OSWrapper\OSWrapperError.h" />
     <ClInclude Include="..\..\OSWrapper\PeriodicTimer.h" />
     <ClInclude Include="..\..\OSWrapper\PeriodicTimerFactory.h" />
