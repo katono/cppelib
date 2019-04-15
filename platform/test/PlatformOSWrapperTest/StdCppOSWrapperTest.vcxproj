@@ -97,6 +97,7 @@
     <ClCompile Include="..\..\..\mechanism\OSWrapper\EventFlag.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\FixedMemoryPool.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Mutex.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\OneShotTimer.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\PeriodicTimer.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Thread.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Timeout.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="..\..\StdCppOSWrapper\StdCppEventFlagFactory.cpp" />
     <ClCompile Include="..\..\StdCppOSWrapper\StdCppFixedMemoryPoolFactory.cpp" />
     <ClCompile Include="..\..\StdCppOSWrapper\StdCppMutexFactory.cpp" />
+    <ClCompile Include="..\..\StdCppOSWrapper\StdCppOneShotTimerFactory.cpp" />
     <ClCompile Include="..\..\StdCppOSWrapper\StdCppOSWrapper.cpp" />
     <ClCompile Include="..\..\StdCppOSWrapper\StdCppPeriodicTimerFactory.cpp" />
     <ClCompile Include="..\..\StdCppOSWrapper\StdCppThreadFactory.cpp" />
@@ -113,6 +115,7 @@
     <ClCompile Include="PlatformFixedMemoryPoolTest.cpp" />
     <ClCompile Include="PlatformMessageQueueTest.cpp" />
     <ClCompile Include="PlatformMutexTest.cpp" />
+    <ClCompile Include="PlatformOneShotTimerTest.cpp" />
     <ClCompile Include="PlatformOSWrapperInitTest.cpp" />
     <ClCompile Include="PlatformPeriodicTimerTest.cpp" />
     <ClCompile Include="PlatformThreadTest.cpp" />
@@ -126,6 +129,8 @@
     <ClInclude Include="..\..\..\mechanism\OSWrapper\MessageQueue.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Mutex.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\MutexFactory.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\OneShotTimer.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\OneShotTimerFactory.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\OSWrapperError.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\PeriodicTimer.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\PeriodicTimerFactory.h" />
@@ -138,6 +143,7 @@
     <ClInclude Include="..\..\StdCppOSWrapper\StdCppEventFlagFactory.h" />
     <ClInclude Include="..\..\StdCppOSWrapper\StdCppFixedMemoryPoolFactory.h" />
     <ClInclude Include="..\..\StdCppOSWrapper\StdCppMutexFactory.h" />
+    <ClInclude Include="..\..\StdCppOSWrapper\StdCppOneShotTimerFactory.h" />
     <ClInclude Include="..\..\StdCppOSWrapper\StdCppOSWrapper.h" />
     <ClInclude Include="..\..\StdCppOSWrapper\StdCppPeriodicTimerFactory.h" />
     <ClInclude Include="..\..\StdCppOSWrapper\StdCppThreadFactory.h" />
