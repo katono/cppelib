@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 enable_testing()
 
-set(CPPUTEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../tool/CppUTest)
+set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest)
+set(MECHANISM_DIR ${ROOT_DIR}/mechanism)
 
 project(mechanism_test)
 
@@ -10,47 +12,47 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 include_directories(${CPPUTEST_DIR}/include)
-include_directories(..)
+include_directories(${MECHANISM_DIR})
 
 link_directories(${CPPUTEST_DIR}/src/CppUTest)
 link_directories(${CPPUTEST_DIR}/src/CppUTestExt)
 
 set(AssertionTestSrc
-	AssertionTest/AssertionTest.cpp
+	${MECHANISM_DIR}/test/AssertionTest/AssertionTest.cpp
 )
 
 set(ContainerTestSrc
-	ContainerTest/ArrayTest.cpp
-	ContainerTest/BitPatternTest.cpp
-	ContainerTest/FixedDequeTest.cpp
-	ContainerTest/FixedVectorTest.cpp
-	ContainerTest/IntrusiveListTest.cpp
+	${MECHANISM_DIR}/test/ContainerTest/ArrayTest.cpp
+	${MECHANISM_DIR}/test/ContainerTest/BitPatternTest.cpp
+	${MECHANISM_DIR}/test/ContainerTest/FixedDequeTest.cpp
+	${MECHANISM_DIR}/test/ContainerTest/FixedVectorTest.cpp
+	${MECHANISM_DIR}/test/ContainerTest/IntrusiveListTest.cpp
 )
 
 set(OSWrapperSrc
-	../OSWrapper/EventFlag.cpp
-	../OSWrapper/FixedMemoryPool.cpp
-	../OSWrapper/Mutex.cpp
-	../OSWrapper/PeriodicTimer.cpp
-	../OSWrapper/Thread.cpp
-	../OSWrapper/Timeout.cpp
-	../OSWrapper/VariableMemoryPool.cpp
+	${MECHANISM_DIR}/OSWrapper/EventFlag.cpp
+	${MECHANISM_DIR}/OSWrapper/FixedMemoryPool.cpp
+	${MECHANISM_DIR}/OSWrapper/Mutex.cpp
+	${MECHANISM_DIR}/OSWrapper/PeriodicTimer.cpp
+	${MECHANISM_DIR}/OSWrapper/Thread.cpp
+	${MECHANISM_DIR}/OSWrapper/Timeout.cpp
+	${MECHANISM_DIR}/OSWrapper/VariableMemoryPool.cpp
 )
 
 set(OSWrapperTestSrc
-	OSWrapperTest/EventFlagTest.cpp
-	OSWrapperTest/FixedMemoryPoolTest.cpp
-	OSWrapperTest/MutexTest.cpp
-	OSWrapperTest/PeriodicTimerTest.cpp
-	OSWrapperTest/ThreadTest.cpp
-	OSWrapperTest/VariableMemoryPoolTest.cpp
+	${MECHANISM_DIR}/test/OSWrapperTest/EventFlagTest.cpp
+	${MECHANISM_DIR}/test/OSWrapperTest/FixedMemoryPoolTest.cpp
+	${MECHANISM_DIR}/test/OSWrapperTest/MutexTest.cpp
+	${MECHANISM_DIR}/test/OSWrapperTest/PeriodicTimerTest.cpp
+	${MECHANISM_DIR}/test/OSWrapperTest/ThreadTest.cpp
+	${MECHANISM_DIR}/test/OSWrapperTest/VariableMemoryPoolTest.cpp
 )
 
 add_executable(alltests
-	main.cpp
+	${MECHANISM_DIR}/test/main.cpp
 	${AssertionTestSrc}
 	${ContainerTestSrc}
 	${OSWrapperSrc}
