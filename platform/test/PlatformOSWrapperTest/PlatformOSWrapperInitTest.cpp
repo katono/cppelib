@@ -6,6 +6,7 @@
 #include "OSWrapper/FixedMemoryPool.h"
 #include "OSWrapper/VariableMemoryPool.h"
 #include "OSWrapper/PeriodicTimer.h"
+#include "OSWrapper/OneShotTimer.h"
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
@@ -33,6 +34,7 @@ using OSWrapper::MessageQueue;
 using OSWrapper::FixedMemoryPool;
 using OSWrapper::VariableMemoryPool;
 using OSWrapper::PeriodicTimer;
+using OSWrapper::OneShotTimer;
 using OSWrapper::Timeout;
 
 
@@ -168,6 +170,19 @@ TEST(PlatformOSWrapperInitTest, testPeriodicTimer)
 	timer->stop();
 
 	PeriodicTimer::destroy(timer);
+}
+
+TEST(PlatformOSWrapperInitTest, testOneShotTimer)
+{
+	TimerRunnable runnable;
+	OneShotTimer* timer = OneShotTimer::create(&runnable);
+
+	timer->start(100);
+	CHECK(timer->isStarted());
+
+	timer->stop();
+
+	OneShotTimer::destroy(timer);
 }
 
 } // namespace PlatformOSWrapperInitTest
