@@ -5,12 +5,14 @@
 #include "WindowsFixedMemoryPoolFactory.h"
 #include "WindowsVariableMemoryPoolFactory.h"
 #include "WindowsPeriodicTimerFactory.h"
+#include "WindowsOneShotTimerFactory.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/FixedMemoryPool.h"
 #include "OSWrapper/VariableMemoryPool.h"
 #include "OSWrapper/PeriodicTimer.h"
+#include "OSWrapper/OneShotTimer.h"
 
 namespace WindowsOSWrapper {
 
@@ -22,6 +24,7 @@ void init(int lowestPriority, int highestPriority)
 	static WindowsFixedMemoryPoolFactory theFixedMemoryPoolFactory;
 	static WindowsVariableMemoryPoolFactory theVariableMemoryPoolFactory;
 	static WindowsPeriodicTimerFactory thePeriodicTimerFactory;
+	static WindowsOneShotTimerFactory theOneShotTimerFactory;
 
 	OSWrapper::registerThreadFactory(&theThreadFactory);
 	OSWrapper::registerMutexFactory(&theMutexFactory);
@@ -29,6 +32,7 @@ void init(int lowestPriority, int highestPriority)
 	OSWrapper::registerFixedMemoryPoolFactory(&theFixedMemoryPoolFactory);
 	OSWrapper::registerVariableMemoryPoolFactory(&theVariableMemoryPoolFactory);
 	OSWrapper::registerPeriodicTimerFactory(&thePeriodicTimerFactory);
+	OSWrapper::registerOneShotTimerFactory(&theOneShotTimerFactory);
 }
 
 }

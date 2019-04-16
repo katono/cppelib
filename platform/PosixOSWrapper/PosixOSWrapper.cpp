@@ -5,12 +5,14 @@
 #include "PosixFixedMemoryPoolFactory.h"
 #include "PosixVariableMemoryPoolFactory.h"
 #include "PosixPeriodicTimerFactory.h"
+#include "PosixOneShotTimerFactory.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/FixedMemoryPool.h"
 #include "OSWrapper/VariableMemoryPool.h"
 #include "OSWrapper/PeriodicTimer.h"
+#include "OSWrapper/OneShotTimer.h"
 
 namespace PosixOSWrapper {
 
@@ -22,6 +24,7 @@ void init(int lowestPriority, int highestPriority)
 	static PosixFixedMemoryPoolFactory theFixedMemoryPoolFactory;
 	static PosixVariableMemoryPoolFactory theVariableMemoryPoolFactory;
 	static PosixPeriodicTimerFactory thePeriodicTimerFactory;
+	static PosixOneShotTimerFactory theOneShotTimerFactory;
 
 	OSWrapper::registerThreadFactory(&theThreadFactory);
 	OSWrapper::registerMutexFactory(&theMutexFactory);
@@ -29,6 +32,7 @@ void init(int lowestPriority, int highestPriority)
 	OSWrapper::registerFixedMemoryPoolFactory(&theFixedMemoryPoolFactory);
 	OSWrapper::registerVariableMemoryPoolFactory(&theVariableMemoryPoolFactory);
 	OSWrapper::registerPeriodicTimerFactory(&thePeriodicTimerFactory);
+	OSWrapper::registerOneShotTimerFactory(&theOneShotTimerFactory);
 }
 
 }

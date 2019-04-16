@@ -5,12 +5,14 @@
 #include "StdCppFixedMemoryPoolFactory.h"
 #include "StdCppVariableMemoryPoolFactory.h"
 #include "StdCppPeriodicTimerFactory.h"
+#include "StdCppOneShotTimerFactory.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/FixedMemoryPool.h"
 #include "OSWrapper/VariableMemoryPool.h"
 #include "OSWrapper/PeriodicTimer.h"
+#include "OSWrapper/OneShotTimer.h"
 
 namespace StdCppOSWrapper {
 
@@ -22,6 +24,7 @@ void init()
 	static StdCppFixedMemoryPoolFactory theFixedMemoryPoolFactory;
 	static StdCppVariableMemoryPoolFactory theVariableMemoryPoolFactory;
 	static StdCppPeriodicTimerFactory thePeriodicTimerFactory;
+	static StdCppOneShotTimerFactory theOneShotTimerFactory;
 
 	OSWrapper::registerThreadFactory(&theThreadFactory);
 	OSWrapper::registerMutexFactory(&theMutexFactory);
@@ -29,6 +32,7 @@ void init()
 	OSWrapper::registerFixedMemoryPoolFactory(&theFixedMemoryPoolFactory);
 	OSWrapper::registerVariableMemoryPoolFactory(&theVariableMemoryPoolFactory);
 	OSWrapper::registerPeriodicTimerFactory(&thePeriodicTimerFactory);
+	OSWrapper::registerOneShotTimerFactory(&theOneShotTimerFactory);
 }
 
 }
