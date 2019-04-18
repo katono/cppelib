@@ -3,28 +3,28 @@
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS)
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 #include "WindowsOSWrapper/WindowsEventFlagFactory.h"
 typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
-#elif PLATFORM_OS_POSIX
+#elif defined(PLATFORM_OS_POSIX)
 #include "PosixOSWrapper/PosixThreadFactory.h"
 #include "PosixOSWrapper/PosixMutexFactory.h"
 #include "PosixOSWrapper/PosixEventFlagFactory.h"
 typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
 typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
 typedef PosixOSWrapper::PosixEventFlagFactory PlatformEventFlagFactory;
-#elif PLATFORM_OS_STDCPP
+#elif defined(PLATFORM_OS_STDCPP)
 #include "StdCppOSWrapper/StdCppThreadFactory.h"
 #include "StdCppOSWrapper/StdCppMutexFactory.h"
 #include "StdCppOSWrapper/StdCppEventFlagFactory.h"
 typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
 typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
 typedef StdCppOSWrapper::StdCppEventFlagFactory PlatformEventFlagFactory;
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
 #include "ItronOSWrapper/ItronEventFlagFactory.h"

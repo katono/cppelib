@@ -6,7 +6,7 @@
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS)
 #include <chrono>
 #include <windows.h>
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
@@ -17,7 +17,7 @@ typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
 typedef WindowsOSWrapper::WindowsPeriodicTimerFactory PlatformPeriodicTimerFactory;
-#elif PLATFORM_OS_POSIX
+#elif defined(PLATFORM_OS_POSIX)
 #include <chrono>
 #include <unistd.h>
 #include "PosixOSWrapper/PosixThreadFactory.h"
@@ -28,7 +28,7 @@ typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
 typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
 typedef PosixOSWrapper::PosixEventFlagFactory PlatformEventFlagFactory;
 typedef PosixOSWrapper::PosixPeriodicTimerFactory PlatformPeriodicTimerFactory;
-#elif PLATFORM_OS_STDCPP
+#elif defined(PLATFORM_OS_STDCPP)
 #include <chrono>
 #include "StdCppOSWrapper/StdCppThreadFactory.h"
 #include "StdCppOSWrapper/StdCppMutexFactory.h"
@@ -38,7 +38,7 @@ typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
 typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
 typedef StdCppOSWrapper::StdCppEventFlagFactory PlatformEventFlagFactory;
 typedef StdCppOSWrapper::StdCppPeriodicTimerFactory PlatformPeriodicTimerFactory;
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
 #include "ItronOSWrapper/ItronEventFlagFactory.h"
@@ -98,7 +98,7 @@ class TimerRunnable : public Runnable {
 		auto now = std::chrono::system_clock::now();
 		auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
 		return static_cast<unsigned long>(now_ms.count());
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 		SYSTIM tim;
 		get_tim(&tim);
 		// TODO: Fix return value, because SYSTIM is implementation dependent

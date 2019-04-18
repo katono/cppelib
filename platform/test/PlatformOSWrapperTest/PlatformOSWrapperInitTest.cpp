@@ -10,13 +10,13 @@
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS)
 #include "WindowsOSWrapper/WindowsOSWrapper.h"
-#elif PLATFORM_OS_POSIX
+#elif defined(PLATFORM_OS_POSIX)
 #include "PosixOSWrapper/PosixOSWrapper.h"
-#elif PLATFORM_OS_STDCPP
+#elif defined(PLATFORM_OS_STDCPP)
 #include "StdCppOSWrapper/StdCppOSWrapper.h"
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 #include "ItronOSWrapper/ItronOSWrapper.h"
 #endif
 
@@ -45,13 +45,13 @@ TEST_GROUP(PlatformOSWrapperInitTest) {
 		// Static objects are not released by teardown().
 		MemoryLeakWarningPlugin::turnOffNewDeleteOverloads();
 
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS)
 		WindowsOSWrapper::init(1, 9);
-#elif PLATFORM_OS_POSIX
+#elif defined(PLATFORM_OS_POSIX)
 		PosixOSWrapper::init(1, 9);
-#elif PLATFORM_OS_STDCPP
+#elif defined(PLATFORM_OS_STDCPP)
 		StdCppOSWrapper::init();
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 		ItronOSWrapper::init();
 #endif
 

@@ -4,13 +4,13 @@
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS)
 #include <windows.h>
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
-#elif PLATFORM_OS_POSIX
+#elif defined(PLATFORM_OS_POSIX)
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -18,12 +18,12 @@ typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 #include "PosixOSWrapper/PosixMutexFactory.h"
 typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
 typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
-#elif PLATFORM_OS_STDCPP
+#elif defined(PLATFORM_OS_STDCPP)
 #include "StdCppOSWrapper/StdCppThreadFactory.h"
 #include "StdCppOSWrapper/StdCppMutexFactory.h"
 typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
 typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
 typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
@@ -215,7 +215,7 @@ TEST(PlatformThreadTest, priority_max_min_highest_lowest)
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getHighestPriority());
 	LONGS_EQUAL(1, Thread::getLowestPriority());
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 	LONGS_EQUAL(TMAX_TPRI, Thread::getMaxPriority());
 	LONGS_EQUAL(TMIN_TPRI, Thread::getMinPriority());
 	LONGS_EQUAL(TMIN_TPRI, Thread::getHighestPriority());
@@ -229,13 +229,13 @@ public:
 	{
 		LockGuard lock(s_mutex);
 		Thread* t = Thread::getCurrentThread();
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS)
 		LONGS_EQUAL(GetCurrentThreadId(), GetThreadId((HANDLE)t->getNativeHandle()));
-#elif PLATFORM_OS_POSIX
+#elif defined(PLATFORM_OS_POSIX)
 		CHECK(pthread_equal(pthread_self(), reinterpret_cast<pthread_t>(t->getNativeHandle())) != 0);
-#elif PLATFORM_OS_STDCPP
+#elif defined(PLATFORM_OS_STDCPP)
 		CHECK(t->getNativeHandle());
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 		ID tskid = (ID)t->getNativeHandle();
 		T_RTSK rtsk = {0};
 		ER err = ref_tsk(tskid, &rtsk);
@@ -373,7 +373,7 @@ TEST(PlatformThreadTest, setPriority_inherit)
 	Thread::destroy(thread);
 }
 
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS)
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 {
 	testThreadFactory.setPriorityRange(1, 9);

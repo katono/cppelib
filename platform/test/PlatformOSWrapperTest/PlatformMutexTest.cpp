@@ -2,25 +2,25 @@
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
 
-#ifdef PLATFORM_OS_WINDOWS
+#if defined(PLATFORM_OS_WINDOWS)
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
 #include "WindowsOSWrapper/WindowsMutexFactory.h"
 typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 const int PRIORITY_CEILING = 10;
-#elif PLATFORM_OS_POSIX
+#elif defined(PLATFORM_OS_POSIX)
 #include "PosixOSWrapper/PosixThreadFactory.h"
 #include "PosixOSWrapper/PosixMutexFactory.h"
 typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
 typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
 const int PRIORITY_CEILING = 10;
-#elif PLATFORM_OS_STDCPP
+#elif defined(PLATFORM_OS_STDCPP)
 #include "StdCppOSWrapper/StdCppThreadFactory.h"
 #include "StdCppOSWrapper/StdCppMutexFactory.h"
 typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
 typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
 const int PRIORITY_CEILING = 1;
-#elif PLATFORM_OS_ITRON
+#elif defined(PLATFORM_OS_ITRON)
 #include "ItronOSWrapper/ItronThreadFactory.h"
 #include "ItronOSWrapper/ItronMutexFactory.h"
 typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
