@@ -12,6 +12,8 @@ typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
 typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 #elif PLATFORM_OS_POSIX
 #include <pthread.h>
+#include <unistd.h>
+#include <sys/types.h>
 #include "PosixOSWrapper/PosixThreadFactory.h"
 #include "PosixOSWrapper/PosixMutexFactory.h"
 typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
@@ -483,6 +485,156 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 			t->setPriority(Thread::getMaxPriority());
 			winPriority = GetThreadPriority(GetCurrentThread());
 			LONGS_EQUAL(THREAD_PRIORITY_IDLE, winPriority);
+
+		}
+	};
+
+	CheckPrioRangeRunnable runnable;
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(thread);
+	thread->start();
+	Thread::destroy(thread);
+}
+#elif defined(PLATFORM_OS_POSIX)
+TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
+{
+	if (getuid() != 0) {
+		// Not superuser
+		return;
+	}
+
+	testThreadFactory.setPriorityRange(1, 9);
+	LONGS_EQUAL(1, Thread::getMinPriority());
+	LONGS_EQUAL(9, Thread::getMaxPriority());
+	LONGS_EQUAL(5, Thread::getNormalPriority());
+
+	class CheckPrioRangeRunnable : public Runnable {
+	public:
+		void run()
+		{
+			LockGuard lock(s_mutex);
+			Thread* t = Thread::getCurrentThread();
+			int policy;
+			struct sched_param param;
+			int ret = 0;
+			pthread_t pt = reinterpret_cast<pthread_t>(t->getNativeHandle());
+
+			t->setPriority(Thread::getNormalPriority());
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_OTHER, policy);
+			LONGS_EQUAL(0, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() + 1);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_RR, policy);
+			LONGS_EQUAL(1, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() + 2);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_RR, policy);
+			LONGS_EQUAL(2, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() + 3);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_RR, policy);
+			LONGS_EQUAL(3, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() - 1);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_OTHER, policy);
+			LONGS_EQUAL(0, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() - 2);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_OTHER, policy);
+			LONGS_EQUAL(0, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() - 3);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_OTHER, policy);
+			LONGS_EQUAL(0, param.sched_priority);
+
+		}
+	};
+
+	CheckPrioRangeRunnable runnable;
+	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(thread);
+	thread->start();
+	Thread::destroy(thread);
+}
+
+TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
+{
+	if (getuid() != 0) {
+		// Not superuser
+		return;
+	}
+
+	testThreadFactory.setPriorityRange(9, 1);
+	LONGS_EQUAL(1, Thread::getMinPriority());
+	LONGS_EQUAL(9, Thread::getMaxPriority());
+	LONGS_EQUAL(5, Thread::getNormalPriority());
+
+	class CheckPrioRangeRunnable : public Runnable {
+	public:
+		void run()
+		{
+			LockGuard lock(s_mutex);
+			Thread* t = Thread::getCurrentThread();
+			int policy;
+			struct sched_param param;
+			int ret = 0;
+			pthread_t pt = reinterpret_cast<pthread_t>(t->getNativeHandle());
+
+			t->setPriority(Thread::getNormalPriority());
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_OTHER, policy);
+			LONGS_EQUAL(0, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() - 1);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_RR, policy);
+			LONGS_EQUAL(1, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() - 2);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_RR, policy);
+			LONGS_EQUAL(2, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() - 3);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_RR, policy);
+			LONGS_EQUAL(3, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() + 1);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_OTHER, policy);
+			LONGS_EQUAL(0, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() + 2);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_OTHER, policy);
+			LONGS_EQUAL(0, param.sched_priority);
+
+			t->setPriority(Thread::getNormalPriority() + 3);
+			ret = pthread_getschedparam(pt, &policy, &param);
+			CHECK_FALSE(ret);
+			LONGS_EQUAL(SCHED_OTHER, policy);
+			LONGS_EQUAL(0, param.sched_priority);
 
 		}
 	};
