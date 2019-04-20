@@ -17,11 +17,15 @@ private:
 	private:
 		StdCppOneShotTimer* m_timer;
 	public:
-		explicit TimerTask(StdCppOneShotTimer* timer) : m_timer(timer) {}
+		TimerTask() : m_timer(0) {}
 		virtual ~TimerTask() {}
 		virtual void run()
 		{
 			m_timer->threadLoop();
+		}
+		void setTimer(StdCppOneShotTimer* timer)
+		{
+			m_timer = timer;
 		}
 	};
 	TimerTask m_task;
@@ -71,17 +75,22 @@ private:
 public:
 	StdCppOneShotTimer(OSWrapper::Runnable* r, const char* name)
 	: OneShotTimer(r), m_timeInMillis(0U), m_name(name), 
-	  m_task(this), 
+	  m_task(), 
 	  m_thread(OSWrapper::Thread::create(&m_task), &OSWrapper::Thread::destroy), 
 	  m_mutex(), m_condActive(), m_condStarted(), m_condStopped(), 
 	  m_isActive(false), m_started(false), m_stopped(true), m_endThreadRequested(false)
 	{
-		m_thread->setPriority(OSWrapper::Thread::getHighestPriority());
-		m_thread->start();
 	}
 
 	~StdCppOneShotTimer()
 	{
+	}
+
+	void beginThread()
+	{
+		m_task.setTimer(this);
+		m_thread->setPriority(OSWrapper::Thread::getHighestPriority());
+		m_thread->start();
 	}
 
 	void endThread()
@@ -149,7 +158,9 @@ OSWrapper::OneShotTimer* StdCppOneShotTimerFactory::create(OSWrapper::Runnable* 
 {
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
-		return new StdCppOneShotTimer(r, name);
+		StdCppOneShotTimer* t = new StdCppOneShotTimer(r, name);
+		t->beginThread();
+		return t;
 	}
 	catch (...) {
 		return nullptr;

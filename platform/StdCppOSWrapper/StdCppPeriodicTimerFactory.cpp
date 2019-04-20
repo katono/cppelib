@@ -17,11 +17,15 @@ private:
 	private:
 		StdCppPeriodicTimer* m_timer;
 	public:
-		explicit TimerTask(StdCppPeriodicTimer* timer) : m_timer(timer) {}
+		TimerTask() : m_timer(0) {}
 		virtual ~TimerTask() {}
 		virtual void run()
 		{
 			m_timer->threadLoop();
+		}
+		void setTimer(StdCppPeriodicTimer* timer)
+		{
+			m_timer = timer;
 		}
 	};
 	TimerTask m_task;
@@ -69,17 +73,22 @@ private:
 public:
 	StdCppPeriodicTimer(OSWrapper::Runnable* r, unsigned long periodInMillis, const char* name)
 	: PeriodicTimer(r), m_periodInMillis(periodInMillis), m_name(name), 
-	  m_task(this), 
+	  m_task(), 
 	  m_thread(OSWrapper::Thread::create(&m_task), &OSWrapper::Thread::destroy), 
 	  m_mutex(), m_condActive(), m_condStarted(), m_condStopped(), 
 	  m_isActive(false), m_started(false), m_stopped(true), m_endThreadRequested(false)
 	{
-		m_thread->setPriority(OSWrapper::Thread::getHighestPriority());
-		m_thread->start();
 	}
 
 	~StdCppPeriodicTimer()
 	{
+	}
+
+	void beginThread()
+	{
+		m_task.setTimer(this);
+		m_thread->setPriority(OSWrapper::Thread::getHighestPriority());
+		m_thread->start();
 	}
 
 	void endThread()
@@ -151,7 +160,9 @@ OSWrapper::PeriodicTimer* StdCppPeriodicTimerFactory::create(OSWrapper::Runnable
 {
 	try {
 		std::lock_guard<std::mutex> lock(m_mutex);
-		return new StdCppPeriodicTimer(r, periodInMillis, name);
+		StdCppPeriodicTimer* t = new StdCppPeriodicTimer(r, periodInMillis, name);
+		t->beginThread();
+		return t;
 	}
 	catch (...) {
 		return nullptr;
