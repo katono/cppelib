@@ -17,7 +17,7 @@ private:
 	std::condition_variable m_cond;
 
 public:
-	StdCppEventFlag(bool autoReset)
+	explicit StdCppEventFlag(bool autoReset)
 	: m_autoReset(autoReset), m_pattern(), m_mutex(), m_cond()
 	{
 	}

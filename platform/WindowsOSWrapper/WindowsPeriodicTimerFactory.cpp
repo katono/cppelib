@@ -14,7 +14,7 @@ private:
 
 	mutable std::mutex m_mutex;
 	bool m_started;
-	MMRESULT m_timer;
+	UINT m_timer;
 	std::unique_ptr<OSWrapper::EventFlag, decltype(&OSWrapper::EventFlag::destroy)> m_evFinished;
 
 	static void CALLBACK timerCallback(UINT, UINT, DWORD_PTR dwUser, DWORD_PTR, DWORD_PTR)
@@ -30,7 +30,7 @@ private:
 public:
 	WindowsPeriodicTimer(OSWrapper::Runnable* r, unsigned long periodInMillis, const char* name)
 	: PeriodicTimer(r), m_periodInMillis(periodInMillis), m_name(name)
-	, m_mutex(), m_started(false), m_timer(NULL)
+	, m_mutex(), m_started(false), m_timer(0U)
 	, m_evFinished(OSWrapper::EventFlag::create(false), &OSWrapper::EventFlag::destroy)
 	{
 		m_evFinished->setAll();
@@ -48,8 +48,8 @@ public:
 		if (m_started) {
 			return;
 		}
-		MMRESULT timer = timeSetEvent(m_periodInMillis, 0, timerCallback, (DWORD) this, TIME_PERIODIC);
-		if (timer == NULL) {
+		MMRESULT timer = timeSetEvent(m_periodInMillis, 0U, &timerCallback, (DWORD_PTR) this, (UINT) TIME_PERIODIC);
+		if (timer == (MMRESULT) NULL) {
 			return;
 		}
 		m_timer = timer;
@@ -63,7 +63,7 @@ public:
 			return;
 		}
 		MMRESULT result = timeKillEvent(m_timer);
-		if (result != TIMERR_NOERROR) {
+		if (result != (MMRESULT) TIMERR_NOERROR) {
 			return;
 		}
 		m_started = false;

@@ -59,16 +59,18 @@ private:
 				}
 			}
 			timerMain();
-			std::lock_guard<std::mutex> lock(m_mutex);
-			m_started = false;
-			m_stopped = true;
-			m_isActive = false;
+			{
+				std::lock_guard<std::mutex> lock(m_mutex);
+				m_started = false;
+				m_stopped = true;
+				m_isActive = false;
+			}
 		}
 	}
 
 public:
 	StdCppOneShotTimer(OSWrapper::Runnable* r, const char* name)
-	: OneShotTimer(r), m_timeInMillis(0), m_name(name), 
+	: OneShotTimer(r), m_timeInMillis(0U), m_name(name), 
 	  m_task(this), 
 	  m_thread(OSWrapper::Thread::create(&m_task), &OSWrapper::Thread::destroy), 
 	  m_mutex(), m_condActive(), m_condStarted(), m_condStopped(), 

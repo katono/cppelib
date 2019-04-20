@@ -13,7 +13,7 @@ private:
 
 	mutable std::mutex m_mutex;
 	bool m_started;
-	MMRESULT m_timer;
+	UINT m_timer;
 	std::unique_ptr<OSWrapper::EventFlag, decltype(&OSWrapper::EventFlag::destroy)> m_evFinished;
 
 	static void CALLBACK timerCallback(UINT, UINT, DWORD_PTR dwUser, DWORD_PTR, DWORD_PTR)
@@ -36,7 +36,7 @@ private:
 public:
 	WindowsOneShotTimer(OSWrapper::Runnable* r, const char* name)
 	: OneShotTimer(r), m_name(name)
-	, m_mutex(), m_started(false), m_timer(NULL)
+	, m_mutex(), m_started(false), m_timer(0U)
 	, m_evFinished(OSWrapper::EventFlag::create(false), &OSWrapper::EventFlag::destroy)
 	{
 		m_evFinished->setAll();
@@ -54,8 +54,8 @@ public:
 		if (m_started) {
 			return;
 		}
-		MMRESULT timer = timeSetEvent(timeInMillis, 0, timerCallback, (DWORD) this, TIME_ONESHOT);
-		if (timer == NULL) {
+		MMRESULT timer = timeSetEvent(timeInMillis, 0U, &timerCallback, (DWORD_PTR) this, (UINT) TIME_ONESHOT);
+		if (timer == (MMRESULT) NULL) {
 			return;
 		}
 		m_timer = timer;
@@ -69,7 +69,7 @@ public:
 			return;
 		}
 		MMRESULT result = timeKillEvent(m_timer);
-		if (result != TIMERR_NOERROR) {
+		if (result != (MMRESULT) TIMERR_NOERROR) {
 			return;
 		}
 		m_started = false;
