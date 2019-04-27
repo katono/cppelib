@@ -11,6 +11,8 @@
 #endif
 #include "CppUTest/TestHarness.h"
 
+namespace FixedDequeTest {
+
 using Container::FixedDeque;
 using Container::Array;
 using Container::FixedVector;
@@ -1846,3 +1848,5 @@ TEST(FixedDequeTest, shared_ptr_DElem)
 
 }
 #endif
+
+} // namespace FixedDequeTest

@@ -3,6 +3,8 @@
 #include <cstdio>
 #include "CppUTest/TestHarness.h"
 
+namespace IntrusiveListTest {
+
 using Container::IntrusiveListNode;
 using Container::IntrusiveList;
 using Container::Array;
@@ -1047,3 +1049,5 @@ TEST(IntrusiveListTest, rbegin_rend_const)
 	}
 }
 #endif
+
+} // namespace IntrusiveListTest

@@ -2,6 +2,8 @@
 #include <cstdint>
 #include "CppUTest/TestHarness.h"
 
+namespace BitPatternTest {
+
 using Container::BitPattern;
 
 TEST_GROUP(BitPatternTest) {
@@ -386,3 +388,5 @@ TEST(BitPatternTest, test_precondition_failed)
 	FAIL("failed");
 }
 #endif
+
+} // namespace BitPatternTest

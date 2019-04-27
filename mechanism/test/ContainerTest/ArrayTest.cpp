@@ -5,6 +5,8 @@
 #endif
 #include "CppUTest/TestHarness.h"
 
+namespace ArrayTest {
+
 using Container::Array;
 
 TEST_GROUP(ArrayTest) {
@@ -300,3 +302,4 @@ TEST(ArrayTest, rbegin_rend_const)
 }
 #endif
 
+} // namespace ArrayTest
