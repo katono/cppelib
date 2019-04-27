@@ -98,6 +98,7 @@
     <ClCompile Include="FixedDequeTest.cpp" />
     <ClCompile Include="FixedVectorTest.cpp" />
     <ClCompile Include="IntrusiveListTest.cpp" />
+    <ClCompile Include="PreallocatedDequeTest.cpp" />
     <ClCompile Include="PreallocatedVectorTest.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +108,7 @@
     <ClInclude Include="..\..\Container\FixedDeque.h" />
     <ClInclude Include="..\..\Container\FixedVector.h" />
     <ClInclude Include="..\..\Container\IntrusiveList.h" />
+    <ClInclude Include="..\..\Container\PreallocatedDeque.h" />
     <ClInclude Include="..\..\Container\PreallocatedVector.h" />
     <ClInclude Include="..\..\Container\private\Construct.h" />
     <ClInclude Include="..\..\Container\private\TypeTraits.h" />
