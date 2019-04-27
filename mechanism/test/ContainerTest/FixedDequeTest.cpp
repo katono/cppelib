@@ -1621,27 +1621,27 @@ TEST(FixedDequeTest, rbegin_rend_const)
 #endif
 
 
-class FDElem {
+class DElem {
 	int count;
 public:
 	unsigned int data;
 	static const unsigned int EXCEPTION_DATA = 0;
 
-	FDElem() : count(1), data(100) {}
+	DElem() : count(1), data(100) {}
 
 	class Exception {};
 
-	FDElem(const FDElem& x) : count(x.count), data(x.data)
+	DElem(const DElem& x) : count(x.count), data(x.data)
 	{
 		if (x.data == EXCEPTION_DATA) {
 			throw Exception();
 		}
 	}
-	FDElem& operator=(const FDElem&)
+	DElem& operator=(const DElem&)
 	{
 		return *this;
 	}
-	~FDElem()
+	~DElem()
 	{
 		data = 0xDEADBEEF;
 		--count;
@@ -1664,96 +1664,96 @@ public:
 };
 
 
-TEST(FixedDequeTest, default_ctor_FDElem)
+TEST(FixedDequeTest, default_ctor_DElem)
 {
-	FixedDeque<FDElem, SIZE> x;
-	FDElem::checkElemsDestroyed(x.begin(), SIZE, 0);
+	FixedDeque<DElem, SIZE> x;
+	DElem::checkElemsDestroyed(x.begin(), SIZE, 0);
 }
 
-TEST(FixedDequeTest, ctor_FDElem)
+TEST(FixedDequeTest, ctor_DElem)
 {
-	FDElem a;
+	DElem a;
 
-	FixedDeque<FDElem, SIZE> x(2, a);
+	FixedDeque<DElem, SIZE> x(2, a);
 	LONGS_EQUAL(2, x.size());
 
-	FixedDeque<FDElem, SIZE> y(x.begin(), x.end());
+	FixedDeque<DElem, SIZE> y(x.begin(), x.end());
 	LONGS_EQUAL(2, y.size());
 
-	FixedDeque<FDElem, SIZE> z(x);
+	FixedDeque<DElem, SIZE> z(x);
 	LONGS_EQUAL(2, z.size());
 
-	FixedDeque<FDElem, SIZE>::iterator it = x.begin();
+	FixedDeque<DElem, SIZE>::iterator it = x.begin();
 	x.clear();
-	FDElem::checkElemsDestroyed(it, SIZE, 2);
+	DElem::checkElemsDestroyed(it, SIZE, 2);
 
-	a.data = FDElem::EXCEPTION_DATA;
+	a.data = DElem::EXCEPTION_DATA;
 	try {
-		FixedDeque<FDElem, SIZE> xx(1, a);
+		FixedDeque<DElem, SIZE> xx(1, a);
 	}
-	catch (const FDElem::Exception&) {
+	catch (const DElem::Exception&) {
 		return;
 	}
 	FAIL("failed");
 
 }
 
-TEST(FixedDequeTest, operator_assign_FDElem)
+TEST(FixedDequeTest, operator_assign_DElem)
 {
-	FDElem a;
+	DElem a;
 
-	FixedDeque<FDElem, SIZE> x(2, a);
+	FixedDeque<DElem, SIZE> x(2, a);
 
-	FixedDeque<FDElem, SIZE> y(1, a);
+	FixedDeque<DElem, SIZE> y(1, a);
 
 	y = x;
 	LONGS_EQUAL(2, y.size());
 
-	FixedDeque<FDElem, SIZE> z(3, a);
+	FixedDeque<DElem, SIZE> z(3, a);
 
 	z = x;
 	LONGS_EQUAL(2, z.size());
 
-	FixedDeque<FDElem, SIZE>::iterator it = z.begin();
+	FixedDeque<DElem, SIZE>::iterator it = z.begin();
 	z.clear();
-	FDElem::checkElemsDestroyed(it, SIZE, 3);
+	DElem::checkElemsDestroyed(it, SIZE, 3);
 
 }
 
-TEST(FixedDequeTest, push_back_pop_back_FDElem)
+TEST(FixedDequeTest, push_back_pop_back_DElem)
 {
-	FDElem a;
+	DElem a;
 
-	FixedDeque<FDElem, SIZE> x;
+	FixedDeque<DElem, SIZE> x;
 	x.push_back(a);
 	x.push_back(a);
 	x.pop_back();
 
-	FixedDeque<FDElem, SIZE>::iterator it = x.begin();
+	FixedDeque<DElem, SIZE>::iterator it = x.begin();
 	x.clear();
-	FDElem::checkElemsDestroyed(it, SIZE, 2);
+	DElem::checkElemsDestroyed(it, SIZE, 2);
 
-	FixedDeque<FDElem, SIZE> y;
+	FixedDeque<DElem, SIZE> y;
 	y.push_back(a);
-	a.data = FDElem::EXCEPTION_DATA;
+	a.data = DElem::EXCEPTION_DATA;
 	try {
 		y.push_back(a);
 	}
-	catch (const FDElem::Exception&) {
+	catch (const DElem::Exception&) {
 		LONGS_EQUAL(1, y.size());
-		FixedDeque<FDElem, SIZE>::iterator yit = y.begin();
+		FixedDeque<DElem, SIZE>::iterator yit = y.begin();
 		y.clear();
-		FDElem::checkElemsDestroyed(yit, SIZE, 1);
+		DElem::checkElemsDestroyed(yit, SIZE, 1);
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(FixedDequeTest, insert_n_FDElem)
+TEST(FixedDequeTest, insert_n_DElem)
 {
-	FDElem a;
+	DElem a;
 
-	FixedDeque<FDElem, SIZE> x;
+	FixedDeque<DElem, SIZE> x;
 	x.insert(x.end(), 4, a);
 	x.insert(x.begin() + 2, 1, a);
 	x.insert(x.end(), 1, a);
@@ -1762,26 +1762,26 @@ TEST(FixedDequeTest, insert_n_FDElem)
 	x.insert(x.begin() + 1, 1, a);
 	LONGS_EQUAL(9, x.size());
 
-	a.data = FDElem::EXCEPTION_DATA;
+	a.data = DElem::EXCEPTION_DATA;
 	try {
 		x.insert(x.end(), 1, a);
 	}
-	catch (const FDElem::Exception&) {
+	catch (const DElem::Exception&) {
 		LONGS_EQUAL(9, x.size());
-		FixedDeque<FDElem, SIZE>::iterator it = x.begin();
+		FixedDeque<DElem, SIZE>::iterator it = x.begin();
 		x.clear();
-		FDElem::checkElemsDestroyed(it, SIZE, 9);
+		DElem::checkElemsDestroyed(it, SIZE, 9);
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(FixedDequeTest, insert_range_FDElem)
+TEST(FixedDequeTest, insert_range_DElem)
 {
-	FDElem a;
+	DElem a;
 
-	FixedDeque<FDElem, SIZE> x(4, a);
-	FixedDeque<FDElem, SIZE> y;
+	FixedDeque<DElem, SIZE> x(4, a);
+	FixedDeque<DElem, SIZE> y;
 	y.insert(y.end(), x.begin(), x.end());
 	y.insert(y.begin() + 2, x.begin(), x.begin() + 1);
 	y.insert(y.end(), x.begin(), x.begin() + 1);
@@ -1790,25 +1790,25 @@ TEST(FixedDequeTest, insert_range_FDElem)
 	y.insert(y.begin() + 1, x.begin(), x.begin() + 1);
 	LONGS_EQUAL(9, y.size());
 
-	x[0].data = FDElem::EXCEPTION_DATA;
+	x[0].data = DElem::EXCEPTION_DATA;
 	try {
 		y.insert(y.end(), x.begin(), x.begin() + 1);
 	}
-	catch (const FDElem::Exception&) {
+	catch (const DElem::Exception&) {
 		LONGS_EQUAL(9, y.size());
-		FixedDeque<FDElem, SIZE>::iterator it = y.begin();
+		FixedDeque<DElem, SIZE>::iterator it = y.begin();
 		y.clear();
-		FDElem::checkElemsDestroyed(it, SIZE, 9);
+		DElem::checkElemsDestroyed(it, SIZE, 9);
 		return;
 	}
 	FAIL("failed");
 }
 
-TEST(FixedDequeTest, erase_range_FDElem)
+TEST(FixedDequeTest, erase_range_DElem)
 {
-	FDElem a;
+	DElem a;
 
-	FixedDeque<FDElem, SIZE> x(5, a);
+	FixedDeque<DElem, SIZE> x(5, a);
 
 	x.erase(x.begin() + 1, x.begin() + 2);
 
@@ -1830,15 +1830,15 @@ TEST(FixedDequeTest, shared_ptr_int)
 	LONGS_EQUAL(2, *x[0]);
 }
 
-TEST(FixedDequeTest, shared_ptr_FDElem)
+TEST(FixedDequeTest, shared_ptr_DElem)
 {
-	FDElem a;
+	DElem a;
 
 	{
-		FixedDeque<std::shared_ptr<FDElem>, SIZE> x;
+		FixedDeque<std::shared_ptr<DElem>, SIZE> x;
 
-		x.push_back(std::make_shared<FDElem>(a));
-		x.push_back(std::make_shared<FDElem>(a));
+		x.push_back(std::make_shared<DElem>(a));
+		x.push_back(std::make_shared<DElem>(a));
 
 		x.pop_back();
 
