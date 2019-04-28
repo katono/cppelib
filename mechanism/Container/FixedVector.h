@@ -106,7 +106,7 @@ public:
 
 	bool full() const
 	{
-		return m_end == MaxSize;
+		return size() == max_size();
 	}
 
 	void clear()
