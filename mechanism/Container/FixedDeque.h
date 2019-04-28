@@ -15,6 +15,9 @@ namespace Container {
 template <typename T, std::size_t MaxSize>
 class FixedDeque;
 
+/*!
+ * @brief Random-access iterator used as FixedDeque<T, MaxSize>::iterator or FixedDeque<T, MaxSize>::const_iterator
+ */
 template <typename T, typename Ref, typename Ptr, typename DeqPtr, std::size_t MaxSize>
 class FixedDeque_iterator {
 public:
@@ -183,6 +186,15 @@ operator+(std::ptrdiff_t n, const FixedDeque_iterator<T, Ref, Ptr, DeqPtr, MaxSi
 	return x + n;
 }
 
+/*!
+ * @brief STL-like deque container with fixed capacity
+ * @tparam T Type of element
+ * @tparam MaxSize Max of elements that can be stored (that is decided at compile-time)
+ *
+ * Almost all the method specification is similar as STL deque,
+ * but this container can not expand the capacity.
+ * Over capacity addition of element throws the exception derived from std::exception.
+ */
 template <typename T, std::size_t MaxSize>
 class FixedDeque {
 public:

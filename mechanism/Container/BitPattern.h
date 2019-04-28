@@ -6,6 +6,13 @@
 
 namespace Container {
 
+/*!
+ * @brief The container with bitwise operation like std::bitset
+ *
+ * Size of BitPattern<T> is the bit width of type T.
+ *
+ * @tparam T Unsigned integer type with any width
+ */
 template <typename T>
 class BitPattern {
 private:

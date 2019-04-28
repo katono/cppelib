@@ -12,6 +12,15 @@
 
 namespace Container {
 
+/*!
+ * @brief STL-like vector container with fixed capacity
+ * @tparam T Type of element
+ * @tparam MaxSize Max of elements that can be stored (that is decided at compile-time)
+ *
+ * Almost all the method specification is similar as STL vector,
+ * but this container can not expand the capacity.
+ * Over capacity addition of element throws the exception derived from std::exception.
+ */
 template <typename T, std::size_t MaxSize>
 class FixedVector {
 public:

@@ -9,6 +9,11 @@
 
 namespace Container {
 
+/*!
+ * @brief Similar as std::array of C++11
+ * @tparam T Type of element
+ * @tparam Size Number of elements
+ */
 template <typename T, std::size_t Size>
 struct Array {
 	typedef T value_type;
@@ -25,7 +30,9 @@ struct Array {
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 #endif
 
+	//! @cond
 	T m_buf[Size];
+	//! @endcond
 
 	size_type size() const
 	{

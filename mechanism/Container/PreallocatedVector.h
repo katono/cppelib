@@ -12,6 +12,14 @@
 
 namespace Container {
 
+/*!
+ * @brief STL-like vector container using pre-allocated buffer
+ * @tparam T Type of element
+ *
+ * Almost all the method specification is similar as STL vector,
+ * but this container can not expand the capacity.
+ * Over capacity addition of element throws the exception derived from std::exception.
+ */
 template <typename T>
 class PreallocatedVector {
 public:
@@ -46,21 +54,43 @@ private:
 	PreallocatedVector(const PreallocatedVector& x);
 
 public:
+	/*!
+	 * @brief Default constructor
+	 * @attention If you use default constructor, you need to call init() before other method call.
+	 */
 	PreallocatedVector()
 	: m_buf(0), m_buf_size(0U), m_end(0U)
 	{
 	}
 
+	/*!
+	 * @brief Constructor
+	 * @param preallocated_buffer Pre-allocated buffer by caller
+	 * @param buffer_size Size of preallocated_buffer
+	 * @attention preallocated_buffer must be aligned on the boundary of type T.
+	 */
 	PreallocatedVector(void* preallocated_buffer, size_type buffer_size)
 	: m_buf(static_cast<T*>(preallocated_buffer)), m_buf_size(buffer_size), m_end(0U)
 	{
 	}
 
+	/*!
+	 * @brief Destructor
+	 * @note All elements are erased, but pre-allocated buffer is not released.
+	 */
 	~PreallocatedVector()
 	{
 		destroy(begin(), end());
 	}
 
+	/*!
+	 * @brief Initialize
+	 * @param preallocated_buffer Pre-allocated buffer by caller
+	 * @param buffer_size Size of preallocated_buffer
+	 * @attention preallocated_buffer must be aligned on the boundary of type T.
+	 * @attention If you use default constructor, you need to call init() before other method call.
+	 * @note Pre-allocated buffer can be set only one time.
+	 */
 	void init(void* preallocated_buffer, size_type buffer_size)
 	{
 		if (m_buf != 0) {

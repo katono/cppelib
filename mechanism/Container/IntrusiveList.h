@@ -9,6 +9,11 @@
 
 namespace Container {
 
+/*!
+ * @brief Base class of the type of element of IntrusiveList
+ *
+ * @note This class has links.
+ */
 class IntrusiveListNode {
 private:
 	IntrusiveListNode* m_nextListNode;
@@ -24,6 +29,9 @@ protected:
 	IntrusiveListNode() : m_nextListNode(), m_prevListNode() {}
 };
 
+/*!
+ * @brief Bidirectional iterator used as IntrusiveList<T>::iterator or IntrusiveList<T>::const_iterator
+ */
 template <typename T, typename Ref, typename Ptr, typename IntrusiveListNodePtr>
 class IntrusiveList_iterator {
 public:
@@ -112,6 +120,13 @@ private:
 	explicit IntrusiveList_iterator(IntrusiveListNodePtr node) : m_node(node) {}
 };
 
+/*!
+ * @brief STL-like intrusive doubly linked list
+ * @tparam T Type of element (that must be derived from IntrusiveListNode)
+ *
+ * @note The caller needs to prepare elements.
+ *       IntrusiveList does not allocate and release elements.
+ */
 template <typename T>
 class IntrusiveList {
 public:

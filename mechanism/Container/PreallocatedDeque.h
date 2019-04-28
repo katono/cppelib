@@ -15,6 +15,9 @@ namespace Container {
 template <typename T>
 class PreallocatedDeque;
 
+/*!
+ * @brief Random-access iterator used as PreallocatedDeque<T>::iterator or PreallocatedDeque<T>::const_iterator
+ */
 template <typename T, typename Ref, typename Ptr, typename DeqPtr>
 class PreallocatedDeque_iterator {
 public:
@@ -183,6 +186,14 @@ operator+(std::ptrdiff_t n, const PreallocatedDeque_iterator<T, Ref, Ptr, DeqPtr
 	return x + n;
 }
 
+/*!
+ * @brief STL-like deque container using pre-allocated buffer
+ * @tparam T Type of element
+ *
+ * Almost all the method specification is similar as STL deque,
+ * but this container can not expand the capacity.
+ * Over capacity addition of element throws the exception derived from std::exception.
+ */
 template <typename T>
 class PreallocatedDeque {
 public:
@@ -218,20 +229,42 @@ private:
 	PreallocatedDeque(const PreallocatedDeque& x);
 
 public:
+	/*!
+	 * @brief Default constructor
+	 * @attention If you use default constructor, you need to call init() before other method call.
+	 */
 	PreallocatedDeque()
 	: m_buf(0), m_buf_size(0U), m_begin(0U), m_end(0U)
 	{}
 
+	/*!
+	 * @brief Constructor
+	 * @param preallocated_buffer Pre-allocated buffer by caller
+	 * @param buffer_size Size of preallocated_buffer
+	 * @attention preallocated_buffer must be aligned on the boundary of type T.
+	 */
 	PreallocatedDeque(void* preallocated_buffer, size_type buffer_size)
 	: m_buf(static_cast<T*>(preallocated_buffer)), m_buf_size(buffer_size), m_begin(0U), m_end(0U)
 	{
 	}
 
+	/*!
+	 * @brief Destructor
+	 * @note All elements are erased, but pre-allocated buffer is not released.
+	 */
 	~PreallocatedDeque()
 	{
 		destroy(begin(), end());
 	}
 
+	/*!
+	 * @brief Initialize
+	 * @param preallocated_buffer Pre-allocated buffer by caller
+	 * @param buffer_size Size of preallocated_buffer
+	 * @attention preallocated_buffer must be aligned on the boundary of type T.
+	 * @attention If you use default constructor, you need to call init() before other method call.
+	 * @note Pre-allocated buffer can be set only one time.
+	 */
 	void init(void* preallocated_buffer, size_type buffer_size)
 	{
 		if (m_buf != 0) {
