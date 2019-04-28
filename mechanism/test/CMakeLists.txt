@@ -30,6 +30,8 @@ set(ContainerTestSrc
 	${MECHANISM_DIR}/test/ContainerTest/FixedDequeTest.cpp
 	${MECHANISM_DIR}/test/ContainerTest/FixedVectorTest.cpp
 	${MECHANISM_DIR}/test/ContainerTest/IntrusiveListTest.cpp
+	${MECHANISM_DIR}/test/ContainerTest/PreallocatedDequeTest.cpp
+	${MECHANISM_DIR}/test/ContainerTest/PreallocatedVectorTest.cpp
 )
 
 set(OSWrapperSrc
