@@ -170,8 +170,6 @@ private:
 	template <typename U, typename RefX, typename PtrX, typename DeqPtrX, std::size_t N>
 	friend class FixedDeque_iterator;
 
-	static const size_type BufSize = MaxSize + 1U;
-
 	DeqPtr m_deq;
 	size_type m_idx;
 
