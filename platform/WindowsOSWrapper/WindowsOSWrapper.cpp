@@ -14,8 +14,21 @@
 #include "OSWrapper/PeriodicTimer.h"
 #include "OSWrapper/OneShotTimer.h"
 
+/*!
+ * @brief Implementation of OSWrapper for Windows platform
+ */
 namespace WindowsOSWrapper {
 
+/*!
+ * @brief Initialize the WindowsOSWrapper
+ * @param lowestPriority the lowest priority of OSWrapper::Thread
+ * @param highestPriority the highest priority of OSWrapper::Thread
+ *
+ * This is a helper function for using WindowsOSWrapper.
+ * All the factories of WindowsOSWrapper are generated and resistered.
+ * If you use WindowsOSWrapper, call this function when the application is initialized.
+ * You don't have to register for each factory.
+ */
 void init(int lowestPriority, int highestPriority)
 {
 	static WindowsThreadFactory theThreadFactory(lowestPriority, highestPriority);

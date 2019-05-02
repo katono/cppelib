@@ -14,8 +14,19 @@
 #include "OSWrapper/PeriodicTimer.h"
 #include "OSWrapper/OneShotTimer.h"
 
+/*!
+ * @brief Implementation of OSWrapper for standard C++11 using std::thread
+ */
 namespace StdCppOSWrapper {
 
+/*!
+ * @brief Initialize the StdCppOSWrapper
+ *
+ * This is a helper function for using StdCppOSWrapper.
+ * All the factories of StdCppOSWrapper are generated and resistered.
+ * If you use StdCppOSWrapper, call this function when the application is initialized.
+ * You don't have to register for each factory.
+ */
 void init()
 {
 	static StdCppThreadFactory theThreadFactory;
