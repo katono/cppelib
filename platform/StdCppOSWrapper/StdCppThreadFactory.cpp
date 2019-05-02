@@ -174,6 +174,7 @@ OSWrapper::Thread* StdCppThreadFactory::create(OSWrapper::Runnable* r, int prior
 	(void)stackAddress;
 	StdCppThread* t = nullptr;
 	try {
+		std::lock_guard<std::recursive_mutex> lock(m_mutex);
 		t = createStdCppThread(r, priority, stackSize, name);
 		t->beginThread();
 	}
@@ -181,6 +182,7 @@ OSWrapper::Thread* StdCppThreadFactory::create(OSWrapper::Runnable* r, int prior
 		throw;
 	}
 	catch (...) {
+		std::lock_guard<std::recursive_mutex> lock(m_mutex);
 		delete t;
 		return nullptr;
 	}
@@ -191,6 +193,7 @@ OSWrapper::Thread* StdCppThreadFactory::create(OSWrapper::Runnable* r, int prior
 	}
 	catch (...) {
 		t->endThread();
+		std::lock_guard<std::recursive_mutex> lock(m_mutex);
 		delete t;
 		return nullptr;
 	}
