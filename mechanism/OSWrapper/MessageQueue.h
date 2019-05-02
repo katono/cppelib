@@ -12,9 +12,20 @@
 
 namespace OSWrapper {
 
+/*!
+ * @brief Class template of message queue
+ * @tparam T Type of element
+ *
+ * @note All the methods are thread-safe.
+ */
 template <typename T>
 class MessageQueue {
 public:
+	/*!
+	 * @brief Create a MessageQueue object
+	 * @param maxSize Max queue size
+	 * @return If this method succeeds then returns a pointer of MessageQueue object, else returns null pointer
+	 */
 	static MessageQueue* create(std::size_t maxSize)
 	{
 		const std::size_t alignedMQSize =
@@ -43,6 +54,12 @@ public:
 		return m;
 	}
 
+	/*!
+	 * @brief Destroy a MessageQueue object
+	 * @param m Pointer of MessageQueue object created by MessageQueue<T>::create()
+	 *
+	 * @note If m is null pointer, do nothing.
+	 */
 	static void destroy(MessageQueue* m)
 	{
 		if (m == 0) {
@@ -54,16 +71,55 @@ public:
 		FixedMemoryPool::destroy(pool);
 	}
 
+	/*!
+	 * @brief Send the message
+	 *
+	 * This method enqueues the message into this queue.
+	 * If this queue is full, block the current thread until to be dequeued by receive methods.
+	 *
+	 * @param msg Message to send
+	 * @retval OK Success. The message was sent
+	 * @retval CalledByNonThread Called from non thread context (interrupt handler, timer, etc)
+	 *
+	 * @note Same as timedSend(msg, Timeout::FOREVER)
+	 */
 	Error send(const T& msg)
 	{
 		return timedSend(msg, Timeout::FOREVER);
 	}
 
+	/*!
+	 * @brief Send the message without blocking
+	 *
+	 * This method enqueues the message into this queue.
+	 * If this queue is full, returns TimedOut immediately.
+	 *
+	 * @param msg Message to send
+	 * @retval OK Success. The message was sent
+	 * @retval TimedOut This queue is full
+	 *
+	 * @note Same as timedSend(msg, Timeout::POLLING)
+	 */
 	Error trySend(const T& msg)
 	{
 		return timedSend(msg, Timeout::POLLING);
 	}
 
+	/*!
+	 * @brief Send the message within the limited time
+	 *
+	 * This method enqueues the message into this queue.
+	 * If this queue is full, block the current thread until to be dequeued by receive methods but only within the limited time.
+	 *
+	 * @param msg Message to send
+	 * @param tmout The limited time
+	 * @retval OK Success. The message was sent
+	 * @retval TimedOut The limited time was elapsed
+	 * @retval CalledByNonThread Called from non thread context (interrupt handler, timer, etc)
+	 *
+	 * @note If tmout is Timeout::POLLING then this method tries to send the message without blocking.
+	 * @note If tmout is Timeout::FOREVER then this method waits forever until has sent the message.
+	 */
 	Error timedSend(const T& msg, Timeout tmout)
 	{
 		Error err = m_mtxSend->timedLock(tmout);
@@ -92,16 +148,55 @@ public:
 		return err;
 	}
 
+	/*!
+	 * @brief Receive the message
+	 *
+	 * This method dequeues the message from this queue.
+	 * If this queue is empty, block the current thread until to be enqueued by send methods.
+	 *
+	 * @param msg Pointer of variable that stores the message received. If null pointer, not accessed
+	 * @retval OK Success. The message was received
+	 * @retval CalledByNonThread Called from non thread context (interrupt handler, timer, etc)
+	 *
+	 * @note Same as timedReceive(msg, Timeout::FOREVER)
+	 */
 	Error receive(T* msg)
 	{
 		return timedReceive(msg, Timeout::FOREVER);
 	}
 
+	/*!
+	 * @brief Receive the message without blocking
+	 *
+	 * This method dequeues the message from this queue.
+	 * If this queue is empty, returns TimedOut immediately.
+	 *
+	 * @param msg Pointer of variable that stores the message received. If null pointer, not accessed
+	 * @retval OK Success. The message was received
+	 * @retval TimedOut This queue is empty
+	 *
+	 * @note Same as timedReceive(msg, Timeout::POLLING)
+	 */
 	Error tryReceive(T* msg)
 	{
 		return timedReceive(msg, Timeout::POLLING);
 	}
 
+	/*!
+	 * @brief Receive the message within the limited time
+	 *
+	 * This method dequeues the message from this queue.
+	 * If this queue is empty, block the current thread until to be enqueued by send methods but only within the limited time.
+	 *
+	 * @param msg Pointer of variable that stores the message received. If null pointer, not accessed
+	 * @param tmout The limited time
+	 * @retval OK Success. The message was received
+	 * @retval TimedOut The limited time was elapsed
+	 * @retval CalledByNonThread Called from non thread context (interrupt handler, timer, etc)
+	 *
+	 * @note If tmout is Timeout::POLLING then this method tries to receive the message without blocking.
+	 * @note If tmout is Timeout::FOREVER then this method waits forever until has received the message.
+	 */
 	Error timedReceive(T* msg, Timeout tmout)
 	{
 		Error err = m_mtxRecv->timedLock(tmout);
@@ -130,12 +225,20 @@ public:
 		return err;
 	}
 
+	/*!
+	 * @brief Get the queue size
+	 * @return Queue size
+	 */
 	std::size_t getSize() const
 	{
 		LockGuard lock(m_mtxRB);
 		return m_rb.getSize();
 	}
 
+	/*!
+	 * @brief Get the max queue size
+	 * @return Max queue size
+	 */
 	std::size_t getMaxSize() const
 	{
 		LockGuard lock(m_mtxRB);

@@ -3,6 +3,9 @@
 
 namespace OSWrapper {
 
+/*!
+ * @brief Kinds of errors of the OS objects
+ */
 enum Error {
 	OK,
 	TimedOut,

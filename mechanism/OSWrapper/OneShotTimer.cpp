@@ -51,6 +51,10 @@ void OneShotTimer::handleException(const char* msg)
 	}
 }
 
+/*!
+ * @brief Common timer main method
+ * @note Called in the concrete class derived from OneShotTimer.
+ */
 void OneShotTimer::timerMain()
 {
 	try {

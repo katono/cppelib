@@ -51,6 +51,10 @@ void PeriodicTimer::handleException(const char* msg)
 	}
 }
 
+/*!
+ * @brief Common timer main method
+ * @note Called in the concrete class derived from PeriodicTimer.
+ */
 void PeriodicTimer::timerMain()
 {
 	try {
