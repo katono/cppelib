@@ -1,0 +1,16 @@
+language: cpp
+script:
+- cd mechanism/test
+- cmake .
+- make
+- ctest -V
+- cd -
+- cd platform/test/cmake_StdCppOSWrapperTest
+- cmake .
+- make
+- ctest -V
+- cd -
+- cd platform/test/cmake_PosixOSWrapperTest
+- cmake .
+- make
+- ctest -V
