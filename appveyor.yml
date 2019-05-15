@@ -6,6 +6,12 @@ build_script:
 - cmd: >-
     msbuild -p:PlatformToolset=v141 tool\CppUTest\CppUTest.vcxproj
 
+    msbuild -p:PlatformToolset=v141 mechanism\test\AssertionTest\AssertionTest.vcxproj
+
+    msbuild -p:PlatformToolset=v141 mechanism\test\ContainerTest\ContainerTest.vcxproj
+
+    msbuild -p:PlatformToolset=v141 mechanism\test\OSWrapperTest\OSWrapperTest.vcxproj
+
     msbuild -p:PlatformToolset=v141 platform\test\PlatformOSWrapperTest\StdCppOSWrapperTest.vcxproj
 
     msbuild -p:PlatformToolset=v141 platform\test\PlatformOSWrapperTest\WindowsOSWrapperTest.vcxproj
