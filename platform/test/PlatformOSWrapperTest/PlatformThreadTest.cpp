@@ -215,6 +215,11 @@ TEST(PlatformThreadTest, priority_max_min_highest_lowest)
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getHighestPriority());
 	LONGS_EQUAL(1, Thread::getLowestPriority());
+#elif defined(PLATFORM_OS_STDCPP)
+	LONGS_EQUAL(0, Thread::getMaxPriority());
+	LONGS_EQUAL(0, Thread::getMinPriority());
+	LONGS_EQUAL(0, Thread::getHighestPriority());
+	LONGS_EQUAL(0, Thread::getLowestPriority());
 #elif defined(PLATFORM_OS_ITRON)
 	LONGS_EQUAL(TMAX_TPRI, Thread::getMaxPriority());
 	LONGS_EQUAL(TMIN_TPRI, Thread::getMinPriority());
@@ -261,6 +266,15 @@ TEST(PlatformThreadTest, stackSize)
 	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 
 	LONGS_EQUAL(4096, thread->getStackSize());
+	Thread::destroy(thread);
+}
+
+TEST(PlatformThreadTest, default_stackSize)
+{
+	StaticMethodTestRunnable runnable;
+	thread = Thread::create(&runnable);
+
+	CHECK(thread->getStackSize() > 0);
 	Thread::destroy(thread);
 }
 
