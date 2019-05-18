@@ -52,6 +52,12 @@ TEST(PlatformVariableMemoryPoolTest, create_no_param_pool)
 	VariableMemoryPool::destroy(pool);
 }
 
+TEST(PlatformVariableMemoryPoolTest, create_failed_parameter)
+{
+	pool = VariableMemoryPool::create(0);
+	CHECK(!pool);
+}
+
 TEST(PlatformVariableMemoryPoolTest, destroy_nullptr)
 {
 	VariableMemoryPool::destroy(0);
