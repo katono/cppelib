@@ -120,7 +120,7 @@ public:
 		unsigned long time = getTime();
 		unsigned long diff = time - m_prevTime;
 #if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX) || defined(PLATFORM_OS_STDCPP)
-		unsigned long tolerance = 10;
+		unsigned long tolerance = 20;
 #else
 		unsigned long tolerance = 3;
 #endif
