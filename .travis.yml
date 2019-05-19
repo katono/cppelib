@@ -5,21 +5,7 @@ install:
   - gem install lcoveralls
 
 script:
-  - cd mechanism/test
-  - cmake .
-  - make
-  - ctest -V
-  - cd -
-  - cd platform/test/cmake_StdCppOSWrapperTest
-  - cmake .
-  - make
-  - ctest -V
-  - cd -
-  - cd platform/test/cmake_PosixOSWrapperTest
-  - cmake .
-  - make
-  - ctest -V
-  - cd -
+  - sh tool/run_test.sh .
 
 after_success:
   - sh tool/coverage.sh .
