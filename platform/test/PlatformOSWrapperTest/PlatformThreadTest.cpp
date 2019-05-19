@@ -512,15 +512,15 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 #elif defined(PLATFORM_OS_POSIX)
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 {
-	if (getuid() != 0) {
-		// Not superuser
-		return;
-	}
-
 	testThreadFactory.setPriorityRange(1, 9);
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(5, Thread::getNormalPriority());
+
+	if (getuid() != 0) {
+		// Not superuser
+		return;
+	}
 
 	class CheckPrioRangeRunnable : public Runnable {
 	public:
@@ -587,15 +587,15 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 {
-	if (getuid() != 0) {
-		// Not superuser
-		return;
-	}
-
 	testThreadFactory.setPriorityRange(9, 1);
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(5, Thread::getNormalPriority());
+
+	if (getuid() != 0) {
+		// Not superuser
+		return;
+	}
 
 	class CheckPrioRangeRunnable : public Runnable {
 	public:
