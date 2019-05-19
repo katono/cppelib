@@ -43,3 +43,7 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 alltests
+coverage.info
+coverage_report/
+html/
+latex/
