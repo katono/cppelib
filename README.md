@@ -5,6 +5,7 @@ This works on the freestanding environment that provides few standard C++ librar
 
 [![Build Status](https://travis-ci.org/katono/cppelib.svg?branch=master)](https://travis-ci.org/katono/cppelib)
 [![Build status](https://ci.appveyor.com/api/projects/status/v2kqt2jvw8m7mija?svg=true)](https://ci.appveyor.com/project/katono/cppelib)
+[![Coverage Status](https://coveralls.io/repos/github/katono/cppelib/badge.svg?branch=master)](https://coveralls.io/github/katono/cppelib?branch=master)
 
 
 ## Description
