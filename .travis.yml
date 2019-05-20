@@ -1,4 +1,19 @@
 language: cpp
 
+env:
+  global:
+    # COVERITY_SCAN_TOKEN
+    - secure: "vn1OQYYcKoQMRBmF5SXqm8w2WVrdhRIDBZJIcjoa0Ms3PQLHgtZJi2DXY69PpX+jjygqNWssk4a1Ve3oJwAhw1CEniO9jPNZn2cwQm0dVbvLYjwKSQL7GMdB4w85Vh3s9++YnS8udGp869Adfatl5e48RFS/YZt3v15ofoL5PGTz2w2odgj2RxyvioxWyE5o5cZbphEanb5+x2MmcJTliTfyJ5/gsTDIc9+S17ejZzmJdAx6oo6QBO34QnSsFTELITlKN6Nm2EY3kH39j8Vvy1OuLWyxO5I/s5UgZwW6M42dHfkGWhIchkcbfJdcDgBG+mQFgdknCG/EpbKaPQcbOAmAz3BozBQsaZRoQdEhnuFOh2l2Qy13+7outkYyCnIGaMTJAxVuh6PFNxdnieMpdP2tfdodx8fHXehZjTvcgT4rmiH8y3gIqUaRGBt+Cca6lcf7GxBh1GIbRHCD5iu3HzzdGPnwSW69+J8eklg5wHO/8mnbVdHKaqA9Rq9mH39OvyDf/3xhcdI5VxDmdgvp/zCZMqHotKKq8uZlH+UFfxp4etmUP9N2BrU9/GgsWQv9X3Kjp3sCb25djcgbwwh0c+JNgRCD6Bz2eKhKklhYWNuDw/sRRvcfqqvFmyFLH+pO5/kzB6lDIBXHewQSLM/1L9QaG4fCTQfAW953bWDQlqE="
+
+addons:
+  coverity_scan:
+    project:
+      name: "katono/cppelib"
+      description: ""
+    notification_email: katono123@gmail.com
+    build_command_prepend: ""
+    build_command: "sh tool/run_test.sh ."
+    branch_pattern: coverity_scan
+
 script:
   - sh tool/run_test.sh .
