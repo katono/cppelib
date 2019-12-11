@@ -176,6 +176,7 @@
     <ClCompile Include="..\..\..\mechanism\OSWrapper\OneShotTimer.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\PeriodicTimer.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Thread.cpp" />
+    <ClCompile Include="..\..\..\mechanism\OSWrapper\ThreadPool.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\Timeout.cpp" />
     <ClCompile Include="..\..\..\mechanism\OSWrapper\VariableMemoryPool.cpp" />
     <ClCompile Include="..\..\StdCppOSWrapper\StdCppEventFlagFactory.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="PlatformOneShotTimerTest.cpp" />
     <ClCompile Include="PlatformOSWrapperInitTest.cpp" />
     <ClCompile Include="PlatformPeriodicTimerTest.cpp" />
+    <ClCompile Include="PlatformThreadPoolTest.cpp" />
     <ClCompile Include="PlatformThreadTest.cpp" />
     <ClCompile Include="PlatformVariableMemoryPoolTest.cpp" />
   </ItemGroup>
@@ -214,6 +216,7 @@
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Runnable.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Thread.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\ThreadFactory.h" />
+    <ClInclude Include="..\..\..\mechanism\OSWrapper\ThreadPool.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\Timeout.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableMemoryPool.h" />
     <ClInclude Include="..\..\..\mechanism\OSWrapper\VariableMemoryPoolFactory.h" />
