@@ -48,6 +48,7 @@ set(OSWrapperSrc
 	${MECHANISM_DIR}/OSWrapper/Thread.cpp
 	${MECHANISM_DIR}/OSWrapper/Timeout.cpp
 	${MECHANISM_DIR}/OSWrapper/VariableMemoryPool.cpp
+	${MECHANISM_DIR}/OSWrapper/ThreadPool.cpp
 )
 
 set(OSWrapperTestSrc
