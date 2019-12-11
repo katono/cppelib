@@ -208,4 +208,25 @@ int Thread::getLowestPriority()
 	return s_factory->getLowestPriority();
 }
 
+int Thread::getPriorityHigherThan(int basePriority, int d)
+{
+	CHECK_ASSERT(s_factory);
+	int ret = 0;
+	if (getLowestPriority() < getHighestPriority()) {
+		ret = basePriority + d;
+	} else {
+		ret = basePriority - d;
+	}
+
+	const int min = getMinPriority();
+	if (ret <= min) {
+		return min;
+	}
+	const int max = getMaxPriority();
+	if (ret >= max) {
+		return max;
+	}
+	return ret;
+}
+
 }

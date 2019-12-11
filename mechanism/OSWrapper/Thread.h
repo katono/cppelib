@@ -174,6 +174,18 @@ public:
 	static int getLowestPriority();
 
 	/*!
+	 * @brief Get the thread priority of RTOS higher than \p basePriority by \p d
+	 * @param basePriority Base priority
+	 * @param d Difference
+	 * @return If \p d is positive number, returns the priority higher than \p basePriority by \p d.
+	 * @return If \p d is negative number, returns the priority lower than \p basePriority by \p d.
+	 * @return If \p d is zero, returns \p basePriority.
+	 *
+	 * @note The range of return value is between getLowestPriority() and getHighestPriority().
+	 */
+	static int getPriorityHigherThan(int basePriority, int d);
+
+	/*!
 	 * @brief Transit this thread to the READY state
 	 *
 	 * After this method, when this thread transits to the RUNNING state, this thread calls Runnable::run() specified at create().
