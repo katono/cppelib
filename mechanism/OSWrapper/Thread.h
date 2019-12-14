@@ -150,8 +150,8 @@ public:
 	static int getMinPriority();
 
 	/*!
-	 * @brief Get the priority between the minimum and maximum value
-	 * @return The priority between the minimum and maximum value
+	 * @brief Get the middle priority between the minimum and maximum value
+	 * @return The middle priority between the minimum and maximum value
 	 *
 	 * @note Thread::getMinPriority() < Thread::getNormalPriority() < Thread::getMaxPriority()
 	 */
