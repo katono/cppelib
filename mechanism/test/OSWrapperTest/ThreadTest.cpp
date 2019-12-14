@@ -111,10 +111,18 @@ private:
 class TestThreadFactory : public ThreadFactory {
 private:
 	std::set<Thread*> m_threadSet;
+	int m_lowestPriority;
+	int m_highestPriority;
 public:
+	TestThreadFactory() : m_threadSet(), m_lowestPriority(0), m_highestPriority(10) {}
 	bool isMemoryLeaked() const
 	{
 		return !m_threadSet.empty();
+	}
+	void setPriorityRange(int lowestPriority, int highestPriority)
+	{
+		m_lowestPriority = lowestPriority;
+		m_highestPriority = highestPriority;
 	}
 private:
 	Thread* create(Runnable* r, int priority, std::size_t stackSize, void* stackAddress, const char* name)
@@ -143,19 +151,27 @@ private:
 	}
 	int getMaxPriority() const
 	{
-		return 10;
+		if (m_lowestPriority < m_highestPriority) {
+			return m_highestPriority;
+		} else {
+			return m_lowestPriority;
+		}
 	}
 	int getMinPriority() const
 	{
-		return 0;
+		if (m_lowestPriority < m_highestPriority) {
+			return m_lowestPriority;
+		} else {
+			return m_highestPriority;
+		}
 	}
 	int getHighestPriority() const
 	{
-		return 10;
+		return m_highestPriority;
 	}
 	int getLowestPriority() const
 	{
-		return 0;
+		return m_lowestPriority;
 	}
 
 };
