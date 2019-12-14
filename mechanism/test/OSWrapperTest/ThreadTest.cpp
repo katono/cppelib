@@ -300,13 +300,59 @@ TEST(ThreadTest, priority)
 	LONGS_EQUAL(normalPriority + 1, thread->getPriority());
 	LONGS_EQUAL(normalPriority, thread->getInitialPriority());
 
-	LONGS_EQUAL(0, Thread::getMinPriority());
-	LONGS_EQUAL(10, Thread::getMaxPriority());
-
-	LONGS_EQUAL(0, Thread::getLowestPriority());
-	LONGS_EQUAL(10, Thread::getHighestPriority());
-
 	Thread::destroy(thread);
+}
+
+TEST(ThreadTest, priority_max_highest)
+{
+	testFactory.setPriorityRange(1, 9);
+	LONGS_EQUAL(1, Thread::getMinPriority());
+	LONGS_EQUAL(9, Thread::getMaxPriority());
+	LONGS_EQUAL(1, Thread::getLowestPriority());
+	LONGS_EQUAL(9, Thread::getHighestPriority());
+	LONGS_EQUAL(5, Thread::getNormalPriority());
+
+	LONGS_EQUAL(6, Thread::getPriorityHigherThan(Thread::getNormalPriority(), 1));
+	LONGS_EQUAL(5, Thread::getPriorityHigherThan(Thread::getNormalPriority(), 0));
+	LONGS_EQUAL(4, Thread::getPriorityHigherThan(Thread::getNormalPriority(), -1));
+
+	LONGS_EQUAL(2, Thread::getPriorityHigherThan(Thread::getLowestPriority(), 1));
+	LONGS_EQUAL(1, Thread::getPriorityHigherThan(Thread::getLowestPriority(), 0));
+	LONGS_EQUAL(1, Thread::getPriorityHigherThan(Thread::getLowestPriority(), -1));
+	LONGS_EQUAL(9, Thread::getPriorityHigherThan(Thread::getLowestPriority(), 8));
+	LONGS_EQUAL(9, Thread::getPriorityHigherThan(Thread::getLowestPriority(), 9));
+
+	LONGS_EQUAL(8, Thread::getPriorityHigherThan(Thread::getHighestPriority(), -1));
+	LONGS_EQUAL(9, Thread::getPriorityHigherThan(Thread::getHighestPriority(), 0));
+	LONGS_EQUAL(9, Thread::getPriorityHigherThan(Thread::getHighestPriority(), 1));
+	LONGS_EQUAL(1, Thread::getPriorityHigherThan(Thread::getHighestPriority(), -8));
+	LONGS_EQUAL(1, Thread::getPriorityHigherThan(Thread::getHighestPriority(), -9));
+}
+
+TEST(ThreadTest, priority_min_highest)
+{
+	testFactory.setPriorityRange(9, 1);
+	LONGS_EQUAL(1, Thread::getMinPriority());
+	LONGS_EQUAL(9, Thread::getMaxPriority());
+	LONGS_EQUAL(9, Thread::getLowestPriority());
+	LONGS_EQUAL(1, Thread::getHighestPriority());
+	LONGS_EQUAL(5, Thread::getNormalPriority());
+
+	LONGS_EQUAL(4, Thread::getPriorityHigherThan(Thread::getNormalPriority(), 1));
+	LONGS_EQUAL(5, Thread::getPriorityHigherThan(Thread::getNormalPriority(), 0));
+	LONGS_EQUAL(6, Thread::getPriorityHigherThan(Thread::getNormalPriority(), -1));
+
+	LONGS_EQUAL(8, Thread::getPriorityHigherThan(Thread::getLowestPriority(), 1));
+	LONGS_EQUAL(9, Thread::getPriorityHigherThan(Thread::getLowestPriority(), 0));
+	LONGS_EQUAL(9, Thread::getPriorityHigherThan(Thread::getLowestPriority(), -1));
+	LONGS_EQUAL(1, Thread::getPriorityHigherThan(Thread::getLowestPriority(), 8));
+	LONGS_EQUAL(1, Thread::getPriorityHigherThan(Thread::getLowestPriority(), 9));
+
+	LONGS_EQUAL(2, Thread::getPriorityHigherThan(Thread::getHighestPriority(), -1));
+	LONGS_EQUAL(1, Thread::getPriorityHigherThan(Thread::getHighestPriority(), 0));
+	LONGS_EQUAL(1, Thread::getPriorityHigherThan(Thread::getHighestPriority(), 1));
+	LONGS_EQUAL(9, Thread::getPriorityHigherThan(Thread::getHighestPriority(), -8));
+	LONGS_EQUAL(9, Thread::getPriorityHigherThan(Thread::getHighestPriority(), -9));
 }
 
 TEST(ThreadTest, stackSize)
