@@ -4,3 +4,4 @@
 *.sln text eol=crlf
 *.vcxproj text eol=crlf
 *.vcxproj.filters text eol=crlf
+*.sh text eol=lf
