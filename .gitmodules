@@ -1,3 +1,4 @@
 [submodule "tool/CppUTest/origin"]
 	path = tool/CppUTest/origin
 	url = https://github.com/cpputest/cpputest.git
+	ignore = dirty
