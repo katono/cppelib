@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 enable_testing()
 
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
-set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest)
+set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest/origin)
 set(MECHANISM_DIR ${ROOT_DIR}/mechanism)
 set(PLATFORM_DIR ${ROOT_DIR}/platform)
 
