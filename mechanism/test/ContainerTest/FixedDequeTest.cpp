@@ -369,7 +369,7 @@ TEST(FixedDequeTest, push_back_pop_front)
 {
 	FixedDeque<int, SIZE> x;
 	for (std::size_t i = 0; i < SIZE * 100; ++i) {
-		x.push_back(i);
+		x.push_back(int(i));
 		LONGS_EQUAL(i, x.front());
 		x.pop_front();
 		LONGS_EQUAL(0, x.size());
@@ -423,7 +423,7 @@ TEST(FixedDequeTest, push_front_pop_back)
 {
 	FixedDeque<int, SIZE> x;
 	for (std::size_t i = 0; i < SIZE * 100; ++i) {
-		x.push_front(i);
+		x.push_front(int(i));
 		LONGS_EQUAL(i, x.back());
 		x.pop_back();
 		LONGS_EQUAL(0, x.size());

@@ -316,7 +316,7 @@ TEST(ThreadTest, getNativeHandle)
 {
 	thread = Thread::create(&testRun);
 
-	LONGS_EQUAL(1234, (long)thread->getNativeHandle());
+	LONGS_EQUAL(1234, (std::size_t)thread->getNativeHandle());
 
 	Thread::destroy(thread);
 }

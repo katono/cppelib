@@ -226,7 +226,7 @@ TEST(PlatformMessageQueueTest, trySend_TimedOut_receive)
 		virtual void run()
 		{
 			for (std::size_t i = 0; i < SIZE; i++) {
-				OSWrapper::Error err = m_mq->trySend(i);
+				OSWrapper::Error err = m_mq->trySend(int(i));
 				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 			}
@@ -312,7 +312,7 @@ TEST(PlatformMessageQueueTest, send_receive_many_threads)
 		virtual void run()
 		{
 			for (std::size_t i = 0; i < SIZE; i++) {
-				OSWrapper::Error err = m_mq->send(i);
+				OSWrapper::Error err = m_mq->send(int(i));
 				LockGuard lock(s_mutex);
 				LONGS_EQUAL(OSWrapper::OK, err);
 				send_count++;

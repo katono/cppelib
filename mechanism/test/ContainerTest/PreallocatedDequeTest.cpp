@@ -363,7 +363,7 @@ TEST(PreallocatedDequeTest, push_back_pop_front)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
 	for (std::size_t i = 0; i < x.max_size() * 100; ++i) {
-		x.push_back(i);
+		x.push_back(int(i));
 		LONGS_EQUAL(i, x.front());
 		x.pop_front();
 		LONGS_EQUAL(0, x.size());
@@ -419,7 +419,7 @@ TEST(PreallocatedDequeTest, push_front_pop_back)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
 	for (std::size_t i = 0; i < x.max_size() * 100; ++i) {
-		x.push_front(i);
+		x.push_front(int(i));
 		LONGS_EQUAL(i, x.back());
 		x.pop_back();
 		LONGS_EQUAL(0, x.size());
@@ -1252,7 +1252,7 @@ TEST(PreallocatedDequeTest, iterator_operator_plusequal_minus_max)
 {
 	Array<int, ALLOC_SIZE / sizeof(int) - 1> a = {0};
 	for (std::size_t i = 0; i < a.size(); ++i) {
-		a[i] = i;
+		a[i] = int(i);
 	}
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(a.begin(), a.end());
@@ -1323,7 +1323,7 @@ TEST(PreallocatedDequeTest, iterator_operator_minusqual_max)
 {
 	Array<int, ALLOC_SIZE / sizeof(int) - 1> a = {0};
 	for (std::size_t i = 0; i < a.size(); ++i) {
-		a[i] = i;
+		a[i] = int(i);
 	}
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(a.begin(), a.end());

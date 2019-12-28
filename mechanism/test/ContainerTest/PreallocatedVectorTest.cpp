@@ -985,7 +985,7 @@ TEST(PreallocatedVectorTest, iterator_operator_plusequal_minus_max)
 {
 	Array<int, ALLOC_SIZE / sizeof(int)> a = {0};
 	for (std::size_t i = 0; i < a.size(); ++i) {
-		a[i] = i;
+		a[i] = int(i);
 	}
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(a.begin(), a.end());
@@ -1056,7 +1056,7 @@ TEST(PreallocatedVectorTest, iterator_operator_minusqual_max)
 {
 	Array<int, ALLOC_SIZE / sizeof(int)> a = {0};
 	for (std::size_t i = 0; i < a.size(); ++i) {
-		a[i] = i;
+		a[i] = int(i);
 	}
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(a.begin(), a.end());

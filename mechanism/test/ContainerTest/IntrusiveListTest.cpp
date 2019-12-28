@@ -124,7 +124,7 @@ TEST(IntrusiveListTest, push_back_pop_front)
 	Array<MyListNode, 10> a;
 
 	for (std::size_t i = 0; i < a.size(); ++i) {
-		a[i].m_value = i;
+		a[i].m_value = int(i);
 		x.push_back(a[i]);
 	}
 	LONGS_EQUAL(a.size(), x.size());
@@ -164,7 +164,7 @@ TEST(IntrusiveListTest, push_front_pop_back)
 	Array<MyListNode, 10> a;
 
 	for (std::size_t i = 0; i < a.size(); ++i) {
-		a[i].m_value = i;
+		a[i].m_value = int(i);
 		x.push_front(a[i]);
 	}
 	LONGS_EQUAL(a.size(), x.size());
