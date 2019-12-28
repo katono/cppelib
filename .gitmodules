@@ -1,4 +1,0 @@
-[submodule "tool/CppUTest"]
-	path = tool/CppUTest
-	url = https://github.com/cpputest/cpputest.git
-	ignore = dirty
