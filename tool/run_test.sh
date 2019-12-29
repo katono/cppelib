@@ -19,6 +19,7 @@ for dir in ${BUILD_DIRS}; do
 		fi
 		mkdir -p ${dir}
 		cd ${dir}
+		rm -f ../CMakeCache.txt
 		cmake ..
 		make
 		ctest -V
