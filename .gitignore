@@ -39,3 +39,9 @@ coverage.info
 coverage_report/
 html/
 latex/
+CMakeCache.txt
+CMakeFiles/
+Testing/
+Makefile
+*.cmake
+alltests
