@@ -4,14 +4,27 @@ install:
 - cmd: git submodule update --init --recursive
 build_script:
 - cmd: >-
-    msbuild -p:PlatformToolset=v141 tool\CppUTest\CppUTest.vcxproj
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x86 tool\CppUTest\CppUTest.vcxproj
 
-    msbuild -p:PlatformToolset=v141 mechanism\test\AssertionTest\AssertionTest.vcxproj
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x86 mechanism\test\AssertionTest\AssertionTest.vcxproj
 
-    msbuild -p:PlatformToolset=v141 mechanism\test\ContainerTest\ContainerTest.vcxproj
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x86 mechanism\test\ContainerTest\ContainerTest.vcxproj
 
-    msbuild -p:PlatformToolset=v141 mechanism\test\OSWrapperTest\OSWrapperTest.vcxproj
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x86 mechanism\test\OSWrapperTest\OSWrapperTest.vcxproj
 
-    msbuild -p:PlatformToolset=v141 platform\test\PlatformOSWrapperTest\StdCppOSWrapperTest.vcxproj
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x86 platform\test\PlatformOSWrapperTest\StdCppOSWrapperTest.vcxproj
 
-    msbuild -p:PlatformToolset=v141 platform\test\PlatformOSWrapperTest\WindowsOSWrapperTest.vcxproj
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x86 platform\test\PlatformOSWrapperTest\WindowsOSWrapperTest.vcxproj
+
+
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x64 tool\CppUTest\CppUTest.vcxproj
+
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x64 mechanism\test\AssertionTest\AssertionTest.vcxproj
+
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x64 mechanism\test\ContainerTest\ContainerTest.vcxproj
+
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x64 mechanism\test\OSWrapperTest\OSWrapperTest.vcxproj
+
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x64 platform\test\PlatformOSWrapperTest\StdCppOSWrapperTest.vcxproj
+
+    msbuild -p:PlatformToolset=v141;Configuration=Release;Platform=x64 platform\test\PlatformOSWrapperTest\WindowsOSWrapperTest.vcxproj
