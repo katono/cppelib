@@ -177,6 +177,7 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="EventFlagTest.cpp" />
     <ClCompile Include="FixedMemoryPoolTest.cpp" />
+    <ClCompile Include="MessageQueueTest.cpp" />
     <ClCompile Include="MutexTest.cpp" />
     <ClCompile Include="OneShotTimerTest.cpp" />
     <ClCompile Include="PeriodicTimerTest.cpp" />
