@@ -172,6 +172,7 @@
     <ClCompile Include="..\..\OSWrapper\OneShotTimer.cpp" />
     <ClCompile Include="..\..\OSWrapper\PeriodicTimer.cpp" />
     <ClCompile Include="..\..\OSWrapper\Thread.cpp" />
+    <ClCompile Include="..\..\OSWrapper\ThreadPool.cpp" />
     <ClCompile Include="..\..\OSWrapper\Timeout.cpp" />
     <ClCompile Include="..\..\OSWrapper\VariableMemoryPool.cpp" />
     <ClCompile Include="..\main.cpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="MutexTest.cpp" />
     <ClCompile Include="OneShotTimerTest.cpp" />
     <ClCompile Include="PeriodicTimerTest.cpp" />
+    <ClCompile Include="ThreadPoolTest.cpp" />
     <ClCompile Include="ThreadTest.cpp" />
     <ClCompile Include="VariableMemoryPoolTest.cpp" />
   </ItemGroup>
@@ -200,6 +202,7 @@
     <ClInclude Include="..\..\OSWrapper\Runnable.h" />
     <ClInclude Include="..\..\OSWrapper\Thread.h" />
     <ClInclude Include="..\..\OSWrapper\ThreadFactory.h" />
+    <ClInclude Include="..\..\OSWrapper\ThreadPool.h" />
     <ClInclude Include="..\..\OSWrapper\Timeout.h" />
     <ClInclude Include="..\..\OSWrapper\VariableMemoryPool.h" />
     <ClInclude Include="..\..\OSWrapper\VariableMemoryPoolFactory.h" />
