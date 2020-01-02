@@ -60,6 +60,7 @@ set(OSWrapperTestSrc
 	${MECHANISM_DIR}/test/OSWrapperTest/ThreadTest.cpp
 	${MECHANISM_DIR}/test/OSWrapperTest/VariableMemoryPoolTest.cpp
 	${MECHANISM_DIR}/test/OSWrapperTest/MessageQueueTest.cpp
+	${MECHANISM_DIR}/test/OSWrapperTest/ThreadPoolTest.cpp
 )
 
 add_executable(alltests
