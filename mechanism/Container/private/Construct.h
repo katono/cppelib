@@ -24,7 +24,7 @@ void destroy(T* p)
 }
 
 template <typename ForwardIterator>
-void destroy(ForwardIterator first, ForwardIterator last)
+void destroy_range(ForwardIterator first, ForwardIterator last)
 {
 	for (; first != last; ++first) {
 		destroy(&*first);

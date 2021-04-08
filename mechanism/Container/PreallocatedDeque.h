@@ -254,7 +254,7 @@ public:
 	 */
 	~PreallocatedDeque()
 	{
-		destroy(begin(), end());
+		destroy_range(begin(), end());
 	}
 
 	/*!
@@ -309,7 +309,7 @@ public:
 
 	void clear()
 	{
-		destroy(begin(), end());
+		destroy_range(begin(), end());
 		m_end = m_begin;
 	}
 
@@ -408,7 +408,7 @@ public:
 	void resize(size_type n, const T& data = T())
 	{
 		if (size() >= n) {
-			destroy(begin() + n, end());
+			destroy_range(begin() + n, end());
 			m_end = prev_idx(m_end, size() - n);
 			return;
 		}
@@ -516,7 +516,7 @@ public:
 			for (iterator i = last; i != end(); ++i) {
 				*(i - n) = *i;
 			}
-			destroy(end() - n, end());
+			destroy_range(end() - n, end());
 			m_end = prev_idx(m_end, n);
 			return first;
 		} else {
@@ -525,7 +525,7 @@ public:
 			for (iterator i = first - 1; i != stop; --i) {
 				*(i + n) = *i;
 			}
-			destroy(begin(), begin() + n);
+			destroy_range(begin(), begin() + n);
 			m_begin = next_idx(m_begin, n);
 			return last;
 		}

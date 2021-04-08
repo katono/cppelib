@@ -82,7 +82,7 @@ public:
 
 	~FixedVector()
 	{
-		destroy(begin(), end());
+		destroy_range(begin(), end());
 	}
 
 	FixedVector& operator=(const FixedVector& x)
@@ -120,7 +120,7 @@ public:
 
 	void clear()
 	{
-		destroy(begin(), end());
+		destroy_range(begin(), end());
 		m_end = 0U;
 	}
 
@@ -229,7 +229,7 @@ public:
 	void resize(size_type n, const T& data = T())
 	{
 		if (size() >= n) {
-			destroy(begin() + n, end());
+			destroy_range(begin() + n, end());
 			m_end = n;
 			return;
 		}
@@ -320,7 +320,7 @@ public:
 		for (iterator i = last; i != end(); ++i) {
 			*(i - n) = *i;
 		}
-		destroy(end() - n, end());
+		destroy_range(end() - n, end());
 		m_end -= n;
 		return first;
 	}
