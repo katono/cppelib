@@ -128,9 +128,11 @@ public:
 		unsigned long tolerance = 3;
 #endif
 		if (diff < m_time - tolerance || m_time + tolerance < diff) {
+			LockGuard lock(s_mutex);
 			FAIL(StringFromFormat("time:%ld, diff:%ld", m_time, diff).asCharString());
 		}
 		m_prevTime = time;
+		LockGuard lock(s_mutex);
 		mock().actualCall("run").onObject(this);
 	}
 };
@@ -237,6 +239,41 @@ TEST(PlatformOneShotTimerTest, restart)
 	Thread::sleep(130);
 
 	OneShotTimer::destroy(timer);
+}
+
+TEST(PlatformOneShotTimerTest, multiple_timers)
+{
+	TimerRunnable runnable1;
+	OneShotTimer* timer1 = OneShotTimer::create(&runnable1, "TestOneShotTimer1");
+	CHECK(timer1);
+
+	TimerRunnable runnable2;
+	OneShotTimer* timer2 = OneShotTimer::create(&runnable2, "TestOneShotTimer2");
+	CHECK(timer2);
+
+	TimerRunnable runnable3;
+	OneShotTimer* timer3 = OneShotTimer::create(&runnable3, "TestOneShotTimer3");
+	CHECK(timer3);
+
+	mock().expectOneCall("run").onObject(&runnable1);
+	runnable1.setStartTime(100);
+	timer1->start(100);
+
+	mock().expectOneCall("run").onObject(&runnable2);
+	runnable2.setStartTime(100);
+	timer2->start(100);
+
+	Thread::sleep(50);
+
+	mock().expectOneCall("run").onObject(&runnable3);
+	runnable3.setStartTime(100);
+	timer3->start(100);
+
+	Thread::sleep(130);
+
+	OneShotTimer::destroy(timer1);
+	OneShotTimer::destroy(timer2);
+	OneShotTimer::destroy(timer3);
 }
 
 TEST(PlatformOneShotTimerTest, start_stop_continuously_at_once)

@@ -92,6 +92,7 @@ TEST_GROUP(PlatformPeriodicTimerTest) {
 class TimerRunnable : public Runnable {
 	unsigned long m_period;
 	unsigned long m_prevTime;
+	std::size_t m_runCount;
 	unsigned long getTime()
 	{
 #if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX) || defined(PLATFORM_OS_STDCPP)
@@ -108,7 +109,7 @@ class TimerRunnable : public Runnable {
 #endif
 	}
 public:
-	TimerRunnable(unsigned long period) : m_period(period), m_prevTime(0) {}
+	TimerRunnable(unsigned long period) : m_period(period), m_prevTime(0), m_runCount(0) {}
 	unsigned long getPeriod() const { return m_period; }
 	void setStartTime() { m_prevTime = getTime(); }
 	void run()
@@ -125,9 +126,17 @@ public:
 		unsigned long tolerance = 3;
 #endif
 		if (diff < m_period - tolerance || m_period + tolerance < diff) {
+			LockGuard lock(s_mutex);
 			FAIL(StringFromFormat("period:%ld, diff:%ld", m_period, diff).asCharString());
 		}
 		m_prevTime = time;
+		LockGuard lock(s_mutex);
+		m_runCount++;
+	}
+	std::size_t getRunCount() const
+	{
+		LockGuard lock(s_mutex);
+		return m_runCount;
 	}
 };
 
@@ -179,6 +188,7 @@ TEST(PlatformPeriodicTimerTest, start_isStarted_stop)
 	CHECK(!timer->isStarted());
 
 	PeriodicTimer::destroy(timer);
+	CHECK_COMPARE(9, <=, runnable.getRunCount());
 }
 
 TEST(PlatformPeriodicTimerTest, repeat_start_stop)
@@ -216,6 +226,43 @@ TEST(PlatformPeriodicTimerTest, restart)
 	timer->stop();
 
 	PeriodicTimer::destroy(timer);
+}
+
+TEST(PlatformPeriodicTimerTest, multiple_timers)
+{
+	TimerRunnable runnable1(100);
+	PeriodicTimer* timer1 = PeriodicTimer::create(&runnable1, runnable1.getPeriod(), "TestPeriodicTimer1");
+	CHECK(timer1);
+
+	TimerRunnable runnable2(200);
+	PeriodicTimer* timer2 = PeriodicTimer::create(&runnable2, runnable2.getPeriod(), "TestPeriodicTimer2");
+	CHECK(timer2);
+
+	TimerRunnable runnable3(100);
+	PeriodicTimer* timer3 = PeriodicTimer::create(&runnable3, runnable3.getPeriod(), "TestPeriodicTimer3");
+	CHECK(timer3);
+
+	runnable1.setStartTime();
+	timer1->start();
+	runnable2.setStartTime();
+	timer2->start();
+	Thread::sleep(200);
+
+	runnable3.setStartTime();
+	timer3->start();
+	Thread::sleep(240);
+
+	timer1->stop();
+	timer2->stop();
+	timer3->stop();
+
+	LONGS_EQUAL(4, runnable1.getRunCount());
+	LONGS_EQUAL(2, runnable2.getRunCount());
+	LONGS_EQUAL(2, runnable3.getRunCount());
+
+	PeriodicTimer::destroy(timer1);
+	PeriodicTimer::destroy(timer2);
+	PeriodicTimer::destroy(timer3);
 }
 
 TEST(PlatformPeriodicTimerTest, start_stop_continuously_at_once)
