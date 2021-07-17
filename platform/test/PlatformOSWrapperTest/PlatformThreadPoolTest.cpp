@@ -351,7 +351,7 @@ TEST(PlatformThreadPoolTest, tryStart_failed)
 	ThreadPool::destroy(threadPool);
 }
 
-TEST(PlatformThreadPoolTest, check_priority_stackSize)
+TEST(PlatformThreadPoolTest, check_priority_stackSize_threadName)
 {
 	class CheckPriorityStackSizeRunnable : public Runnable {
 	public:
@@ -362,10 +362,12 @@ TEST(PlatformThreadPoolTest, check_priority_stackSize)
 			LONGS_EQUAL(4096, m_thread->getStackSize());
 			LONGS_EQUAL(Thread::getPriorityHigherThan(Thread::getNormalPriority(), 1),
 					m_thread->getPriority());
+			STRCMP_EQUAL("ThreadPool", m_thread->getName());
 		}
 	};
-	threadPool = ThreadPool::create(10, 4096, Thread::getHighestPriority());
+	threadPool = ThreadPool::create(10, 4096, Thread::getHighestPriority(), "ThreadPool");
 	CHECK(threadPool);
+	STRCMP_EQUAL("ThreadPool", threadPool->getThreadName());
 
 	CheckPriorityStackSizeRunnable runnable;
 	{
