@@ -310,7 +310,7 @@ TEST(FixedDequeTest, operator_assign_self)
 	FixedDeque<int, SIZE> x(a.begin(), a.end());
 	x = x;
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(a[i], x[i]);
 	}
 }

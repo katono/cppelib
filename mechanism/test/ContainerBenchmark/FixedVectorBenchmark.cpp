@@ -5,7 +5,7 @@
 #include <functional>
 #include <cstdio>
 #include <cstdlib>
-#include <time.h>
+#include <ctime>
 #ifdef _WIN32
 #include <windows.h>
 #else

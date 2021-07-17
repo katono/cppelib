@@ -235,7 +235,7 @@ TEST(PreallocatedVectorTest, begin_end)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(a.begin(), a.end());
-	size_t i = 0;
+	std::size_t i = 0;
 	for (PreallocatedVector<int>::iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -247,7 +247,7 @@ TEST(PreallocatedVectorTest, begin_end_const)
 	PreallocatedVector<int> z(alloc_buf, ALLOC_SIZE);
 	z.assign(a.begin(), a.end());
 	const PreallocatedVector<int>& x = z;
-	size_t i = 0;
+	std::size_t i = 0;
 	for (PreallocatedVector<int>::const_iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -311,7 +311,7 @@ TEST(PreallocatedVectorTest, operator_assign)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x = b;
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(b[i], x[i]);
 	}
 }
@@ -323,7 +323,7 @@ TEST(PreallocatedVectorTest, operator_assign_self)
 	x.assign(a.begin(), a.end());
 	x = x;
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(a[i], x[i]);
 	}
 }
@@ -342,7 +342,7 @@ TEST(PreallocatedVectorTest, resize_make_longer)
 	x.resize(5);
 	x.resize(8, 100);
 	LONGS_EQUAL(8, x.size());
-	size_t i;
+	std::size_t i;
 	for (i = 0; i < 5; ++i) {
 		LONGS_EQUAL(0, x[i]);
 	}
@@ -438,7 +438,7 @@ TEST(PreallocatedVectorTest, assign_range)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(a.begin(), a.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -449,7 +449,7 @@ TEST(PreallocatedVectorTest, assign_range_c_array)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(&a[0], &a[SIZE]);
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -463,7 +463,7 @@ TEST(PreallocatedVectorTest, assign_range_PreallocatedVector_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -475,7 +475,7 @@ TEST(PreallocatedVectorTest, assign_range_FixedVector_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -487,7 +487,7 @@ TEST(PreallocatedVectorTest, assign_range_FixedDeque_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -500,7 +500,7 @@ TEST(PreallocatedVectorTest, assign_range_deque_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -512,7 +512,7 @@ TEST(PreallocatedVectorTest, assign_range_list_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -672,7 +672,7 @@ TEST(PreallocatedVectorTest, insert_range_c_array)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.insert(x.end(), &a[0], &a[SIZE]);
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -686,7 +686,7 @@ TEST(PreallocatedVectorTest, insert_range_PreallocatedVector_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -698,7 +698,7 @@ TEST(PreallocatedVectorTest, insert_range_FixedVector_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -710,7 +710,7 @@ TEST(PreallocatedVectorTest, insert_range_FixedDeque_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -723,7 +723,7 @@ TEST(PreallocatedVectorTest, insert_range_deque_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -735,7 +735,7 @@ TEST(PreallocatedVectorTest, insert_range_list_iter)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -1363,12 +1363,12 @@ TEST(PreallocatedVectorTest, algo_sort)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(a.begin(), a.end());
 	std::sort(x.begin(), x.end());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
 	}
 
 	std::sort(x.begin(), x.end(), std::greater<int>());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(SIZE - i - 1, x.at(i));
 	}
 }
@@ -1379,7 +1379,7 @@ TEST(PreallocatedVectorTest, algo_copy)
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	std::copy(a.begin(), a.end(), std::back_inserter(x));
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
 	}
 }
@@ -1406,7 +1406,7 @@ TEST(PreallocatedVectorTest, rbegin_rend)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
 	x.assign(a.begin(), a.end());
-	size_t i = SIZE - 1;
+	std::size_t i = SIZE - 1;
 	for (PreallocatedVector<int>::reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -1418,7 +1418,7 @@ TEST(PreallocatedVectorTest, rbegin_rend_const)
 	PreallocatedVector<int> z(alloc_buf, ALLOC_SIZE);
 	z.assign(a.begin(), a.end());
 	const PreallocatedVector<int>& x = z;
-	size_t i = SIZE - 1;
+	std::size_t i = SIZE - 1;
 	for (PreallocatedVector<int>::const_reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}

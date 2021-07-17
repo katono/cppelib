@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <cstdio>
-#include <time.h>
+#include <ctime>
 #ifdef _WIN32
 #include <windows.h>
 #else

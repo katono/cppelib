@@ -195,7 +195,7 @@ TEST(FixedVectorTest, begin_end)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	FixedVector<int, SIZE> x(a.begin(), a.end());
-	size_t i = 0;
+	std::size_t i = 0;
 	for (FixedVector<int, SIZE>::iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -205,7 +205,7 @@ TEST(FixedVectorTest, begin_end_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const FixedVector<int, SIZE> x(a.begin(), a.end());
-	size_t i = 0;
+	std::size_t i = 0;
 	for (FixedVector<int, SIZE>::const_iterator it = x.begin(); it != x.end(); ++it, ++i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -278,7 +278,7 @@ TEST(FixedVectorTest, ctor_range)
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	FixedVector<int, SIZE> x(a.begin(), a.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -303,7 +303,7 @@ TEST(FixedVectorTest, copy_ctor)
 	const FixedVector<int, SIZE> x(b);
 	LONGS_EQUAL(SIZE, b.size());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(a[i], b[i]);
 		LONGS_EQUAL(b[i], x[i]);
 	}
@@ -316,7 +316,7 @@ TEST(FixedVectorTest, operator_assign)
 	FixedVector<int, SIZE> x;
 	x = b;
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(b[i], x[i]);
 	}
 }
@@ -327,7 +327,7 @@ TEST(FixedVectorTest, operator_assign_self)
 	FixedVector<int, SIZE> x(a.begin(), a.end());
 	x = x;
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(a[i], x[i]);
 	}
 }
@@ -344,7 +344,7 @@ TEST(FixedVectorTest, resize_make_longer)
 	FixedVector<int, SIZE> x(5);
 	x.resize(8, 100);
 	LONGS_EQUAL(8, x.size());
-	size_t i;
+	std::size_t i;
 	for (i = 0; i < 5; ++i) {
 		LONGS_EQUAL(0, x[i]);
 	}
@@ -438,7 +438,7 @@ TEST(FixedVectorTest, assign_range)
 	FixedVector<int, SIZE> x;
 	x.assign(a.begin(), a.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -449,7 +449,7 @@ TEST(FixedVectorTest, assign_range_c_array)
 	FixedVector<int, SIZE> x;
 	x.assign(&a[0], &a[SIZE]);
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -461,7 +461,7 @@ TEST(FixedVectorTest, assign_range_FixedVector_iter)
 	FixedVector<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -473,7 +473,7 @@ TEST(FixedVectorTest, assign_range_FixedDeque_iter)
 	FixedVector<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -486,7 +486,7 @@ TEST(FixedVectorTest, assign_range_deque_iter)
 	FixedVector<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -498,7 +498,7 @@ TEST(FixedVectorTest, assign_range_list_iter)
 	FixedVector<int, SIZE> x;
 	x.assign(b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -657,7 +657,7 @@ TEST(FixedVectorTest, insert_range_c_array)
 	FixedVector<int, SIZE> x;
 	x.insert(x.end(), &a[0], &a[SIZE]);
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -669,7 +669,7 @@ TEST(FixedVectorTest, insert_range_FixedVector_iter)
 	FixedVector<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -681,7 +681,7 @@ TEST(FixedVectorTest, insert_range_FixedDeque_iter)
 	FixedVector<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -694,7 +694,7 @@ TEST(FixedVectorTest, insert_range_deque_iter)
 	FixedVector<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -706,7 +706,7 @@ TEST(FixedVectorTest, insert_range_list_iter)
 	FixedVector<int, SIZE> x;
 	x.insert(x.end(), b.begin(), b.end());
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x[i]);
 	}
 }
@@ -1244,12 +1244,12 @@ TEST(FixedVectorTest, algo_sort)
 	const Array<int, SIZE> a = {1, 7, 0, 2, 5, 3, 9, 4, 6, 8};
 	FixedVector<int, SIZE> x(a.begin(), a.end());
 	std::sort(x.begin(), x.end());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
 	}
 
 	std::sort(x.begin(), x.end(), std::greater<int>());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(SIZE - i - 1, x.at(i));
 	}
 }
@@ -1260,7 +1260,7 @@ TEST(FixedVectorTest, algo_copy)
 	FixedVector<int, SIZE> x;
 	std::copy(a.begin(), a.end(), std::back_inserter(x));
 	LONGS_EQUAL(SIZE, x.size());
-	for (size_t i = 0; i < x.size(); ++i) {
+	for (std::size_t i = 0; i < x.size(); ++i) {
 		LONGS_EQUAL(i, x.at(i));
 	}
 }
@@ -1285,7 +1285,7 @@ TEST(FixedVectorTest, rbegin_rend)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	FixedVector<int, SIZE> x(a.begin(), a.end());
-	size_t i = SIZE - 1;
+	std::size_t i = SIZE - 1;
 	for (FixedVector<int, SIZE>::reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}
@@ -1295,7 +1295,7 @@ TEST(FixedVectorTest, rbegin_rend_const)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	const FixedVector<int, SIZE> x(a.begin(), a.end());
-	size_t i = SIZE - 1;
+	std::size_t i = SIZE - 1;
 	for (FixedVector<int, SIZE>::const_reverse_iterator it = x.rbegin(); it != x.rend(); ++it, --i) {
 		LONGS_EQUAL(a[i], *it);
 	}
