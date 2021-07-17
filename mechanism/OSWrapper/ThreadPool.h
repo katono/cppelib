@@ -146,9 +146,10 @@ public:
 	 * @param maxThreads Number of max threads that can execute concurrently
 	 * @param stackSize Stack size of threads. If zero then sets default stack size of RTOS.
 	 * @param defaultPriority First, the thread priority is \p defaultPriority when the threads are created. Then the priority is changed by the parameter of start() when an asynchronous task is started. After the asynchronous task finishes, the priority returns to \p defaultPriority.
+	 * @param threadName Name of threads. Threads are named the same name.
 	 * @return If this method succeeds then returns a pointer of ThreadPool object, else returns null pointer
 	 */
-	static ThreadPool* create(std::size_t maxThreads, std::size_t stackSize = 0U, int defaultPriority = Thread::getNormalPriority());
+	static ThreadPool* create(std::size_t maxThreads, std::size_t stackSize = 0U, int defaultPriority = Thread::getNormalPriority(), const char* threadName = "");
 
 	/*!
 	 * @brief Destroy a ThreadPool object
@@ -218,6 +219,12 @@ public:
 	 */
 	Thread::UncaughtExceptionHandler* getUncaughtExceptionHandler() const;
 
+	/*!
+	 * @brief Get the name of threads
+	 * @return The name of threads
+	 */
+	const char* getThreadName() const;
+
 private:
 	typedef MessageQueue<TaskRunner*> TaskRunnerMQ;
 	TaskRunnerMQ* m_freeRunnerQueue;
@@ -232,6 +239,7 @@ private:
 
 	Thread::UncaughtExceptionHandler* m_uncaughtExceptionHandler;
 	const int m_defaultPriority;
+	const char* m_threadName;
 
 	bool constructMembers(std::size_t maxThreads, std::size_t stackSize);
 	void destroyMembers();
@@ -241,7 +249,7 @@ private:
 	void releaseRunner(TaskRunner* runner);
 	int getDefaultPriority() const { return m_defaultPriority; }
 
-	ThreadPool(FixedMemoryPool* objPool, int defaultPriority);
+	ThreadPool(FixedMemoryPool* objPool, int defaultPriority, const char* threadName);
 	~ThreadPool();
 
 	ThreadPool(const ThreadPool&);

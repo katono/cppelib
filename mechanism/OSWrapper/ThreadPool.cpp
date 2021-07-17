@@ -5,7 +5,7 @@
 
 namespace OSWrapper {
 
-ThreadPool::ThreadPool(FixedMemoryPool* objPool, int defaultPriority)
+ThreadPool::ThreadPool(FixedMemoryPool* objPool, int defaultPriority, const char* threadName)
 : m_freeRunnerQueue(0)
 , m_threads()
 , m_threadMemory(0)
@@ -14,6 +14,7 @@ ThreadPool::ThreadPool(FixedMemoryPool* objPool, int defaultPriority)
 , m_objPool(objPool)
 , m_uncaughtExceptionHandler(0)
 , m_defaultPriority(defaultPriority)
+, m_threadName(threadName)
 {
 }
 
@@ -21,7 +22,7 @@ ThreadPool::~ThreadPool()
 {
 }
 
-ThreadPool* ThreadPool::create(std::size_t maxThreads, std::size_t stackSize/*= 0U*/, int defaultPriority/*= Thread::getNormalPriority()*/)
+ThreadPool* ThreadPool::create(std::size_t maxThreads, std::size_t stackSize/*= 0U*/, int defaultPriority/*= Thread::getNormalPriority()*/, const char* threadName/*= ""*/)
 {
 	const std::size_t objSize = sizeof(ThreadPool);
 	FixedMemoryPool* objPool = FixedMemoryPool::create(objSize,
@@ -35,7 +36,7 @@ ThreadPool* ThreadPool::create(std::size_t maxThreads, std::size_t stackSize/*= 
 		FixedMemoryPool::destroy(objPool);
 		return 0;
 	}
-	ThreadPool* tp = new(p) ThreadPool(objPool, defaultPriority);
+	ThreadPool* tp = new(p) ThreadPool(objPool, defaultPriority, threadName);
 
 	if (!tp->constructMembers(maxThreads, stackSize)) {
 		tp->~ThreadPool();
@@ -86,7 +87,7 @@ bool ThreadPool::constructMembers(std::size_t maxThreads, std::size_t stackSize)
 
 		TaskRunner* runner = new(p) TaskRunner(e, this);
 
-		Thread* t = Thread::create(runner, m_defaultPriority, stackSize);
+		Thread* t = Thread::create(runner, m_defaultPriority, stackSize, 0, m_threadName);
 		if (t == 0) {
 			EventFlag::destroy(e);
 			runner->~TaskRunner();
@@ -219,6 +220,11 @@ void ThreadPool::setUncaughtExceptionHandler(Thread::UncaughtExceptionHandler* h
 Thread::UncaughtExceptionHandler* ThreadPool::getUncaughtExceptionHandler() const
 {
 	return m_uncaughtExceptionHandler;
+}
+
+const char* ThreadPool::getThreadName() const
+{
+	return m_threadName;
 }
 
 
