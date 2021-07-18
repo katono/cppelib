@@ -2,6 +2,7 @@
 #define WINDOWS_OS_WRAPPER_WINDOWS_THREAD_FACTORY_H_INCLUDED
 
 #include "StdCppOSWrapper/StdCppThreadFactory.h"
+#include <string>
 
 namespace WindowsOSWrapper {
 
@@ -10,10 +11,12 @@ private:
 	class WindowsThread : public StdCppOSWrapper::StdCppThreadFactory::StdCppThread {
 	private:
 		const std::unordered_map<int, int>& m_prioMap;
+		std::wstring m_threadName;
 	public:
 		WindowsThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, const char* name, const std::unordered_map<int, int>& prioMap);
 		virtual ~WindowsThread() {}
 
+		virtual void setName(const char* name);
 		virtual void setPriority(int priority);
 	};
 public:

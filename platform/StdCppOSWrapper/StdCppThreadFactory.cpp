@@ -43,6 +43,7 @@ void StdCppThreadFactory::StdCppThread::beginThread()
 	std::thread t(&threadEntry, this);
 	t.swap(m_thread);
 	m_threadId = m_thread.get_id();
+	setName(m_name);
 	setPriority(m_priority);
 	m_initialPriority = m_priority;
 }

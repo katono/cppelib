@@ -1,12 +1,29 @@
 #include "WindowsThreadFactory.h"
 #include <windows.h>
 #include <process.h>
+#include <vector>
+#include <cstdlib>
+#include <cwchar>
 
 namespace WindowsOSWrapper {
 
 WindowsThreadFactory::WindowsThread::WindowsThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, const char* name, const std::unordered_map<int, int>& prioMap)
-: StdCppOSWrapper::StdCppThreadFactory::StdCppThread(r, priority, stackSize, name), m_prioMap(prioMap)
+: StdCppOSWrapper::StdCppThreadFactory::StdCppThread(r, priority, stackSize, name), m_prioMap(prioMap), m_threadName()
 {
+}
+
+void WindowsThreadFactory::WindowsThread::setName(const char* name)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	m_name = name;
+#if _MSC_VER >= 1913 // Visual Studio 2017 version 15.6 and later versions
+	std::size_t len;
+	mbstowcs_s(&len, nullptr, 0U, name, _TRUNCATE);
+	std::vector<wchar_t> buf(len);
+	mbstowcs_s(&len, &buf[0U], len, name, _TRUNCATE);
+	m_threadName = &buf[0U];
+	SetThreadDescription(m_thread.native_handle(), m_threadName.c_str());
+#endif
 }
 
 void WindowsThreadFactory::WindowsThread::setPriority(int priority)
