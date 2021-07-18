@@ -18,6 +18,7 @@ private:
 		PosixThread(OSWrapper::Runnable* r, int priority, std::size_t stackSize, const char* name, int defaultPolicy, int defaultPriority, const std::unordered_map<int, int>& prioMap);
 		virtual ~PosixThread() {}
 
+		virtual void setName(const char* name);
 		virtual void setPriority(int priority);
 	};
 public:

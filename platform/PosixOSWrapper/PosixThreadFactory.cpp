@@ -13,6 +13,15 @@ PosixThreadFactory::PosixThread::PosixThread(OSWrapper::Runnable* r, int priorit
 {
 }
 
+void PosixThreadFactory::PosixThread::setName(const char* name)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	m_name = name;
+#ifdef __GNUC__
+	pthread_setname_np(m_thread.native_handle(), name);
+#endif
+}
+
 void PosixThreadFactory::PosixThread::setPriority(int priority)
 {
 	if ((OSWrapper::Thread::getMinPriority() <= priority) && (priority <= OSWrapper::Thread::getMaxPriority())) {
