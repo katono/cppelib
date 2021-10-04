@@ -216,6 +216,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="origin\src\CppUTestExt\CodeMemoryReportFormatter.cpp" />
+    <ClCompile Include="origin\src\CppUTestExt\GTest.cpp" />
     <ClCompile Include="origin\src\CppUTestExt\IEEE754ExceptionsPlugin.cpp" />
     <ClCompile Include="origin\src\CppUTestExt\MemoryReportAllocator.cpp" />
     <ClCompile Include="origin\src\CppUTestExt\MemoryReporterPlugin.cpp" />
@@ -232,6 +233,7 @@
     <ClCompile Include="origin\src\CppUTest\CommandLineArguments.cpp" />
     <ClCompile Include="origin\src\CppUTest\CommandLineTestRunner.cpp" />
     <ClCompile Include="origin\src\CppUTest\JUnitTestOutput.cpp" />
+    <ClCompile Include="origin\src\CppUTest\SimpleStringInternalCache.cpp" />
     <ClCompile Include="origin\src\CppUTest\TeamCityTestOutput.cpp" />
     <ClCompile Include="origin\src\CppUTest\MemoryLeakDetector.cpp" />
     <ClCompile Include="origin\src\CppUTest\MemoryLeakWarningPlugin.cpp" />
@@ -254,6 +256,7 @@
     <ClInclude Include="origin\include\CppUTestExt\GMock.h" />
     <ClInclude Include="origin\include\CppUTestExt\GTest.h" />
     <ClInclude Include="origin\include\CppUTestExt\GTestConvertor.h" />
+    <ClInclude Include="origin\include\CppUTestExt\GTestSupport.h" />
     <ClInclude Include="origin\include\cpputestext\ieee754exceptionsplugin.h" />
     <ClInclude Include="origin\include\CppUTestExt\MemoryReportAllocator.h" />
     <ClInclude Include="origin\include\CppUTestExt\MemoryReporterPlugin.h" />
@@ -275,6 +278,7 @@
     <ClInclude Include="origin\include\CppUTest\CppUTestGeneratedConfig.h" />
     <ClInclude Include="origin\include\CppUTest\JUnitTestOutput.h" />
     <ClInclude Include="origin\include\cpputest\platformspecificfunctions_c.h" />
+    <ClInclude Include="origin\include\CppUTest\SimpleStringInternalCache.h" />
     <ClInclude Include="origin\include\CppUTest\TeamCityTestOutput.h" />
     <ClInclude Include="origin\include\CppUTest\MemoryLeakDetector.h" />
     <ClInclude Include="origin\include\CppUTest\MemoryLeakDetectorMallocMacros.h" />
