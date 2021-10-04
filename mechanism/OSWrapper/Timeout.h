@@ -21,6 +21,12 @@ public:
 	explicit Timeout(long milliseconds) : m_milliseconds(milliseconds) {}
 
 	/*!
+	 * @brief Copy constructor of Timeout
+	 * @param tmout Copy source object
+	 */
+	Timeout(const Timeout& tmout) : m_milliseconds(tmout.m_milliseconds) {}
+
+	/*!
 	 * @brief Implicit conversion from the Timeout object to integer value
 	 */
 	operator long() const { return m_milliseconds; }
