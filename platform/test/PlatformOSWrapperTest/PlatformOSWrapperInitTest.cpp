@@ -43,7 +43,7 @@ TEST_GROUP(PlatformOSWrapperInitTest) {
 	{
 		// No leak check because init() uses static objects.
 		// Static objects are not released by teardown().
-		MemoryLeakWarningPlugin::turnOffNewDeleteOverloads();
+		MemoryLeakWarningPlugin::saveAndDisableNewDeleteOverloads();
 
 #if defined(PLATFORM_OS_WINDOWS)
 		WindowsOSWrapper::init(1, 9);
@@ -61,7 +61,7 @@ TEST_GROUP(PlatformOSWrapperInitTest) {
 		mock().checkExpectations();
 		mock().clear();
 
-		MemoryLeakWarningPlugin::turnOnNewDeleteOverloads();
+		MemoryLeakWarningPlugin::restoreNewDeleteOverloads();
 	}
 };
 
