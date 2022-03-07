@@ -6,6 +6,10 @@
 #define ASSERTION_ASSERT_TOSTRING(n) ASSERTION_ASSERT_STRINGIFY(n)
 //! @endcond
 
+#ifdef NO_EXCEPTIONS
+#include <cstdlib>
+#define CHECK_ASSERT(x) std::abort()
+#else
 /*!
  * @brief Used instead of standard assert() macro for implementing Design by Contract
  * @note This macro is always enabled.
@@ -19,6 +23,7 @@
 			throw Assertion::Failure(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")");\
 		}\
 	} while (false)
+#endif
 
 
 #ifdef NDEBUG
