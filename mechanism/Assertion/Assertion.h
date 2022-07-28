@@ -63,7 +63,7 @@ private:
  * @brief User specific function class
  *
  * If NO_EXCEPTIONS macro is defined, the specified functions are called when CHECK_ASSERT() macro fails.
- * If NO_EXCEPTIONS macro is not defined, this class do nothing.
+ * If NO_EXCEPTIONS macro is not defined, the specified functions are not called.
  */
 class UserSpecificFunc {
 public:
