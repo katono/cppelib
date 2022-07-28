@@ -3,9 +3,10 @@
 
 #include <exception>
 
+//! @cond
 #ifdef NO_EXCEPTIONS
-#include <cstdlib>
-#define CONTAINER_THROW(x) std::abort()
+#include "Assertion/Assertion.h"
+#define CONTAINER_THROW(x) CHECK_ASSERT(false && #x)
 #else
 #define CONTAINER_THROW(x) throw x
 #endif
@@ -15,6 +16,7 @@
 #else
 #define CONTAINER_NOEXCEPT throw()
 #endif
+//! @endcond
 
 namespace Container {
 
