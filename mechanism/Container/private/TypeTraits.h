@@ -46,7 +46,7 @@ template <> struct IsInteger<unsigned long> {
 	typedef TrueType Integral;
 };
 
-#ifdef USE_LONG_LONG
+#if (__cplusplus >= 201103L) || !defined(CPPELIB_NO_LONG_LONG)
 template <> struct IsInteger<long long> {
 	typedef TrueType Integral;
 };
