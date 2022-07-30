@@ -1,5 +1,5 @@
 #include "Container/Array.h"
-#ifndef NO_STD_ALGORITHM
+#ifndef CPPELIB_NO_STD_ALGORITHM
 #include <algorithm>
 #include <functional>
 #endif
@@ -266,7 +266,7 @@ TEST(ArrayTest, new_delete)
 	delete a;
 }
 
-#ifndef NO_STD_ALGORITHM
+#ifndef CPPELIB_NO_STD_ALGORITHM
 TEST(ArrayTest, algo_sort)
 {
 	Array<int, SIZE> a = {1, 7, 0, 2, 5, 3, 9, 4, 6, 8};
@@ -282,7 +282,7 @@ TEST(ArrayTest, algo_sort)
 }
 #endif
 
-#ifndef NO_STD_ITERATOR
+#ifndef CPPELIB_NO_STD_ITERATOR
 TEST(ArrayTest, rbegin_rend)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};

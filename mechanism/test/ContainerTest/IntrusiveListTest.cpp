@@ -1009,7 +1009,7 @@ TEST(IntrusiveListTest, new_delete)
 	delete x;
 }
 
-#ifndef NO_STD_ITERATOR
+#ifndef CPPELIB_NO_STD_ITERATOR
 TEST(IntrusiveListTest, rbegin_rend)
 {
 	MyList x;

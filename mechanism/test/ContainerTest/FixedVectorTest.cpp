@@ -1,11 +1,11 @@
 #include "Container/FixedVector.h"
 #include "Container/Array.h"
 #include "Container/FixedDeque.h"
-#ifndef NO_STD_CONTAINER
+#ifndef CPPELIB_NO_STD_CONTAINER
 #include <deque>
 #include <list>
 #endif
-#ifndef NO_STD_ALGORITHM
+#ifndef CPPELIB_NO_STD_ALGORITHM
 #include <algorithm>
 #include <functional>
 #endif
@@ -478,7 +478,7 @@ TEST(FixedVectorTest, assign_range_FixedDeque_iter)
 	}
 }
 
-#ifndef NO_STD_CONTAINER
+#ifndef CPPELIB_NO_STD_CONTAINER
 TEST(FixedVectorTest, assign_range_deque_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -686,7 +686,7 @@ TEST(FixedVectorTest, insert_range_FixedDeque_iter)
 	}
 }
 
-#ifndef NO_STD_CONTAINER
+#ifndef CPPELIB_NO_STD_CONTAINER
 TEST(FixedVectorTest, insert_range_deque_iter)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -1238,7 +1238,7 @@ TEST(FixedVectorTest, new_delete)
 	delete x;
 }
 
-#ifndef NO_STD_ALGORITHM
+#ifndef CPPELIB_NO_STD_ALGORITHM
 TEST(FixedVectorTest, algo_sort)
 {
 	const Array<int, SIZE> a = {1, 7, 0, 2, 5, 3, 9, 4, 6, 8};
@@ -1280,7 +1280,7 @@ TEST(FixedVectorTest, algo_copy_exception)
 }
 #endif
 
-#ifndef NO_STD_ITERATOR
+#ifndef CPPELIB_NO_STD_ITERATOR
 TEST(FixedVectorTest, rbegin_rend)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};

@@ -2,7 +2,7 @@
 #define CONTAINER_FIXED_VECTOR_H_INCLUDED
 
 #include <cstddef>
-#ifndef NO_STD_ITERATOR
+#ifndef CPPELIB_NO_STD_ITERATOR
 #include <iterator>
 #endif
 #include "ContainerException.h"
@@ -33,7 +33,7 @@ public:
 	typedef const value_type& const_reference;
 	typedef value_type* pointer;
 	typedef const value_type* const_pointer;
-#ifndef NO_STD_ITERATOR
+#ifndef CPPELIB_NO_STD_ITERATOR
 	typedef std::reverse_iterator<iterator> reverse_iterator;
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 #endif
@@ -180,7 +180,7 @@ public:
 		return begin() + m_end;
 	}
 
-#ifndef NO_STD_ITERATOR
+#ifndef CPPELIB_NO_STD_ITERATOR
 	reverse_iterator rbegin()
 	{
 		return reverse_iterator(end());
