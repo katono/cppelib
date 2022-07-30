@@ -5,7 +5,7 @@
 #define ASSERTION_ASSERT_STRINGIFY(n) #n
 #define ASSERTION_ASSERT_TOSTRING(n) ASSERTION_ASSERT_STRINGIFY(n)
 
-#ifdef NO_EXCEPTIONS
+#ifdef CPPELIB_NO_EXCEPTIONS
 #include <cstdlib>
 #define ASSERTION_ASSERTION_FAILURE(x) Assertion::UserSpecificFunc::assertFail(x)
 #else
@@ -62,8 +62,8 @@ private:
 /*!
  * @brief User specific function class
  *
- * If NO_EXCEPTIONS macro is defined, the specified functions are called when CHECK_ASSERT() macro fails.
- * If NO_EXCEPTIONS macro is not defined, the specified functions are not called.
+ * If CPPELIB_NO_EXCEPTIONS macro is defined, the specified functions are called when CHECK_ASSERT() macro fails.
+ * If CPPELIB_NO_EXCEPTIONS macro is not defined, the specified functions are not called.
  */
 class UserSpecificFunc {
 public:
@@ -117,7 +117,7 @@ private:
 		return func;
 	}
 
-#ifdef NO_EXCEPTIONS
+#ifdef CPPELIB_NO_EXCEPTIONS
 public:
 	static void assertFail(const char* msg)
 	{

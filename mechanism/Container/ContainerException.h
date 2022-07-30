@@ -4,7 +4,7 @@
 #include <exception>
 
 //! @cond
-#ifdef NO_EXCEPTIONS
+#ifdef CPPELIB_NO_EXCEPTIONS
 #include "Assertion/Assertion.h"
 #define CONTAINER_THROW(x) CHECK_ASSERT(false && #x)
 #else
