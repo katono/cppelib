@@ -2,14 +2,14 @@
 #define ASSERTION_ASSERTION_H_INCLUDED
 
 //! @cond
-#define ASSERTION_ASSERT_STRINGIFY(n) #n
-#define ASSERTION_ASSERT_TOSTRING(n) ASSERTION_ASSERT_STRINGIFY(n)
-
 #ifdef CPPELIB_NO_EXCEPTIONS
 #include <cstdlib>
 #endif
-#define ASSERTION_ASSERTION_FAILURE(x) Assertion::UserSpecificFunc::assertFail(x)
 //! @endcond
+
+#ifndef CPPELIB_ASSERTION_FAILURE_BUFSIZE
+#define CPPELIB_ASSERTION_FAILURE_BUFSIZE (512)
+#endif
 
 /*!
  * @brief Used instead of standard assert() macro for implementing Design by Contract
@@ -19,11 +19,7 @@
  *            If this exception is thrown, you must do shutdown your application safely.
  */
 #define CHECK_ASSERT(x)\
-	do {\
-		if (!(x)) {\
-			ASSERTION_ASSERTION_FAILURE(__FILE__ "(" ASSERTION_ASSERT_TOSTRING(__LINE__) "): Assertion failed (" #x ")");\
-		}\
-	} while (false)
+	((x) ? (void)0 : Assertion::UserSpecificFunc::assertFail(__FILE__, __LINE__, #x))
 
 
 #ifdef NDEBUG
@@ -44,17 +40,89 @@ namespace Assertion {
  */
 class Failure {
 public:
-	explicit Failure(const char* msg) : m_msg(msg) {}
+	Failure(const char* file, unsigned int line, const char* msg)
+	: m_buf()
+	{
+		unsigned int remain = sizeof m_buf;
+		char* pBuf = m_buf;
+		pBuf = concatCString(pBuf, remain, file);
+		pBuf = concatCString(pBuf, remain, "(");
+		char lineBuf[16];
+		toCString(lineBuf, sizeof lineBuf, line);
+		pBuf = concatCString(pBuf, remain, lineBuf);
+		pBuf = concatCString(pBuf, remain, "): Assertion failed (");
+		pBuf = concatCString(pBuf, remain, msg);
+		pBuf = concatCString(pBuf, remain, ")");
+	}
+
 	/*!
 	 * @brief Get the message when assertion fails
 	 * @return message when assertion fails
 	 */
 	const char* message() const
 	{
-		return m_msg;
+		return m_buf;
 	}
+
+//! @cond
 private:
-	const char* m_msg;
+	char m_buf[CPPELIB_ASSERTION_FAILURE_BUFSIZE];
+
+	static void toCString(char* buf, unsigned int size, unsigned int val)
+	{
+		if (size == 0U) {
+			return;
+		}
+		const unsigned int TMP_SIZE = 16U;
+		char tmp[TMP_SIZE];
+		const char* const numStr = "0123456789";
+		unsigned int i;
+		for (i = 0U; val > 0U && i < TMP_SIZE - 1U; i++) {
+			tmp[i] = numStr[val % 10U];
+			val /= 10U;
+		}
+		const unsigned int tmpLen = i;
+		for (i = 0U; i < tmpLen; i++) {
+			if (i < size) {
+				buf[i] = tmp[tmpLen - i - 1U];
+			} else {
+				buf[size - 1U] = '\0';
+				return;
+			}
+		}
+		buf[tmpLen] = '\0';
+	}
+
+	static char* concatCString(char* buf, unsigned int& remain, const char* str)
+	{
+		if (remain <= 1U) {
+			return buf;
+		}
+		unsigned int len = copyCString(buf, remain, str);
+		remain -= len;
+		return buf + len;
+	}
+
+	static unsigned int copyCString(char* to, unsigned int size, const char* from)
+	{
+		if (size == 0U) {
+			return 0U;
+		}
+		const char* p = from;
+		char* q = to;
+		for (unsigned int i = 0U; i < size; i++) {
+			if (*p == '\0') {
+				*q = '\0';
+				return i;
+			}
+			*q = *p;
+			p++;
+			q++;
+		}
+		to[size - 1U] = '\0';
+		return size - 1U;
+	}
+//! @endcond
 };
 
 /*!
@@ -116,12 +184,13 @@ private:
 	}
 
 public:
-	static void assertFail(const char* msg)
+	static void assertFail(const char* file, unsigned int line, const char* msg)
 	{
 #ifdef CPPELIB_NO_EXCEPTIONS
 		PutsType& putsFunc = getPuts();
 		if (putsFunc != reinterpret_cast<PutsType>(0)) {
-			putsFunc(msg);
+			Failure failure(file, line, msg);
+			putsFunc(failure.message());
 		}
 		AbortType& abortFunc = getAbort();
 		if (abortFunc != reinterpret_cast<AbortType>(0)) {
@@ -130,7 +199,7 @@ public:
 			std::abort();
 		}
 #else
-		throw Assertion::Failure(msg);
+		throw Failure(file, line, msg);
 #endif
 	}
 //! @endcond
