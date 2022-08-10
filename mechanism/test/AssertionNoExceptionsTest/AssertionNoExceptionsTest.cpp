@@ -33,11 +33,15 @@ int main()
 		goto testFailed;
 	}
 
+	int failureLine = 0;
 	if ((aborted = setjmp(s_jmpBuf)) == 0) {
 		bool a = false;
-		CHECK_ASSERT(a);
+		failureLine = __LINE__; CHECK_ASSERT(a);
 	} else if (aborted != 0) {
 		if (s_puts.find(__FILE__) == std::string::npos) {
+			goto testFailed;
+		}
+		if (s_puts.find(std::to_string(failureLine)) == std::string::npos) {
 			goto testFailed;
 		}
 		if (s_puts.find("Assertion failed") == std::string::npos) {
