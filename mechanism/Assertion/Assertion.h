@@ -7,10 +7,8 @@
 
 #ifdef CPPELIB_NO_EXCEPTIONS
 #include <cstdlib>
-#define ASSERTION_ASSERTION_FAILURE(x) Assertion::UserSpecificFunc::assertFail(x)
-#else
-#define ASSERTION_ASSERTION_FAILURE(x) throw Assertion::Failure(x)
 #endif
+#define ASSERTION_ASSERTION_FAILURE(x) Assertion::UserSpecificFunc::assertFail(x)
 //! @endcond
 
 /*!
@@ -117,10 +115,10 @@ private:
 		return func;
 	}
 
-#ifdef CPPELIB_NO_EXCEPTIONS
 public:
 	static void assertFail(const char* msg)
 	{
+#ifdef CPPELIB_NO_EXCEPTIONS
 		PutsType& putsFunc = getPuts();
 		if (putsFunc != reinterpret_cast<PutsType>(0)) {
 			putsFunc(msg);
@@ -131,8 +129,10 @@ public:
 		} else {
 			std::abort();
 		}
-	}
+#else
+		throw Assertion::Failure(msg);
 #endif
+	}
 //! @endcond
 };
 
