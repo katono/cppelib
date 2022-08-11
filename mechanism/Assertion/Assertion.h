@@ -108,7 +108,7 @@ private:
  */
 class Failure {
 public:
-	Failure(const char* file, unsigned int line, const char* msg)
+	Failure(const char* file, unsigned int line, const char* expr)
 	: m_buf()
 	{
 		unsigned int remain = sizeof m_buf;
@@ -119,7 +119,7 @@ public:
 		toCString(lineBuf, sizeof lineBuf, line);
 		pBuf = concatCString(pBuf, remain, lineBuf);
 		pBuf = concatCString(pBuf, remain, "): Assertion failed (");
-		pBuf = concatCString(pBuf, remain, msg);
+		pBuf = concatCString(pBuf, remain, expr);
 		pBuf = concatCString(pBuf, remain, ")");
 	}
 
@@ -133,12 +133,12 @@ public:
 	}
 
 //! @cond
-	static void assertFail(const char* file, unsigned int line, const char* msg)
+	static void assertFail(const char* file, unsigned int line, const char* expr)
 	{
 #ifdef CPPELIB_NO_EXCEPTIONS
 		UserSpecificFunction::PutsType& putsFunc = UserSpecificFunction::getPuts();
 		if (putsFunc != reinterpret_cast<UserSpecificFunction::PutsType>(0)) {
-			Failure failure(file, line, msg);
+			Failure failure(file, line, expr);
 			putsFunc(failure.message());
 		}
 		UserSpecificFunction::AbortType& abortFunc = UserSpecificFunction::getAbort();
@@ -148,7 +148,7 @@ public:
 			std::abort();
 		}
 #else
-		throw Failure(file, line, msg);
+		throw Failure(file, line, expr);
 #endif
 	}
 private:
