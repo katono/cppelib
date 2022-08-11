@@ -67,3 +67,23 @@ TEST(AssertionTest, debug_assert_false)
 }
 #endif
 
+TEST(AssertionTest, failure_message)
+{
+	const struct TestData {
+		SimpleString file;
+		unsigned int line;
+		SimpleString expr;
+		SimpleString message;
+	} testData[] = {
+		{"hoge.cpp", 123, "hoge != nullptr", "hoge.cpp(123): Assertion failed (hoge != nullptr)"},
+		{"/foo/bar/baz/hoge/piyo.cpp", 123, "hoge != nullptr", "/foo/bar/baz/hoge/piyo.cpp(123): Assertion failed (hoge != nullptr)"},
+		{"", 1, "", "(1): Assertion failed ()"},
+		{"hoge.cpp", 4294967295, "hoge != nullptr", "hoge.cpp(4294967295): Assertion failed (hoge != nullptr)"},
+		{SimpleString("a", 500), 123, "hoge != nullptr", SimpleString("a", 500) + "(123): Asse"},
+	};
+	for (int i = 0; i < sizeof testData / sizeof testData[0]; i++) {
+		const TestData& d = testData[i];
+		Assertion::Failure f(d.file.asCharString(), d.line, d.expr.asCharString());
+		STRCMP_EQUAL(d.message.asCharString(), f.message());
+	}
+}
