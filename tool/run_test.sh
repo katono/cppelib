@@ -11,7 +11,10 @@ cd ${REPO_ROOT}
 EXIT_CODE=0
 
 BUILD_DIR=build
-BUILD_DIRS="mechanism/test/${BUILD_DIR} platform/test/cmake_StdCppOSWrapperTest/${BUILD_DIR} platform/test/cmake_PosixOSWrapperTest/${BUILD_DIR}"
+BUILD_DIRS="mechanism/test/${BUILD_DIR}"
+BUILD_DIRS=${BUILD_DIRS}" mechanism/test/AssertionNoExceptionsTest/${BUILD_DIR}"
+BUILD_DIRS=${BUILD_DIRS}" platform/test/cmake_StdCppOSWrapperTest/${BUILD_DIR}"
+BUILD_DIRS=${BUILD_DIRS}" platform/test/cmake_PosixOSWrapperTest/${BUILD_DIR}"
 for dir in ${BUILD_DIRS}; do
 	if [ "$2" = "clean" ]; then
 		rm -rf ${dir}
