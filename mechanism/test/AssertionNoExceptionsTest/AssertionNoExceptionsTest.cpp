@@ -11,7 +11,7 @@ std::jmp_buf s_jmpBuf;
 int testPuts(const char* str)
 {
 	s_puts = str;
-	// std::puts(str);
+	std::puts(str);
 	return 0;
 }
 
@@ -25,33 +25,39 @@ int main()
 	Assertion::UserSpecificFunction::setPuts(testPuts);
 	Assertion::UserSpecificFunction::setAbort(testAbort);
 
-	int aborted = 0;
-	if ((aborted = setjmp(s_jmpBuf)) == 0) {
+	std::string failureString("failed: line ");
+	volatile int failureLine = 0;
+	if (setjmp(s_jmpBuf) == 0) {
 		bool a = true;
 		CHECK_ASSERT(a);
-	} else if (aborted != 0) {
+	} else {
+		failureString += std::to_string(__LINE__);
 		goto testFailed;
 	}
 
-	int failureLine = 0;
-	if ((aborted = setjmp(s_jmpBuf)) == 0) {
+	if (setjmp(s_jmpBuf) == 0) {
 		bool a = false;
 		failureLine = __LINE__; CHECK_ASSERT(a);
-	} else if (aborted != 0) {
+		failureString += std::to_string(__LINE__);
+		goto testFailed;
+	} else {
 		if (s_puts.find(__FILE__) == std::string::npos) {
+			failureString += std::to_string(__LINE__);
 			goto testFailed;
 		}
 		if (s_puts.find(std::to_string(failureLine)) == std::string::npos) {
+			failureString += std::to_string(__LINE__);
 			goto testFailed;
 		}
 		if (s_puts.find("Assertion failed") == std::string::npos) {
+			failureString += std::to_string(__LINE__);
 			goto testFailed;
 		}
-		std::puts("success");
-		return 0;
 	}
+	std::puts("success");
+	return 0;
 
 testFailed:
-	std::puts("failed");
+	std::puts(failureString.c_str());
 	return -1;
 }
