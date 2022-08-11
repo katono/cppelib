@@ -49,7 +49,7 @@ namespace Assertion {
  * If CPPELIB_NO_EXCEPTIONS macro is defined, the specified functions are called when CHECK_ASSERT() macro fails.
  * If CPPELIB_NO_EXCEPTIONS macro is not defined, the specified functions are not called.
  */
-class UserSpecificFunc {
+class UserSpecificFunction {
 public:
 	/*!
 	 * @brief The same function type as std::puts
@@ -99,7 +99,7 @@ public:
 	}
 
 private:
-	UserSpecificFunc();
+	UserSpecificFunction();
 //! @endcond
 };
 
@@ -136,13 +136,13 @@ public:
 	static void assertFail(const char* file, unsigned int line, const char* msg)
 	{
 #ifdef CPPELIB_NO_EXCEPTIONS
-		UserSpecificFunc::PutsType& putsFunc = UserSpecificFunc::getPuts();
-		if (putsFunc != reinterpret_cast<UserSpecificFunc::PutsType>(0)) {
+		UserSpecificFunction::PutsType& putsFunc = UserSpecificFunction::getPuts();
+		if (putsFunc != reinterpret_cast<UserSpecificFunction::PutsType>(0)) {
 			Failure failure(file, line, msg);
 			putsFunc(failure.message());
 		}
-		UserSpecificFunc::AbortType& abortFunc = UserSpecificFunc::getAbort();
-		if (abortFunc != reinterpret_cast<UserSpecificFunc::AbortType>(0)) {
+		UserSpecificFunction::AbortType& abortFunc = UserSpecificFunction::getAbort();
+		if (abortFunc != reinterpret_cast<UserSpecificFunction::AbortType>(0)) {
 			abortFunc();
 		} else {
 			std::abort();

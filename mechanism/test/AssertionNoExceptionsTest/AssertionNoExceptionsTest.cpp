@@ -22,8 +22,8 @@ void testAbort()
 
 int main()
 {
-	Assertion::UserSpecificFunc::setPuts(testPuts);
-	Assertion::UserSpecificFunc::setAbort(testAbort);
+	Assertion::UserSpecificFunction::setPuts(testPuts);
+	Assertion::UserSpecificFunction::setAbort(testAbort);
 
 	int aborted = 0;
 	if ((aborted = setjmp(s_jmpBuf)) == 0) {
