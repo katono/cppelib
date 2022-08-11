@@ -8,6 +8,14 @@
 //! @endcond
 
 #ifndef CPPELIB_ASSERTION_FAILURE_BUFSIZE
+/*!
+ * @brief Buffer size of Assertion::Failure object
+ *
+ * This buffer is used as assertion failure message when an assertion fails.
+ * That time, Assertion::Failure object is allocated on the stack.
+ * If the stack size of the thread is small, you can define this macro according as the stack size.
+ * If you define this buffer size smaller than the default value, assertion failure message might be cut off.
+ */
 #define CPPELIB_ASSERTION_FAILURE_BUFSIZE (512)
 #endif
 
@@ -19,7 +27,7 @@
  *            If this exception is thrown, you must do shutdown your application safely.
  */
 #define CHECK_ASSERT(x)\
-	((x) ? (void)0 : Assertion::UserSpecificFunc::assertFail(__FILE__, __LINE__, #x))
+	((x) ? (void)0 : Assertion::Failure::assertFail(__FILE__, __LINE__, #x))
 
 
 #ifdef NDEBUG
@@ -34,6 +42,66 @@
 
 
 namespace Assertion {
+
+/*!
+ * @brief User specific function class
+ *
+ * If CPPELIB_NO_EXCEPTIONS macro is defined, the specified functions are called when CHECK_ASSERT() macro fails.
+ * If CPPELIB_NO_EXCEPTIONS macro is not defined, the specified functions are not called.
+ */
+class UserSpecificFunc {
+public:
+	/*!
+	 * @brief The same function type as std::puts
+	 */
+	typedef int (*PutsType)(const char*);
+
+	/*!
+	 * @brief The same function type as std::abort
+	 */
+	typedef void (*AbortType)();
+
+	/*!
+	 * @brief Set user specific function like puts
+	 * @param func user specific function like puts
+	 *
+	 * When assertion fails, the message is output by func.
+	 * If not called setPuts(), no output.
+	 */
+	static void setPuts(PutsType func)
+	{
+		getPuts() = func;
+	}
+
+	/*!
+	 * @brief Set user specific function like abort
+	 * @param func user specific function like abort
+	 *
+	 * When assertion fails, the application must be aborted by func.
+	 * If not called setAbort() function, aborted by std::abort.
+	 */
+	static void setAbort(AbortType func)
+	{
+		getAbort() = func;
+	}
+
+//! @cond
+	static PutsType& getPuts()
+	{
+		static PutsType func;
+		return func;
+	}
+
+	static AbortType& getAbort()
+	{
+		static AbortType func;
+		return func;
+	}
+
+private:
+	UserSpecificFunc();
+//! @endcond
+};
 
 /*!
  * @brief Thrown class when CHECK_ASSERT() macro fails
@@ -65,6 +133,24 @@ public:
 	}
 
 //! @cond
+	static void assertFail(const char* file, unsigned int line, const char* msg)
+	{
+#ifdef CPPELIB_NO_EXCEPTIONS
+		UserSpecificFunc::PutsType& putsFunc = UserSpecificFunc::getPuts();
+		if (putsFunc != reinterpret_cast<UserSpecificFunc::PutsType>(0)) {
+			Failure failure(file, line, msg);
+			putsFunc(failure.message());
+		}
+		UserSpecificFunc::AbortType& abortFunc = UserSpecificFunc::getAbort();
+		if (abortFunc != reinterpret_cast<UserSpecificFunc::AbortType>(0)) {
+			abortFunc();
+		} else {
+			std::abort();
+		}
+#else
+		throw Failure(file, line, msg);
+#endif
+	}
 private:
 	char m_buf[CPPELIB_ASSERTION_FAILURE_BUFSIZE];
 
@@ -121,86 +207,6 @@ private:
 		}
 		to[size - 1U] = '\0';
 		return size - 1U;
-	}
-//! @endcond
-};
-
-/*!
- * @brief User specific function class
- *
- * If CPPELIB_NO_EXCEPTIONS macro is defined, the specified functions are called when CHECK_ASSERT() macro fails.
- * If CPPELIB_NO_EXCEPTIONS macro is not defined, the specified functions are not called.
- */
-class UserSpecificFunc {
-public:
-	/*!
-	 * @brief The same function type as std::puts
-	 */
-	typedef int (*PutsType)(const char*);
-
-	/*!
-	 * @brief The same function type as std::abort
-	 */
-	typedef void (*AbortType)();
-
-	/*!
-	 * @brief Set user specific function like puts
-	 * @param func user specific function like puts
-	 *
-	 * When assertion fails, the message is output by func.
-	 * If not called setPuts(), no output.
-	 */
-	static void setPuts(PutsType func)
-	{
-		getPuts() = func;
-	}
-
-	/*!
-	 * @brief Set user specific function like abort
-	 * @param func user specific function like abort
-	 *
-	 * When assertion fails, the application must be aborted by func.
-	 * If not called setAbort() function, aborted by std::abort.
-	 */
-	static void setAbort(AbortType func)
-	{
-		getAbort() = func;
-	}
-
-//! @cond
-private:
-	UserSpecificFunc();
-
-	static PutsType& getPuts()
-	{
-		static PutsType func;
-		return func;
-	}
-
-	static AbortType& getAbort()
-	{
-		static AbortType func;
-		return func;
-	}
-
-public:
-	static void assertFail(const char* file, unsigned int line, const char* msg)
-	{
-#ifdef CPPELIB_NO_EXCEPTIONS
-		PutsType& putsFunc = getPuts();
-		if (putsFunc != reinterpret_cast<PutsType>(0)) {
-			Failure failure(file, line, msg);
-			putsFunc(failure.message());
-		}
-		AbortType& abortFunc = getAbort();
-		if (abortFunc != reinterpret_cast<AbortType>(0)) {
-			abortFunc();
-		} else {
-			std::abort();
-		}
-#else
-		throw Failure(file, line, msg);
-#endif
 	}
 //! @endcond
 };
