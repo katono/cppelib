@@ -109,13 +109,6 @@ public:
 	 */
 	static void destroy(Thread* t);
 
-#ifndef CPPELIB_NO_EXCEPTIONS
-	/*!
-	 * @brief Finish the current thread before the thread runs through the end of Runnable::run()
-	 */
-	static void exit();
-#endif
-
 	/*!
 	 * @brief Sleep the current thread while the time that is set by argument
 	 * @param millis Time in milliseconds
@@ -297,11 +290,6 @@ private:
 	static UncaughtExceptionHandler* m_defaultUncaughtExceptionHandler;
 
 	void handleException(const char* msg);
-
-	class Exit {
-	public:
-		Exit() {}
-	};
 
 };
 

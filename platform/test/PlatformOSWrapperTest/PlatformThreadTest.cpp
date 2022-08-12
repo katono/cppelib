@@ -82,8 +82,6 @@ public:
 		POINTERS_EQUAL(m_thread, t);
 		Thread::yield();
 		Thread::sleep(100);
-		Thread::exit();
-		FAIL("failed");
 	}
 };
 

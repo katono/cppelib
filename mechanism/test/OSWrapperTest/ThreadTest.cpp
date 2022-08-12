@@ -214,22 +214,6 @@ TEST(ThreadTest, destroy_nullptr)
 	Thread::destroy(0);
 }
 
-TEST(ThreadTest, exit)
-{
-	class ExitTestRunnable : public Runnable {
-	public:
-		void run()
-		{
-			Thread::exit();
-			FAIL("failed");
-		}
-	};
-	ExitTestRunnable runnable;
-	thread = Thread::create(&runnable);
-	thread->start();
-	Thread::destroy(thread);
-}
-
 TEST(ThreadTest, sleep)
 {
 	mock().expectOneCall("sleep").withParameter("millis", 100).onObject(&testFactory);

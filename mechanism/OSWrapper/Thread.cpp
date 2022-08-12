@@ -132,9 +132,6 @@ void Thread::threadMain()
 		}
 #ifndef CPPELIB_NO_EXCEPTIONS
 	}
-	catch (const Exit&) {
-		// do nothing
-	}
 	catch (const std::exception& e) {
 		handleException(e.what());
 	}
@@ -162,13 +159,6 @@ void Thread::destroy(Thread* t)
 		s_factory->destroy(t);
 	}
 }
-
-#ifndef CPPELIB_NO_EXCEPTIONS
-void Thread::exit()
-{
-	throw Exit();
-}
-#endif
 
 void Thread::sleep(unsigned long millis)
 {
