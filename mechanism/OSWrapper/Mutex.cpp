@@ -41,9 +41,10 @@ LockGuard::LockGuard(Mutex* m)
 
 const LockGuard::AdoptLock LockGuard::ADOPT_LOCK;
 
-LockGuard::LockGuard(Mutex* m, AdoptLock)
+LockGuard::LockGuard(Mutex* m, AdoptLock adoptLock)
 : m_mutex(m), m_lockErr(OK)
 {
+	(void)adoptLock;
 }
 
 LockGuard::~LockGuard()

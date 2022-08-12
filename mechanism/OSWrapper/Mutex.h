@@ -112,9 +112,9 @@ public:
 	/*!
 	 * @brief Constructor of LockGuard using locked Mutex object
 	 * @param m Mutex object that the current thread has already locked by the lock methods, for example tryLock() or timedLock()
-	 * @param AdoptLock Specify LockGuard::ADOPT_LOCK
+	 * @param adoptLock Specify LockGuard::ADOPT_LOCK
 	 */
-	LockGuard(Mutex* m, AdoptLock);
+	LockGuard(Mutex* m, AdoptLock adoptLock);
 
 	/*!
 	 * @brief Destructor of LockGuard
