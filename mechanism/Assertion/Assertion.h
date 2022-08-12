@@ -25,6 +25,8 @@
  *
  * @attention If an assertion fails, it throws the exception Assertion::Failure.
  *            If this exception is thrown, you must do shutdown your application safely.
+ * @attention If CPPELIB_NO_EXCEPTIONS macro is defined, user specific functions are called instead of the exception.
+ *            See Assertion::UserSpecificFunction.
  */
 #define CHECK_ASSERT(x)\
 	((x) ? (void)0 : Assertion::Failure::assertFail(__FILE__, __LINE__, #x))
@@ -52,20 +54,20 @@ namespace Assertion {
 class UserSpecificFunction {
 public:
 	/*!
-	 * @brief The same function type as std::puts
+	 * @brief The same function type as std::puts()
 	 */
 	typedef int (*PutsType)(const char*);
 
 	/*!
-	 * @brief The same function type as std::abort
+	 * @brief The same function type as std::abort()
 	 */
 	typedef void (*AbortType)();
 
 	/*!
-	 * @brief Set user specific function like puts
-	 * @param func user specific function like puts
+	 * @brief Set user specific function like std::puts()
+	 * @param func user specific function like std::puts()
 	 *
-	 * When assertion fails, the message is output by func.
+	 * When assertion fails, the message is output by \p func.
 	 * If not called setPuts(), no output.
 	 */
 	static void setPuts(PutsType func)
@@ -74,11 +76,11 @@ public:
 	}
 
 	/*!
-	 * @brief Set user specific function like abort
-	 * @param func user specific function like abort
+	 * @brief Set user specific function like std::abort()
+	 * @param func user specific function like std::abort()
 	 *
-	 * When assertion fails, the application must be aborted by func.
-	 * If not called setAbort() function, aborted by std::abort.
+	 * When assertion fails, the application must be aborted by \p func.
+	 * If not called setAbort() function, aborted by std::abort().
 	 */
 	static void setAbort(AbortType func)
 	{
@@ -104,7 +106,7 @@ private:
 };
 
 /*!
- * @brief Thrown class when CHECK_ASSERT() macro fails
+ * @brief Used class when CHECK_ASSERT() macro fails
  */
 class Failure {
 public:

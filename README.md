@@ -20,6 +20,7 @@ CppELib provides these mechanisms:
     If this exception is thrown, you must do shutdown your application safely.
     There are two assertion macros.
     One is always enabled, another is enabled only when `NDEBUG` macro is not defined.
+    If C++ exception is not available, it can be disabled by preprocessor.
 
 * Container
 
@@ -44,7 +45,6 @@ https://github.com/katono/cppelib
 
 * `mechanism`: C++98 or later (freestanding)
 * `platform` of Windows and POSIX: C++11 or later
-* C++ Exception enabled
 
 
 ## Installation

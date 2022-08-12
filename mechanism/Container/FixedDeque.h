@@ -193,7 +193,9 @@ operator+(std::ptrdiff_t n, const FixedDeque_iterator<T, Ref, Ptr, DeqPtr, MaxSi
  *
  * Almost all the method specification is similar as STL deque,
  * but this container can not expand the capacity.
+ *
  * Over capacity addition of element throws the exception derived from std::exception.
+ * But if CPPELIB_NO_EXCEPTIONS macro is defined, aborted instead of the exception.
  */
 template <typename T, std::size_t MaxSize>
 class FixedDeque {
