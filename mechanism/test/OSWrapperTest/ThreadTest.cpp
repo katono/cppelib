@@ -367,6 +367,7 @@ TEST(ThreadTest, getNativeHandle)
 	Thread::destroy(thread);
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 class UnknownExceptionTestRunnable : public Runnable {
 public:
 	void run()
@@ -534,5 +535,6 @@ TEST(ThreadTest, ExceptionHandler_throws_exception)
 	thread->start();
 	Thread::destroy(thread);
 }
+#endif
 
 } // namespace ThreadTest

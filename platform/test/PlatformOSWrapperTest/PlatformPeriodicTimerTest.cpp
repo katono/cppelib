@@ -326,6 +326,7 @@ TEST(PlatformPeriodicTimerTest, name)
 	PeriodicTimer::destroy(timer);
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 class ThrowExceptionRunnable : public Runnable {
 public:
 	enum Kind {
@@ -410,6 +411,6 @@ TEST(PlatformPeriodicTimerTest, exception_unknown)
 
 	PeriodicTimer::destroy(timer);
 }
-
+#endif
 
 } // namespace PlatformPeriodicTimerTest

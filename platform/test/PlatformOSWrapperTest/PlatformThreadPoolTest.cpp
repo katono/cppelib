@@ -258,6 +258,7 @@ TEST(PlatformThreadPoolTest, start_waiter_timedWait)
 }
 
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 class ExceptionRunnable : public Runnable {
 	class OtherTask : public Runnable {
 		void run()
@@ -307,6 +308,7 @@ TEST(PlatformThreadPoolTest, exception)
 
 	ThreadPool::destroy(threadPool);
 }
+#endif
 
 TEST(PlatformThreadPoolTest, start_runnable_nullptr)
 {

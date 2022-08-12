@@ -155,6 +155,7 @@ TEST(PeriodicTimerTest, name)
 	PeriodicTimer::destroy(timer);
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 class UnknownExceptionTestRunnable : public Runnable {
 public:
 	void run()
@@ -329,5 +330,6 @@ TEST(PeriodicTimerTest, ExceptionHandler_throws_exception)
 	timer->stop();
 	PeriodicTimer::destroy(timer);
 }
+#endif
 
 } // namespace PeriodicTimerTest

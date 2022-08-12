@@ -369,6 +369,7 @@ TEST(PlatformMessageQueueTest, send_receive_many_threads)
 	LONGS_EQUAL(num * SIZE, recv_count);
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 struct Elem {
 	unsigned int data;
 
@@ -458,5 +459,6 @@ TEST(PlatformMessageQueueTest, send_receive_assertion_failure)
 
 	MessageQueue<Elem>::destroy(mq);
 }
+#endif
 
 } // namespace PlatformMessageQueueTest

@@ -276,6 +276,7 @@ TEST(PlatformThreadTest, default_stackSize)
 	Thread::destroy(thread);
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 class ThrowExceptionRunnable : public Runnable {
 public:
 	enum Kind {
@@ -352,6 +353,7 @@ TEST(PlatformThreadTest, exception_unknown)
 	thread->start();
 	Thread::destroy(thread);
 }
+#endif
 
 TEST(PlatformThreadTest, setPriority_inherit)
 {

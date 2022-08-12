@@ -153,6 +153,7 @@ TEST(OneShotTimerTest, name)
 	OneShotTimer::destroy(timer);
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 class UnknownExceptionTestRunnable : public Runnable {
 public:
 	void run()
@@ -327,5 +328,6 @@ TEST(OneShotTimerTest, ExceptionHandler_throws_exception)
 
 	OneShotTimer::destroy(timer);
 }
+#endif
 
 } // namespace OneShotTimerTest

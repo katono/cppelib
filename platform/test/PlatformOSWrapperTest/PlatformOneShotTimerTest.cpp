@@ -322,6 +322,7 @@ TEST(PlatformOneShotTimerTest, name)
 	OneShotTimer::destroy(timer);
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 class ThrowExceptionRunnable : public Runnable {
 public:
 	enum Kind {
@@ -406,5 +407,6 @@ TEST(PlatformOneShotTimerTest, exception_unknown)
 
 	OneShotTimer::destroy(timer);
 }
+#endif
 
 } // namespace PlatformOneShotTimerTest
