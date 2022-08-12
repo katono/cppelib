@@ -1,12 +1,6 @@
 #ifndef ASSERTION_ASSERTION_H_INCLUDED
 #define ASSERTION_ASSERTION_H_INCLUDED
 
-//! @cond
-#ifdef CPPELIB_NO_EXCEPTIONS
-#include <cstdlib>
-#endif
-//! @endcond
-
 #ifndef CPPELIB_ASSERTION_FAILURE_BUFSIZE
 /*!
  * @brief Buffer size of Assertion::Failure object
@@ -80,7 +74,7 @@ public:
 	 * @param func user specific function like std::abort()
 	 *
 	 * When assertion fails, the application must be aborted by \p func.
-	 * If not called setAbort() function, aborted by std::abort().
+	 * If CPPELIB_NO_EXCEPTIONS macro is defined, you must surely set the abort function by setAbort().
 	 */
 	static void setAbort(AbortType func)
 	{
@@ -146,8 +140,6 @@ public:
 		UserSpecificFunction::AbortType& abortFunc = UserSpecificFunction::getAbort();
 		if (abortFunc != reinterpret_cast<UserSpecificFunction::AbortType>(0)) {
 			abortFunc();
-		} else {
-			std::abort();
 		}
 #else
 		throw Failure(file, line, expr);
