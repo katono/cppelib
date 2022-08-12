@@ -136,8 +136,11 @@ public:
 		}
 
 		err = OK;
+#ifndef CPPELIB_NO_EXCEPTIONS
 		try {
+#endif
 			push(msg);
+#ifndef CPPELIB_NO_EXCEPTIONS
 		}
 		catch (const Assertion::Failure&) {
 			throw;
@@ -145,6 +148,7 @@ public:
 		catch (...) {
 			err = OtherError;
 		}
+#endif
 		return err;
 	}
 
@@ -213,8 +217,11 @@ public:
 		}
 
 		err = OK;
+#ifndef CPPELIB_NO_EXCEPTIONS
 		try {
+#endif
 			pop(msg);
+#ifndef CPPELIB_NO_EXCEPTIONS
 		}
 		catch (const Assertion::Failure&) {
 			throw;
@@ -222,6 +229,7 @@ public:
 		catch (...) {
 			err = OtherError;
 		}
+#endif
 		return err;
 	}
 

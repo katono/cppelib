@@ -156,15 +156,19 @@ StdCppOneShotTimerFactory::StdCppOneShotTimerFactory()
 
 OSWrapper::OneShotTimer* StdCppOneShotTimerFactory::create(OSWrapper::Runnable* r, const char* name)
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		std::lock_guard<std::mutex> lock(m_mutex);
 		StdCppOneShotTimer* t = new StdCppOneShotTimer(r, name);
 		t->beginThread();
 		return t;
+#ifndef CPPELIB_NO_EXCEPTIONS
 	}
 	catch (...) {
 		return nullptr;
 	}
+#endif
 }
 
 void StdCppOneShotTimerFactory::destroy(OSWrapper::OneShotTimer* t)

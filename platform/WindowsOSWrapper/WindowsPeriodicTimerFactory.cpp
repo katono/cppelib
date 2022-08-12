@@ -102,14 +102,18 @@ WindowsPeriodicTimerFactory::WindowsPeriodicTimerFactory()
 
 OSWrapper::PeriodicTimer* WindowsPeriodicTimerFactory::create(OSWrapper::Runnable* r, unsigned long periodInMillis, const char* name)
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		std::lock_guard<std::mutex> lock(m_mutex);
 		WindowsPeriodicTimer* t = new WindowsPeriodicTimer(r, periodInMillis, name);
 		return t;
+#ifndef CPPELIB_NO_EXCEPTIONS
 	}
 	catch (...) {
 		return nullptr;
 	}
+#endif
 }
 
 void WindowsPeriodicTimerFactory::destroy(OSWrapper::PeriodicTimer* t)

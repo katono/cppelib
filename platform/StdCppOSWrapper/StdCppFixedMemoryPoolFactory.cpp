@@ -40,14 +40,18 @@ OSWrapper::FixedMemoryPool* StdCppFixedMemoryPoolFactory::create(std::size_t blo
 	if ((blockSize == 0U) || (memoryPoolSize == 0U)) {
 		return nullptr;
 	}
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		std::lock_guard<std::mutex> lock(m_mutex);
 		StdCppFixedMemoryPool* p = new StdCppFixedMemoryPool(blockSize);
 		return p;
+#ifndef CPPELIB_NO_EXCEPTIONS
 	}
 	catch (...) {
 		return nullptr;
 	}
+#endif
 }
 
 void StdCppFixedMemoryPoolFactory::destroy(OSWrapper::FixedMemoryPool* p)

@@ -174,11 +174,15 @@ OSWrapper::Thread* StdCppThreadFactory::create(OSWrapper::Runnable* r, int prior
 {
 	(void)stackAddress;
 	StdCppThread* t = nullptr;
-	try {
+#ifndef CPPELIB_NO_EXCEPTIONS
+	try
+#endif
+	{
 		std::lock_guard<std::recursive_mutex> lock(m_mutex);
 		t = createStdCppThread(r, priority, stackSize, name);
 		t->beginThread();
 	}
+#ifndef CPPELIB_NO_EXCEPTIONS
 	catch (const Assertion::Failure&) {
 		throw;
 	}
@@ -187,17 +191,21 @@ OSWrapper::Thread* StdCppThreadFactory::create(OSWrapper::Runnable* r, int prior
 		delete t;
 		return nullptr;
 	}
-	try {
+	try
+#endif
+	{
 		std::lock_guard<std::recursive_mutex> lock(m_mutex);
 		m_threadIdMap.insert(std::make_pair(t->getId(), t));
 		return t;
 	}
+#ifndef CPPELIB_NO_EXCEPTIONS
 	catch (...) {
 		t->endThread();
 		std::lock_guard<std::recursive_mutex> lock(m_mutex);
 		delete t;
 		return nullptr;
 	}
+#endif
 }
 
 void StdCppThreadFactory::destroy(OSWrapper::Thread* t)

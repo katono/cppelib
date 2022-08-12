@@ -38,6 +38,7 @@ PeriodicTimer::UncaughtExceptionHandler* PeriodicTimer::getUncaughtExceptionHand
 
 void PeriodicTimer::handleException(const char* msg)
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
 		stop();
 		if (m_uncaughtExceptionHandler != 0) {
@@ -49,6 +50,9 @@ void PeriodicTimer::handleException(const char* msg)
 	catch (...) {
 		// ignore exception
 	}
+#else
+	(void)msg;
+#endif
 }
 
 /*!
@@ -57,10 +61,13 @@ void PeriodicTimer::handleException(const char* msg)
  */
 void PeriodicTimer::timerMain()
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		if (m_runnable != 0) {
 			m_runnable->run();
 		}
+#ifndef CPPELIB_NO_EXCEPTIONS
 	}
 	catch (const std::exception& e) {
 		handleException(e.what());
@@ -71,6 +78,7 @@ void PeriodicTimer::timerMain()
 	catch (...) {
 		handleException("Unknown Exception");
 	}
+#endif
 }
 
 PeriodicTimer* PeriodicTimer::create(Runnable* r, unsigned long periodInMillis, const char* name/*= ""*/)

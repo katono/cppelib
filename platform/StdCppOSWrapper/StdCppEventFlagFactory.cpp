@@ -166,14 +166,18 @@ StdCppEventFlagFactory::StdCppEventFlagFactory()
 
 OSWrapper::EventFlag* StdCppEventFlagFactory::create(bool autoReset)
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		std::lock_guard<std::mutex> lock(m_mutex);
 		StdCppEventFlag* e = new StdCppEventFlag(autoReset);
 		return e;
+#ifndef CPPELIB_NO_EXCEPTIONS
 	}
 	catch (...) {
 		return nullptr;
 	}
+#endif
 }
 
 void StdCppEventFlagFactory::destroy(OSWrapper::EventFlag* e)

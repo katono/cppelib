@@ -102,6 +102,7 @@ Thread::UncaughtExceptionHandler* Thread::getUncaughtExceptionHandler() const
 
 void Thread::handleException(const char* msg)
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
 		if (m_uncaughtExceptionHandler != 0) {
 			m_uncaughtExceptionHandler->handle(this, msg);
@@ -112,6 +113,9 @@ void Thread::handleException(const char* msg)
 	catch (...) {
 		// ignore exception
 	}
+#else
+	(void)msg;
+#endif
 }
 
 /*!
@@ -120,10 +124,13 @@ void Thread::handleException(const char* msg)
  */
 void Thread::threadMain()
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		if (m_runnable != 0) {
 			m_runnable->run();
 		}
+#ifndef CPPELIB_NO_EXCEPTIONS
 	}
 	catch (const Exit&) {
 		// do nothing
@@ -137,6 +144,7 @@ void Thread::threadMain()
 	catch (...) {
 		handleException("Unknown Exception");
 	}
+#endif
 }
 
 Thread* Thread::create(Runnable* r, int priority/*= INHERIT_PRIORITY*/, std::size_t stackSize/*= 0U*/, void* stackAddress/*= 0*/, const char* name/*= ""*/)
@@ -155,10 +163,12 @@ void Thread::destroy(Thread* t)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 void Thread::exit()
 {
 	throw Exit();
 }
+#endif
 
 void Thread::sleep(unsigned long millis)
 {

@@ -158,15 +158,19 @@ StdCppPeriodicTimerFactory::StdCppPeriodicTimerFactory()
 
 OSWrapper::PeriodicTimer* StdCppPeriodicTimerFactory::create(OSWrapper::Runnable* r, unsigned long periodInMillis, const char* name)
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		std::lock_guard<std::mutex> lock(m_mutex);
 		StdCppPeriodicTimer* t = new StdCppPeriodicTimer(r, periodInMillis, name);
 		t->beginThread();
 		return t;
+#ifndef CPPELIB_NO_EXCEPTIONS
 	}
 	catch (...) {
 		return nullptr;
 	}
+#endif
 }
 
 void StdCppPeriodicTimerFactory::destroy(OSWrapper::PeriodicTimer* t)

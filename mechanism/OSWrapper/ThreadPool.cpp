@@ -251,12 +251,16 @@ void ThreadPool::TaskRunner::startThread(Runnable* task, int priority, bool need
 
 void ThreadPool::TaskRunner::run()
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		invoke();
+#ifndef CPPELIB_NO_EXCEPTIONS
 	} catch (...) {
 		afterInvoke();
 		throw;
 	}
+#endif
 	afterInvoke();
 
 }

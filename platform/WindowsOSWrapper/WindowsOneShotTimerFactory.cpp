@@ -103,14 +103,18 @@ WindowsOneShotTimerFactory::WindowsOneShotTimerFactory()
 
 OSWrapper::OneShotTimer* WindowsOneShotTimerFactory::create(OSWrapper::Runnable* r, const char* name)
 {
+#ifndef CPPELIB_NO_EXCEPTIONS
 	try {
+#endif
 		std::lock_guard<std::mutex> lock(m_mutex);
 		WindowsOneShotTimer* t = new WindowsOneShotTimer(r, name);
 		return t;
+#ifndef CPPELIB_NO_EXCEPTIONS
 	}
 	catch (...) {
 		return nullptr;
 	}
+#endif
 }
 
 void WindowsOneShotTimerFactory::destroy(OSWrapper::OneShotTimer* t)
