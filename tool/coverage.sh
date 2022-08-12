@@ -16,6 +16,7 @@ EXIT_CODE=0
 BUILD_DIR=coverage_build
 BUILD_DIRS="mechanism/test/${BUILD_DIR}"
 BUILD_DIRS=${BUILD_DIRS}" mechanism/test/AssertionNoExceptionsTest/${BUILD_DIR}"
+BUILD_DIRS=${BUILD_DIRS}" mechanism/test/ContainerNoExceptionsTest/${BUILD_DIR}"
 BUILD_DIRS=${BUILD_DIRS}" platform/test/cmake_StdCppOSWrapperTest/${BUILD_DIR}"
 BUILD_DIRS=${BUILD_DIRS}" platform/test/cmake_PosixOSWrapperTest/${BUILD_DIR}"
 for dir in ${BUILD_DIRS}; do
