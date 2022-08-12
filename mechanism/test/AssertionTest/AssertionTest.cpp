@@ -81,7 +81,7 @@ TEST(AssertionTest, failure_message)
 		{"hoge.cpp", 4294967295, "hoge != nullptr", "hoge.cpp(4294967295): Assertion failed (hoge != nullptr)"},
 		{SimpleString("a", 500), 123, "hoge != nullptr", SimpleString("a", 500) + "(123): Asse"},
 	};
-	for (int i = 0; i < sizeof testData / sizeof testData[0]; i++) {
+	for (unsigned int i = 0; i < sizeof testData / sizeof testData[0]; i++) {
 		const TestData& d = testData[i];
 		Assertion::Failure f(d.file.asCharString(), d.line, d.expr.asCharString());
 		STRCMP_EQUAL(d.message.asCharString(), f.message());
