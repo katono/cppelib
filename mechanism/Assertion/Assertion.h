@@ -7,7 +7,7 @@
  *
  * This buffer is used as assertion failure message when an assertion fails.
  * That time, Assertion::Failure object is allocated on the stack.
- * If the stack size of the thread is small, you can define this macro according as the stack size.
+ * If the stack size of the thread is small, you can define this macro by preprocessor according as the stack size.
  * If you define this buffer size smaller than the default value, assertion failure message might be cut off.
  */
 #define CPPELIB_ASSERTION_FAILURE_BUFSIZE (512)
@@ -17,10 +17,12 @@
  * @brief Used instead of standard assert() macro for implementing Design by Contract
  * @note This macro is always enabled.
  *
- * @attention If an assertion fails, it throws the exception Assertion::Failure.
- *            If this exception is thrown, you must do shutdown your application safely.
- * @attention If CPPELIB_NO_EXCEPTIONS macro is defined, user specific functions are called instead of the exception.
- *            See Assertion::UserSpecificFunction.
+ * If an assertion fails, you must handle to do shutdown your application safely.
+ * In the assertion failure function, calls the Assertion::AssertHandler that is set by Assertion::setHandler().
+ * If Assertion::AssertHandler is not set, it throws the exception Assertion::Failure.
+ *
+ * @attention If CPPELIB_NO_EXCEPTIONS macro is defined, the exception is not thrown, therefore you must surely set Assertion::AssertHandler.
+ * .
  */
 #define CHECK_ASSERT(x)\
 	((x) ? (void)0 : Assertion::Failure::assertFail(__FILE__, __LINE__, #x))
@@ -40,70 +42,37 @@
 namespace Assertion {
 
 /*!
- * @brief User specific function class
+ * @brief Interface for handling assertion failure by CHECK_ASSERT() macro
  *
- * If CPPELIB_NO_EXCEPTIONS macro is defined, the specified functions are called when CHECK_ASSERT() macro fails.
- * If CPPELIB_NO_EXCEPTIONS macro is not defined, the specified functions are not called.
+ * When CHECK_ASSERT() macro fails, the class that implements this interface handles the failure.
  */
-class UserSpecificFunction {
+class AssertHandler {
 public:
+	virtual ~AssertHandler() {}
 	/*!
-	 * @brief The same function type as std::puts()
-	 */
-	typedef int (*PutsType)(const char*);
-
-	/*!
-	 * @brief The same function type as std::abort()
-	 */
-	typedef void (*AbortType)();
-
-	/*!
-	 * @brief Set user specific function like std::puts()
-	 * @param func user specific function like std::puts()
+	 * @brief Handle an assertion failure
+	 * @param msg Message when assertion fails
 	 *
-	 * When assertion fails, the message is output by \p func.
-	 * If not called setPuts(), no output.
+	 * Implement this method that never returns like this:
+	 * @code
+	 * void handle(const char* msg)
+	 * {
+	 *     std::puts(msg);
+	 *     std::abort();
+	 * }
+	 * @endcode
 	 */
-	static void setPuts(PutsType func)
-	{
-		getPuts() = func;
-	}
-
-	/*!
-	 * @brief Set user specific function like std::abort()
-	 * @param func user specific function like std::abort()
-	 *
-	 * When assertion fails, the application must be aborted by \p func.
-	 * If CPPELIB_NO_EXCEPTIONS macro is defined, you must surely set the abort function by setAbort().
-	 */
-	static void setAbort(AbortType func)
-	{
-		getAbort() = func;
-	}
-
-//! @cond
-	static PutsType& getPuts()
-	{
-		static PutsType func;
-		return func;
-	}
-
-	static AbortType& getAbort()
-	{
-		static AbortType func;
-		return func;
-	}
-
-private:
-	UserSpecificFunction();
-//! @endcond
+	virtual void handle(const char* msg) = 0;
 };
 
 /*!
- * @brief Used class when CHECK_ASSERT() macro fails
+ * @brief Class used when CHECK_ASSERT() macro fails
+ *
+ * This object is thrown when CHECK_ASSERT() macro fails if AssertHandler is not set.
  */
 class Failure {
 public:
+//! @cond
 	Failure(const char* file, unsigned int line, const char* expr)
 	: m_buf()
 	{
@@ -116,12 +85,13 @@ public:
 		pBuf = concatCString(pBuf, remain, lineBuf);
 		pBuf = concatCString(pBuf, remain, "): Assertion failed (");
 		pBuf = concatCString(pBuf, remain, expr);
-		pBuf = concatCString(pBuf, remain, ")");
+		concatCString(pBuf, remain, ")");
 	}
+//! @endcond
 
 	/*!
 	 * @brief Get the message when assertion fails
-	 * @return message when assertion fails
+	 * @return Message when assertion fails
 	 */
 	const char* message() const
 	{
@@ -131,22 +101,29 @@ public:
 //! @cond
 	static void assertFail(const char* file, unsigned int line, const char* expr)
 	{
-#ifdef CPPELIB_NO_EXCEPTIONS
-		UserSpecificFunction::PutsType& putsFunc = UserSpecificFunction::getPuts();
-		if (putsFunc != reinterpret_cast<UserSpecificFunction::PutsType>(0)) {
-			Failure failure(file, line, expr);
-			putsFunc(failure.message());
+		Failure failure(file, line, expr);
+		AssertHandler* handler = getHandler();
+		if (handler != 0) {
+			handler->handle(failure.message());
 		}
-		UserSpecificFunction::AbortType& abortFunc = UserSpecificFunction::getAbort();
-		if (abortFunc != reinterpret_cast<UserSpecificFunction::AbortType>(0)) {
-			abortFunc();
-		}
-#else
-		throw Failure(file, line, expr);
+#ifndef CPPELIB_NO_EXCEPTIONS
+		throw failure;
 #endif
 	}
+
+	static void setHandler(AssertHandler* handler)
+	{
+		getHandler() = handler;
+	}
+
 private:
 	char m_buf[CPPELIB_ASSERTION_FAILURE_BUFSIZE];
+
+	static AssertHandler*& getHandler()
+	{
+		static AssertHandler* handler;
+		return handler;
+	}
 
 	static void toCString(char* buf, unsigned int size, unsigned int val)
 	{
@@ -204,6 +181,15 @@ private:
 	}
 //! @endcond
 };
+
+/*!
+ * @brief Set AssertHandler
+ * @param handler Pointer of the object that implements AssertHandler
+ */
+inline void setHandler(AssertHandler* handler)
+{
+	Failure::setHandler(handler);
+}
 
 }
 

@@ -1,7 +1,9 @@
 # CppELib
 
 CppELib is a portable C++ library for embedded software development.
-This works on the freestanding environment that provides few standard C++ libraries.
+This works on the freestanding environment such as:
+* No standard C++ libraries
+* Disabled exception-handling
 
 [![CI](https://github.com/katono/cppelib/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/katono/cppelib/actions/workflows/main.yml)
 [![Build Status](https://app.travis-ci.com/katono/cppelib.svg?branch=master)](https://app.travis-ci.com/katono/cppelib)
@@ -16,11 +18,9 @@ CppELib provides these mechanisms:
 * Assertion
 
     This is used instead of standard `assert()` macro.
-    If an assertion fails, it throws C++ exception.
-    If this exception is thrown, you must do shutdown your application safely.
+    If an assertion fails, you must handle to do shutdown your application safely.
     There are two assertion macros.
-    One is always enabled, another is enabled only when `NDEBUG` macro is not defined.
-    If C++ exception is not available, it can be disabled by preprocessor.
+    CHECK_ASSERT() is always enabled, DEBUG_ASSERT() is enabled only when `NDEBUG` macro is not defined.
 
 * Container
 

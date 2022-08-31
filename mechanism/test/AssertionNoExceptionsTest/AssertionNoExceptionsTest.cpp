@@ -8,22 +8,20 @@ std::string s_puts;
 std::jmp_buf s_jmpBuf;
 }
 
-int testPuts(const char* str)
-{
-	s_puts = str;
-	std::puts(str);
-	return 0;
-}
-
-void testAbort()
-{
-	std::longjmp(s_jmpBuf, -1);
-}
+class TestAssert : public Assertion::AssertHandler {
+public:
+	void handle(const char* msg)
+	{
+		s_puts = msg;
+		std::puts(msg);
+		std::longjmp(s_jmpBuf, -1);
+	}
+};
 
 int main()
 {
-	Assertion::UserSpecificFunction::setPuts(testPuts);
-	Assertion::UserSpecificFunction::setAbort(testAbort);
+	static TestAssert testAssert;
+	Assertion::setHandler(&testAssert);
 
 	std::string failureString("failed: line ");
 	volatile int failureLine = 0;
