@@ -240,7 +240,7 @@ public:
 	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{}
 
-	FixedDeque(size_type n, const T& data = T())
+	explicit FixedDeque(size_type n, const T& data = T())
 	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[BufSize]>(&m_realBuf)), m_begin(0U), m_end(0U)
 	{
 		assign(n, data);

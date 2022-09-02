@@ -63,7 +63,7 @@ public:
 	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[MaxSize]>(&m_realBuf)), m_end(0U)
 	{}
 
-	FixedVector(size_type n, const T& data = T())
+	explicit FixedVector(size_type n, const T& data = T())
 	: m_realBuf(), m_virtualBuf(*reinterpret_cast<T(*)[MaxSize]>(&m_realBuf)), m_end(0U)
 	{
 		assign(n, data);
