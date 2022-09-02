@@ -20,7 +20,7 @@ private:
 		virtual void setPriority(int priority);
 	};
 public:
-	WindowsThreadFactory(int lowestPriority = 1, int highestPriority = 9);
+	explicit WindowsThreadFactory(int lowestPriority = 1, int highestPriority = 9);
 	virtual ~WindowsThreadFactory() {}
 
 	void setPriorityRange(int lowestPriority, int highestPriority);

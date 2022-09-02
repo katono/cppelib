@@ -49,7 +49,7 @@ void registerThreadFactory(ThreadFactory* factory);
  */
 class Thread {
 protected:
-	Thread(Runnable* r)
+	explicit Thread(Runnable* r)
 	: m_runnable(r), m_uncaughtExceptionHandler(0) {}
 	virtual ~Thread() {}
 

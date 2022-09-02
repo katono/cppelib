@@ -22,7 +22,7 @@ private:
 		virtual void setPriority(int priority);
 	};
 public:
-	PosixThreadFactory(int lowestPriority = 1, int highestPriority = 9);
+	explicit PosixThreadFactory(int lowestPriority = 1, int highestPriority = 9);
 	virtual ~PosixThreadFactory() {}
 
 	void setPriorityRange(int lowestPriority, int highestPriority);

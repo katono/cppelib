@@ -19,7 +19,7 @@ void registerOneShotTimerFactory(OneShotTimerFactory* factory);
  */
 class OneShotTimer {
 protected:
-	OneShotTimer(Runnable* r)
+	explicit OneShotTimer(Runnable* r)
 	: m_runnable(r), m_uncaughtExceptionHandler(0) {}
 	virtual ~OneShotTimer() {}
 

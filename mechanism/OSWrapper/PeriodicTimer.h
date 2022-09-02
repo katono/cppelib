@@ -19,7 +19,7 @@ void registerPeriodicTimerFactory(PeriodicTimerFactory* factory);
  */
 class PeriodicTimer {
 protected:
-	PeriodicTimer(Runnable* r)
+	explicit PeriodicTimer(Runnable* r)
 	: m_runnable(r), m_uncaughtExceptionHandler(0) {}
 	virtual ~PeriodicTimer() {}
 
