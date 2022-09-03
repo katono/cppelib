@@ -20,7 +20,7 @@ private:
 
 public:
 	BitPattern() : m_data(0U) {}
-	BitPattern(T pattern) : m_data(pattern) {}
+	BitPattern(T pattern) : m_data(pattern) {} // cppcheck-suppress noExplicitConstructor
 
 	std::size_t size() const
 	{

@@ -50,7 +50,7 @@ public:
 
 	IntrusiveList_iterator() : m_node(0) {}
 
-	IntrusiveList_iterator(const iterator& x) : m_node(x.m_node) {}
+	IntrusiveList_iterator(const iterator& x) : m_node(x.m_node) {} // cppcheck-suppress noExplicitConstructor
 
 	IntrusiveList_iterator& operator=(const iterator& x)
 	{
