@@ -62,7 +62,7 @@ struct Array {
 	reference at(size_type idx)
 	{
 		if (idx >= size()) {
-			CONTAINER_THROW(OutOfRange("Array::at"));
+			CPPELIB_CONTAINER_THROW(OutOfRange("Array::at"));
 		}
 		return *(begin() + idx);
 	}
@@ -70,7 +70,7 @@ struct Array {
 	const_reference at(size_type idx) const
 	{
 		if (idx >= size()) {
-			CONTAINER_THROW(OutOfRange("Array::at"));
+			CPPELIB_CONTAINER_THROW(OutOfRange("Array::at"));
 		}
 		return *(begin() + idx);
 	}

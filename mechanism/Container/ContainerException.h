@@ -6,15 +6,15 @@
 //! @cond
 #ifdef CPPELIB_NO_EXCEPTIONS
 #include "Assertion/Assertion.h"
-#define CONTAINER_THROW(x) CHECK_ASSERT(false && #x)
+#define CPPELIB_CONTAINER_THROW(x) CHECK_ASSERT(false && #x)
 #else
-#define CONTAINER_THROW(x) throw x
+#define CPPELIB_CONTAINER_THROW(x) throw x
 #endif
 
 #if (__cplusplus >= 201103L)
-#define CONTAINER_NOEXCEPT noexcept
+#define CPPELIB_CONTAINER_NOEXCEPT noexcept
 #else
-#define CONTAINER_NOEXCEPT throw()
+#define CPPELIB_CONTAINER_NOEXCEPT throw()
 #endif
 //! @endcond
 
@@ -23,7 +23,7 @@ namespace Container {
 class OutOfRange : public std::exception {
 public:
 	explicit OutOfRange(const char* msg) : m_msg(msg) {}
-	const char* what() const CONTAINER_NOEXCEPT
+	const char* what() const CPPELIB_CONTAINER_NOEXCEPT
 	{
 		return m_msg;
 	}
@@ -34,7 +34,7 @@ private:
 class BadAlloc : public std::exception {
 public:
 	BadAlloc() {}
-	virtual const char* what() const CONTAINER_NOEXCEPT = 0;
+	virtual const char* what() const CPPELIB_CONTAINER_NOEXCEPT = 0;
 };
 
 }

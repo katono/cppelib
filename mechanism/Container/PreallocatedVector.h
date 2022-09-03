@@ -47,7 +47,7 @@ private:
 	class BadAlloc : public Container::BadAlloc {
 	public:
 		BadAlloc() : Container::BadAlloc() {}
-		const char* what() const CONTAINER_NOEXCEPT
+		const char* what() const CPPELIB_CONTAINER_NOEXCEPT
 		{
 			return "PreallocatedVector::BadAlloc";
 		}
@@ -154,7 +154,7 @@ public:
 	reference at(size_type idx)
 	{
 		if (idx >= size()) {
-			CONTAINER_THROW(OutOfRange("PreallocatedVector::at"));
+			CPPELIB_CONTAINER_THROW(OutOfRange("PreallocatedVector::at"));
 		}
 		return *(begin() + idx);
 	}
@@ -162,7 +162,7 @@ public:
 	const_reference at(size_type idx) const
 	{
 		if (idx >= size()) {
-			CONTAINER_THROW(OutOfRange("PreallocatedVector::at"));
+			CPPELIB_CONTAINER_THROW(OutOfRange("PreallocatedVector::at"));
 		}
 		return *(begin() + idx);
 	}
@@ -252,7 +252,7 @@ public:
 		}
 
 		if (max_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		const size_type rest = n - size();
 		for (size_type i = 0U; i < rest; ++i) {
@@ -263,7 +263,7 @@ public:
 	void push_back(const T& data)
 	{
 		if (full()) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		construct(&*end(), data);
 		++m_end;
@@ -279,7 +279,7 @@ public:
 	void assign(size_type n, const T& data)
 	{
 		if (max_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		clear();
 		resize(n, data);
@@ -293,7 +293,7 @@ public:
 			++n;
 		}
 		if (max_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		clear();
 		for (; first != last; ++first) {
@@ -361,7 +361,7 @@ private:
 	void insert_n(iterator pos, size_type n, const T& data)
 	{
 		if (available_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 
 		const size_type num_elems_pos_to_end = end() - pos;
@@ -400,7 +400,7 @@ private:
 			++n;
 		}
 		if (available_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 
 		const size_type num_elems_pos_to_end = end() - pos;

@@ -222,7 +222,7 @@ private:
 	class BadAlloc : public Container::BadAlloc {
 	public:
 		BadAlloc() : Container::BadAlloc() {}
-		const char* what() const CONTAINER_NOEXCEPT
+		const char* what() const CPPELIB_CONTAINER_NOEXCEPT
 		{
 			return "PreallocatedDeque::BadAlloc";
 		}
@@ -328,7 +328,7 @@ public:
 	reference at(size_type idx)
 	{
 		if (idx >= size()) {
-			CONTAINER_THROW(OutOfRange("PreallocatedDeque::at"));
+			CPPELIB_CONTAINER_THROW(OutOfRange("PreallocatedDeque::at"));
 		}
 		return *(begin() + idx);
 	}
@@ -336,7 +336,7 @@ public:
 	const_reference at(size_type idx) const
 	{
 		if (idx >= size()) {
-			CONTAINER_THROW(OutOfRange("PreallocatedDeque::at"));
+			CPPELIB_CONTAINER_THROW(OutOfRange("PreallocatedDeque::at"));
 		}
 		return *(begin() + idx);
 	}
@@ -416,7 +416,7 @@ public:
 		}
 
 		if (max_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		const size_type rest = n - size();
 		for (size_type i = 0U; i < rest; ++i) {
@@ -427,7 +427,7 @@ public:
 	void push_back(const T& data)
 	{
 		if (full()) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		construct(&*end(), data);
 		m_end = next_idx(m_end);
@@ -443,7 +443,7 @@ public:
 	void push_front(const T& data)
 	{
 		if (full()) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		construct(&*(begin() - 1), data);
 		m_begin = prev_idx(m_begin);
@@ -459,7 +459,7 @@ public:
 	void assign(size_type n, const T& data)
 	{
 		if (max_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		clear();
 		resize(n, data);
@@ -473,7 +473,7 @@ public:
 			++n;
 		}
 		if (max_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 		clear();
 		for (; first != last; ++first) {
@@ -587,7 +587,7 @@ private:
 	iterator insert_n(iterator pos, size_type n, const T& data)
 	{
 		if (available_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 
 		if ((size() / 2U) < static_cast<size_type>(pos - begin())) {
@@ -659,7 +659,7 @@ private:
 			++n;
 		}
 		if (available_size() < n) {
-			CONTAINER_THROW(BadAlloc());
+			CPPELIB_CONTAINER_THROW(BadAlloc());
 		}
 
 		if ((size() / 2U) < static_cast<size_type>(pos - begin())) {
