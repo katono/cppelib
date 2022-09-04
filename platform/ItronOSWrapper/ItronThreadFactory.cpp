@@ -5,7 +5,7 @@
 #include <new>
 
 #ifndef DEFAULT_STACK_SIZE
-#define DEFAULT_STACK_SIZE (256U)
+#define DEFAULT_STACK_SIZE (4096U)
 #endif
 
 namespace ItronOSWrapper {
