@@ -6,7 +6,11 @@ build_script:
 - cmd: >-
     msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 tool\CppUTest\CppUTest.vcxproj
 
+    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\AssertionNoExceptionsTest\AssertionNoExceptionsTest.vcxproj
+
     msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\AssertionTest\AssertionTest.vcxproj
+
+    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\ContainerNoExceptionsTest\ContainerNoExceptionsTest.vcxproj
 
     msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\ContainerTest\ContainerTest.vcxproj
 
@@ -19,7 +23,11 @@ build_script:
 
     msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 tool\CppUTest\CppUTest.vcxproj
 
+    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\AssertionNoExceptionsTest\AssertionNoExceptionsTest.vcxproj
+
     msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\AssertionTest\AssertionTest.vcxproj
+
+    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\ContainerNoExceptionsTest\ContainerNoExceptionsTest.vcxproj
 
     msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\ContainerTest\ContainerTest.vcxproj
 
