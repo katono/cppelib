@@ -1,6 +1,8 @@
 #ifndef ASSERTION_ASSERTION_H_INCLUDED
 #define ASSERTION_ASSERTION_H_INCLUDED
 
+#include <cstddef>
+
 #ifndef CPPELIB_ASSERTION_FAILURE_BUFSIZE
 /*!
  * @brief Buffer size of Assertion::Failure object
@@ -73,15 +75,15 @@ public:
 class Failure {
 public:
 //! @cond
-	Failure(const char* file, unsigned int line, const char* expr)
+	Failure(const char* file, int line, const char* expr)
 	: m_buf()
 	{
-		unsigned int remain = sizeof m_buf;
+		std::size_t remain = sizeof m_buf;
 		char* pBuf = m_buf;
 		pBuf = concatCString(pBuf, remain, file);
 		pBuf = concatCString(pBuf, remain, "(");
 		char lineBuf[16];
-		toCString(lineBuf, sizeof lineBuf, line);
+		toCString(lineBuf, sizeof lineBuf, static_cast<unsigned int>(line));
 		pBuf = concatCString(pBuf, remain, lineBuf);
 		pBuf = concatCString(pBuf, remain, "): Assertion failed (");
 		pBuf = concatCString(pBuf, remain, expr);
@@ -99,7 +101,7 @@ public:
 	}
 
 //! @cond
-	static void assertFail(const char* file, unsigned int line, const char* expr)
+	static void assertFail(const char* file, int line, const char* expr)
 	{
 		Failure failure(file, line, expr);
 		AssertHandler* handler = getHandler();
@@ -125,20 +127,23 @@ private:
 		return handler;
 	}
 
-	static void toCString(char* buf, unsigned int size, unsigned int val)
+	static void toCString(char* buf, std::size_t size, unsigned int val)
 	{
 		if (size == 0U) {
 			return;
 		}
-		const unsigned int TMP_SIZE = 16U;
+		const std::size_t TMP_SIZE = 16U;
 		char tmp[TMP_SIZE];
 		const char* const numStr = "0123456789";
-		unsigned int i;
-		for (i = 0U; val > 0U && i < TMP_SIZE - 1U; i++) {
+		std::size_t i;
+		for (i = 0U; i < TMP_SIZE - 1U; i++) {
+			if (val == 0U) {
+				break;
+			}
 			tmp[i] = numStr[val % 10U];
 			val /= 10U;
 		}
-		const unsigned int tmpLen = i;
+		const std::size_t tmpLen = i;
 		for (i = 0U; i < tmpLen; i++) {
 			if (i < size) {
 				buf[i] = tmp[tmpLen - i - 1U];
@@ -150,24 +155,24 @@ private:
 		buf[tmpLen] = '\0';
 	}
 
-	static char* concatCString(char* buf, unsigned int& remain, const char* str)
+	static char* concatCString(char* buf, std::size_t& remain, const char* str)
 	{
 		if (remain <= 1U) {
 			return buf;
 		}
-		unsigned int len = copyCString(buf, remain, str);
+		std::size_t len = copyCString(buf, remain, str);
 		remain -= len;
 		return buf + len;
 	}
 
-	static unsigned int copyCString(char* to, unsigned int size, const char* from)
+	static std::size_t copyCString(char* to, std::size_t size, const char* from)
 	{
 		if (size == 0U) {
 			return 0U;
 		}
 		const char* p = from;
 		char* q = to;
-		for (unsigned int i = 0U; i < size; i++) {
+		for (std::size_t i = 0U; i < size; i++) {
 			if (*p == '\0') {
 				*q = '\0';
 				return i;
