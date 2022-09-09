@@ -1,7 +1,18 @@
 #include "Assertion/Assertion.h"
 #include <string>
 #include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
+class TestAssert : public Assertion::AssertHandler {
+public:
+	void handle(const char* msg)
+	{
+		STRCMP_CONTAINS(__FILE__, msg);
+		STRCMP_CONTAINS("Assertion failed", msg);
+		mock().actualCall("handle").onObject(this);
+		throw -1; // pseudo abort
+	}
+};
 
 TEST_GROUP(AssertionTest) {
 	void setup()
@@ -9,6 +20,10 @@ TEST_GROUP(AssertionTest) {
 	}
 	void teardown()
 	{
+		mock().checkExpectations();
+		mock().clear();
+
+		Assertion::setHandler(0); // reset handler
 	}
 };
 
@@ -23,7 +38,7 @@ TEST(AssertionTest, assert_true)
 	}
 }
 
-TEST(AssertionTest, assert_false)
+TEST(AssertionTest, assert_false_exception)
 {
 	int failureLine = 0;
 	try {
@@ -44,8 +59,24 @@ TEST(AssertionTest, assert_false)
 	FAIL("failed");
 }
 
+TEST(AssertionTest, assert_false_handle)
+{
+	static TestAssert handler;
+	Assertion::setHandler(&handler);
+	mock().expectOneCall("handle").onObject(&handler);
+	try {
+		bool a = false;
+		CHECK_ASSERT(a);
+	}
+	catch (int e) {
+		LONGS_EQUAL(-1, e);
+		return;
+	}
+	FAIL("failed");
+}
+
 #ifndef NDEBUG
-TEST(AssertionTest, debug_assert_false)
+TEST(AssertionTest, debug_assert_false_exception)
 {
 	int failureLine = 0;
 	try {
@@ -65,6 +96,23 @@ TEST(AssertionTest, debug_assert_false)
 	}
 	FAIL("failed");
 }
+
+TEST(AssertionTest, debug_assert_false_handle)
+{
+	static TestAssert handler;
+	Assertion::setHandler(&handler);
+	mock().expectOneCall("handle").onObject(&handler);
+	try {
+		bool a = false;
+		DEBUG_ASSERT(a);
+	}
+	catch (int e) {
+		LONGS_EQUAL(-1, e);
+		return;
+	}
+	FAIL("failed");
+}
+
 #endif
 
 TEST(AssertionTest, failure_message)
