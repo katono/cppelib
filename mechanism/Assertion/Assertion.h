@@ -20,11 +20,10 @@
  * @note This macro is always enabled.
  *
  * If an assertion fails, you must handle to do shutdown your application safely.
- * In the assertion failure function, calls the Assertion::AssertHandler that is set by Assertion::setHandler().
- * If Assertion::AssertHandler is not set, it throws the exception Assertion::Failure.
+ * In the assertion failure function, the Assertion::AssertHandler that is set by Assertion::setHandler() is called.
+ * If Assertion::AssertHandler is not set, the exception Assertion::Failure is thrown.
  *
  * @attention If CPPELIB_NO_EXCEPTIONS macro is defined, the exception is not thrown, therefore you must surely set Assertion::AssertHandler.
- * .
  */
 #define CHECK_ASSERT(x)\
 	((x) ? (void)0 : Assertion::Failure::assertFail(__FILE__, __LINE__, #x))
@@ -55,7 +54,7 @@ public:
 	 * @brief Handle an assertion failure
 	 * @param msg Message when assertion fails
 	 *
-	 * Implement this method that never returns like this:
+	 * Implement this method that never returns like this example:
 	 * @code
 	 * void handle(const char* msg)
 	 * {
