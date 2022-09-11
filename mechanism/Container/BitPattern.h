@@ -29,14 +29,14 @@ public:
 
 	BitPattern& set()
 	{
-		m_data = ~static_cast<T>(0U);
+		m_data = static_cast<T>(~static_cast<T>(0U));
 		return *this;
 	}
 
 	BitPattern& set(std::size_t pos)
 	{
 		DEBUG_ASSERT(pos < (sizeof m_data * 8U));
-		m_data |= (1U << pos);
+		m_data |= static_cast<T>(static_cast<T>(1U) << pos);
 		return *this;
 	}
 
@@ -49,20 +49,20 @@ public:
 	BitPattern& reset(std::size_t pos)
 	{
 		DEBUG_ASSERT(pos < (sizeof m_data * 8U));
-		m_data &= ~(1U << pos);
+		m_data &= static_cast<T>(~(static_cast<T>(1U) << pos));
 		return *this;
 	}
 
 	BitPattern& flip()
 	{
-		m_data = ~m_data;
+		m_data = static_cast<T>(~m_data);
 		return *this;
 	}
 
 	BitPattern& flip(std::size_t pos)
 	{
 		DEBUG_ASSERT(pos < (sizeof m_data * 8U));
-		m_data ^= (1U << pos);
+		m_data ^= static_cast<T>(static_cast<T>(1U) << pos);
 		return *this;
 	}
 
@@ -79,12 +79,12 @@ public:
 	bool test(std::size_t pos) const
 	{
 		DEBUG_ASSERT(pos < (sizeof m_data * 8U));
-		return (m_data & (1U << pos)) != 0U;
+		return (m_data & static_cast<T>(static_cast<T>(1U) << pos)) != 0U;
 	}
 
 	bool all() const
 	{
-		return m_data == ~static_cast<T>(0U);
+		return m_data == static_cast<T>(~static_cast<T>(0U));
 	}
 
 	bool any() const
