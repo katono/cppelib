@@ -3,32 +3,29 @@ enable_testing()
 
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest/origin)
+set(CPPUTEST_BUILD_DIR ${CPPUTEST_DIR}/cpputest_build)
 set(MECHANISM_DIR ${ROOT_DIR}/mechanism)
 set(PLATFORM_DIR ${ROOT_DIR}/platform)
+set(PROJECT_NAME platform_test)
 
-project(platform_test)
+project(${PROJECT_NAME})
+message("PROJECT_NAME: ${PROJECT_NAME}")
 
-enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPLATFORM_OS_STDCPP")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCPPELIB_NO_EXCEPTIONS")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -DPLATFORM_OS_STDCPP")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Release)
-endif()
-message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
-message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
-message("CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
+include(${MECHANISM_DIR}/test/Config.cmake)
+include(${CPPUTEST_DIR}/../BuildCppUTest.cmake)
 
 include_directories(${CPPUTEST_DIR}/include)
 include_directories(${MECHANISM_DIR})
 include_directories(${PLATFORM_DIR})
 
-link_directories(${CPPUTEST_DIR}/src/CppUTest)
-link_directories(${CPPUTEST_DIR}/src/CppUTestExt)
+link_directories(${CPPUTEST_BUILD_DIR}/src/CppUTest)
+link_directories(${CPPUTEST_BUILD_DIR}/src/CppUTestExt)
 
 
 set(OSWrapperSrc
@@ -87,29 +84,10 @@ add_executable(alltests
 	${PlatformOSWrapperTestSrc}
 )
 
-if(NOT EXISTS ${CPPUTEST_DIR}/src)
-	message("Start: Get CppUTest")
-	execute_process(
-		COMMAND git submodule update --init
-	)
-	message("Done: Get CppUTest")
-endif()
-
-message("Start: Build CppUTest")
-execute_process(
-	COMMAND ${CMAKE_COMMAND} .
-	WORKING_DIRECTORY ${CPPUTEST_DIR}
-)
-execute_process(
-	COMMAND ${CMAKE_MAKE_PROGRAM} CppUTest CppUTestExt
-	WORKING_DIRECTORY ${CPPUTEST_DIR}
-)
-message("Done: Build CppUTest")
-
 find_package(Threads REQUIRED)
 
 target_link_libraries(alltests CppUTest CppUTestExt ${CMAKE_THREAD_LIBS_INIT})
 
-add_test(NAME platform_test
+add_test(NAME ${PROJECT_NAME}
 	COMMAND alltests
 )
