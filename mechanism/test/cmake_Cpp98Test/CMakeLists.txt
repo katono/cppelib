@@ -5,7 +5,7 @@ set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest/origin)
 set(CPPUTEST_BUILD_DIR ${CPPUTEST_DIR}/cpputest_build)
 set(MECHANISM_DIR ${ROOT_DIR}/mechanism)
-set(PROJECT_NAME mechanism_test)
+set(PROJECT_NAME mechanism_cpp98_test)
 
 project(${PROJECT_NAME})
 message("PROJECT_NAME: ${PROJECT_NAME}")

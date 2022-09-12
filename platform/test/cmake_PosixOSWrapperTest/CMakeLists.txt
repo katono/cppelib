@@ -6,7 +6,7 @@ set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest/origin)
 set(CPPUTEST_BUILD_DIR ${CPPUTEST_DIR}/cpputest_build)
 set(MECHANISM_DIR ${ROOT_DIR}/mechanism)
 set(PLATFORM_DIR ${ROOT_DIR}/platform)
-set(PROJECT_NAME platform_test)
+set(PROJECT_NAME platform_posix_test)
 
 project(${PROJECT_NAME})
 message("PROJECT_NAME: ${PROJECT_NAME}")
