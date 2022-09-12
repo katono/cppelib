@@ -3,6 +3,7 @@ enable_testing()
 
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest/origin)
+set(CPPUTEST_BUILD_DIR ${CPPUTEST_DIR}/cpputest_build)
 set(MECHANISM_DIR ${ROOT_DIR}/mechanism)
 
 project(mechanism_test)
@@ -22,8 +23,8 @@ message("CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 include_directories(${CPPUTEST_DIR}/include)
 include_directories(${MECHANISM_DIR})
 
-link_directories(${CPPUTEST_DIR}/src/CppUTest)
-link_directories(${CPPUTEST_DIR}/src/CppUTestExt)
+link_directories(${CPPUTEST_BUILD_DIR}/src/CppUTest)
+link_directories(${CPPUTEST_BUILD_DIR}/src/CppUTestExt)
 
 set(AssertionTestSrc
 	${MECHANISM_DIR}/test/AssertionTest/AssertionTest.cpp
@@ -81,12 +82,12 @@ endif()
 
 message("Start: Build CppUTest")
 execute_process(
-	COMMAND ${CMAKE_COMMAND} .
-	WORKING_DIRECTORY ${CPPUTEST_DIR}
+	COMMAND ${CMAKE_COMMAND} ${CPPUTEST_DIR}
+	WORKING_DIRECTORY ${CPPUTEST_BUILD_DIR}
 )
 execute_process(
 	COMMAND ${CMAKE_MAKE_PROGRAM} CppUTest CppUTestExt
-	WORKING_DIRECTORY ${CPPUTEST_DIR}
+	WORKING_DIRECTORY ${CPPUTEST_BUILD_DIR}
 )
 message("Done: Build CppUTest")
 
