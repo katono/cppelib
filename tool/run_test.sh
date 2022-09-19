@@ -8,6 +8,8 @@ fi
 REPO_ROOT=$1
 cd ${REPO_ROOT}
 
+EXIT_CODE=0
+
 BUILD_DIR=build
 BUILD_DIRS="mechanism/test/${BUILD_DIR} platform/test/cmake_StdCppOSWrapperTest/${BUILD_DIR} platform/test/cmake_PosixOSWrapperTest/${BUILD_DIR}"
 for dir in ${BUILD_DIRS}; do
@@ -19,11 +21,26 @@ for dir in ${BUILD_DIRS}; do
 		fi
 		mkdir -p ${dir}
 		cd ${dir}
-		rm -f ../CMakeCache.txt
 		cmake ..
+		if [ "$?" != "0" ]; then
+			EXIT_CODE=1
+			cd -
+			continue
+		fi
 		make
+		if [ "$?" != "0" ]; then
+			EXIT_CODE=1
+			cd -
+			continue
+		fi
 		ctest -V
+		if [ "$?" != "0" ]; then
+			EXIT_CODE=1
+			cd -
+			continue
+		fi
 		cd -
 	fi
 done
 
+exit ${EXIT_CODE}
