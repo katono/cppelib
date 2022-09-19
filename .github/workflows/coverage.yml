@@ -1,0 +1,27 @@
+name: Coverage
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install tools
+      run: sudo apt install lcov
+
+    - name: Coverage
+      run: sh ${{github.workspace}}/tool/coverage.sh ${{github.workspace}}
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        path-to-lcov: coverage.info
+        github-token: ${{ secrets.GITHUB_TOKEN }}
