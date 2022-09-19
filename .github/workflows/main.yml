@@ -1,0 +1,18 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Run test
+      run: sh ${{github.workspace}}/tool/run_test.sh ${{github.workspace}}
