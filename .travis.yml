@@ -1,12 +1,4 @@
 language: cpp
 
-install:
-  - sudo apt-get install lcov
-  - gem install lcoveralls
-
 script:
   - sh tool/run_test.sh .
-
-after_success:
-  - sh tool/coverage.sh .
-  - lcoveralls -r .
