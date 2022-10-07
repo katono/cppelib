@@ -3,6 +3,7 @@
 CppELib is a portable C++ library for embedded software development.
 This works on the freestanding environment that provides few standard C++ libraries.
 
+[![CI](https://github.com/katono/cppelib/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/katono/cppelib/actions/workflows/main.yml)
 [![Build Status](https://app.travis-ci.com/katono/cppelib.svg?branch=master)](https://app.travis-ci.com/katono/cppelib)
 [![Build status](https://ci.appveyor.com/api/projects/status/v2kqt2jvw8m7mija/branch/master?svg=true)](https://ci.appveyor.com/project/katono/cppelib/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/katono/cppelib/badge.svg?branch=master)](https://coveralls.io/github/katono/cppelib?branch=master)
