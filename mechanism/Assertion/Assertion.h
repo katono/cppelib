@@ -69,11 +69,11 @@ public:
 /*!
  * @brief Class used when CHECK_ASSERT() macro fails
  *
- * This object is thrown when CHECK_ASSERT() macro fails if AssertHandler is not set.
+ * This object is thrown when CHECK_ASSERT() macro fails if AssertHandler is not set and CPPELIB_NO_EXCEPTIONS macro is not defined.
  */
 class Failure {
 public:
-//! @cond
+	//! @cond
 	Failure(const char* file, int line, const char* expr)
 	: m_buf()
 	{
@@ -88,7 +88,7 @@ public:
 		pBuf = concatCString(pBuf, remain, expr);
 		concatCString(pBuf, remain, ")");
 	}
-//! @endcond
+	//! @endcond
 
 	/*!
 	 * @brief Get the message when assertion fails
@@ -99,7 +99,7 @@ public:
 		return m_buf;
 	}
 
-//! @cond
+	//! @cond
 	static void assertFail(const char* file, int line, const char* expr)
 	{
 		Failure failure(file, line, expr);
@@ -183,7 +183,7 @@ private:
 		to[size - 1U] = '\0';
 		return size - 1U;
 	}
-//! @endcond
+	//! @endcond
 };
 
 /*!
