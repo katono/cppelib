@@ -13,10 +13,16 @@ set(CPPELIB_MECHANISM_SRC
 	OSWrapper/VariableMemoryPool.cpp
 )
 
-add_library(cppelib_mechanism ${CPPELIB_MECHANISM_SRC})
-target_include_directories(cppelib_mechanism PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(${PROJECT_NAME} ${CPPELIB_MECHANISM_SRC})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-install(TARGETS cppelib_mechanism)
+if(MSVC)
+	target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+else()
+	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+endif()
+
+install(TARGETS ${PROJECT_NAME})
 install(DIRECTORY
 	${CMAKE_CURRENT_SOURCE_DIR}/Assertion
 	${CMAKE_CURRENT_SOURCE_DIR}/Container
