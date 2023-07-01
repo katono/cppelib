@@ -1,14 +1,19 @@
 cmake_minimum_required(VERSION 3.15)
+project(mechanism_cpp11_test)
 
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
+
+if(MSVC)
+	add_compile_options(/W4)
+else()
+	add_compile_options(-Wall -Wextra)
+endif()
 
 set(SUT cppelib_mechanism)
 set(SUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 file(GLOB_RECURSE CPPELIB_MECHANISM_SRC "${SUT_DIR}/OSWrapper/*.cpp")
 add_library(${SUT} ${CPPELIB_MECHANISM_SRC})
 target_include_directories(${SUT} PUBLIC ${SUT_DIR})
-
-project(mechanism_cpp11_test)
 
 set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 file(GLOB_RECURSE CPPELIB_MECHANISM_TEST_SRC
