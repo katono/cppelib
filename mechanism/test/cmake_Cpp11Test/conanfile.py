@@ -32,5 +32,5 @@ class runTestsRecipe(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
-        cmake.test(target="test_verbose")
+        cmake.test()
 

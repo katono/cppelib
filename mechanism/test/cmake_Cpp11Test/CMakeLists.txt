@@ -16,8 +16,6 @@ target_link_libraries(${PROJECT_NAME} cppelib_mechanism::cppelib_mechanism)
 find_package(cpputest REQUIRED)
 target_link_libraries(${PROJECT_NAME} cpputest::cpputest)
 
-add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
-
 add_test(NAME ${PROJECT_NAME}
 	COMMAND ${PROJECT_NAME}
 )
