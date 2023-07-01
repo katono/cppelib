@@ -9,7 +9,6 @@ class runTestsRecipe(ConanFile):
 
     def requirements(self):
         self.requires("cpputest/4.0")
-        self.requires("cppelib_mechanism/1.5.0")
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -30,7 +29,8 @@ class runTestsRecipe(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cppstd = str(self.settings.compiler.cppstd).replace("gnu", "")
+        cmake.configure(cli_args=[f"-DCMAKE_CXX_STANDARD={cppstd}"])
         cmake.build()
         cmake.test()
 
