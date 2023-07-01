@@ -1,23 +1,23 @@
 cmake_minimum_required(VERSION 3.1)
 enable_testing()
 
-set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
-set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest/origin)
-set(CPPUTEST_BUILD_DIR ${CPPUTEST_DIR}/cpputest_build)
-set(MECHANISM_DIR ${ROOT_DIR}/mechanism)
-set(PROJECT_NAME mechanism_cpp11_test)
+set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-project(${PROJECT_NAME})
+project(mechanism_cpp11_test)
 message("PROJECT_NAME: ${PROJECT_NAME}")
 
 set(CMAKE_CXX_STANDARD 11)
 
-include(../Config.cmake)
 include(../BuildAlltests.cmake)
-include(${CPPUTEST_DIR}/../BuildCppUTest.cmake)
 
-target_link_libraries(alltests CppUTest CppUTestExt)
+find_package(cppelib_mechanism REQUIRED)
+target_link_libraries(${PROJECT_NAME} cppelib_mechanism::cppelib_mechanism)
+
+find_package(cpputest REQUIRED)
+target_link_libraries(${PROJECT_NAME} cpputest::cpputest)
+
+add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
 add_test(NAME ${PROJECT_NAME}
-	COMMAND alltests
+	COMMAND ${PROJECT_NAME}
 )
