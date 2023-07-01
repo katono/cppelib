@@ -1429,7 +1429,7 @@ TEST(PreallocatedVectorTest, rbegin_rend_const)
 class VElem {
 	int count;
 public:
-	unsigned int data;
+	volatile unsigned int data;
 	static const unsigned int EXCEPTION_DATA = 0;
 
 	VElem() : count(1), data(100) {}
