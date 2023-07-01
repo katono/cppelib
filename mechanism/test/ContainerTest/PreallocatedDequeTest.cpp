@@ -1750,7 +1750,7 @@ TEST(PreallocatedDequeTest, rbegin_rend_const)
 class DElem {
 	int count;
 public:
-	unsigned int data;
+	volatile unsigned int data;
 	static const unsigned int EXCEPTION_DATA = 0;
 
 	DElem() : count(1), data(100) {}
