@@ -26,8 +26,7 @@ class runTestsRecipe(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cppstd = str(self.settings.compiler.cppstd).replace("gnu", "")
-        cmake.configure(cli_args=[f"-DCMAKE_CXX_STANDARD={cppstd}"])
+        cmake.configure()
         cmake.build()
         cmake.test()
 

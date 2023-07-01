@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 3.15)
 project(assertion_no_exceptions_test)
 
-add_compile_options("-DCPPELIB_NO_EXCEPTIONS")
-add_compile_options("-fno-exceptions")
-add_compile_options("-fno-rtti")
+add_compile_options(-DCPPELIB_NO_EXCEPTIONS)
+if(MSVC)
+	add_compile_options(/W4)
+else()
+	add_compile_options(-Wall -Wextra)
+	add_compile_options(-fno-exceptions)
+	add_compile_options(-fno-rtti)
+endif()
 
 file(GLOB CPPELIB_MECHANISM_TEST_SRC "*.cpp")
 
