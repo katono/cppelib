@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(mechanism_cpp11_test)
+project(mechanism_test)
 
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
@@ -10,20 +10,19 @@ else()
 endif()
 
 set(SUT cppelib_mechanism)
-set(SUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+set(SUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 file(GLOB_RECURSE CPPELIB_MECHANISM_SRC "${SUT_DIR}/OSWrapper/*.cpp")
 add_library(${SUT} ${CPPELIB_MECHANISM_SRC})
 target_include_directories(${SUT} PUBLIC ${SUT_DIR})
 
-set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 file(GLOB_RECURSE CPPELIB_MECHANISM_TEST_SRC
-	"${TEST_DIR}/AssertionTest/*.cpp"
-	"${TEST_DIR}/ContainerTest/*.cpp"
-	"${TEST_DIR}/OSWrapperTest/*.cpp"
+	"AssertionTest/*.cpp"
+	"ContainerTest/*.cpp"
+	"OSWrapperTest/*.cpp"
 )
 
 add_executable(${PROJECT_NAME}
-	${TEST_DIR}/main.cpp
+	main.cpp
 	${CPPELIB_MECHANISM_TEST_SRC}
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${SUT_DIR})
