@@ -1,93 +1,49 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.15)
+project(oswrapper_no_exceptions_test)
+
+add_compile_options(-DCPPELIB_NO_EXCEPTIONS)
+if(MSVC)
+	add_compile_options(/W4)
+	add_compile_options(-DPLATFORM_OS_WINDOWS)
+else()
+	add_compile_options(-Wall -Wextra)
+	add_compile_options(-DPLATFORM_OS_POSIX)
+	add_compile_options(-fno-exceptions)
+	add_compile_options(-fno-rtti)
+endif()
+
+set(SUT_MECHANISM cppelib_mechanism)
+set(SUT_MECHANISM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../mechanism)
+file(GLOB_RECURSE CPPELIB_MECHANISM_SRC "${SUT_MECHANISM_DIR}/OSWrapper/*.cpp")
+add_library(${SUT_MECHANISM} ${CPPELIB_MECHANISM_SRC})
+target_include_directories(${SUT_MECHANISM} PUBLIC ${SUT_MECHANISM_DIR})
+
+set(SUT_PLATFORM cppelib_platform)
+set(SUT_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_COMMON "${SUT_PLATFORM_DIR}/StdCppOSWrapper/*.cpp")
+if(MSVC)
+	file(GLOB_RECURSE CPPELIB_PLATFORM_SRC "${SUT_PLATFORM_DIR}/WindowsOSWrapper/*.cpp")
+else()
+	file(GLOB_RECURSE CPPELIB_PLATFORM_SRC "${SUT_PLATFORM_DIR}/PosixOSWrapper/*.cpp")
+endif()
+add_library(${SUT_PLATFORM} ${CPPELIB_PLATFORM_SRC_COMMON} ${CPPELIB_PLATFORM_SRC})
+target_include_directories(${SUT_PLATFORM} PUBLIC ${SUT_MECHANISM_DIR} ${SUT_PLATFORM_DIR})
+
+file(GLOB_RECURSE CPPELIB_PLATFORM_TEST_SRC
+	"../PlatformOSWrapperTest/*.cpp"
+)
+
+add_executable(${PROJECT_NAME}
+	main.cpp
+	${CPPELIB_PLATFORM_TEST_SRC}
+)
+target_include_directories(${PROJECT_NAME} PUBLIC ${SUT_MECHANISM_DIR} ${SUT_PLATFORM_DIR})
+target_link_libraries(${PROJECT_NAME} ${SUT_MECHANISM} ${SUT_PLATFORM})
+
+find_package(cpputest REQUIRED)
+target_link_libraries(${PROJECT_NAME} cpputest::cpputest)
+
 enable_testing()
-
-set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
-set(CPPUTEST_DIR ${ROOT_DIR}/tool/CppUTest/origin)
-set(CPPUTEST_BUILD_DIR ${CPPUTEST_DIR}/cpputest_build)
-set(MECHANISM_DIR ${ROOT_DIR}/mechanism)
-set(PLATFORM_DIR ${ROOT_DIR}/platform)
-set(PROJECT_NAME platform_stdcpp_no_exceptions_test)
-
-project(${PROJECT_NAME})
-message("PROJECT_NAME: ${PROJECT_NAME}")
-
-set(CMAKE_CXX_STANDARD 11)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPLATFORM_OS_STDCPP")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCPPELIB_NO_EXCEPTIONS")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-include(${MECHANISM_DIR}/test/Config.cmake)
-include(${CPPUTEST_DIR}/../BuildCppUTest.cmake)
-
-include_directories(${CPPUTEST_DIR}/include)
-include_directories(${MECHANISM_DIR})
-include_directories(${PLATFORM_DIR})
-
-link_directories(${CPPUTEST_BUILD_DIR}/src/CppUTest)
-link_directories(${CPPUTEST_BUILD_DIR}/src/CppUTestExt)
-
-
-set(OSWrapperSrc
-	${MECHANISM_DIR}/OSWrapper/EventFlag.cpp
-	${MECHANISM_DIR}/OSWrapper/FixedMemoryPool.cpp
-	${MECHANISM_DIR}/OSWrapper/Mutex.cpp
-	${MECHANISM_DIR}/OSWrapper/OneShotTimer.cpp
-	${MECHANISM_DIR}/OSWrapper/PeriodicTimer.cpp
-	${MECHANISM_DIR}/OSWrapper/Thread.cpp
-	${MECHANISM_DIR}/OSWrapper/Timeout.cpp
-	${MECHANISM_DIR}/OSWrapper/VariableMemoryPool.cpp
-	${MECHANISM_DIR}/OSWrapper/ThreadPool.cpp
-)
-
-set(OSWrapperTestSrc
-	${MECHANISM_DIR}/test/OSWrapperTest/EventFlagTest.cpp
-	${MECHANISM_DIR}/test/OSWrapperTest/FixedMemoryPoolTest.cpp
-	${MECHANISM_DIR}/test/OSWrapperTest/MutexTest.cpp
-	${MECHANISM_DIR}/test/OSWrapperTest/OneShotTimerTest.cpp
-	${MECHANISM_DIR}/test/OSWrapperTest/PeriodicTimerTest.cpp
-	${MECHANISM_DIR}/test/OSWrapperTest/ThreadTest.cpp
-	${MECHANISM_DIR}/test/OSWrapperTest/VariableMemoryPoolTest.cpp
-	${MECHANISM_DIR}/test/OSWrapperTest/MessageQueueTest.cpp
-	${MECHANISM_DIR}/test/OSWrapperTest/ThreadPoolTest.cpp
-)
-
-set(StdCppOSWrapperSrc
-	${PLATFORM_DIR}/StdCppOSWrapper/StdCppEventFlagFactory.cpp
-	${PLATFORM_DIR}/StdCppOSWrapper/StdCppFixedMemoryPoolFactory.cpp
-	${PLATFORM_DIR}/StdCppOSWrapper/StdCppMutexFactory.cpp
-	${PLATFORM_DIR}/StdCppOSWrapper/StdCppOneShotTimerFactory.cpp
-	${PLATFORM_DIR}/StdCppOSWrapper/StdCppPeriodicTimerFactory.cpp
-	${PLATFORM_DIR}/StdCppOSWrapper/StdCppThreadFactory.cpp
-	${PLATFORM_DIR}/StdCppOSWrapper/StdCppVariableMemoryPoolFactory.cpp
-	${PLATFORM_DIR}/StdCppOSWrapper/StdCppOSWrapper.cpp
-)
-
-set(PlatformOSWrapperTestSrc
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformEventFlagTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformFixedMemoryPoolTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformMessageQueueTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformMutexTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformOneShotTimerTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformPeriodicTimerTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformThreadTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformVariableMemoryPoolTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformOSWrapperInitTest.cpp
-	${PLATFORM_DIR}/test/PlatformOSWrapperTest/PlatformThreadPoolTest.cpp
-)
-
-add_executable(alltests
-	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-	${OSWrapperSrc}
-	${OSWrapperTestSrc}
-	${StdCppOSWrapperSrc}
-	${PlatformOSWrapperTestSrc}
-)
-
-find_package(Threads REQUIRED)
-
-target_link_libraries(alltests CppUTest CppUTestExt ${CMAKE_THREAD_LIBS_INIT})
-
 add_test(NAME ${PROJECT_NAME}
-	COMMAND alltests
+	COMMAND ${PROJECT_NAME}
 )
