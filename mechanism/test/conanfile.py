@@ -19,7 +19,11 @@ class runTestsRecipe(ConanFile):
             self.options.rm_safe("fPIC")
 
     def layout(self):
-        cmake_layout(self)
+        compiler = self.settings.compiler
+        compiler_version = compiler.version
+        arch = self.settings.arch
+        cppstd = compiler.cppstd
+        cmake_layout(self, build_folder=f"build/{compiler}-{compiler_version}-{arch}-{cppstd}")
 
     def generate(self):
         deps = CMakeDeps(self)
