@@ -5,6 +5,8 @@
 #include <memory>
 #include <windows.h>
 
+#pragma comment(lib, "winmm.lib")
+
 namespace WindowsOSWrapper {
 
 class WindowsPeriodicTimer : public OSWrapper::PeriodicTimer {
