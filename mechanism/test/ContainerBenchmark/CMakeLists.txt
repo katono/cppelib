@@ -19,6 +19,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${SUT_DIR})
 find_package(cpputest REQUIRED)
 target_link_libraries(${PROJECT_NAME} cpputest::cpputest)
 
+list(APPEND CMAKE_CTEST_ARGUMENTS "--verbose")
 enable_testing()
 add_test(NAME ${PROJECT_NAME}
 	COMMAND ${PROJECT_NAME}

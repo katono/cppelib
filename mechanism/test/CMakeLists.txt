@@ -31,6 +31,7 @@ target_link_libraries(${PROJECT_NAME} ${SUT})
 find_package(cpputest REQUIRED)
 target_link_libraries(${PROJECT_NAME} cpputest::cpputest)
 
+list(APPEND CMAKE_CTEST_ARGUMENTS "--verbose")
 enable_testing()
 add_test(NAME ${PROJECT_NAME}
 	COMMAND ${PROJECT_NAME}
