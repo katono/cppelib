@@ -24,7 +24,7 @@ public:
 	void handle(const char* msg)
 	{
 		s_puts = msg;
-		std::puts(msg);
+		// std::puts(msg);
 		std::longjmp(s_jmpBuf, -1);
 	}
 };
