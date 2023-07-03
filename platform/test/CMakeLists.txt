@@ -9,6 +9,7 @@ if(MSVC)
 else()
 	add_compile_options(-Wall -Wextra)
 	add_compile_options(-DPLATFORM_OS_POSIX)
+	set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 endif()
 
 file(GLOB_RECURSE CPPELIB_PLATFORM_TEST_SRC

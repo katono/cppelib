@@ -10,6 +10,7 @@ if(MSVC)
 	target_compile_options(${PROJECT_NAME} PRIVATE /W4)
 else()
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+	set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 endif()
 
 install(TARGETS ${PROJECT_NAME})

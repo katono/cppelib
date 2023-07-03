@@ -13,6 +13,7 @@ else()
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
 	file(GLOB_RECURSE CPPELIB_PLATFORM_SRC "PosixOSWrapper/*.cpp")
 	set(HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PosixOSWrapper)
+	set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 endif()
 target_sources(${PROJECT_NAME} PRIVATE
 	${CPPELIB_PLATFORM_SRC_COMMON} ${CPPELIB_PLATFORM_SRC})

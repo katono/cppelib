@@ -7,6 +7,7 @@ if(MSVC)
 	add_compile_options(/W4)
 else()
 	add_compile_options(-Wall -Wextra)
+	set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 endif()
 
 set(SUT cppelib_mechanism)
