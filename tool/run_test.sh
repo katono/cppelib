@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$1" = "" ]; then
-	echo "Usage: $0 REPO_ROOT [clean|rebuild]"
+	echo "Usage: $0 REPO_ROOT"
 	exit
 fi
 
@@ -10,22 +10,21 @@ cd ${REPO_ROOT}
 
 EXIT_CODE=0
 
-BUILD_DIR=build
 TEST_DIRS=${TEST_DIRS}" mechanism/test"
 TEST_DIRS=${TEST_DIRS}" platform/test"
+STD_CPP="11 17"
 for dir in ${TEST_DIRS}; do
-	if [ "$2" = "clean" ]; then
-		rm -rf ${dir}/${BUILD_DIR}
-	else
-		if [ "$2" = "rebuild" ]; then
-			rm -rf ${dir}/${BUILD_DIR}
-		fi
-		conan build ${dir} --build=missing
+	for std in ${STD_CPP}; do
+		conan build ${dir} --build=missing -s compiler.cppstd=${std}
 		if [ "$?" != "0" ]; then
 			EXIT_CODE=1
-			continue
 		fi
-	fi
+	done
 done
+
+conan build mechanism/test --build=missing -s compiler.cppstd=98
+if [ "$?" != "0" ]; then
+	EXIT_CODE=1
+fi
 
 exit ${EXIT_CODE}
