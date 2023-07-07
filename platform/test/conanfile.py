@@ -9,8 +9,6 @@ class runTestsRecipe(ConanFile):
 
     def requirements(self):
         self.requires("cpputest/4.0")
-        self.requires("cppelib_mechanism/1.5.0")
-        self.requires("cppelib_platform/1.5.0")
 
     def config_options(self):
         if self.settings.os == "Windows":
