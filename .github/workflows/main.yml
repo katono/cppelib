@@ -26,3 +26,6 @@ jobs:
 
     - name: Run test
       run: sh ${{github.workspace}}/tool/run_test.sh ${{github.workspace}}
+
+    - name: Build package
+      run: sh ${{github.workspace}}/tool/build_package.sh ${{github.workspace}}
