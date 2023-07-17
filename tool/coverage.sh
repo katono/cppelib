@@ -1,61 +1,37 @@
 #!/bin/sh
 
 if [ "$1" = "" ]; then
-	echo "Usage: $0 REPO_ROOT [clean]"
+	echo "Usage: $0 REPO_ROOT"
 	exit
 fi
 
 REPO_ROOT=$1
 cd ${REPO_ROOT}
 
-rm -rf coverage_report
-rm -f coverage.info
+COVERAGE_BUILD_DIR=coverage_build
+rm -rf ${COVERAGE_BUILD_DIR}
 
 EXIT_CODE=0
 
-BUILD_DIR=coverage_build
-BUILD_DIRS=${BUILD_DIRS}" mechanism/test/cmake_Cpp98Test/${BUILD_DIR}"
-BUILD_DIRS=${BUILD_DIRS}" mechanism/test/cmake_Cpp11Test/${BUILD_DIR}"
-BUILD_DIRS=${BUILD_DIRS}" mechanism/test/AssertionNoExceptionsTest/${BUILD_DIR}"
-BUILD_DIRS=${BUILD_DIRS}" mechanism/test/ContainerNoExceptionsTest/${BUILD_DIR}"
-BUILD_DIRS=${BUILD_DIRS}" platform/test/cmake_StdCppOSWrapperTest/${BUILD_DIR}"
-BUILD_DIRS=${BUILD_DIRS}" platform/test/cmake_StdCppOSWrapperNoExceptionsTest/${BUILD_DIR}"
-BUILD_DIRS=${BUILD_DIRS}" platform/test/cmake_PosixOSWrapperTest/${BUILD_DIR}"
-for dir in ${BUILD_DIRS}; do
-	if [ "$2" = "clean" ]; then
-		rm -rf ${dir}
-	else
-		rm -rf ${dir}
-		mkdir -p ${dir}
-		cd ${dir}
-		cmake .. -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_EXE_LINKER_FLAGS=--coverage -DCMAKE_BUILD_TYPE=Debug
+TEST_DIRS=${TEST_DIRS}" mechanism/test"
+TEST_DIRS=${TEST_DIRS}" platform/test"
+STD_CPP="11 17"
+for dir in ${TEST_DIRS}; do
+	for std in ${STD_CPP}; do
+		conan build ${dir} --build=missing -s compiler.cppstd=${std} -c tools.build:cxxflags+="--coverage" -c tools.build:exelinkflags+="--coverage" -of ${COVERAGE_BUILD_DIR}/${dir} -s build_type=Debug
 		if [ "$?" != "0" ]; then
 			EXIT_CODE=1
-			cd -
-			continue
 		fi
-		make
-		if [ "$?" != "0" ]; then
-			EXIT_CODE=1
-			cd -
-			continue
-		fi
-		ctest -V
-		if [ "$?" != "0" ]; then
-			EXIT_CODE=1
-			cd -
-			continue
-		fi
-		cd -
-	fi
+	done
 done
 
-if [ "$2" = "clean" ]; then
-	exit
+conan build mechanism/test --build=missing -s compiler.cppstd=98 -c tools.build:cxxflags+="--coverage" -c tools.build:exelinkflags+="--coverage" -of ${COVERAGE_BUILD_DIR}/${dir} -s build_type=Debug
+if [ "$?" != "0" ]; then
+	EXIT_CODE=1
 fi
 
-lcov -d . -c -o coverage.info
-lcov -r coverage.info "*/CppUTest/*" "/usr/*" "*/test/*" -o coverage.info
-genhtml -o coverage_report --num-spaces 4 -s --legend coverage.info
+lcov -d ${COVERAGE_BUILD_DIR} -c -o ${COVERAGE_BUILD_DIR}/coverage.info
+lcov -r ${COVERAGE_BUILD_DIR}/coverage.info "*/CppUTest*/*" "/usr/*" "*/test/*" -o ${COVERAGE_BUILD_DIR}/coverage.info
+genhtml -o ${COVERAGE_BUILD_DIR}/coverage_report --num-spaces 4 -s --legend ${COVERAGE_BUILD_DIR}/coverage.info
 
 exit ${EXIT_CODE}
