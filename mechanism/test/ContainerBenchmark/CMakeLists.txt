@@ -17,7 +17,7 @@ add_executable(${PROJECT_NAME}
 set(SUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 target_include_directories(${PROJECT_NAME} PUBLIC ${SUT_DIR})
 
-find_package(cpputest REQUIRED)
+find_package(CppUTest REQUIRED)
 target_link_libraries(${PROJECT_NAME} cpputest::cpputest)
 
 list(APPEND CMAKE_CTEST_ARGUMENTS "--verbose")

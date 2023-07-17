@@ -29,7 +29,7 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PUBLIC ${SUT_DIR})
 target_link_libraries(${PROJECT_NAME} ${SUT})
 
-find_package(cpputest REQUIRED)
+find_package(CppUTest REQUIRED)
 target_link_libraries(${PROJECT_NAME} cpputest::cpputest)
 
 list(APPEND CMAKE_CTEST_ARGUMENTS "--verbose")

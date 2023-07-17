@@ -40,7 +40,7 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PUBLIC ${SUT_MECHANISM_DIR} ${SUT_PLATFORM_DIR})
 target_link_libraries(${PROJECT_NAME} ${SUT_MECHANISM} ${SUT_PLATFORM})
 
-find_package(cpputest REQUIRED)
+find_package(CppUTest REQUIRED)
 target_link_libraries(${PROJECT_NAME} cpputest::cpputest)
 
 enable_testing()
