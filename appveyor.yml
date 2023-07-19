@@ -1,38 +1,36 @@
 version: 1.0.{build}
-image: Visual Studio 2019
+image:
+- Visual Studio 2019
+- Visual Studio 2022
+
+configuration:
+- Release
+- Debug
+
+environment:
+  matrix:
+  - ARCH: x86_64
+  - ARCH: x86
+
+matrix:
+  fast_finish: true
+
 install:
-- cmd: git submodule update --init --recursive
+- python.exe -m pip install --upgrade pip
+- python.exe -m pip install "conan>=2"
+- cmd: conan profile detect
+
 build_script:
 - cmd: >-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 tool\CppUTest\CppUTest.vcxproj
+    conan build mechanism/test --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
 
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\AssertionNoExceptionsTest\AssertionNoExceptionsTest.vcxproj
+    conan build platform/test --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
 
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\AssertionTest\AssertionTest.vcxproj
+    conan build mechanism --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
 
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\ContainerNoExceptionsTest\ContainerNoExceptionsTest.vcxproj
+    conan create mechanism --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
 
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\ContainerTest\ContainerTest.vcxproj
+    conan build platform --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
 
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 mechanism\test\OSWrapperTest\OSWrapperTest.vcxproj
+    conan create platform --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
 
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 platform\test\PlatformOSWrapperTest\StdCppOSWrapperTest.vcxproj
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x86 platform\test\PlatformOSWrapperTest\WindowsOSWrapperTest.vcxproj
-
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 tool\CppUTest\CppUTest.vcxproj
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\AssertionNoExceptionsTest\AssertionNoExceptionsTest.vcxproj
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\AssertionTest\AssertionTest.vcxproj
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\ContainerNoExceptionsTest\ContainerNoExceptionsTest.vcxproj
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\ContainerTest\ContainerTest.vcxproj
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 mechanism\test\OSWrapperTest\OSWrapperTest.vcxproj
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 platform\test\PlatformOSWrapperTest\StdCppOSWrapperTest.vcxproj
-
-    msbuild -p:PlatformToolset=v142;Configuration=Release;Platform=x64 platform\test\PlatformOSWrapperTest\WindowsOSWrapperTest.vcxproj
