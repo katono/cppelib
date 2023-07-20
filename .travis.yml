@@ -1,4 +1,0 @@
-language: cpp
-
-script:
-  - sh tool/run_test.sh .
