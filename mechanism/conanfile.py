@@ -1,5 +1,7 @@
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+from conan.tools.files import copy
+import os
 
 
 class cppelib_mechanismRecipe(ConanFile):
@@ -10,7 +12,10 @@ class cppelib_mechanismRecipe(ConanFile):
     license = "MIT License"
     author = "KATO Noriaki <katono123@gmail.com>"
     url = "https://github.com/katono/cppelib"
-    description = "Portable C++ library for embedded software development"
+    description = (
+        "CppELib is a portable C++ library for embedded software development. "
+        "This package is a 'mechanism' part of CppELib. "
+    )
     topics = ("embedded", "rtos")
 
     # Binary configuration
@@ -20,6 +25,9 @@ class cppelib_mechanismRecipe(ConanFile):
 
     # Sources are located in the same place as this recipe, copy them to the recipe
     exports_sources = "CMakeLists.txt", "Assertion/*", "Container/*", "OSWrapper/*"
+
+    def export_sources(self):
+        copy(self, "LICENSE", src=os.path.join(self.recipe_folder, ".."), dst=self.export_sources_folder)
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -48,6 +56,7 @@ class cppelib_mechanismRecipe(ConanFile):
         cmake.build()
 
     def package(self):
+        copy(self, "LICENSE", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
         cmake = CMake(self)
         cmake.install()
 
