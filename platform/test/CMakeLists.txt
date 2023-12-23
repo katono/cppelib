@@ -20,7 +20,10 @@ target_include_directories(${SUT_MECHANISM} PUBLIC ${SUT_MECHANISM_DIR})
 
 set(SUT_PLATFORM cppelib_platform)
 set(SUT_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_COMMON "${SUT_PLATFORM_DIR}/StdCppOSWrapper/*.cpp")
+file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_COMMON
+	"${SUT_PLATFORM_DIR}/StdCppOSWrapper/*.cpp"
+	"${SUT_PLATFORM_DIR}/TestDoubleOSWrapper/*.cpp"
+)
 if(MSVC)
 	file(GLOB_RECURSE CPPELIB_PLATFORM_SRC "${SUT_PLATFORM_DIR}/WindowsOSWrapper/*.cpp")
 else()
@@ -31,6 +34,7 @@ target_include_directories(${SUT_PLATFORM} PUBLIC ${SUT_MECHANISM_DIR} ${SUT_PLA
 
 file(GLOB_RECURSE CPPELIB_PLATFORM_TEST_SRC
 	"PlatformOSWrapperTest/*.cpp"
+	"TestDoubleOSWrapperTest/*.cpp"
 )
 
 add_executable(${PROJECT_NAME}
