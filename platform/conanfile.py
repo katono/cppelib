@@ -24,7 +24,7 @@ class cppelib_platformRecipe(ConanFile):
     default_options = {"shared": False, "fPIC": True}
 
     # Sources are located in the same place as this recipe, copy them to the recipe
-    exports_sources = "CMakeLists.txt", "StdCppOSWrapper/*", "PosixOSWrapper/*", "WindowsOSWrapper/*"
+    exports_sources = "CMakeLists.txt", "StdCppOSWrapper/*", "PosixOSWrapper/*", "WindowsOSWrapper/*", "TestDoubleOSWrapper/*"
 
     def export_sources(self):
         copy(self, "LICENSE", src=os.path.join(self.recipe_folder, ".."), dst=self.export_sources_folder)
@@ -55,7 +55,7 @@ class cppelib_platformRecipe(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure(variables={"PLATFORM_OS": self.settings.os})
         cmake.build()
 
     def package(self):
