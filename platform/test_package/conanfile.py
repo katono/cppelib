@@ -15,7 +15,7 @@ class cppelib_platformTestConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure(variables={"PLATFORM_OS": self.settings.os})
         cmake.build()
 
     def layout(self):
@@ -23,5 +23,5 @@ class cppelib_platformTestConan(ConanFile):
 
     def test(self):
         if can_run(self):
-            cmd = os.path.join(self.cpp.build.bindir, "example")
+            cmd = os.path.join(self.cpp.build.bindir, "PackageTest")
             self.run(cmd, env="conanrun")
