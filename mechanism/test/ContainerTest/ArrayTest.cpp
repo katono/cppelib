@@ -116,6 +116,7 @@ TEST(ArrayTest, at_write)
 	LONGS_EQUAL(10, a.at(9));
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(ArrayTest, at_exception)
 {
 	Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -141,6 +142,7 @@ TEST(ArrayTest, at_exception_const)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(ArrayTest, data_read)
 {

@@ -173,6 +173,7 @@ TEST(PreallocatedVectorTest, at_write)
 	LONGS_EQUAL(10, x.at(9));
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, at_exception)
 {
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
@@ -198,6 +199,7 @@ TEST(PreallocatedVectorTest, at_exception_const)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedVectorTest, data_read)
 {
@@ -351,6 +353,7 @@ TEST(PreallocatedVectorTest, resize_make_longer)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, resize_exception)
 {
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
@@ -363,6 +366,7 @@ TEST(PreallocatedVectorTest, resize_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedVectorTest, push_back)
 {
@@ -380,6 +384,7 @@ TEST(PreallocatedVectorTest, push_back)
 	LONGS_EQUAL(102, x.back());
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, push_back_exception)
 {
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
@@ -396,6 +401,7 @@ TEST(PreallocatedVectorTest, push_back_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedVectorTest, pop_back)
 {
@@ -419,6 +425,7 @@ TEST(PreallocatedVectorTest, assign_n)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, assign_n_exception)
 {
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
@@ -431,6 +438,7 @@ TEST(PreallocatedVectorTest, assign_n_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedVectorTest, assign_range)
 {
@@ -518,6 +526,7 @@ TEST(PreallocatedVectorTest, assign_range_list_iter)
 }
 #endif
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, assign_range_exception)
 {
 	Array<int, ALLOC_SIZE / sizeof(int) + 1> a = {0};
@@ -531,6 +540,7 @@ TEST(PreallocatedVectorTest, assign_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedVectorTest, insert)
 {
@@ -556,6 +566,7 @@ TEST(PreallocatedVectorTest, insert)
 
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, insert_exception)
 {
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
@@ -569,6 +580,7 @@ TEST(PreallocatedVectorTest, insert_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedVectorTest, insert_n)
 {
@@ -624,6 +636,7 @@ TEST(PreallocatedVectorTest, insert_n_dispatch)
 
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, insert_n_exception)
 {
 	PreallocatedVector<int> x(alloc_buf, ALLOC_SIZE);
@@ -636,6 +649,7 @@ TEST(PreallocatedVectorTest, insert_n_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedVectorTest, insert_range)
 {
@@ -741,6 +755,7 @@ TEST(PreallocatedVectorTest, insert_range_list_iter)
 }
 #endif
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, insert_range_exception)
 {
 	Array<int, ALLOC_SIZE / sizeof(int) + 1> a = {0};
@@ -754,6 +769,7 @@ TEST(PreallocatedVectorTest, insert_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedVectorTest, erase)
 {
@@ -1384,6 +1400,7 @@ TEST(PreallocatedVectorTest, algo_copy)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedVectorTest, algo_copy_exception)
 {
 	Array<int, ALLOC_SIZE / sizeof(int)> a = {0};
@@ -1398,6 +1415,7 @@ TEST(PreallocatedVectorTest, algo_copy_exception)
 	}
 	FAIL("failed");
 }
+#endif
 #endif
 
 #ifndef CPPELIB_NO_STD_ITERATOR
@@ -1438,9 +1456,11 @@ public:
 
 	VElem(const VElem& x) : count(x.count), data(x.data)
 	{
+#ifndef CPPELIB_NO_EXCEPTIONS
 		if (x.data == EXCEPTION_DATA) {
 			throw Exception();
 		}
+#endif
 	}
 	VElem& operator=(const VElem&)
 	{
@@ -1484,6 +1504,7 @@ TEST(PreallocatedVectorTest, ctor_VElem)
 	x.clear();
 	VElem::checkElemsDestroyed(&x[0], x.max_size(), 2);
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	a.data = VElem::EXCEPTION_DATA;
 	try {
 		int buf[SIZE];
@@ -1494,6 +1515,7 @@ TEST(PreallocatedVectorTest, ctor_VElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(PreallocatedVectorTest, operator_assign_VElem)
@@ -1534,6 +1556,7 @@ TEST(PreallocatedVectorTest, push_back_pop_back_VElem)
 	x.clear();
 	VElem::checkElemsDestroyed(&x[0], x.max_size(), 2);
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	int ybuf[SIZE] = {0};
 	PreallocatedVector<VElem> y(ybuf, sizeof ybuf);
 	y.push_back(a);
@@ -1548,6 +1571,7 @@ TEST(PreallocatedVectorTest, push_back_pop_back_VElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(PreallocatedVectorTest, insert_n_VElem)
@@ -1560,6 +1584,7 @@ TEST(PreallocatedVectorTest, insert_n_VElem)
 	x.insert(x.end() - 1, 2, a);
 	LONGS_EQUAL(5, x.size());
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	a.data = VElem::EXCEPTION_DATA;
 	try {
 		x.insert(x.end(), 1, a);
@@ -1571,6 +1596,7 @@ TEST(PreallocatedVectorTest, insert_n_VElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(PreallocatedVectorTest, insert_range_VElem)
@@ -1587,6 +1613,7 @@ TEST(PreallocatedVectorTest, insert_range_VElem)
 	y.insert(y.end() - 1, x.begin(), x.begin() + 2);
 	LONGS_EQUAL(5, y.size());
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	x[0].data = VElem::EXCEPTION_DATA;
 	try {
 		y.insert(y.end(), x.begin(), x.begin() + 1);
@@ -1598,6 +1625,7 @@ TEST(PreallocatedVectorTest, insert_range_VElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(PreallocatedVectorTest, erase_range_VElem)

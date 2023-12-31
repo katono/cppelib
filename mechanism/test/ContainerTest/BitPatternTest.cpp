@@ -355,6 +355,7 @@ TEST(BitPatternTest, operator_xor)
 	UNSIGNED_LONGS_EQUAL(0x2828EBEB, f);
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 #ifndef NDEBUG
 #ifndef U32_IS_NOT_32BIT
 TEST(BitPatternTest, set_precondition_failed)
@@ -408,6 +409,7 @@ TEST(BitPatternTest, test_precondition_failed)
 	}
 	FAIL("failed");
 }
+#endif
 #endif
 #endif
 

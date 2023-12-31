@@ -1,7 +1,11 @@
+#ifndef CPPELIB_NO_EXCEPTIONS
+
 #include "Assertion/Assertion.h"
 #include <string>
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
+
+namespace {
 
 class TestAssert : public Assertion::AssertHandler {
 public:
@@ -13,6 +17,8 @@ public:
 		throw -1; // pseudo abort
 	}
 };
+
+}
 
 TEST_GROUP(AssertionTest) {
 	void setup()
@@ -135,3 +141,4 @@ TEST(AssertionTest, failure_message)
 		STRCMP_EQUAL(d.message.asCharString(), f.message());
 	}
 }
+#endif

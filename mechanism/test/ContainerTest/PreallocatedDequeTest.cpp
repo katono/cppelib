@@ -183,6 +183,7 @@ TEST(PreallocatedDequeTest, at_write)
 	LONGS_EQUAL(10, x.at(9));
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, at_exception)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
@@ -208,6 +209,7 @@ TEST(PreallocatedDequeTest, at_exception_const)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, begin_end)
 {
@@ -330,6 +332,7 @@ TEST(PreallocatedDequeTest, resize_make_longer)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, resize_exception)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
@@ -342,6 +345,7 @@ TEST(PreallocatedDequeTest, resize_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, push_back)
 {
@@ -370,6 +374,7 @@ TEST(PreallocatedDequeTest, push_back_pop_front)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, push_back_exception)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
@@ -386,6 +391,7 @@ TEST(PreallocatedDequeTest, push_back_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, pop_back)
 {
@@ -426,6 +432,7 @@ TEST(PreallocatedDequeTest, push_front_pop_back)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, push_front_exception)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
@@ -442,6 +449,7 @@ TEST(PreallocatedDequeTest, push_front_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, pop_front)
 {
@@ -465,6 +473,7 @@ TEST(PreallocatedDequeTest, assign_n)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, assign_n_exception)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
@@ -477,6 +486,7 @@ TEST(PreallocatedDequeTest, assign_n_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, assign_range)
 {
@@ -564,6 +574,7 @@ TEST(PreallocatedDequeTest, assign_range_list_iter)
 }
 #endif
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, assign_range_exception)
 {
 	Array<int, ALLOC_SIZE / sizeof(int)> a = {0};
@@ -577,6 +588,7 @@ TEST(PreallocatedDequeTest, assign_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, insert)
 {
@@ -646,6 +658,7 @@ TEST(PreallocatedDequeTest, insert2)
 
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, insert_exception)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
@@ -659,6 +672,7 @@ TEST(PreallocatedDequeTest, insert_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, insert_n)
 {
@@ -782,6 +796,7 @@ TEST(PreallocatedDequeTest, insert_n_dispatch2)
 
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, insert_n_exception)
 {
 	PreallocatedDeque<int> x(alloc_buf, ALLOC_SIZE);
@@ -794,6 +809,7 @@ TEST(PreallocatedDequeTest, insert_n_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, insert_range)
 {
@@ -972,6 +988,7 @@ TEST(PreallocatedDequeTest, insert_range_list_iter)
 }
 #endif
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, insert_range_exception)
 {
 	Array<int, ALLOC_SIZE / sizeof(int)> a = {0};
@@ -985,6 +1002,7 @@ TEST(PreallocatedDequeTest, insert_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(PreallocatedDequeTest, erase)
 {
@@ -1705,6 +1723,7 @@ TEST(PreallocatedDequeTest, algo_copy)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(PreallocatedDequeTest, algo_copy_exception)
 {
 	Array<int, ALLOC_SIZE / sizeof(int) - 1> a = {0};
@@ -1719,6 +1738,7 @@ TEST(PreallocatedDequeTest, algo_copy_exception)
 	}
 	FAIL("failed");
 }
+#endif
 #endif
 
 #ifndef CPPELIB_NO_STD_ITERATOR
@@ -1759,9 +1779,11 @@ public:
 
 	DElem(const DElem& x) : count(x.count), data(x.data)
 	{
+#ifndef CPPELIB_NO_EXCEPTIONS
 		if (x.data == EXCEPTION_DATA) {
 			throw Exception();
 		}
+#endif
 	}
 	DElem& operator=(const DElem&)
 	{
@@ -1808,6 +1830,7 @@ TEST(PreallocatedDequeTest, ctor_DElem)
 	x.clear();
 	DElem::checkElemsDestroyed(it, x.max_size(), 2);
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	a.data = DElem::EXCEPTION_DATA;
 	try {
 		int buf[ALLOC_SIZE];
@@ -1818,6 +1841,7 @@ TEST(PreallocatedDequeTest, ctor_DElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 
 }
 
@@ -1862,6 +1886,7 @@ TEST(PreallocatedDequeTest, push_back_pop_back_DElem)
 	x.clear();
 	DElem::checkElemsDestroyed(it, x.max_size(), 2);
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	int ybuf[ALLOC_SIZE] = {0};
 	PreallocatedDeque<DElem> y(ybuf, sizeof ybuf);
 	y.push_back(a);
@@ -1877,6 +1902,7 @@ TEST(PreallocatedDequeTest, push_back_pop_back_DElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(PreallocatedDequeTest, insert_n_DElem)
@@ -1892,6 +1918,7 @@ TEST(PreallocatedDequeTest, insert_n_DElem)
 	x.insert(x.begin() + 1, 1, a);
 	LONGS_EQUAL(9, x.size());
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	a.data = DElem::EXCEPTION_DATA;
 	try {
 		x.insert(x.end(), 1, a);
@@ -1904,6 +1931,7 @@ TEST(PreallocatedDequeTest, insert_n_DElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(PreallocatedDequeTest, insert_range_DElem)
@@ -1923,6 +1951,7 @@ TEST(PreallocatedDequeTest, insert_range_DElem)
 	y.insert(y.begin() + 1, x.begin(), x.begin() + 1);
 	LONGS_EQUAL(9, y.size());
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	x[0].data = DElem::EXCEPTION_DATA;
 	try {
 		y.insert(y.end(), x.begin(), x.begin() + 1);
@@ -1935,6 +1964,7 @@ TEST(PreallocatedDequeTest, insert_range_DElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(PreallocatedDequeTest, erase_range_DElem)

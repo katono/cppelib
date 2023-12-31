@@ -138,6 +138,7 @@ TEST(FixedVectorTest, at_write)
 	LONGS_EQUAL(10, x.at(9));
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, at_exception)
 {
 	FixedVector<int, SIZE> x;
@@ -163,6 +164,7 @@ TEST(FixedVectorTest, at_exception_const)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, data_read)
 {
@@ -261,6 +263,7 @@ TEST(FixedVectorTest, ctor_n_data)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, ctor_n_data_exception)
 {
 	try {
@@ -272,6 +275,7 @@ TEST(FixedVectorTest, ctor_n_data_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, ctor_range)
 {
@@ -283,6 +287,7 @@ TEST(FixedVectorTest, ctor_range)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, ctor_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -295,6 +300,7 @@ TEST(FixedVectorTest, ctor_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, copy_ctor)
 {
@@ -353,6 +359,7 @@ TEST(FixedVectorTest, resize_make_longer)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, resize_exception)
 {
 	FixedVector<int, SIZE> x;
@@ -365,6 +372,7 @@ TEST(FixedVectorTest, resize_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, push_back)
 {
@@ -382,6 +390,7 @@ TEST(FixedVectorTest, push_back)
 	LONGS_EQUAL(102, x.back());
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, push_back_exception)
 {
 	FixedVector<int, SIZE> x(SIZE - 1);
@@ -397,6 +406,7 @@ TEST(FixedVectorTest, push_back_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, pop_back)
 {
@@ -419,6 +429,7 @@ TEST(FixedVectorTest, assign_n)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, assign_n_exception)
 {
 	FixedVector<int, SIZE> x;
@@ -431,6 +442,7 @@ TEST(FixedVectorTest, assign_n_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, assign_range)
 {
@@ -504,6 +516,7 @@ TEST(FixedVectorTest, assign_range_list_iter)
 }
 #endif
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, assign_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -517,6 +530,7 @@ TEST(FixedVectorTest, assign_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, insert)
 {
@@ -542,6 +556,7 @@ TEST(FixedVectorTest, insert)
 
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, insert_exception)
 {
 	FixedVector<int, SIZE> x(SIZE);
@@ -554,6 +569,7 @@ TEST(FixedVectorTest, insert_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, insert_n)
 {
@@ -609,6 +625,7 @@ TEST(FixedVectorTest, insert_n_dispatch)
 
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, insert_n_exception)
 {
 	FixedVector<int, SIZE> x;
@@ -621,6 +638,7 @@ TEST(FixedVectorTest, insert_n_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, insert_range)
 {
@@ -712,6 +730,7 @@ TEST(FixedVectorTest, insert_range_list_iter)
 }
 #endif
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, insert_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -725,6 +744,7 @@ TEST(FixedVectorTest, insert_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedVectorTest, erase)
 {
@@ -1265,6 +1285,7 @@ TEST(FixedVectorTest, algo_copy)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedVectorTest, algo_copy_exception)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -1278,6 +1299,7 @@ TEST(FixedVectorTest, algo_copy_exception)
 	}
 	FAIL("failed");
 }
+#endif
 #endif
 
 #ifndef CPPELIB_NO_STD_ITERATOR
@@ -1315,9 +1337,11 @@ public:
 
 	VElem(const VElem& x) : count(x.count), data(x.data)
 	{
+#ifndef CPPELIB_NO_EXCEPTIONS
 		if (x.data == EXCEPTION_DATA) {
 			throw Exception();
 		}
+#endif
 	}
 	VElem& operator=(const VElem&)
 	{
@@ -1366,6 +1390,7 @@ TEST(FixedVectorTest, ctor_VElem)
 	x.clear();
 	VElem::checkElemsDestroyed(&x[0], SIZE, 2);
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	a.data = VElem::EXCEPTION_DATA;
 	try {
 		FixedVector<VElem, SIZE> xx(1, a);
@@ -1374,6 +1399,7 @@ TEST(FixedVectorTest, ctor_VElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(FixedVectorTest, operator_assign_VElem)
@@ -1408,6 +1434,7 @@ TEST(FixedVectorTest, push_back_pop_back_VElem)
 	x.clear();
 	VElem::checkElemsDestroyed(&x[0], SIZE, 2);
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	FixedVector<VElem, SIZE> y;
 	y.push_back(a);
 	a.data = VElem::EXCEPTION_DATA;
@@ -1421,6 +1448,7 @@ TEST(FixedVectorTest, push_back_pop_back_VElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(FixedVectorTest, insert_n_VElem)
@@ -1433,6 +1461,7 @@ TEST(FixedVectorTest, insert_n_VElem)
 	x.insert(x.end() - 1, 2, a);
 	LONGS_EQUAL(5, x.size());
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	a.data = VElem::EXCEPTION_DATA;
 	try {
 		x.insert(x.end(), 1, a);
@@ -1444,6 +1473,7 @@ TEST(FixedVectorTest, insert_n_VElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(FixedVectorTest, insert_range_VElem)
@@ -1457,6 +1487,7 @@ TEST(FixedVectorTest, insert_range_VElem)
 	y.insert(y.end() - 1, x.begin(), x.begin() + 2);
 	LONGS_EQUAL(5, y.size());
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	x[0].data = VElem::EXCEPTION_DATA;
 	try {
 		y.insert(y.end(), x.begin(), x.begin() + 1);
@@ -1468,6 +1499,7 @@ TEST(FixedVectorTest, insert_range_VElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(FixedVectorTest, erase_range_VElem)

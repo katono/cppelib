@@ -148,6 +148,7 @@ TEST(FixedDequeTest, at_write)
 	LONGS_EQUAL(10, x.at(9));
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, at_exception)
 {
 	FixedDeque<int, SIZE> x;
@@ -173,6 +174,7 @@ TEST(FixedDequeTest, at_exception_const)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, begin_end)
 {
@@ -244,6 +246,7 @@ TEST(FixedDequeTest, ctor_n_data)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, ctor_n_data_exception)
 {
 	try {
@@ -255,6 +258,7 @@ TEST(FixedDequeTest, ctor_n_data_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, ctor_range)
 {
@@ -266,6 +270,7 @@ TEST(FixedDequeTest, ctor_range)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, ctor_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -278,6 +283,7 @@ TEST(FixedDequeTest, ctor_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, copy_ctor)
 {
@@ -336,6 +342,7 @@ TEST(FixedDequeTest, resize_make_longer)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, resize_exception)
 {
 	FixedDeque<int, SIZE> x;
@@ -348,6 +355,7 @@ TEST(FixedDequeTest, resize_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, push_back)
 {
@@ -376,6 +384,7 @@ TEST(FixedDequeTest, push_back_pop_front)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, push_back_exception)
 {
 	FixedDeque<int, SIZE> x(SIZE - 1);
@@ -391,6 +400,7 @@ TEST(FixedDequeTest, push_back_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, pop_back)
 {
@@ -430,6 +440,7 @@ TEST(FixedDequeTest, push_front_pop_back)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, push_front_exception)
 {
 	FixedDeque<int, SIZE> x(SIZE - 1);
@@ -445,6 +456,7 @@ TEST(FixedDequeTest, push_front_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, pop_front)
 {
@@ -467,6 +479,7 @@ TEST(FixedDequeTest, assign_n)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, assign_n_exception)
 {
 	FixedDeque<int, SIZE> x;
@@ -479,6 +492,7 @@ TEST(FixedDequeTest, assign_n_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, assign_range)
 {
@@ -552,6 +566,7 @@ TEST(FixedDequeTest, assign_range_list_iter)
 }
 #endif
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, assign_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -565,6 +580,7 @@ TEST(FixedDequeTest, assign_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, insert)
 {
@@ -634,6 +650,7 @@ TEST(FixedDequeTest, insert2)
 
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, insert_exception)
 {
 	FixedDeque<int, SIZE> x(SIZE);
@@ -646,6 +663,7 @@ TEST(FixedDequeTest, insert_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, insert_n)
 {
@@ -769,6 +787,7 @@ TEST(FixedDequeTest, insert_n_dispatch2)
 
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, insert_n_exception)
 {
 	FixedDeque<int, SIZE> x;
@@ -781,6 +800,7 @@ TEST(FixedDequeTest, insert_n_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, insert_range)
 {
@@ -945,6 +965,7 @@ TEST(FixedDequeTest, insert_range_list_iter)
 }
 #endif
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, insert_range_exception)
 {
 	const Array<int, SIZE + 1> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -958,6 +979,7 @@ TEST(FixedDequeTest, insert_range_exception)
 	}
 	FAIL("failed");
 }
+#endif
 
 TEST(FixedDequeTest, erase)
 {
@@ -1585,6 +1607,7 @@ TEST(FixedDequeTest, algo_copy)
 	}
 }
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 TEST(FixedDequeTest, algo_copy_exception)
 {
 	const Array<int, SIZE> a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -1598,6 +1621,7 @@ TEST(FixedDequeTest, algo_copy_exception)
 	}
 	FAIL("failed");
 }
+#endif
 #endif
 
 #ifndef CPPELIB_NO_STD_ITERATOR
@@ -1635,9 +1659,11 @@ public:
 
 	DElem(const DElem& x) : count(x.count), data(x.data)
 	{
+#ifndef CPPELIB_NO_EXCEPTIONS
 		if (x.data == EXCEPTION_DATA) {
 			throw Exception();
 		}
+#endif
 	}
 	DElem& operator=(const DElem&)
 	{
@@ -1689,6 +1715,7 @@ TEST(FixedDequeTest, ctor_DElem)
 	x.clear();
 	DElem::checkElemsDestroyed(it, SIZE, 2);
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	a.data = DElem::EXCEPTION_DATA;
 	try {
 		FixedDeque<DElem, SIZE> xx(1, a);
@@ -1697,6 +1724,7 @@ TEST(FixedDequeTest, ctor_DElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 
 }
 
@@ -1735,6 +1763,7 @@ TEST(FixedDequeTest, push_back_pop_back_DElem)
 	x.clear();
 	DElem::checkElemsDestroyed(it, SIZE, 2);
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	FixedDeque<DElem, SIZE> y;
 	y.push_back(a);
 	a.data = DElem::EXCEPTION_DATA;
@@ -1749,6 +1778,7 @@ TEST(FixedDequeTest, push_back_pop_back_DElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(FixedDequeTest, insert_n_DElem)
@@ -1764,6 +1794,7 @@ TEST(FixedDequeTest, insert_n_DElem)
 	x.insert(x.begin() + 1, 1, a);
 	LONGS_EQUAL(9, x.size());
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	a.data = DElem::EXCEPTION_DATA;
 	try {
 		x.insert(x.end(), 1, a);
@@ -1776,6 +1807,7 @@ TEST(FixedDequeTest, insert_n_DElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(FixedDequeTest, insert_range_DElem)
@@ -1792,6 +1824,7 @@ TEST(FixedDequeTest, insert_range_DElem)
 	y.insert(y.begin() + 1, x.begin(), x.begin() + 1);
 	LONGS_EQUAL(9, y.size());
 
+#ifndef CPPELIB_NO_EXCEPTIONS
 	x[0].data = DElem::EXCEPTION_DATA;
 	try {
 		y.insert(y.end(), x.begin(), x.begin() + 1);
@@ -1804,6 +1837,7 @@ TEST(FixedDequeTest, insert_range_DElem)
 		return;
 	}
 	FAIL("failed");
+#endif
 }
 
 TEST(FixedDequeTest, erase_range_DElem)
