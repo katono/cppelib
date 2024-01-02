@@ -1,5 +1,6 @@
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+import re
 
 
 class runTestsRecipe(ConanFile):
@@ -26,7 +27,8 @@ class runTestsRecipe(ConanFile):
         cxxflags = ""
         if self.conf.get("tools.build:cxxflags"):
             cxxflags = "".join(self.conf.get("tools.build:cxxflags"))
-        cmake_layout(self, build_folder=f"build/{compiler}-{compiler_version}-{arch}-{cppstd}{cxxflags}")
+            cxxflags = re.sub("[^a-zA-Z0-9]", "_", cxxflags)
+        cmake_layout(self, build_folder=f"build/{compiler}-{compiler_version}-{arch}-{cppstd}-{cxxflags}")
 
     def generate(self):
         deps = CMakeDeps(self)
