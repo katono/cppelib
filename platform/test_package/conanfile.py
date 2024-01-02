@@ -15,7 +15,7 @@ class cppelib_platformTestConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(variables={"PLATFORM_OS": self.settings.os})
+        cmake.configure(variables={"CONAN_SETTINGS_OS": self.settings.os})
         cmake.build()
 
     def layout(self):
