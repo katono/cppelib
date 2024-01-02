@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(platform_test)
 
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
+message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
 if(MSVC)
 	add_compile_options(/W4)

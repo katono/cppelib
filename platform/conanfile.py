@@ -45,7 +45,10 @@ class cppelib_platformRecipe(ConanFile):
         compiler_version = compiler.version
         arch = self.settings.arch
         cppstd = compiler.cppstd
-        cmake_layout(self, build_folder=f"build/{compiler}-{compiler_version}-{arch}-{cppstd}")
+        cxxflags = ""
+        if self.conf.get("tools.build:cxxflags"):
+            cxxflags = "".join(self.conf.get("tools.build:cxxflags"))
+        cmake_layout(self, build_folder=f"build/{compiler}-{compiler_version}-{arch}-{cppstd}{cxxflags}")
 
     def generate(self):
         deps = CMakeDeps(self)
@@ -66,3 +69,6 @@ class cppelib_platformRecipe(ConanFile):
     def package_info(self):
         self.cpp_info.libs = ["cppelib_platform"]
 
+    def package_id(self):
+        value = self.conf.get("tools.build:cxxflags")
+        self.info.conf.define("tools.build:cxxflags", value)
