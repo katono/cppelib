@@ -1,7 +1,6 @@
 #ifndef CPPELIB_NO_EXCEPTIONS
 
 #include "Assertion/Assertion.h"
-#include <string>
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
