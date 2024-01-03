@@ -1,61 +1,67 @@
+#ifdef CPPELIB_NO_EXCEPTIONS
+
 #include "Assertion/Assertion.h"
-#include <string>
 #include <csetjmp>
-#include <cstdio>
+#include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 namespace {
-std::string s_puts;
 std::jmp_buf s_jmpBuf;
-}
 
 class TestAssert : public Assertion::AssertHandler {
 public:
 	void handle(const char* msg)
 	{
-		s_puts = msg;
-		// std::puts(msg);
-		std::longjmp(s_jmpBuf, -1);
+		STRCMP_CONTAINS(__FILE__, msg);
+		STRCMP_CONTAINS("Assertion failed", msg);
+		mock().actualCall("handle").onObject(this);
+		std::longjmp(s_jmpBuf, -1); // pseudo abort
 	}
 };
 
-int main()
+}
+
+TEST_GROUP(AssertionNoExceptionsTest) {
+	void setup()
+	{
+	}
+	void teardown()
+	{
+		mock().checkExpectations();
+		mock().clear();
+
+		Assertion::setHandler(0); // reset handler
+	}
+};
+
+TEST(AssertionNoExceptionsTest, assert_true)
 {
 	static TestAssert testAssert;
 	Assertion::setHandler(&testAssert);
 
-	std::string failureString("failed: line ");
-	volatile int failureLine = 0;
 	if (setjmp(s_jmpBuf) == 0) {
 		bool a = true;
 		CHECK_ASSERT(a);
 	} else {
-		failureString += std::to_string(__LINE__);
-		goto testFailed;
+		FAIL("failed");
 	}
-
-	if (setjmp(s_jmpBuf) == 0) {
-		bool a = false;
-		failureLine = __LINE__; CHECK_ASSERT(a);
-		failureString += std::to_string(__LINE__);
-		goto testFailed;
-	} else {
-		if (s_puts.find(__FILE__) == std::string::npos) {
-			failureString += std::to_string(__LINE__);
-			goto testFailed;
-		}
-		if (s_puts.find(std::to_string(failureLine)) == std::string::npos) {
-			failureString += std::to_string(__LINE__);
-			goto testFailed;
-		}
-		if (s_puts.find("Assertion failed") == std::string::npos) {
-			failureString += std::to_string(__LINE__);
-			goto testFailed;
-		}
-	}
-	std::puts("success");
-	return 0;
-
-testFailed:
-	std::puts(failureString.c_str());
-	return -1;
 }
+
+TEST(AssertionNoExceptionsTest, assert_false)
+{
+	static TestAssert testAssert;
+	Assertion::setHandler(&testAssert);
+	mock().expectOneCall("handle").onObject(&testAssert);
+
+	volatile int ret;
+	if ((ret = setjmp(s_jmpBuf)) == 0) {
+		bool a = false;
+		CHECK_ASSERT(a);
+		FAIL("failed");
+	} else {
+		LONGS_EQUAL(-1, ret);
+		return;
+	}
+	FAIL("failed");
+}
+#endif

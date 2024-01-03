@@ -19,6 +19,7 @@ target_include_directories(${SUT} PUBLIC ${SUT_DIR})
 
 file(GLOB_RECURSE CPPELIB_MECHANISM_TEST_SRC
 	"AssertionTest/*.cpp"
+	"AssertionNoExceptionsTest/*.cpp"
 	"ContainerTest/*.cpp"
 	"OSWrapperTest/*.cpp"
 )
@@ -40,6 +41,5 @@ add_test(NAME ${PROJECT_NAME}
 )
 
 if(NOT ${CMAKE_CXX_STANDARD} EQUAL 98)
-	add_subdirectory(AssertionNoExceptionsTest)
 	add_subdirectory(ContainerNoExceptionsTest)
 endif()
