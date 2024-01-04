@@ -1,0 +1,2 @@
+include(profile_cppstd17)
+include(profile_coverage)

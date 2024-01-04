@@ -1,0 +1,3 @@
+[conf]
+tools.build:cxxflags+=["--coverage"]
+tools.build:exelinkflags+=["--coverage"]
