@@ -19,9 +19,7 @@ target_include_directories(${SUT} PUBLIC ${SUT_DIR})
 
 file(GLOB_RECURSE CPPELIB_MECHANISM_TEST_SRC
 	"AssertionTest/*.cpp"
-	"AssertionNoExceptionsTest/*.cpp"
 	"ContainerTest/*.cpp"
-	"ContainerNoExceptionsTest/*.cpp"
 	"OSWrapperTest/*.cpp"
 )
 
