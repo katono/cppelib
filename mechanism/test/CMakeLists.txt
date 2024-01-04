@@ -21,6 +21,7 @@ file(GLOB_RECURSE CPPELIB_MECHANISM_TEST_SRC
 	"AssertionTest/*.cpp"
 	"AssertionNoExceptionsTest/*.cpp"
 	"ContainerTest/*.cpp"
+	"ContainerNoExceptionsTest/*.cpp"
 	"OSWrapperTest/*.cpp"
 )
 
@@ -39,7 +40,3 @@ enable_testing()
 add_test(NAME ${PROJECT_NAME}
 	COMMAND ${PROJECT_NAME}
 )
-
-if(NOT ${CMAKE_CXX_STANDARD} EQUAL 98)
-	add_subdirectory(ContainerNoExceptionsTest)
-endif()
