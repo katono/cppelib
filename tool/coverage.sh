@@ -15,12 +15,12 @@ EXIT_CODE=0
 
 TEST_DIRS=${TEST_DIRS}" mechanism/test"
 TEST_DIRS=${TEST_DIRS}" platform/test"
-PROFILES=${PROFILES}" tool/profile_cppstd11_coverage"
-PROFILES=${PROFILES}" tool/profile_cppstd11_coverage_noexceptions"
-PROFILES=${PROFILES}" tool/profile_cppstd17_coverage"
-PROFILES=${PROFILES}" tool/profile_cppstd17_coverage_noexceptions"
-PROFILES=${PROFILES}" tool/profile_cppstd98_coverage"
-PROFILES=${PROFILES}" tool/profile_cppstd98_coverage_noexceptions"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd11_coverage"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd11_coverage_noexceptions"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd17_coverage"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd17_coverage_noexceptions"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd98_coverage"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd98_coverage_noexceptions"
 STD_CPP="11 17"
 for dir in ${TEST_DIRS}; do
 	for pr in ${PROFILES}; do

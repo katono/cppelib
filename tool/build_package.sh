@@ -12,8 +12,8 @@ EXIT_CODE=0
 
 PACKAGE_DIRS=${PACKAGE_DIRS}" mechanism"
 PACKAGE_DIRS=${PACKAGE_DIRS}" platform"
-PROFILES=${PROFILES}" tool/profile_cppstd11"
-PROFILES=${PROFILES}" tool/profile_cppstd11_noexceptions"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd11"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd11_noexceptions"
 BUILD_TYPE="Debug Release"
 for dir in ${PACKAGE_DIRS}; do
 	for pr in ${PROFILES}; do

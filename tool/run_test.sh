@@ -12,12 +12,12 @@ EXIT_CODE=0
 
 TEST_DIRS=${TEST_DIRS}" mechanism/test"
 TEST_DIRS=${TEST_DIRS}" platform/test"
-PROFILES=${PROFILES}" tool/profile_cppstd11"
-PROFILES=${PROFILES}" tool/profile_cppstd11_noexceptions"
-PROFILES=${PROFILES}" tool/profile_cppstd17"
-PROFILES=${PROFILES}" tool/profile_cppstd17_noexceptions"
-PROFILES=${PROFILES}" tool/profile_cppstd98"
-PROFILES=${PROFILES}" tool/profile_cppstd98_noexceptions"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd11"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd11_noexceptions"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd17"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd17_noexceptions"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd98"
+PROFILES=${PROFILES}" tool/profiles/profile_cppstd98_noexceptions"
 BUILD_TYPE="Debug Release"
 for dir in ${TEST_DIRS}; do
 	for pr in ${PROFILES}; do
