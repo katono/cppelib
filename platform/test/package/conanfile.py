@@ -20,8 +20,8 @@ class cppelib_platform_testRecipe(ConanFile):
     topics = ("embedded", "rtos")
 
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    options = {"shared": [True, False], "fPIC": [True, False], "platform_os": ["POSIX", "WINDOWS", "STDCPP", "OTHER"]}
+    default_options = {"shared": False, "fPIC": True, "platform_os": "STDCPP"}
 
     exports_sources = "CMakeLists.txt"
 
@@ -62,7 +62,7 @@ class cppelib_platform_testRecipe(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure(variables={"PLATFORM_OS": self.options.platform_os})
         cmake.build()
 
     def package(self):

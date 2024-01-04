@@ -3,11 +3,9 @@ project(cppelib_platform_test)
 
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+message("PLATFORM_OS: ${PLATFORM_OS}")
 
-string(FIND ${CMAKE_CXX_FLAGS} "-DPLATFORM_OS" FOUND)
-if(${FOUND} EQUAL -1)
-	add_compile_options(-DPLATFORM_OS_STDCPP)
-endif()
+add_compile_options("-DPLATFORM_OS_${PLATFORM_OS}")
 
 if(MSVC)
 	add_compile_options(/W4)
