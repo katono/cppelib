@@ -1,4 +1,3 @@
-#define DESIGN_BY_CONTRACT
 #include "Container/Array.h"
 #include <algorithm>
 #include <functional>

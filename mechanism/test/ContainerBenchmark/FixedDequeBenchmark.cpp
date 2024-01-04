@@ -1,4 +1,3 @@
-#define DESIGN_BY_CONTRACT
 #include "Container/FixedDeque.h"
 #include <deque>
 #include <algorithm>

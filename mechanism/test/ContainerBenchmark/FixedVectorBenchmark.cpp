@@ -1,4 +1,3 @@
-#define DESIGN_BY_CONTRACT
 #include "Container/FixedVector.h"
 #include <vector>
 #include <algorithm>
