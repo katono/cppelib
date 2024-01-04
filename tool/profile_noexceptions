@@ -1,0 +1,2 @@
+[conf]
+tools.build:cxxflags+=["-DCPPELIB_NO_EXCEPTIONS","-fno-exceptions","-fno-rtti"]
