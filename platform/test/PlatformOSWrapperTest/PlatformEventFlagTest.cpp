@@ -3,35 +3,7 @@
 #include "OSWrapper/Mutex.h"
 #include "OSWrapper/EventFlag.h"
 
-#if defined(PLATFORM_OS_WINDOWS)
-#include "WindowsOSWrapper/WindowsThreadFactory.h"
-#include "WindowsOSWrapper/WindowsMutexFactory.h"
-#include "WindowsOSWrapper/WindowsEventFlagFactory.h"
-typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
-typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
-typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
-#elif defined(PLATFORM_OS_POSIX)
-#include "PosixOSWrapper/PosixThreadFactory.h"
-#include "PosixOSWrapper/PosixMutexFactory.h"
-#include "PosixOSWrapper/PosixEventFlagFactory.h"
-typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
-typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
-typedef PosixOSWrapper::PosixEventFlagFactory PlatformEventFlagFactory;
-#elif defined(PLATFORM_OS_STDCPP)
-#include "StdCppOSWrapper/StdCppThreadFactory.h"
-#include "StdCppOSWrapper/StdCppMutexFactory.h"
-#include "StdCppOSWrapper/StdCppEventFlagFactory.h"
-typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
-typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
-typedef StdCppOSWrapper::StdCppEventFlagFactory PlatformEventFlagFactory;
-#elif defined(PLATFORM_OS_ITRON)
-#include "ItronOSWrapper/ItronThreadFactory.h"
-#include "ItronOSWrapper/ItronMutexFactory.h"
-#include "ItronOSWrapper/ItronEventFlagFactory.h"
-typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
-typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
-typedef ItronOSWrapper::ItronEventFlagFactory PlatformEventFlagFactory;
-#endif
+#include "PlatformOSWrapperTestHelper.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -48,21 +20,15 @@ using OSWrapper::LockGuard;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformEventFlagTest) {
-	PlatformThreadFactory testThreadFactory;
-	PlatformMutexFactory testMutexFactory;
-	PlatformEventFlagFactory testEventFlagFactory;
-
 	void setup()
 	{
-		OSWrapper::registerThreadFactory(&testThreadFactory);
-		OSWrapper::registerMutexFactory(&testMutexFactory);
-		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
-
+		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
+		PlatformOSWrapperTestHelper::destroyOSWrapperFactories();
 
 		mock().checkExpectations();
 		mock().clear();

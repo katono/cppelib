@@ -2,31 +2,7 @@
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
 
-#if defined(PLATFORM_OS_WINDOWS)
-#include "WindowsOSWrapper/WindowsThreadFactory.h"
-#include "WindowsOSWrapper/WindowsMutexFactory.h"
-typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
-typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
-const int PRIORITY_CEILING = 10;
-#elif defined(PLATFORM_OS_POSIX)
-#include "PosixOSWrapper/PosixThreadFactory.h"
-#include "PosixOSWrapper/PosixMutexFactory.h"
-typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
-typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
-const int PRIORITY_CEILING = 10;
-#elif defined(PLATFORM_OS_STDCPP)
-#include "StdCppOSWrapper/StdCppThreadFactory.h"
-#include "StdCppOSWrapper/StdCppMutexFactory.h"
-typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
-typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
-const int PRIORITY_CEILING = 1;
-#elif defined(PLATFORM_OS_ITRON)
-#include "ItronOSWrapper/ItronThreadFactory.h"
-#include "ItronOSWrapper/ItronMutexFactory.h"
-typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
-typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
-const int PRIORITY_CEILING = 1;
-#endif
+#include "PlatformOSWrapperTestHelper.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -42,14 +18,9 @@ using OSWrapper::LockGuard;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformMutexTest) {
-	PlatformThreadFactory testThreadFactory;
-	PlatformMutexFactory testMutexFactory;
-
 	void setup()
 	{
-		OSWrapper::registerThreadFactory(&testThreadFactory);
-		OSWrapper::registerMutexFactory(&testMutexFactory);
-
+		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 		s_mutex = Mutex::create();
 	}
 	void teardown()
@@ -58,6 +29,7 @@ TEST_GROUP(PlatformMutexTest) {
 		LONGS_EQUAL(OSWrapper::NotLocked, err);
 
 		Mutex::destroy(s_mutex);
+		PlatformOSWrapperTestHelper::destroyOSWrapperFactories();
 
 		mock().checkExpectations();
 		mock().clear();
@@ -73,7 +45,7 @@ TEST(PlatformMutexTest, create_destroy)
 
 TEST(PlatformMutexTest, create_destroy_priorityCeiling)
 {
-	Mutex* mutex = Mutex::create(PRIORITY_CEILING);
+	Mutex* mutex = Mutex::create(Thread::getHighestPriority());
 	CHECK(mutex);
 	Mutex::destroy(mutex);
 }

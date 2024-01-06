@@ -1,18 +1,6 @@
 #include "OSWrapper/VariableMemoryPool.h"
 
-#if defined(PLATFORM_OS_WINDOWS)
-#include "WindowsOSWrapper/WindowsVariableMemoryPoolFactory.h"
-typedef WindowsOSWrapper::WindowsVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
-#elif defined(PLATFORM_OS_POSIX)
-#include "PosixOSWrapper/PosixVariableMemoryPoolFactory.h"
-typedef PosixOSWrapper::PosixVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
-#elif defined(PLATFORM_OS_STDCPP)
-#include "StdCppOSWrapper/StdCppVariableMemoryPoolFactory.h"
-typedef StdCppOSWrapper::StdCppVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
-#elif defined(PLATFORM_OS_ITRON)
-#include "ItronOSWrapper/ItronVariableMemoryPoolFactory.h"
-typedef ItronOSWrapper::ItronVariableMemoryPoolFactory PlatformVariableMemoryPoolFactory;
-#endif
+#include "PlatformOSWrapperTestHelper.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -23,16 +11,17 @@ using OSWrapper::VariableMemoryPool;
 using OSWrapper::VariableMemoryPoolFactory;
 
 TEST_GROUP(PlatformVariableMemoryPoolTest) {
-	PlatformVariableMemoryPoolFactory testVariableMemoryPoolFactory;
 	VariableMemoryPool* pool;
 	double poolBuf[100];
 
 	void setup()
 	{
-		OSWrapper::registerVariableMemoryPoolFactory(&testVariableMemoryPoolFactory);
+		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 	}
 	void teardown()
 	{
+		PlatformOSWrapperTestHelper::destroyOSWrapperFactories();
+
 		mock().checkExpectations();
 		mock().clear();
 	}

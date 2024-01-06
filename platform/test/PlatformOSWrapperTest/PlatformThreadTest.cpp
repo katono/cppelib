@@ -4,30 +4,15 @@
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
+#include "PlatformOSWrapperTestHelper.h"
 #if defined(PLATFORM_OS_WINDOWS)
 #include <windows.h>
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
-#include "WindowsOSWrapper/WindowsMutexFactory.h"
-typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
-typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
 #elif defined(PLATFORM_OS_POSIX)
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include "PosixOSWrapper/PosixThreadFactory.h"
-#include "PosixOSWrapper/PosixMutexFactory.h"
-typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
-typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
-#elif defined(PLATFORM_OS_STDCPP)
-#include "StdCppOSWrapper/StdCppThreadFactory.h"
-#include "StdCppOSWrapper/StdCppMutexFactory.h"
-typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
-typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
-#elif defined(PLATFORM_OS_ITRON)
-#include "ItronOSWrapper/ItronThreadFactory.h"
-#include "ItronOSWrapper/ItronMutexFactory.h"
-typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
-typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
 #endif
 
 #include "CppUTest/TestHarness.h"
@@ -43,24 +28,24 @@ using OSWrapper::LockGuard;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformThreadTest) {
-	PlatformThreadFactory testThreadFactory;
-	PlatformMutexFactory testMutexFactory;
-
 	Thread* thread;
 
 	void setup()
 	{
-#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX)
-		testThreadFactory.setPriorityRange(1, 9);
+		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
+#if defined(PLATFORM_OS_WINDOWS)
+		OSWrapper::ThreadFactory* threadFactory = PlatformOSWrapperTestHelper::getThreadFactory();
+		static_cast<WindowsOSWrapper::WindowsThreadFactory*>(threadFactory)->setPriorityRange(1, 9);
+#elif defined(PLATFORM_OS_POSIX)
+		OSWrapper::ThreadFactory* threadFactory = PlatformOSWrapperTestHelper::getThreadFactory();
+		static_cast<PosixOSWrapper::PosixThreadFactory*>(threadFactory)->setPriorityRange(1, 9);
 #endif
-		OSWrapper::registerMutexFactory(&testMutexFactory);
-		OSWrapper::registerThreadFactory(&testThreadFactory);
-
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
+		PlatformOSWrapperTestHelper::destroyOSWrapperFactories();
 
 		mock().checkExpectations();
 		mock().clear();
@@ -218,11 +203,6 @@ TEST(PlatformThreadTest, priority_max_min_highest_lowest)
 	LONGS_EQUAL(0, Thread::getMinPriority());
 	LONGS_EQUAL(0, Thread::getHighestPriority());
 	LONGS_EQUAL(0, Thread::getLowestPriority());
-#elif defined(PLATFORM_OS_ITRON)
-	LONGS_EQUAL(TMAX_TPRI, Thread::getMaxPriority());
-	LONGS_EQUAL(TMIN_TPRI, Thread::getMinPriority());
-	LONGS_EQUAL(TMIN_TPRI, Thread::getHighestPriority());
-	LONGS_EQUAL(TMAX_TPRI, Thread::getLowestPriority());
 #endif
 }
 
@@ -238,12 +218,6 @@ public:
 		CHECK(pthread_equal(pthread_self(), reinterpret_cast<pthread_t>(t->getNativeHandle())) != 0);
 #elif defined(PLATFORM_OS_STDCPP)
 		CHECK(t->getNativeHandle());
-#elif defined(PLATFORM_OS_ITRON)
-		ID tskid = (ID)t->getNativeHandle();
-		T_RTSK rtsk = {0};
-		ER err = ref_tsk(tskid, &rtsk);
-		LONGS_EQUAL(E_OK, err);
-		LONGS_EQUAL(TTS_RUN, rtsk.tskstat);
 #endif
 	}
 };
@@ -390,7 +364,9 @@ TEST(PlatformThreadTest, setPriority_inherit)
 #if defined(PLATFORM_OS_WINDOWS)
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 {
-	testThreadFactory.setPriorityRange(1, 9);
+	OSWrapper::ThreadFactory* threadFactory = PlatformOSWrapperTestHelper::getThreadFactory();
+	static_cast<WindowsOSWrapper::WindowsThreadFactory*>(threadFactory)->setPriorityRange(1, 9);
+
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(5, Thread::getNormalPriority());
@@ -451,7 +427,9 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 {
-	testThreadFactory.setPriorityRange(9, 1);
+	OSWrapper::ThreadFactory* threadFactory = PlatformOSWrapperTestHelper::getThreadFactory();
+	static_cast<WindowsOSWrapper::WindowsThreadFactory*>(threadFactory)->setPriorityRange(9, 1);
+
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(5, Thread::getNormalPriority());
@@ -512,7 +490,9 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 #elif defined(PLATFORM_OS_POSIX)
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 {
-	testThreadFactory.setPriorityRange(1, 9);
+	OSWrapper::ThreadFactory* threadFactory = PlatformOSWrapperTestHelper::getThreadFactory();
+	static_cast<PosixOSWrapper::PosixThreadFactory*>(threadFactory)->setPriorityRange(1, 9);
+
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(5, Thread::getNormalPriority());
@@ -587,7 +567,9 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 
 TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 {
-	testThreadFactory.setPriorityRange(9, 1);
+	OSWrapper::ThreadFactory* threadFactory = PlatformOSWrapperTestHelper::getThreadFactory();
+	static_cast<PosixOSWrapper::PosixThreadFactory*>(threadFactory)->setPriorityRange(9, 1);
+
 	LONGS_EQUAL(1, Thread::getMinPriority());
 	LONGS_EQUAL(9, Thread::getMaxPriority());
 	LONGS_EQUAL(5, Thread::getNormalPriority());
