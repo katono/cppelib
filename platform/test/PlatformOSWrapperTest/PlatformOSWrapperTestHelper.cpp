@@ -6,6 +6,7 @@
 #include "OSWrapper/VariableMemoryPool.h"
 #include "OSWrapper/PeriodicTimer.h"
 #include "OSWrapper/OneShotTimer.h"
+#include "Assertion/Assertion.h"
 
 namespace PlatformOSWrapperTestHelper {
 
@@ -25,6 +26,7 @@ void registerTestHelper(TestHelper* helper)
 
 void createAndRegisterOSWrapperFactories()
 {
+	CHECK_ASSERT(s_helper);
 	s_threadFactory = s_helper->createThreadFactory();
 	s_mutexFactory = s_helper->createMutexFactory();
 	s_eventFlagFactory = s_helper->createEventFlagFactory();
