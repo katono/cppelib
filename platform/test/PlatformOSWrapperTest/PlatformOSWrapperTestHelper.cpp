@@ -10,21 +10,63 @@
 namespace PlatformOSWrapperTestHelper {
 
 static TestHelper* s_helper;
+static OSWrapper::ThreadFactory* s_threadFactory;
+static OSWrapper::MutexFactory* s_mutexFactory;
+static OSWrapper::EventFlagFactory* s_eventFlagFactory;
+static OSWrapper::FixedMemoryPoolFactory* s_fixedMemoryPoolFactory;
+static OSWrapper::VariableMemoryPoolFactory* s_variableMemoryPoolFactory;
+static OSWrapper::PeriodicTimerFactory* s_periodicTimerFactory;
+static OSWrapper::OneShotTimerFactory* s_oneShotTimerFactory;
 
 void registerTestHelper(TestHelper* helper)
 {
 	s_helper = helper;
 }
 
-void registerOSWrapperFactories()
+void createAndRegisterOSWrapperFactories()
 {
-	OSWrapper::registerThreadFactory(s_helper->getThreadFactory());
-	OSWrapper::registerMutexFactory(s_helper->getMutexFactory());
-	OSWrapper::registerEventFlagFactory(s_helper->getEventFlagFactory());
-	OSWrapper::registerFixedMemoryPoolFactory(s_helper->getFixedMemoryPoolFactory());
-	OSWrapper::registerVariableMemoryPoolFactory(s_helper->getVariableMemoryPoolFactory());
-	OSWrapper::registerPeriodicTimerFactory(s_helper->getPeriodicTimerFactory());
-	OSWrapper::registerOneShotTimerFactory(s_helper->getOneShotTimerFactory());
+	s_threadFactory = s_helper->createThreadFactory();
+	s_mutexFactory = s_helper->createMutexFactory();
+	s_eventFlagFactory = s_helper->createEventFlagFactory();
+	s_fixedMemoryPoolFactory = s_helper->createFixedMemoryPoolFactory();
+	s_variableMemoryPoolFactory = s_helper->createVariableMemoryPoolFactory();
+	s_periodicTimerFactory = s_helper->createPeriodicTimerFactory();
+	s_oneShotTimerFactory = s_helper->createOneShotTimerFactory();
+
+	OSWrapper::registerThreadFactory(s_threadFactory);
+	OSWrapper::registerMutexFactory(s_mutexFactory);
+	OSWrapper::registerEventFlagFactory(s_eventFlagFactory);
+	OSWrapper::registerFixedMemoryPoolFactory(s_fixedMemoryPoolFactory);
+	OSWrapper::registerVariableMemoryPoolFactory(s_variableMemoryPoolFactory);
+	OSWrapper::registerPeriodicTimerFactory(s_periodicTimerFactory);
+	OSWrapper::registerOneShotTimerFactory(s_oneShotTimerFactory);
+}
+
+void destroyOSWrapperFactories()
+{
+	delete s_threadFactory;
+	delete s_mutexFactory;
+	delete s_eventFlagFactory;
+	delete s_fixedMemoryPoolFactory;
+	delete s_variableMemoryPoolFactory;
+	delete s_periodicTimerFactory;
+	delete s_oneShotTimerFactory;
+
+	s_threadFactory = 0;
+	s_mutexFactory = 0;
+	s_eventFlagFactory = 0;
+	s_fixedMemoryPoolFactory = 0;
+	s_variableMemoryPoolFactory = 0;
+	s_periodicTimerFactory = 0;
+	s_oneShotTimerFactory = 0;
+
+	OSWrapper::registerThreadFactory(0);
+	OSWrapper::registerMutexFactory(0);
+	OSWrapper::registerEventFlagFactory(0);
+	OSWrapper::registerFixedMemoryPoolFactory(0);
+	OSWrapper::registerVariableMemoryPoolFactory(0);
+	OSWrapper::registerPeriodicTimerFactory(0);
+	OSWrapper::registerOneShotTimerFactory(0);
 }
 
 unsigned long getCurrentTime()
@@ -43,7 +85,7 @@ unsigned long getTimeTolerance()
 
 OSWrapper::ThreadFactory* getThreadFactory()
 {
-	return s_helper->getThreadFactory();
+	return s_threadFactory;
 }
 
 }

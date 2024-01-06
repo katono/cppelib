@@ -12,49 +12,40 @@
 #include <chrono>
 
 class WindowsTestHelper : public PlatformOSWrapperTestHelper::TestHelper {
-private:
-	WindowsOSWrapper::WindowsThreadFactory m_threadFactory;
-	WindowsOSWrapper::WindowsMutexFactory m_mutexFactory;
-	WindowsOSWrapper::WindowsEventFlagFactory m_eventFlagFactory;
-	WindowsOSWrapper::WindowsFixedMemoryPoolFactory m_fixedMemoryPoolFactory;
-	WindowsOSWrapper::WindowsVariableMemoryPoolFactory m_variableMemoryPoolFactory;
-	WindowsOSWrapper::WindowsPeriodicTimerFactory m_periodicTimerFactory;
-	WindowsOSWrapper::WindowsOneShotTimerFactory m_oneShotTimerFactory;
-
 public:
-	OSWrapper::ThreadFactory* getThreadFactory()
+	OSWrapper::ThreadFactory* createThreadFactory()
 	{
-		return &m_threadFactory;
+		return new WindowsOSWrapper::WindowsThreadFactory();
 	}
 
-	OSWrapper::MutexFactory* getMutexFactory()
+	OSWrapper::MutexFactory* createMutexFactory()
 	{
-		return &m_mutexFactory;
+		return new WindowsOSWrapper::WindowsMutexFactory();
 	}
 
-	OSWrapper::EventFlagFactory* getEventFlagFactory()
+	OSWrapper::EventFlagFactory* createEventFlagFactory()
 	{
-		return &m_eventFlagFactory;
+		return new WindowsOSWrapper::WindowsEventFlagFactory();
 	}
 
-	OSWrapper::FixedMemoryPoolFactory* getFixedMemoryPoolFactory()
+	OSWrapper::FixedMemoryPoolFactory* createFixedMemoryPoolFactory()
 	{
-		return &m_fixedMemoryPoolFactory;
+		return new WindowsOSWrapper::WindowsFixedMemoryPoolFactory();
 	}
 
-	OSWrapper::VariableMemoryPoolFactory* getVariableMemoryPoolFactory()
+	OSWrapper::VariableMemoryPoolFactory* createVariableMemoryPoolFactory()
 	{
-		return &m_variableMemoryPoolFactory;
+		return new WindowsOSWrapper::WindowsVariableMemoryPoolFactory();
 	}
 
-	OSWrapper::PeriodicTimerFactory* getPeriodicTimerFactory()
+	OSWrapper::PeriodicTimerFactory* createPeriodicTimerFactory()
 	{
-		return &m_periodicTimerFactory;
+		return new WindowsOSWrapper::WindowsPeriodicTimerFactory();
 	}
 
-	OSWrapper::OneShotTimerFactory* getOneShotTimerFactory()
+	OSWrapper::OneShotTimerFactory* createOneShotTimerFactory()
 	{
-		return &m_oneShotTimerFactory;
+		return new WindowsOSWrapper::WindowsOneShotTimerFactory();
 	}
 
 	unsigned long getCurrentTime()

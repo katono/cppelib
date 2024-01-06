@@ -11,7 +11,8 @@
 
 namespace PlatformOSWrapperTestHelper {
 
-void registerOSWrapperFactories();
+void createAndRegisterOSWrapperFactories();
+void destroyOSWrapperFactories();
 unsigned long getCurrentTime();
 unsigned long getTimeTolerance();
 OSWrapper::ThreadFactory* getThreadFactory();
@@ -19,13 +20,13 @@ OSWrapper::ThreadFactory* getThreadFactory();
 class TestHelper {
 public:
 	virtual ~TestHelper() {}
-	virtual OSWrapper::ThreadFactory* getThreadFactory() = 0;
-	virtual OSWrapper::MutexFactory* getMutexFactory() = 0;
-	virtual OSWrapper::EventFlagFactory* getEventFlagFactory() = 0;
-	virtual OSWrapper::FixedMemoryPoolFactory* getFixedMemoryPoolFactory() = 0;
-	virtual OSWrapper::VariableMemoryPoolFactory* getVariableMemoryPoolFactory() = 0;
-	virtual OSWrapper::PeriodicTimerFactory* getPeriodicTimerFactory() = 0;
-	virtual OSWrapper::OneShotTimerFactory* getOneShotTimerFactory() = 0;
+	virtual OSWrapper::ThreadFactory* createThreadFactory() = 0;
+	virtual OSWrapper::MutexFactory* createMutexFactory() = 0;
+	virtual OSWrapper::EventFlagFactory* createEventFlagFactory() = 0;
+	virtual OSWrapper::FixedMemoryPoolFactory* createFixedMemoryPoolFactory() = 0;
+	virtual OSWrapper::VariableMemoryPoolFactory* createVariableMemoryPoolFactory() = 0;
+	virtual OSWrapper::PeriodicTimerFactory* createPeriodicTimerFactory() = 0;
+	virtual OSWrapper::OneShotTimerFactory* createOneShotTimerFactory() = 0;
 	virtual unsigned long getCurrentTime() = 0;
 };
 
