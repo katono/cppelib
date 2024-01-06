@@ -7,6 +7,7 @@
 #elif defined(PLATFORM_OS_STDCPP)
 #include "PlatformOSWrapperTest/StdCppTestHelper.h"
 #endif
+#include "Assertion/Assertion.h"
 
 #include "CppUTest/CommandLineTestRunner.h"
 
@@ -31,6 +32,9 @@ int main(int argc, char **argv)
 	}
 	catch (const std::exception& e) {
 		ConsoleTestOutput().printBuffer(StringFromFormat("\n%s\n", e.what()).asCharString());
+	}
+	catch (const Assertion::Failure& e) {
+		ConsoleTestOutput().printBuffer(StringFromFormat("\n%s\n", e.message()).asCharString());
 	}
 	catch (...) {
 		ConsoleTestOutput().printBuffer("Unknown Exception\n");
