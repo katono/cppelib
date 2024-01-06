@@ -5,8 +5,8 @@ import re
 
 class runTestsRecipe(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    options = {"shared": [True, False], "fPIC": [True, False], "platform_os": ["POSIX", "WINDOWS", "STDCPP", "OTHER"]}
+    default_options = {"shared": False, "fPIC": True, "platform_os": "STDCPP"}
 
     def requirements(self):
         self.requires("cpputest/4.0")
@@ -38,7 +38,7 @@ class runTestsRecipe(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure(variables={"PLATFORM_OS": self.options.platform_os})
         cmake.build()
         cmake.test()
 
