@@ -11,11 +11,11 @@ class cppelib_platform_testTestConan(ConanFile):
 
     def requirements(self):
         self.requires(self.tested_reference_str)
-        self.requires("cpputest/4.0")
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cppelib_platform_test = self.dependencies["cppelib_platform_test"]
+        cmake.configure(variables={"PLATFORM_OS": cppelib_platform_test.options.platform_os})
         cmake.build()
 
     def layout(self):
