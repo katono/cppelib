@@ -32,8 +32,8 @@ class cppelib_mechanism_testRecipe(ConanFile):
         copy(self, "OSWrapperTest/*", src=os.path.join(self.recipe_folder, ".."), dst=self.export_sources_folder)
 
     def requirements(self):
-        self.requires("cppelib_mechanism/1.5.0")
-        self.requires("cpputest/4.0")
+        self.requires("cppelib_mechanism/1.5.0", transitive_headers=True, transitive_libs=True)
+        self.requires("cpputest/4.0", transitive_headers=True, transitive_libs=True)
 
     def config_options(self):
         if self.settings.os == "Windows":
