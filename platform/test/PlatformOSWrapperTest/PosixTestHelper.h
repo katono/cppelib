@@ -12,49 +12,40 @@
 #include <chrono>
 
 class PosixTestHelper : public PlatformOSWrapperTestHelper::TestHelper {
-private:
-	PosixOSWrapper::PosixThreadFactory m_threadFactory;
-	PosixOSWrapper::PosixMutexFactory m_mutexFactory;
-	PosixOSWrapper::PosixEventFlagFactory m_eventFlagFactory;
-	PosixOSWrapper::PosixFixedMemoryPoolFactory m_fixedMemoryPoolFactory;
-	PosixOSWrapper::PosixVariableMemoryPoolFactory m_variableMemoryPoolFactory;
-	PosixOSWrapper::PosixPeriodicTimerFactory m_periodicTimerFactory;
-	PosixOSWrapper::PosixOneShotTimerFactory m_oneShotTimerFactory;
-
 public:
-	OSWrapper::ThreadFactory* getThreadFactory()
+	OSWrapper::ThreadFactory* createThreadFactory()
 	{
-		return &m_threadFactory;
+		return new PosixOSWrapper::PosixThreadFactory();
 	}
 
-	OSWrapper::MutexFactory* getMutexFactory()
+	OSWrapper::MutexFactory* createMutexFactory()
 	{
-		return &m_mutexFactory;
+		return new PosixOSWrapper::PosixMutexFactory();
 	}
 
-	OSWrapper::EventFlagFactory* getEventFlagFactory()
+	OSWrapper::EventFlagFactory* createEventFlagFactory()
 	{
-		return &m_eventFlagFactory;
+		return new PosixOSWrapper::PosixEventFlagFactory();
 	}
 
-	OSWrapper::FixedMemoryPoolFactory* getFixedMemoryPoolFactory()
+	OSWrapper::FixedMemoryPoolFactory* createFixedMemoryPoolFactory()
 	{
-		return &m_fixedMemoryPoolFactory;
+		return new PosixOSWrapper::PosixFixedMemoryPoolFactory();
 	}
 
-	OSWrapper::VariableMemoryPoolFactory* getVariableMemoryPoolFactory()
+	OSWrapper::VariableMemoryPoolFactory* createVariableMemoryPoolFactory()
 	{
-		return &m_variableMemoryPoolFactory;
+		return new PosixOSWrapper::PosixVariableMemoryPoolFactory();
 	}
 
-	OSWrapper::PeriodicTimerFactory* getPeriodicTimerFactory()
+	OSWrapper::PeriodicTimerFactory* createPeriodicTimerFactory()
 	{
-		return &m_periodicTimerFactory;
+		return new PosixOSWrapper::PosixPeriodicTimerFactory();
 	}
 
-	OSWrapper::OneShotTimerFactory* getOneShotTimerFactory()
+	OSWrapper::OneShotTimerFactory* createOneShotTimerFactory()
 	{
-		return &m_oneShotTimerFactory;
+		return new PosixOSWrapper::PosixOneShotTimerFactory();
 	}
 
 	unsigned long getCurrentTime()
