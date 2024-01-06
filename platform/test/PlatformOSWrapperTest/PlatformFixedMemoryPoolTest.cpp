@@ -1,18 +1,6 @@
 #include "OSWrapper/FixedMemoryPool.h"
 
-#if defined(PLATFORM_OS_WINDOWS)
-#include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
-typedef WindowsOSWrapper::WindowsFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
-#elif defined(PLATFORM_OS_POSIX)
-#include "PosixOSWrapper/PosixFixedMemoryPoolFactory.h"
-typedef PosixOSWrapper::PosixFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
-#elif defined(PLATFORM_OS_STDCPP)
-#include "StdCppOSWrapper/StdCppFixedMemoryPoolFactory.h"
-typedef StdCppOSWrapper::StdCppFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
-#elif defined(PLATFORM_OS_ITRON)
-#include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
-typedef ItronOSWrapper::ItronFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
-#endif
+#include "PlatformOSWrapperTestHelper.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -23,16 +11,17 @@ using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;
 
 TEST_GROUP(PlatformFixedMemoryPoolTest) {
-	PlatformFixedMemoryPoolFactory testFixedMemoryPoolFactory;
 	FixedMemoryPool* pool;
 	double poolBuf[100];
 
 	void setup()
 	{
-		OSWrapper::registerFixedMemoryPoolFactory(&testFixedMemoryPoolFactory);
+		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 	}
 	void teardown()
 	{
+		PlatformOSWrapperTestHelper::destroyOSWrapperFactories();
+
 		mock().checkExpectations();
 		mock().clear();
 	}

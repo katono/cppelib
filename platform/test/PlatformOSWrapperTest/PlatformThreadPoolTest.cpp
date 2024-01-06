@@ -7,42 +7,11 @@
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
+#include "PlatformOSWrapperTestHelper.h"
 #if defined(PLATFORM_OS_WINDOWS)
 #include "WindowsOSWrapper/WindowsThreadFactory.h"
-#include "WindowsOSWrapper/WindowsMutexFactory.h"
-#include "WindowsOSWrapper/WindowsEventFlagFactory.h"
-#include "WindowsOSWrapper/WindowsFixedMemoryPoolFactory.h"
-typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
-typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
-typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
-typedef WindowsOSWrapper::WindowsFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
 #elif defined(PLATFORM_OS_POSIX)
 #include "PosixOSWrapper/PosixThreadFactory.h"
-#include "PosixOSWrapper/PosixMutexFactory.h"
-#include "PosixOSWrapper/PosixEventFlagFactory.h"
-#include "PosixOSWrapper/PosixFixedMemoryPoolFactory.h"
-typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
-typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
-typedef PosixOSWrapper::PosixEventFlagFactory PlatformEventFlagFactory;
-typedef PosixOSWrapper::PosixFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
-#elif defined(PLATFORM_OS_STDCPP)
-#include "StdCppOSWrapper/StdCppThreadFactory.h"
-#include "StdCppOSWrapper/StdCppMutexFactory.h"
-#include "StdCppOSWrapper/StdCppEventFlagFactory.h"
-#include "StdCppOSWrapper/StdCppFixedMemoryPoolFactory.h"
-typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
-typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
-typedef StdCppOSWrapper::StdCppEventFlagFactory PlatformEventFlagFactory;
-typedef StdCppOSWrapper::StdCppFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
-#elif defined(PLATFORM_OS_ITRON)
-#include "ItronOSWrapper/ItronThreadFactory.h"
-#include "ItronOSWrapper/ItronMutexFactory.h"
-#include "ItronOSWrapper/ItronEventFlagFactory.h"
-#include "ItronOSWrapper/ItronFixedMemoryPoolFactory.h"
-typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
-typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
-typedef ItronOSWrapper::ItronEventFlagFactory PlatformEventFlagFactory;
-typedef ItronOSWrapper::ItronFixedMemoryPoolFactory PlatformFixedMemoryPoolFactory;
 #endif
 
 #include "CppUTest/TestHarness.h"
@@ -57,25 +26,23 @@ using OSWrapper::Timeout;
 
 
 TEST_GROUP(PlatformThreadPoolTest) {
-	PlatformThreadFactory testThreadFactory;
-	PlatformMutexFactory testMutexFactory;
-	PlatformEventFlagFactory testEventFlagFactory;
-	PlatformFixedMemoryPoolFactory testFixedMemoryPoolFactory;
-
 	ThreadPool* threadPool;
 
 	void setup()
 	{
-#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX)
-		testThreadFactory.setPriorityRange(1, 9);
+		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
+#if defined(PLATFORM_OS_WINDOWS)
+		OSWrapper::ThreadFactory* threadFactory = PlatformOSWrapperTestHelper::getThreadFactory();
+		static_cast<WindowsOSWrapper::WindowsThreadFactory*>(threadFactory)->setPriorityRange(1, 9);
+#elif defined(PLATFORM_OS_POSIX)
+		OSWrapper::ThreadFactory* threadFactory = PlatformOSWrapperTestHelper::getThreadFactory();
+		static_cast<PosixOSWrapper::PosixThreadFactory*>(threadFactory)->setPriorityRange(1, 9);
 #endif
-		OSWrapper::registerThreadFactory(&testThreadFactory);
-		OSWrapper::registerMutexFactory(&testMutexFactory);
-		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
-		OSWrapper::registerFixedMemoryPoolFactory(&testFixedMemoryPoolFactory);
 	}
 	void teardown()
 	{
+		PlatformOSWrapperTestHelper::destroyOSWrapperFactories();
+
 		mock().checkExpectations();
 		mock().clear();
 	}

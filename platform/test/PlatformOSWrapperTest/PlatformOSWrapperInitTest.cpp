@@ -1,3 +1,5 @@
+#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX) || defined(PLATFORM_OS_STDCPP)
+
 #include "OSWrapper/Runnable.h"
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/Mutex.h"
@@ -16,8 +18,6 @@
 #include "PosixOSWrapper/PosixOSWrapper.h"
 #elif defined(PLATFORM_OS_STDCPP)
 #include "StdCppOSWrapper/StdCppOSWrapper.h"
-#elif defined(PLATFORM_OS_ITRON)
-#include "ItronOSWrapper/ItronOSWrapper.h"
 #endif
 
 #include "CppUTest/TestHarness.h"
@@ -51,8 +51,6 @@ TEST_GROUP(PlatformOSWrapperInitTest) {
 		PosixOSWrapper::init(1, 9);
 #elif defined(PLATFORM_OS_STDCPP)
 		StdCppOSWrapper::init();
-#elif defined(PLATFORM_OS_ITRON)
-		ItronOSWrapper::init();
 #endif
 
 	}
@@ -186,3 +184,5 @@ TEST(PlatformOSWrapperInitTest, testOneShotTimer)
 }
 
 } // namespace PlatformOSWrapperInitTest
+
+#endif

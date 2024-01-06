@@ -6,48 +6,7 @@
 #include "Assertion/Assertion.h"
 #include <stdexcept>
 
-#if defined(PLATFORM_OS_WINDOWS)
-#include <chrono>
-#include <windows.h>
-#include "WindowsOSWrapper/WindowsThreadFactory.h"
-#include "WindowsOSWrapper/WindowsMutexFactory.h"
-#include "WindowsOSWrapper/WindowsEventFlagFactory.h"
-#include "WindowsOSWrapper/WindowsOneShotTimerFactory.h"
-typedef WindowsOSWrapper::WindowsThreadFactory PlatformThreadFactory;
-typedef WindowsOSWrapper::WindowsMutexFactory PlatformMutexFactory;
-typedef WindowsOSWrapper::WindowsEventFlagFactory PlatformEventFlagFactory;
-typedef WindowsOSWrapper::WindowsOneShotTimerFactory PlatformOneShotTimerFactory;
-#elif defined(PLATFORM_OS_POSIX)
-#include <chrono>
-#include <unistd.h>
-#include "PosixOSWrapper/PosixThreadFactory.h"
-#include "PosixOSWrapper/PosixMutexFactory.h"
-#include "PosixOSWrapper/PosixEventFlagFactory.h"
-#include "PosixOSWrapper/PosixOneShotTimerFactory.h"
-typedef PosixOSWrapper::PosixThreadFactory PlatformThreadFactory;
-typedef PosixOSWrapper::PosixMutexFactory PlatformMutexFactory;
-typedef PosixOSWrapper::PosixEventFlagFactory PlatformEventFlagFactory;
-typedef PosixOSWrapper::PosixOneShotTimerFactory PlatformOneShotTimerFactory;
-#elif defined(PLATFORM_OS_STDCPP)
-#include <chrono>
-#include "StdCppOSWrapper/StdCppThreadFactory.h"
-#include "StdCppOSWrapper/StdCppMutexFactory.h"
-#include "StdCppOSWrapper/StdCppEventFlagFactory.h"
-#include "StdCppOSWrapper/StdCppOneShotTimerFactory.h"
-typedef StdCppOSWrapper::StdCppThreadFactory PlatformThreadFactory;
-typedef StdCppOSWrapper::StdCppMutexFactory PlatformMutexFactory;
-typedef StdCppOSWrapper::StdCppEventFlagFactory PlatformEventFlagFactory;
-typedef StdCppOSWrapper::StdCppOneShotTimerFactory PlatformOneShotTimerFactory;
-#elif defined(PLATFORM_OS_ITRON)
-#include "ItronOSWrapper/ItronThreadFactory.h"
-#include "ItronOSWrapper/ItronMutexFactory.h"
-#include "ItronOSWrapper/ItronEventFlagFactory.h"
-#include "ItronOSWrapper/ItronOneShotTimerFactory.h"
-typedef ItronOSWrapper::ItronThreadFactory PlatformThreadFactory;
-typedef ItronOSWrapper::ItronMutexFactory PlatformMutexFactory;
-typedef ItronOSWrapper::ItronEventFlagFactory PlatformEventFlagFactory;
-typedef ItronOSWrapper::ItronOneShotTimerFactory PlatformOneShotTimerFactory;
-#endif
+#include "PlatformOSWrapperTestHelper.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -64,25 +23,17 @@ using OSWrapper::OneShotTimer;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformOneShotTimerTest) {
-	PlatformThreadFactory testThreadFactory;
-	PlatformMutexFactory testMutexFactory;
-	PlatformEventFlagFactory testEventFlagFactory;
-	PlatformOneShotTimerFactory testOneShotTimerFactory;
-
 	OneShotTimer* timer;
 
 	void setup()
 	{
-		OSWrapper::registerMutexFactory(&testMutexFactory);
-		OSWrapper::registerThreadFactory(&testThreadFactory);
-		OSWrapper::registerEventFlagFactory(&testEventFlagFactory);
-		OSWrapper::registerOneShotTimerFactory(&testOneShotTimerFactory);
-
+		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 		s_mutex = Mutex::create();
 	}
 	void teardown()
 	{
 		Mutex::destroy(s_mutex);
+		PlatformOSWrapperTestHelper::destroyOSWrapperFactories();
 
 		mock().checkExpectations();
 		mock().clear();
@@ -92,41 +43,22 @@ TEST_GROUP(PlatformOneShotTimerTest) {
 class TimerRunnable : public Runnable {
 	unsigned long m_time;
 	unsigned long m_prevTime;
-	unsigned long getTime()
-	{
-#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX) || defined(PLATFORM_OS_STDCPP)
-		auto now = std::chrono::system_clock::now();
-		auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
-		return static_cast<unsigned long>(now_ms.count());
-#elif defined(PLATFORM_OS_ITRON)
-		SYSTIM tim;
-		get_tim(&tim);
-		// TODO: Fix return value, because SYSTIM is implementation dependent
-		return 0;
-#else
-		return 0;
-#endif
-	}
 public:
 	TimerRunnable() : m_time(0), m_prevTime(0) {}
 	void setStartTime(unsigned long time)
 	{
 		m_time = time;
-		m_prevTime = getTime();
+		m_prevTime = PlatformOSWrapperTestHelper::getCurrentTime();
 	}
 	void run()
 	{
 		if (m_prevTime == 0) {
-			m_prevTime = getTime();
+			m_prevTime = PlatformOSWrapperTestHelper::getCurrentTime();
 			return;
 		}
-		unsigned long time = getTime();
+		unsigned long time = PlatformOSWrapperTestHelper::getCurrentTime();
 		unsigned long diff = time - m_prevTime;
-#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX) || defined(PLATFORM_OS_STDCPP)
-		unsigned long tolerance = 20;
-#else
-		unsigned long tolerance = 3;
-#endif
+		unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
 		if (diff < m_time - tolerance || m_time + tolerance < diff) {
 			LockGuard lock(s_mutex);
 			FAIL(StringFromFormat("time:%ld, diff:%ld", m_time, diff).asCharString());
