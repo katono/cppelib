@@ -38,6 +38,7 @@ public:
 	virtual void destroyOneShotTimerFactory(OSWrapper::OneShotTimerFactory* factory) = 0;
 
 	virtual unsigned long getCurrentTime() = 0;
+	virtual unsigned long getTimeTolerance() = 0;
 };
 
 void registerTestHelper(TestHelper* helper);
