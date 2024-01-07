@@ -5,6 +5,7 @@
 #include "OSWrapper/PeriodicTimer.h"
 #include "Assertion/Assertion.h"
 #include <stdexcept>
+#include <cstdlib>
 
 #include "PlatformOSWrapperTestHelper.h"
 
@@ -60,9 +61,9 @@ public:
 		unsigned long time = PlatformOSWrapperTestHelper::getCurrentTime();
 		unsigned long diff = time - m_prevTime;
 		unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
-		if (diff < m_period - tolerance || m_period + tolerance < diff) {
+		if (std::abs(static_cast<long>(diff) - static_cast<long>(m_period)) > static_cast<long>(tolerance)) {
 			LockGuard lock(s_mutex);
-			FAIL(StringFromFormat("period:%ld, diff:%ld", m_period, diff).asCharString());
+			FAIL(StringFromFormat("Check (abs(diff - period) <= tolerance) failed. diff:%ld, period:%ld, tolerance:%ld", diff, m_period, tolerance).asCharString());
 		}
 		m_prevTime = time;
 		LockGuard lock(s_mutex);
