@@ -48,6 +48,41 @@ public:
 		return new PosixOSWrapper::PosixOneShotTimerFactory();
 	}
 
+	void destroyThreadFactory(OSWrapper::ThreadFactory* factory)
+	{
+		delete factory;
+	}
+
+	void destroyMutexFactory(OSWrapper::MutexFactory* factory)
+	{
+		delete factory;
+	}
+
+	void destroyEventFlagFactory(OSWrapper::EventFlagFactory* factory)
+	{
+		delete factory;
+	}
+
+	void destroyFixedMemoryPoolFactory(OSWrapper::FixedMemoryPoolFactory* factory)
+	{
+		delete factory;
+	}
+
+	void destroyVariableMemoryPoolFactory(OSWrapper::VariableMemoryPoolFactory* factory)
+	{
+		delete factory;
+	}
+
+	void destroyPeriodicTimerFactory(OSWrapper::PeriodicTimerFactory* factory)
+	{
+		delete factory;
+	}
+
+	void destroyOneShotTimerFactory(OSWrapper::OneShotTimerFactory* factory)
+	{
+		delete factory;
+	}
+
 	unsigned long getCurrentTime()
 	{
 		auto now = std::chrono::system_clock::now();
