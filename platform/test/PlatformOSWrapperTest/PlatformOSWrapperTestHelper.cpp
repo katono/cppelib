@@ -46,13 +46,14 @@ void createAndRegisterOSWrapperFactories()
 
 void destroyOSWrapperFactories()
 {
-	delete s_threadFactory;
-	delete s_mutexFactory;
-	delete s_eventFlagFactory;
-	delete s_fixedMemoryPoolFactory;
-	delete s_variableMemoryPoolFactory;
-	delete s_periodicTimerFactory;
-	delete s_oneShotTimerFactory;
+	CHECK_ASSERT(s_helper);
+	s_helper->destroyThreadFactory(s_threadFactory);
+	s_helper->destroyMutexFactory(s_mutexFactory);
+	s_helper->destroyEventFlagFactory(s_eventFlagFactory);
+	s_helper->destroyFixedMemoryPoolFactory(s_fixedMemoryPoolFactory);
+	s_helper->destroyVariableMemoryPoolFactory(s_variableMemoryPoolFactory);
+	s_helper->destroyPeriodicTimerFactory(s_periodicTimerFactory);
+	s_helper->destroyOneShotTimerFactory(s_oneShotTimerFactory);
 
 	s_threadFactory = 0;
 	s_mutexFactory = 0;
