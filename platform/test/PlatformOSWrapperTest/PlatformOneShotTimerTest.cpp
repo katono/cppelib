@@ -5,6 +5,7 @@
 #include "OSWrapper/OneShotTimer.h"
 #include "Assertion/Assertion.h"
 #include <stdexcept>
+#include <cstdlib>
 
 #include "PlatformOSWrapperTestHelper.h"
 
@@ -59,9 +60,9 @@ public:
 		unsigned long time = PlatformOSWrapperTestHelper::getCurrentTime();
 		unsigned long diff = time - m_prevTime;
 		unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
-		if (diff < m_time - tolerance || m_time + tolerance < diff) {
+		if (std::abs(static_cast<long>(diff) - static_cast<long>(m_time)) > static_cast<long>(tolerance)) {
 			LockGuard lock(s_mutex);
-			FAIL(StringFromFormat("time:%ld, diff:%ld", m_time, diff).asCharString());
+			FAIL(StringFromFormat("Check (abs(diff - timeout) <= tolerance) failed. diff:%ld, timeout:%ld, tolerance:%ld", diff, m_time, tolerance).asCharString());
 		}
 		m_prevTime = time;
 		LockGuard lock(s_mutex);
