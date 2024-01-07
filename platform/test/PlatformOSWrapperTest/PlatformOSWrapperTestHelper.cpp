@@ -79,11 +79,7 @@ unsigned long getCurrentTime()
 
 unsigned long getTimeTolerance()
 {
-#if defined(PLATFORM_OS_WINDOWS) || defined(PLATFORM_OS_POSIX) || defined(PLATFORM_OS_STDCPP)
-	return 20;
-#else
-	return 3;
-#endif
+	return s_helper->getTimeTolerance();
 }
 
 OSWrapper::ThreadFactory* getThreadFactory()

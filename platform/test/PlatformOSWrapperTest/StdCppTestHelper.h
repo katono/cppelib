@@ -89,6 +89,11 @@ public:
 		auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
 		return static_cast<unsigned long>(now_ms.count());
 	}
+
+	unsigned long getTimeTolerance()
+	{
+		return 20;
+	}
 };
 
 #endif // STDCPP_TEST_HELPER_H_INCLUDED
