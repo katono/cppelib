@@ -24,11 +24,12 @@ class runTestsRecipe(ConanFile):
         compiler_version = compiler.version
         arch = self.settings.arch
         cppstd = compiler.cppstd
+        platform = self.options.platform_os
         cxxflags = ""
         if self.conf.get("tools.build:cxxflags"):
             cxxflags = "".join(self.conf.get("tools.build:cxxflags"))
             cxxflags = re.sub("[^a-zA-Z0-9]", "_", cxxflags)
-        cmake_layout(self, build_folder=f"build/{compiler}-{compiler_version}-{arch}-{cppstd}-{cxxflags}")
+        cmake_layout(self, build_folder=f"build/{compiler}-{compiler_version}-{arch}-{cppstd}-{platform}-{cxxflags}")
 
     def generate(self):
         deps = CMakeDeps(self)
