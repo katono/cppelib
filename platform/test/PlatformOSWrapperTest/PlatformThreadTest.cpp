@@ -218,6 +218,8 @@ public:
 		CHECK(pthread_equal(pthread_self(), reinterpret_cast<pthread_t>(t->getNativeHandle())) != 0);
 #elif defined(PLATFORM_OS_STDCPP)
 		CHECK(t->getNativeHandle());
+#else
+		(void) t->getNativeHandle();		
 #endif
 	}
 };
