@@ -12,9 +12,11 @@ BUILD_DIR=build
 BUILD_DIRS=${BUILD_DIRS}" mechanism/${BUILD_DIR}"
 BUILD_DIRS=${BUILD_DIRS}" mechanism/test/${BUILD_DIR}"
 BUILD_DIRS=${BUILD_DIRS}" mechanism/test_package/${BUILD_DIR}"
+BUILD_DIRS=${BUILD_DIRS}" mechanism/test/package/test_package/${BUILD_DIR}"
 BUILD_DIRS=${BUILD_DIRS}" platform/${BUILD_DIR}"
 BUILD_DIRS=${BUILD_DIRS}" platform/test/${BUILD_DIR}"
 BUILD_DIRS=${BUILD_DIRS}" platform/test_package/${BUILD_DIR}"
+BUILD_DIRS=${BUILD_DIRS}" platform/test/package/test_package/${BUILD_DIR}"
 for dir in ${BUILD_DIRS}; do
 	rm -rf ${dir}
 done
