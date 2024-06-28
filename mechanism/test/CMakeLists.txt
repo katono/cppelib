@@ -13,7 +13,12 @@ endif()
 
 set(SUT cppelib_mechanism)
 set(SUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-file(GLOB_RECURSE CPPELIB_MECHANISM_SRC "${SUT_DIR}/OSWrapper/*.cpp")
+file(GLOB_RECURSE CPPELIB_MECHANISM_SRC
+	"${SUT_DIR}/Assertion/*.h"
+	"${SUT_DIR}/Container/*.h"
+	"${SUT_DIR}/OSWrapper/*.h"
+	"${SUT_DIR}/OSWrapper/*.cpp"
+)
 add_library(${SUT} ${CPPELIB_MECHANISM_SRC})
 target_include_directories(${SUT} PUBLIC ${SUT_DIR})
 

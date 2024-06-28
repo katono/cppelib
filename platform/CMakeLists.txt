@@ -4,20 +4,32 @@ project(cppelib_platform CXX)
 add_library(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-file(GLOB_RECURSE CPPELIB_PLATFORM_SRC "TestDoubleOSWrapper/*.cpp")
+file(GLOB_RECURSE CPPELIB_PLATFORM_SRC
+	"TestDoubleOSWrapper/*.h"
+	"TestDoubleOSWrapper/*.cpp"
+)
 set(HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/TestDoubleOSWrapper)
 if(NOT "${CONAN_SETTINGS_OS}" STREQUAL "baremetal")
-	file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_STDCPP "StdCppOSWrapper/*.cpp")
+	file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_STDCPP
+		"StdCppOSWrapper/*.h"
+		"StdCppOSWrapper/*.cpp"
+	)
 	list(APPEND CPPELIB_PLATFORM_SRC ${CPPELIB_PLATFORM_SRC_STDCPP})
 	list(APPEND HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/StdCppOSWrapper)
 	if(MSVC)
 		target_compile_options(${PROJECT_NAME} PRIVATE /W4)
-		file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_WINDOWS "WindowsOSWrapper/*.cpp")
+		file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_WINDOWS
+			"WindowsOSWrapper/*.h"
+			"WindowsOSWrapper/*.cpp"
+		)
 		list(APPEND CPPELIB_PLATFORM_SRC ${CPPELIB_PLATFORM_SRC_WINDOWS})
 		list(APPEND HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/WindowsOSWrapper)
 	else()
 		target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
-		file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_POSIX "PosixOSWrapper/*.cpp")
+		file(GLOB_RECURSE CPPELIB_PLATFORM_SRC_POSIX
+			"PosixOSWrapper/*.h"
+			"PosixOSWrapper/*.cpp"
+		)
 		list(APPEND CPPELIB_PLATFORM_SRC ${CPPELIB_PLATFORM_SRC_POSIX})
 		list(APPEND HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PosixOSWrapper)
 		set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")

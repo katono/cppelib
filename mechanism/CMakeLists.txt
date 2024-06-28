@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.15)
 project(cppelib_mechanism CXX)
 
-file(GLOB_RECURSE CPPELIB_MECHANISM_SRC "OSWrapper/*.cpp")
+file(GLOB_RECURSE CPPELIB_MECHANISM_SRC
+	"Assertion/*.h"
+	"Container/*.h"
+	"OSWrapper/*.h"
+	"OSWrapper/*.cpp"
+)
 
 add_library(${PROJECT_NAME} ${CPPELIB_MECHANISM_SRC})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
