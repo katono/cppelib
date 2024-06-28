@@ -24,7 +24,9 @@ build_script:
 - cmd: >-
     conan build mechanism/test --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
 
-    conan build platform/test --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
+    conan build platform/test --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION% -o platform_os=STDCPP
+
+    conan build platform/test --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION% -o platform_os=WINDOWS
 
     conan build mechanism --build=missing -s arch=%ARCH% -s build_type=%CONFIGURATION%
 
