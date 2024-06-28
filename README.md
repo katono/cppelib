@@ -50,11 +50,28 @@ https://github.com/katono/cppelib
 
 Add source and header files to your application source tree and add `mechanism` and `platform` directories to the include path.
 
+If you can use [Conan](https://conan.io/) C++ package manager, execute these commands in this repo root directory to install `cppelib_mechanism` package and `cppelib_platform` package.
+```
+conan create mechanism
+conan create platform
+```
+
+If you want these packages with C++ exception disabled, you can use [tool/profiles/profile_noexceptions](tool/profiles/profile_noexceptions) to include in your conan profile.
+In that case, all your packages must use the same conan profile.
+See [tool/build_package.sh](tool/build_package.sh) to know about how to use a sample conan profile.
+
 
 ## Test
 
 Tests of CppELib use [CppUTest](http://cpputest.github.io/) because this testing framework is portable.
 Tests can be run on multi-platform: Visual Studio, g++, and your target platform.
+
+Execute these conan commands in this repo root directory to run tests.
+
+```
+conan build mechanism/test --build=missing
+conan build platform/test --build=missing
+```
 
 
 ## License
