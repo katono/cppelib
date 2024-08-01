@@ -10,7 +10,7 @@ class cppelib_platformRecipe(ConanFile):
     version = "1.5.0"
 
     # Optional metadata
-    license = "MIT License"
+    license = "MIT"
     author = "KATO Noriaki <katono123@gmail.com>"
     url = "https://github.com/katono/cppelib"
     description = (
@@ -25,7 +25,11 @@ class cppelib_platformRecipe(ConanFile):
     default_options = {"shared": False, "fPIC": True}
 
     # Sources are located in the same place as this recipe, copy them to the recipe
-    exports_sources = "CMakeLists.txt", "StdCppOSWrapper/*", "PosixOSWrapper/*", "WindowsOSWrapper/*", "TestDoubleOSWrapper/*"
+    exports_sources = ("CMakeLists.txt",
+                       "StdCppOSWrapper/*",
+                       "PosixOSWrapper/*",
+                       "WindowsOSWrapper/*",
+                       "TestDoubleOSWrapper/*")
 
     def export_sources(self):
         copy(self, "LICENSE", src=os.path.join(self.recipe_folder, ".."), dst=self.export_sources_folder)
