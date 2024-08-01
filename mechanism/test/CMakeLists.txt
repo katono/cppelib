@@ -4,6 +4,8 @@ project(mechanism_test)
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if(MSVC)
 	add_compile_options(/W4)
 else()
