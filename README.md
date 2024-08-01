@@ -61,9 +61,9 @@ conan create mechanism
 conan create platform
 ```
 
-If you want these packages with C++ exception disabled, you can use [tool/profiles/profile_noexceptions](tool/profiles/profile_noexceptions) to include in your conan profile.
+If you want these packages with C++ exception disabled, you can use `tool/profiles/profile_noexceptions` to include in your conan profile.
 In that case, all your packages must use the same conan profile.
-See [tool/build_package.sh](tool/build_package.sh) to know about how to use a sample conan profile.
+See `tool/build_package.sh` to know about how to use a sample conan profile.
 
 
 ## Test
