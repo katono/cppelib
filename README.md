@@ -40,6 +40,11 @@ You can get the latest version from here.
 https://github.com/katono/cppelib
 
 
+## Documentation
+
+https://katono.github.io/cppelib-docs
+
+
 ## Requirements
 
 * `mechanism`: C++98 or later (freestanding)
