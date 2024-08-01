@@ -1,0 +1,29 @@
+name: Doxygen Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run Doxygen Action
+      uses: mattnotmitt/doxygen-action@1.9.8
+      with:
+        additional-packages: plantuml
+
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: html
+        token: ${{ secrets.TOKEN_CPPELIB_DOCS }}
+        repository-name: katono/cppelib-docs
+        branch: master
