@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 project(cppelib_mechanism CXX)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 file(GLOB_RECURSE CPPELIB_MECHANISM_SRC
 	"Assertion/*.h"
 	"Container/*.h"
