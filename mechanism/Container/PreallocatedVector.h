@@ -68,7 +68,7 @@ public:
 	/*!
 	 * @brief Constructor
 	 * @param preallocated_buffer Pre-allocated buffer by caller
-	 * @param buffer_size Size of preallocated_buffer
+	 * @param buffer_size Number of bytes of preallocated_buffer
 	 * @attention preallocated_buffer must be aligned on the boundary of type T.
 	 */
 	PreallocatedVector(void* preallocated_buffer, size_type buffer_size)
@@ -88,7 +88,7 @@ public:
 	/*!
 	 * @brief Initialize
 	 * @param preallocated_buffer Pre-allocated buffer by caller
-	 * @param buffer_size Size of preallocated_buffer
+	 * @param buffer_size Number of bytes of preallocated_buffer
 	 * @attention preallocated_buffer must be aligned on the boundary of type T.
 	 * @attention If you use default constructor, you need to call init() before other method call.
 	 * @note Pre-allocated buffer can be set only one time.
@@ -102,7 +102,7 @@ public:
 		m_buf_size = buffer_size;
 	}
 
-	PreallocatedVector& operator=(const PreallocatedVector& x)
+	PreallocatedVector& operator=(const PreallocatedVector& x) // cppcheck-suppress operatorEqVarError
 	{
 		if (this != &x) {
 			assign(x.begin(), x.end());
