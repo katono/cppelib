@@ -46,7 +46,7 @@ struct Array {
 
 	bool empty() const
 	{
-		return size() == 0;
+		return size() == 0; // cppcheck-suppress knownConditionTrueFalse
 	}
 
 	reference operator[](size_type idx)
