@@ -37,6 +37,7 @@ build/
 coverage_build/
 coverage.info
 coverage_report/
+cppcheck-build-dir/
 html/
 latex/
 CMakeCache.txt
