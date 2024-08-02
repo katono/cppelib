@@ -16,11 +16,21 @@
 
 /*!
  * @brief Implementation of OSWrapper for Test Double
+ *
+ * TestDoubleOSWrapper can be used in your application test code.
+ * This is used as concrete implementation of OSWrapper for test.
  */
 namespace TestDoubleOSWrapper {
 
 /*!
  * @brief Initialize the TestDoubleOSWrapper
+ *
+ * This is a helper function for using TestDoubleOSWrapper.
+ * All the factories of TestDoubleOSWrapper are generated and resistered.
+ *
+ * If you want to change a part of the provided test dobule class behavior,
+ * you can override the test double class.
+ * See test code in TestDoubleOSWrapperTest directory as a sample code.
  */
 void init()
 {
