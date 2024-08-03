@@ -24,6 +24,7 @@ TEST_GROUP(PlatformEventFlagTest) {
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 		s_mutex = Mutex::create();
+		CHECK(s_mutex);
 	}
 	void teardown()
 	{
@@ -38,10 +39,13 @@ TEST_GROUP(PlatformEventFlagTest) {
 	void testTwoThreadsSharingOneEventFlag(bool autoReset)
 	{
 		EventFlag* ef = EventFlag::create(autoReset);
+		CHECK(ef);
 		Run1 r1(ef);
 		Thread* thread1 = Thread::create(&r1, Thread::getNormalPriority());
+		CHECK(thread1);
 		Run2 r2(ef);
 		Thread* thread2 = Thread::create(&r2, Thread::getNormalPriority());
+		CHECK(thread2);
 
 		thread1->start();
 		thread2->start();
@@ -496,6 +500,10 @@ TEST(PlatformEventFlagTest, wait_TwoThreadsWaiting)
 			Thread::sleep(10);
 			Set2 s(m_ef);
 			Thread* t = Thread::create(&s);
+			{
+				LockGuard lock(s_mutex);
+				CHECK(t);
+			}
 			t->start();
 
 			OSWrapper::Error err = m_ef->wait(EventFlag::Pattern(0x01), EventFlag::OR, 0);

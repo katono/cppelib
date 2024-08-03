@@ -41,6 +41,7 @@ TEST_GROUP(PlatformMessageQueueTest) {
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 		s_mutex = Mutex::create();
+		CHECK(s_mutex);
 	}
 	void teardown()
 	{
@@ -58,8 +59,10 @@ TEST_GROUP(PlatformMessageQueueTest) {
 		CHECK(mq);
 		Run1 r1(mq);
 		Thread* thread1 = Thread::create(&r1, Thread::getNormalPriority());
+		CHECK(thread1);
 		Run2 r2(mq);
 		Thread* thread2 = Thread::create(&r2, Thread::getNormalPriority());
+		CHECK(thread2);
 
 		thread1->start();
 		thread2->start();
@@ -89,6 +92,7 @@ TEST(PlatformMessageQueueTest, destroy_nullptr)
 TEST(PlatformMessageQueueTest, getMaxSize)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
+	CHECK(mq);
 	LONGS_EQUAL(SIZE, mq->getMaxSize());
 	MessageQueue<int>::destroy(mq);
 }
@@ -96,6 +100,7 @@ TEST(PlatformMessageQueueTest, getMaxSize)
 TEST(PlatformMessageQueueTest, getSize_0)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
+	CHECK(mq);
 	LONGS_EQUAL(0, mq->getSize());
 	MessageQueue<int>::destroy(mq);
 }
@@ -103,6 +108,7 @@ TEST(PlatformMessageQueueTest, getSize_0)
 TEST(PlatformMessageQueueTest, tryReceive_TimedOut)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
+	CHECK(mq);
 	int data = 0;
 	OSWrapper::Error err = mq->tryReceive(&data);
 	LONGS_EQUAL(OSWrapper::TimedOut, err);
@@ -112,6 +118,7 @@ TEST(PlatformMessageQueueTest, tryReceive_TimedOut)
 TEST(PlatformMessageQueueTest, timedReceive_Timeout10)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(SIZE);
+	CHECK(mq);
 	int data = 0;
 	OSWrapper::Error err = mq->timedReceive(&data, Timeout(10));
 	LONGS_EQUAL(OSWrapper::TimedOut, err);
@@ -301,7 +308,9 @@ TEST(PlatformMessageQueueTest, send_receive_many_threads)
 
 	for (int i = 0; i < num; i++) {
 		thread1[i] = Thread::create(&r1, Thread::getNormalPriority());
+		CHECK(thread1[i]);
 		thread2[i] = Thread::create(&r2, Thread::getNormalPriority());
+		CHECK(thread2[i]);
 	}
 
 	for (int i = 0; i < num; i++) {

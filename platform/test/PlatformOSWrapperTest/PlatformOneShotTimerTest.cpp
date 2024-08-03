@@ -30,6 +30,7 @@ TEST_GROUP(PlatformOneShotTimerTest) {
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 		s_mutex = Mutex::create();
+		CHECK(s_mutex);
 	}
 	void teardown()
 	{
@@ -297,6 +298,7 @@ TEST(PlatformOneShotTimerTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
 	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	CHECK(timer);
 
 	MyExceptionHandler handler("Exception Test");
 	timer->setUncaughtExceptionHandler(&handler);
@@ -313,6 +315,7 @@ TEST(PlatformOneShotTimerTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
 	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	CHECK(timer);
 
 	MyExceptionHandler handler("CHECK_ASSERT_EXCEPTION_TEST");
 	timer->setUncaughtExceptionHandler(&handler);
@@ -329,6 +332,7 @@ TEST(PlatformOneShotTimerTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
 	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	CHECK(timer);
 
 	MyExceptionHandler handler("Unknown Exception");
 	timer->setUncaughtExceptionHandler(&handler);

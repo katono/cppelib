@@ -95,6 +95,7 @@ TEST(FixedMemoryPoolTest, getRequiredMemorySize)
 TEST(FixedMemoryPoolTest, allocate)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	mock().expectOneCall("allocate").onObject(pool).andReturnValue(static_cast<void*>(poolBuf));
 
 	void* p = pool->allocate();
@@ -106,6 +107,7 @@ TEST(FixedMemoryPoolTest, allocate)
 TEST(FixedMemoryPoolTest, allocate_failed)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	mock().expectOneCall("allocate").onObject(pool);
 
 	void* p = pool->allocate();
@@ -117,6 +119,7 @@ TEST(FixedMemoryPoolTest, allocate_failed)
 TEST(FixedMemoryPoolTest, deallocate)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	void* p = poolBuf;
 	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
 
@@ -128,6 +131,7 @@ TEST(FixedMemoryPoolTest, deallocate)
 TEST(FixedMemoryPoolTest, deallocate_nullptr)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	void* p = 0;
 	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
 
@@ -139,6 +143,7 @@ TEST(FixedMemoryPoolTest, deallocate_nullptr)
 TEST(FixedMemoryPoolTest, getBlockSize)
 {
 	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
 
 	LONGS_EQUAL(16, pool->getBlockSize());
 

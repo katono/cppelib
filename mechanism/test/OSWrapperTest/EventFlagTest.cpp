@@ -169,6 +169,7 @@ TEST(EventFlagTest, bit_pattern_size)
 TEST(EventFlagTest, waitAny)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("waitAny").onObject(ef)
 		.andReturnValue(OSWrapper::OK);
 
@@ -180,6 +181,7 @@ TEST(EventFlagTest, waitAny)
 TEST(EventFlagTest, waitOne)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("waitOne").onObject(ef)
 		.withParameter("pos", 0)
 		.andReturnValue(OSWrapper::OK);
@@ -192,6 +194,7 @@ TEST(EventFlagTest, waitOne)
 TEST(EventFlagTest, wait)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	EventFlag::Pattern outputPattern(0x01);
 	mock().expectOneCall("wait").onObject(ef)
 		.withParameter("bitPattern", 0xFF)
@@ -209,6 +212,7 @@ TEST(EventFlagTest, wait)
 TEST(EventFlagTest, tryWaitAny)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("tryWaitAny").onObject(ef)
 		.andReturnValue(OSWrapper::OK);
 
@@ -220,6 +224,7 @@ TEST(EventFlagTest, tryWaitAny)
 TEST(EventFlagTest, tryWaitOne)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("tryWaitOne").onObject(ef)
 		.withParameter("pos", 0)
 		.andReturnValue(OSWrapper::OK);
@@ -232,6 +237,7 @@ TEST(EventFlagTest, tryWaitOne)
 TEST(EventFlagTest, tryWait)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	EventFlag::Pattern outputPattern(0x01);
 	mock().expectOneCall("tryWait").onObject(ef)
 		.withParameter("bitPattern", 0xFF)
@@ -249,6 +255,7 @@ TEST(EventFlagTest, tryWait)
 TEST(EventFlagTest, timedWaitAny_forever)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("timedWaitAny").onObject(ef)
 		.withParameter("tmout", Timeout::FOREVER)
 		.andReturnValue(OSWrapper::OK);
@@ -261,6 +268,7 @@ TEST(EventFlagTest, timedWaitAny_forever)
 TEST(EventFlagTest, timedWaitAny_polling)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("timedWaitAny").onObject(ef)
 		.withParameter("tmout", Timeout::POLLING)
 		.andReturnValue(OSWrapper::TimedOut);
@@ -273,6 +281,7 @@ TEST(EventFlagTest, timedWaitAny_polling)
 TEST(EventFlagTest, timedWaitAny_timeout)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("timedWaitAny").onObject(ef)
 		.withParameter("tmout", Timeout(100))
 		.andReturnValue(OSWrapper::TimedOut);
@@ -285,6 +294,7 @@ TEST(EventFlagTest, timedWaitAny_timeout)
 TEST(EventFlagTest, timedWaitOne_forever)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("timedWaitOne").onObject(ef)
 		.withParameter("pos", 0)
 		.withParameter("tmout", Timeout::FOREVER)
@@ -298,6 +308,7 @@ TEST(EventFlagTest, timedWaitOne_forever)
 TEST(EventFlagTest, timedWaitOne_polling)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("timedWaitOne").onObject(ef)
 		.withParameter("pos", 0)
 		.withParameter("tmout", Timeout::POLLING)
@@ -311,6 +322,7 @@ TEST(EventFlagTest, timedWaitOne_polling)
 TEST(EventFlagTest, timedWaitOne_timeout)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("timedWaitOne").onObject(ef)
 		.withParameter("pos", 0)
 		.withParameter("tmout", Timeout(100))
@@ -324,6 +336,7 @@ TEST(EventFlagTest, timedWaitOne_timeout)
 TEST(EventFlagTest, timedWait_forever)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	EventFlag::Pattern outputPattern(0x01);
 	mock().expectOneCall("timedWait").onObject(ef)
 		.withParameter("bitPattern", 0xFF)
@@ -342,6 +355,7 @@ TEST(EventFlagTest, timedWait_forever)
 TEST(EventFlagTest, timedWait_polling)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	EventFlag::Pattern outputPattern(0x01);
 	mock().expectOneCall("timedWait").onObject(ef)
 		.withParameter("bitPattern", 0xFF)
@@ -360,6 +374,7 @@ TEST(EventFlagTest, timedWait_polling)
 TEST(EventFlagTest, timedWait_timeout)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	EventFlag::Pattern outputPattern(0x01);
 	mock().expectOneCall("timedWait").onObject(ef)
 		.withParameter("bitPattern", 0xFF)
@@ -378,6 +393,7 @@ TEST(EventFlagTest, timedWait_timeout)
 TEST(EventFlagTest, setAll)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("setAll").onObject(ef)
 		.andReturnValue(OSWrapper::OK);
 
@@ -389,6 +405,7 @@ TEST(EventFlagTest, setAll)
 TEST(EventFlagTest, setOne)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("setOne").onObject(ef)
 		.withParameter("pos", 0)
 		.andReturnValue(OSWrapper::OK);
@@ -401,6 +418,7 @@ TEST(EventFlagTest, setOne)
 TEST(EventFlagTest, set)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("set").onObject(ef)
 		.withParameter("bitPattern", 0x01)
 		.andReturnValue(OSWrapper::OK);
@@ -413,6 +431,7 @@ TEST(EventFlagTest, set)
 TEST(EventFlagTest, resetAll)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("resetAll").onObject(ef)
 		.andReturnValue(OSWrapper::OK);
 
@@ -424,6 +443,7 @@ TEST(EventFlagTest, resetAll)
 TEST(EventFlagTest, resetOne)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("resetOne").onObject(ef)
 		.withParameter("pos", 0)
 		.andReturnValue(OSWrapper::OK);
@@ -436,6 +456,7 @@ TEST(EventFlagTest, resetOne)
 TEST(EventFlagTest, reset)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("reset").onObject(ef)
 		.withParameter("bitPattern", 0x01)
 		.andReturnValue(OSWrapper::OK);
@@ -448,6 +469,7 @@ TEST(EventFlagTest, reset)
 TEST(EventFlagTest, getCurrentPattern)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("getCurrentPattern").onObject(ef)
 		.andReturnValue(0x01);
 
@@ -459,6 +481,7 @@ TEST(EventFlagTest, getCurrentPattern)
 TEST(EventFlagTest, autoReset_true_OR)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 	mock().expectOneCall("set").onObject(ef)
 		.withParameter("bitPattern", 0x01)
 		.andReturnValue(OSWrapper::OK);
@@ -491,6 +514,7 @@ TEST(EventFlagTest, autoReset_true_OR)
 TEST(EventFlagTest, autoReset_false_AND)
 {
 	EventFlag* ef = EventFlag::create(false);
+	CHECK(ef);
 	mock().expectOneCall("set").onObject(ef)
 		.withParameter("bitPattern", 0x01)
 		.andReturnValue(OSWrapper::OK);

@@ -79,6 +79,7 @@ TEST(VariableMemoryPoolTest, destroy_nullptr)
 TEST(VariableMemoryPoolTest, allocate)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	std::size_t size = 10;
 	mock().expectOneCall("allocate").onObject(pool).withParameter("size", size).andReturnValue(static_cast<void*>(poolBuf));
 
@@ -91,6 +92,7 @@ TEST(VariableMemoryPoolTest, allocate)
 TEST(VariableMemoryPoolTest, allocate_failed)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	std::size_t size = 10;
 	mock().expectOneCall("allocate").onObject(pool).withParameter("size", size);
 
@@ -103,6 +105,7 @@ TEST(VariableMemoryPoolTest, allocate_failed)
 TEST(VariableMemoryPoolTest, deallocate)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	void* p = poolBuf;
 	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
 
@@ -114,6 +117,7 @@ TEST(VariableMemoryPoolTest, deallocate)
 TEST(VariableMemoryPoolTest, deallocate_nullptr)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	void* p = 0;
 	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
 

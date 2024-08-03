@@ -125,6 +125,7 @@ TEST(PeriodicTimerTest, destroy_nullptr)
 TEST(PeriodicTimerTest, start_isStarted_stop)
 {
 	timer = PeriodicTimer::create(&testRun, 100);
+	CHECK(timer);
 	mock().expectOneCall("run").onObject(&testRun);
 
 	CHECK(!timer->isStarted());
@@ -139,6 +140,7 @@ TEST(PeriodicTimerTest, start_isStarted_stop)
 TEST(PeriodicTimerTest, getPeriodInMillis)
 {
 	timer = PeriodicTimer::create(&testRun, 100);
+	CHECK(timer);
 
 	LONGS_EQUAL(100, timer->getPeriodInMillis());
 
@@ -148,6 +150,7 @@ TEST(PeriodicTimerTest, getPeriodInMillis)
 TEST(PeriodicTimerTest, name)
 {
 	timer = PeriodicTimer::create(&testRun, 100, "TestPeriodicTimer");
+	CHECK(timer);
 
 	STRCMP_EQUAL("TestPeriodicTimer", timer->getName());
 	timer->setName("foo");
@@ -176,6 +179,7 @@ TEST(PeriodicTimerTest, default_handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
 	timer = PeriodicTimer::create(&runnable, 100);
+	CHECK(timer);
 
 	UnknownExceptionHandler handler;
 	PeriodicTimer::UncaughtExceptionHandler* old = PeriodicTimer::getDefaultUncaughtExceptionHandler();
@@ -193,6 +197,7 @@ TEST(PeriodicTimerTest, handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
 	timer = PeriodicTimer::create(&runnable, 100);
+	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
 	UnknownExceptionHandler handler;
@@ -231,6 +236,7 @@ TEST(PeriodicTimerTest, default_handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
 	timer = PeriodicTimer::create(&runnable, 100);
+	CHECK(timer);
 
 	AssertExceptionHandler handler;
 	PeriodicTimer::UncaughtExceptionHandler* old = PeriodicTimer::getDefaultUncaughtExceptionHandler();
@@ -248,6 +254,7 @@ TEST(PeriodicTimerTest, handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
 	timer = PeriodicTimer::create(&runnable, 100);
+	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
 	AssertExceptionHandler handler;
@@ -281,6 +288,7 @@ TEST(PeriodicTimerTest, default_handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
 	timer = PeriodicTimer::create(&runnable, 100);
+	CHECK(timer);
 
 	StdExceptionHandler handler;
 	PeriodicTimer::UncaughtExceptionHandler* old = PeriodicTimer::getDefaultUncaughtExceptionHandler();
@@ -298,6 +306,7 @@ TEST(PeriodicTimerTest, handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
 	timer = PeriodicTimer::create(&runnable, 100);
+	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
 	StdExceptionHandler handler;
@@ -322,6 +331,7 @@ TEST(PeriodicTimerTest, ExceptionHandler_throws_exception)
 {
 	StdExceptionTestRunnable runnable;
 	timer = PeriodicTimer::create(&runnable, 100);
+	CHECK(timer);
 
 	ThrowExceptionHandler handler;
 	timer->setUncaughtExceptionHandler(&handler);

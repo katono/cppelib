@@ -30,6 +30,7 @@ TEST_GROUP(PlatformPeriodicTimerTest) {
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 		s_mutex = Mutex::create();
+		CHECK(s_mutex);
 	}
 	void teardown()
 	{
@@ -304,6 +305,7 @@ TEST(PlatformPeriodicTimerTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
 	timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
+	CHECK(timer);
 
 	MyExceptionHandler handler("Exception Test");
 	timer->setUncaughtExceptionHandler(&handler);
@@ -320,6 +322,7 @@ TEST(PlatformPeriodicTimerTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
 	timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
+	CHECK(timer);
 
 	MyExceptionHandler handler("CHECK_ASSERT_EXCEPTION_TEST");
 	timer->setUncaughtExceptionHandler(&handler);
@@ -336,6 +339,7 @@ TEST(PlatformPeriodicTimerTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
 	timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
+	CHECK(timer);
 
 	MyExceptionHandler handler("Unknown Exception");
 	timer->setUncaughtExceptionHandler(&handler);

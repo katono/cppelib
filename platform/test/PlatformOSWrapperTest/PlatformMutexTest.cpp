@@ -22,6 +22,7 @@ TEST_GROUP(PlatformMutexTest) {
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
 		s_mutex = Mutex::create();
+		CHECK(s_mutex);
 	}
 	void teardown()
 	{
@@ -53,6 +54,7 @@ TEST(PlatformMutexTest, create_destroy_priorityCeiling)
 TEST(PlatformMutexTest, lock_unlock)
 {
 	Mutex* mutex = Mutex::create();
+	CHECK(mutex);
 
 	OSWrapper::Error err;
 	err = mutex->lock();
@@ -66,6 +68,7 @@ TEST(PlatformMutexTest, lock_unlock)
 TEST(PlatformMutexTest, lock_unlock_recursive)
 {
 	Mutex* mutex = Mutex::create();
+	CHECK(mutex);
 
 	OSWrapper::Error err;
 	err = mutex->lock();
@@ -137,6 +140,7 @@ TEST(PlatformMutexTest, shared_data_lock)
 	Thread* t[num];
 	for (int i = 0; i < num; i++) {
 		t[i] = Thread::create(&runnable[i], Thread::getNormalPriority());
+		CHECK(t[i]);
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -172,6 +176,7 @@ TEST(PlatformMutexTest, shared_data_lock_LockGuard)
 	Thread* t[num];
 	for (int i = 0; i < num; i++) {
 		t[i] = Thread::create(&runnable[i], Thread::getNormalPriority());
+		CHECK(t[i]);
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -205,6 +210,7 @@ TEST(PlatformMutexTest, tryLock)
 
 	TryLockFailedTestRunnable runnable;
 	Thread* t = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(t);
 	t->start();
 	t->wait();
 	Thread::destroy(t);
@@ -230,6 +236,7 @@ TEST(PlatformMutexTest, timedLock)
 
 	TimedLockFailedTestRunnable runnable(Timeout(10));
 	Thread* t = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(t);
 	t->start();
 	t->wait();
 	Thread::destroy(t);
@@ -244,6 +251,7 @@ TEST(PlatformMutexTest, timedLock_FOREVER)
 
 	TimedLockFailedTestRunnable runnable(Timeout::POLLING);
 	Thread* t = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(t);
 	t->start();
 	t->wait();
 	Thread::destroy(t);

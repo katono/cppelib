@@ -6,7 +6,8 @@
 #include "OSWrapper/VariableMemoryPool.h"
 #include "OSWrapper/PeriodicTimer.h"
 #include "OSWrapper/OneShotTimer.h"
-#include "Assertion/Assertion.h"
+
+#include "CppUTest/TestHarness.h"
 
 namespace PlatformOSWrapperTestHelper {
 
@@ -26,7 +27,7 @@ void registerTestHelper(TestHelper* helper)
 
 void createAndRegisterOSWrapperFactories()
 {
-	CHECK_ASSERT(s_helper);
+	CHECK(s_helper);
 	s_threadFactory = s_helper->createThreadFactory();
 	s_mutexFactory = s_helper->createMutexFactory();
 	s_eventFlagFactory = s_helper->createEventFlagFactory();
@@ -34,6 +35,14 @@ void createAndRegisterOSWrapperFactories()
 	s_variableMemoryPoolFactory = s_helper->createVariableMemoryPoolFactory();
 	s_periodicTimerFactory = s_helper->createPeriodicTimerFactory();
 	s_oneShotTimerFactory = s_helper->createOneShotTimerFactory();
+
+	CHECK(s_threadFactory);
+	CHECK(s_mutexFactory);
+	CHECK(s_eventFlagFactory);
+	CHECK(s_fixedMemoryPoolFactory);
+	CHECK(s_variableMemoryPoolFactory);
+	CHECK(s_periodicTimerFactory);
+	CHECK(s_oneShotTimerFactory);
 
 	OSWrapper::registerThreadFactory(s_threadFactory);
 	OSWrapper::registerMutexFactory(s_mutexFactory);
@@ -46,7 +55,7 @@ void createAndRegisterOSWrapperFactories()
 
 void destroyOSWrapperFactories()
 {
-	CHECK_ASSERT(s_helper);
+	CHECK(s_helper);
 	s_helper->destroyThreadFactory(s_threadFactory);
 	s_helper->destroyMutexFactory(s_mutexFactory);
 	s_helper->destroyEventFlagFactory(s_eventFlagFactory);

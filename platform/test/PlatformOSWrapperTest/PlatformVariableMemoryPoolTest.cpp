@@ -55,6 +55,7 @@ TEST(PlatformVariableMemoryPoolTest, destroy_nullptr)
 TEST(PlatformVariableMemoryPoolTest, allocate)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	std::size_t size = 10;
 
 	void* p = pool->allocate(size);
@@ -69,6 +70,7 @@ TEST(PlatformVariableMemoryPoolTest, allocate)
 TEST(PlatformVariableMemoryPoolTest, allocate_failed)
 {
 	pool = VariableMemoryPool::create(18);
+	CHECK(pool);
 	std::size_t size = 10;
 
 	void* p = pool->allocate(size);
@@ -90,6 +92,7 @@ TEST(PlatformVariableMemoryPoolTest, allocate_failed)
 TEST(PlatformVariableMemoryPoolTest, deallocate_nullptr)
 {
 	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	CHECK(pool);
 	void* p = 0;
 
 	pool->deallocate(p);

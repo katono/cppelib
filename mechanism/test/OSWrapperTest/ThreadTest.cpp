@@ -229,6 +229,7 @@ TEST(ThreadTest, yield)
 TEST(ThreadTest, getCurrentThread)
 {
 	thread = Thread::create(&testRun, normalPriority, 4096, 0, "TestThread");
+	CHECK(thread);
 	mock().expectOneCall("getCurrentThread").onObject(&testFactory).andReturnValue(thread);
 	Thread* t = Thread::getCurrentThread();
 	CHECK_EQUAL(thread, t);
@@ -238,6 +239,7 @@ TEST(ThreadTest, getCurrentThread)
 TEST(ThreadTest, start)
 {
 	thread = Thread::create(&testRun, normalPriority, 4096, 0, "TestThread");
+	CHECK(thread);
 	mock().expectOneCall("run").onObject(&testRun);
 	thread->start();
 	Thread::destroy(thread);
@@ -246,6 +248,7 @@ TEST(ThreadTest, start)
 TEST(ThreadTest, start_wait_isFinished)
 {
 	thread = Thread::create(&testRun, normalPriority, 4096, 0, "TestThread");
+	CHECK(thread);
 	mock().expectOneCall("run").onObject(&testRun);
 	thread->start();
 
@@ -268,6 +271,7 @@ TEST(ThreadTest, start_wait_isFinished)
 TEST(ThreadTest, name)
 {
 	thread = Thread::create(&testRun, normalPriority, 4096, 0, "TestThread");
+	CHECK(thread);
 
 	STRCMP_EQUAL("TestThread", thread->getName());
 	thread->setName("foo");
@@ -278,6 +282,7 @@ TEST(ThreadTest, name)
 TEST(ThreadTest, priority)
 {
 	thread = Thread::create(&testRun, normalPriority, 4096, 0, "TestThread");
+	CHECK(thread);
 
 	LONGS_EQUAL(normalPriority, thread->getPriority());
 	thread->setPriority(normalPriority + 1);
@@ -342,6 +347,7 @@ TEST(ThreadTest, priority_min_highest)
 TEST(ThreadTest, stackSize)
 {
 	thread = Thread::create(&testRun, normalPriority, 4096, 0, "TestThread");
+	CHECK(thread);
 
 	LONGS_EQUAL(4096, thread->getStackSize());
 	Thread::destroy(thread);
@@ -350,6 +356,7 @@ TEST(ThreadTest, stackSize)
 TEST(ThreadTest, create_only_runnable)
 {
 	thread = Thread::create(&testRun);
+	CHECK(thread);
 
 	LONGS_EQUAL(1024, thread->getStackSize());
 	LONGS_EQUAL(normalPriority, thread->getPriority());
@@ -361,6 +368,7 @@ TEST(ThreadTest, create_only_runnable)
 TEST(ThreadTest, getNativeHandle)
 {
 	thread = Thread::create(&testRun);
+	CHECK(thread);
 
 	LONGS_EQUAL(1234, (std::size_t)thread->getNativeHandle());
 
@@ -388,6 +396,7 @@ TEST(ThreadTest, default_handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
+	CHECK(thread);
 
 	UnknownExceptionHandler handler;
 	Thread::UncaughtExceptionHandler* old = Thread::getDefaultUncaughtExceptionHandler();
@@ -404,6 +413,7 @@ TEST(ThreadTest, handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
+	CHECK(thread);
 	POINTERS_EQUAL(0, thread->getUncaughtExceptionHandler());
 
 	UnknownExceptionHandler handler;
@@ -441,6 +451,7 @@ TEST(ThreadTest, default_handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
+	CHECK(thread);
 
 	AssertExceptionHandler handler;
 	Thread::UncaughtExceptionHandler* old = Thread::getDefaultUncaughtExceptionHandler();
@@ -457,6 +468,7 @@ TEST(ThreadTest, handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
+	CHECK(thread);
 	POINTERS_EQUAL(0, thread->getUncaughtExceptionHandler());
 
 	AssertExceptionHandler handler;
@@ -489,6 +501,7 @@ TEST(ThreadTest, default_handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
+	CHECK(thread);
 
 	StdExceptionHandler handler;
 	Thread::UncaughtExceptionHandler* old = Thread::getDefaultUncaughtExceptionHandler();
@@ -505,6 +518,7 @@ TEST(ThreadTest, handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
+	CHECK(thread);
 	POINTERS_EQUAL(0, thread->getUncaughtExceptionHandler());
 
 	StdExceptionHandler handler;
@@ -528,6 +542,7 @@ TEST(ThreadTest, ExceptionHandler_throws_exception)
 {
 	StdExceptionTestRunnable runnable;
 	thread = Thread::create(&runnable);
+	CHECK(thread);
 
 	ThrowExceptionHandler handler;
 	thread->setUncaughtExceptionHandler(&handler);

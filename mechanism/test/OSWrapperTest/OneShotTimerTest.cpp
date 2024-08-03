@@ -117,6 +117,7 @@ TEST(OneShotTimerTest, destroy_nullptr)
 TEST(OneShotTimerTest, start_isStarted_stop)
 {
 	timer = OneShotTimer::create(&testRun);
+	CHECK(timer);
 
 	CHECK(!timer->isStarted());
 	timer->start(100);
@@ -130,6 +131,7 @@ TEST(OneShotTimerTest, start_isStarted_stop)
 TEST(OneShotTimerTest, start_stop_start)
 {
 	timer = OneShotTimer::create(&testRun);
+	CHECK(timer);
 	mock().expectOneCall("run").onObject(&testRun);
 
 	CHECK(!timer->isStarted());
@@ -146,6 +148,7 @@ TEST(OneShotTimerTest, start_stop_start)
 TEST(OneShotTimerTest, name)
 {
 	timer = OneShotTimer::create(&testRun, "TestOneShotTimer");
+	CHECK(timer);
 
 	STRCMP_EQUAL("TestOneShotTimer", timer->getName());
 	timer->setName("foo");
@@ -174,6 +177,7 @@ TEST(OneShotTimerTest, default_handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
 	timer = OneShotTimer::create(&runnable);
+	CHECK(timer);
 
 	UnknownExceptionHandler handler;
 	OneShotTimer::UncaughtExceptionHandler* old = OneShotTimer::getDefaultUncaughtExceptionHandler();
@@ -191,6 +195,7 @@ TEST(OneShotTimerTest, handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
 	timer = OneShotTimer::create(&runnable);
+	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
 	UnknownExceptionHandler handler;
@@ -229,6 +234,7 @@ TEST(OneShotTimerTest, default_handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
 	timer = OneShotTimer::create(&runnable);
+	CHECK(timer);
 
 	AssertExceptionHandler handler;
 	OneShotTimer::UncaughtExceptionHandler* old = OneShotTimer::getDefaultUncaughtExceptionHandler();
@@ -246,6 +252,7 @@ TEST(OneShotTimerTest, handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
 	timer = OneShotTimer::create(&runnable);
+	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
 	AssertExceptionHandler handler;
@@ -279,6 +286,7 @@ TEST(OneShotTimerTest, default_handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
 	timer = OneShotTimer::create(&runnable);
+	CHECK(timer);
 
 	StdExceptionHandler handler;
 	OneShotTimer::UncaughtExceptionHandler* old = OneShotTimer::getDefaultUncaughtExceptionHandler();
@@ -296,6 +304,7 @@ TEST(OneShotTimerTest, handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
 	timer = OneShotTimer::create(&runnable);
+	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
 	StdExceptionHandler handler;
@@ -320,6 +329,7 @@ TEST(OneShotTimerTest, ExceptionHandler_throws_exception)
 {
 	StdExceptionTestRunnable runnable;
 	timer = OneShotTimer::create(&runnable);
+	CHECK(timer);
 
 	ThrowExceptionHandler handler;
 	timer->setUncaughtExceptionHandler(&handler);

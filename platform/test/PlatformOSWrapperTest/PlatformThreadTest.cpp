@@ -41,6 +41,7 @@ TEST_GROUP(PlatformThreadTest) {
 		static_cast<PosixOSWrapper::PosixThreadFactory*>(threadFactory)->setPriorityRange(1, 9);
 #endif
 		s_mutex = Mutex::create();
+		CHECK(s_mutex);
 	}
 	void teardown()
 	{
@@ -83,6 +84,7 @@ TEST(PlatformThreadTest, start_wait_isFinished)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
+	CHECK(thread);
 	runnable.setThread(thread);
 	thread->start();
 
@@ -130,6 +132,7 @@ TEST(PlatformThreadTest, many_threads)
 	Thread* t[num];
 	for (int i = 0; i < num; i++) {
 		t[i] = Thread::create(&runnable[i], Thread::getNormalPriority());
+		CHECK(t[i]);
 	}
 
 	for (int i = 0; i < num; i++) {
@@ -149,6 +152,7 @@ TEST(PlatformThreadTest, repeat_start)
 {
 	MockRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(thread);
 	mock().expectNCalls(2, "run");
 
 	thread->start();
@@ -167,6 +171,7 @@ TEST(PlatformThreadTest, name)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
+	CHECK(thread);
 
 	STRCMP_EQUAL("TestThread", thread->getName());
 	thread->setName("foo");
@@ -178,6 +183,7 @@ TEST(PlatformThreadTest, priority)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
+	CHECK(thread);
 	LONGS_EQUAL(1, thread->getPriority());
 	thread->setPriority(2);
 	LONGS_EQUAL(2, thread->getPriority());
@@ -228,6 +234,7 @@ TEST(PlatformThreadTest, getNativeHandle)
 {
 	NativeHandleTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(thread);
 	thread->start();
 
 	thread->wait();
@@ -238,6 +245,7 @@ TEST(PlatformThreadTest, stackSize)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
+	CHECK(thread);
 
 	LONGS_EQUAL(4096, thread->getStackSize());
 	Thread::destroy(thread);
@@ -247,6 +255,7 @@ TEST(PlatformThreadTest, default_stackSize)
 {
 	StaticMethodTestRunnable runnable;
 	thread = Thread::create(&runnable);
+	CHECK(thread);
 
 	CHECK(thread->getStackSize() > 0);
 	Thread::destroy(thread);
@@ -295,6 +304,7 @@ TEST(PlatformThreadTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(thread);
 
 	MyExceptionHandler handler("Exception Test");
 	thread->setUncaughtExceptionHandler(&handler);
@@ -308,6 +318,7 @@ TEST(PlatformThreadTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(thread);
 
 	MyExceptionHandler handler("CHECK_ASSERT_EXCEPTION_TEST");
 	thread->setUncaughtExceptionHandler(&handler);
@@ -321,6 +332,7 @@ TEST(PlatformThreadTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
 	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	CHECK(thread);
 
 	MyExceptionHandler handler("Unknown Exception");
 	thread->setUncaughtExceptionHandler(&handler);

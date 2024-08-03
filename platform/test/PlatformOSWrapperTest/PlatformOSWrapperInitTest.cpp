@@ -76,6 +76,7 @@ TEST(PlatformOSWrapperInitTest, testThread)
 {
 	TestRunnable runnable;
 	Thread* thread = Thread::create(&runnable);
+	CHECK(thread);
 	thread->start();
 
 	CHECK(!thread->isFinished());
@@ -90,6 +91,7 @@ TEST(PlatformOSWrapperInitTest, testThread)
 TEST(PlatformOSWrapperInitTest, testMutex)
 {
 	Mutex* mutex = Mutex::create();
+	CHECK(mutex);
 
 	OSWrapper::Error err;
 	err = mutex->lock();
@@ -103,6 +105,7 @@ TEST(PlatformOSWrapperInitTest, testMutex)
 TEST(PlatformOSWrapperInitTest, testEventFlag)
 {
 	EventFlag* ef = EventFlag::create(true);
+	CHECK(ef);
 
 	OSWrapper::Error err = ef->setAll();
 	LONGS_EQUAL(OSWrapper::OK, err);
@@ -114,6 +117,7 @@ TEST(PlatformOSWrapperInitTest, testEventFlag)
 TEST(PlatformOSWrapperInitTest, testMessageQueue)
 {
 	MessageQueue<int>* mq = MessageQueue<int>::create(10);
+	CHECK(mq);
 
 	OSWrapper::Error err = mq->send(100);
 	LONGS_EQUAL(OSWrapper::OK, err);
@@ -129,6 +133,7 @@ TEST(PlatformOSWrapperInitTest, testMessageQueue)
 TEST(PlatformOSWrapperInitTest, testFixedMemoryPool)
 {
 	FixedMemoryPool* pool = FixedMemoryPool::create(16, 1024);
+	CHECK(pool);
 
 	void* p = pool->allocate();
 	CHECK(p);
@@ -141,6 +146,7 @@ TEST(PlatformOSWrapperInitTest, testFixedMemoryPool)
 TEST(PlatformOSWrapperInitTest, testVariableMemoryPool)
 {
 	VariableMemoryPool* pool = VariableMemoryPool::create(1024);
+	CHECK(pool);
 
 	void* p = pool->allocate(10);
 	CHECK(p);
@@ -161,6 +167,7 @@ TEST(PlatformOSWrapperInitTest, testPeriodicTimer)
 {
 	TimerRunnable runnable;
 	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100);
+	CHECK(timer);
 
 	timer->start();
 	CHECK(timer->isStarted());
@@ -174,6 +181,7 @@ TEST(PlatformOSWrapperInitTest, testOneShotTimer)
 {
 	TimerRunnable runnable;
 	OneShotTimer* timer = OneShotTimer::create(&runnable);
+	CHECK(timer);
 
 	timer->start(100);
 	CHECK(timer->isStarted());
