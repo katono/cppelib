@@ -135,11 +135,13 @@ TEST(PlatformPeriodicTimerTest, repeat_start_stop)
 	timer->start();
 	timer->start();
 
-	Thread::sleep(200);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 
 	timer->stop();
 	timer->stop();
 
+	LONGS_EQUAL(1, runnable.getRunCount());
 	PeriodicTimer::destroy(timer);
 }
 
@@ -151,14 +153,17 @@ TEST(PlatformPeriodicTimerTest, restart)
 	runnable.setStartTime();
 
 	timer->start();
-	Thread::sleep(200);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 	timer->stop();
+	LONGS_EQUAL(1, runnable.getRunCount());
 
 	runnable.setStartTime();
 
 	timer->start();
-	Thread::sleep(200);
+	Thread::sleep(100 + tolerance);
 	timer->stop();
+	LONGS_EQUAL(2, runnable.getRunCount());
 
 	PeriodicTimer::destroy(timer);
 }
@@ -185,7 +190,8 @@ TEST(PlatformPeriodicTimerTest, multiple_timers)
 
 	runnable3.setStartTime();
 	timer3->start();
-	Thread::sleep(240);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(200 + (tolerance * 2));
 
 	timer1->stop();
 	timer2->stop();
@@ -218,9 +224,12 @@ TEST(PlatformPeriodicTimerTest, start_stop_continuously_at_once)
 	runnable.setStartTime();
 
 	timer->start();
-	Thread::sleep(200);
 	timer->stop();
 
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
+
+	LONGS_EQUAL(0, runnable.getRunCount());
 	PeriodicTimer::destroy(timer);
 }
 
@@ -233,9 +242,11 @@ TEST(PlatformPeriodicTimerTest, start_destroy)
 
 	timer->start();
 
-	Thread::sleep(100);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 
 	PeriodicTimer::destroy(timer);
+	LONGS_EQUAL(1, runnable.getRunCount());
 }
 
 TEST(PlatformPeriodicTimerTest, start_destroy_at_once)
@@ -247,6 +258,10 @@ TEST(PlatformPeriodicTimerTest, start_destroy_at_once)
 
 	timer->start();
 	PeriodicTimer::destroy(timer);
+
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
+	LONGS_EQUAL(0, runnable.getRunCount());
 }
 
 TEST(PlatformPeriodicTimerTest, name)
@@ -310,7 +325,8 @@ TEST(PlatformPeriodicTimerTest, exception_std)
 	mock().expectOneCall("handle").withParameter("t", timer).onObject(&handler);
 
 	timer->start();
-	Thread::sleep(190);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 	timer->stop();
 
 	PeriodicTimer::destroy(timer);
@@ -327,7 +343,8 @@ TEST(PlatformPeriodicTimerTest, exception_assert)
 	mock().expectOneCall("handle").withParameter("t", timer).onObject(&handler);
 
 	timer->start();
-	Thread::sleep(190);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 	timer->stop();
 
 	PeriodicTimer::destroy(timer);
@@ -344,7 +361,8 @@ TEST(PlatformPeriodicTimerTest, exception_unknown)
 	mock().expectOneCall("handle").withParameter("t", timer).onObject(&handler);
 
 	timer->start();
-	Thread::sleep(190);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 	timer->stop();
 
 	PeriodicTimer::destroy(timer);

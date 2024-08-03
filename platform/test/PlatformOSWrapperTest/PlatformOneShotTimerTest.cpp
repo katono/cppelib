@@ -97,7 +97,8 @@ TEST(PlatformOneShotTimerTest, start_isStarted)
 
 	CHECK(timer->isStarted());
 
-	Thread::sleep(130);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 
 	OneShotTimer::destroy(timer);
 }
@@ -130,7 +131,8 @@ TEST(PlatformOneShotTimerTest, repeat_start)
 	timer->start(100);
 	timer->start(100);
 
-	Thread::sleep(130);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 
 	OneShotTimer::destroy(timer);
 }
@@ -144,7 +146,8 @@ TEST(PlatformOneShotTimerTest, repeat_start_stop)
 	timer->start(100);
 	timer->start(100);
 
-	Thread::sleep(80);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 - tolerance);
 
 	timer->stop();
 	timer->stop();
@@ -162,13 +165,14 @@ TEST(PlatformOneShotTimerTest, restart)
 	runnable.setStartTime(100);
 
 	timer->start(100);
-	Thread::sleep(130);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 
 	mock().expectOneCall("run").onObject(&runnable);
 	runnable.setStartTime(100);
 
 	timer->start(100);
-	Thread::sleep(130);
+	Thread::sleep(100 + tolerance);
 
 	OneShotTimer::destroy(timer);
 }
@@ -201,7 +205,8 @@ TEST(PlatformOneShotTimerTest, multiple_timers)
 	runnable3.setStartTime(100);
 	timer3->start(100);
 
-	Thread::sleep(130);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 
 	OneShotTimer::destroy(timer1);
 	OneShotTimer::destroy(timer2);
@@ -303,7 +308,8 @@ TEST(PlatformOneShotTimerTest, exception_std)
 	mock().expectOneCall("handle").withParameter("t", timer).onObject(&handler);
 
 	timer->start(100);
-	Thread::sleep(190);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 	timer->stop();
 
 	OneShotTimer::destroy(timer);
@@ -320,7 +326,8 @@ TEST(PlatformOneShotTimerTest, exception_assert)
 	mock().expectOneCall("handle").withParameter("t", timer).onObject(&handler);
 
 	timer->start(100);
-	Thread::sleep(190);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 	timer->stop();
 
 	OneShotTimer::destroy(timer);
@@ -337,7 +344,8 @@ TEST(PlatformOneShotTimerTest, exception_unknown)
 	mock().expectOneCall("handle").withParameter("t", timer).onObject(&handler);
 
 	timer->start(100);
-	Thread::sleep(190);
+	unsigned long tolerance = PlatformOSWrapperTestHelper::getTimeTolerance();
+	Thread::sleep(100 + tolerance);
 	timer->stop();
 
 	OneShotTimer::destroy(timer);
