@@ -43,8 +43,6 @@ public:
 
 TEST_GROUP(VariableMemoryPoolTest) {
 	TestVariableMemoryPoolFactory testFactory;
-	VariableMemoryPool* pool;
-	double poolBuf[100];
 
 	void setup()
 	{
@@ -59,14 +57,15 @@ TEST_GROUP(VariableMemoryPoolTest) {
 
 TEST(VariableMemoryPoolTest, create_destroy)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	VariableMemoryPool* pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	VariableMemoryPool::destroy(pool);
 }
 
 TEST(VariableMemoryPoolTest, create_no_param_pool)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf);
+	VariableMemoryPool* pool = VariableMemoryPool::create(100);
 	CHECK(pool);
 	VariableMemoryPool::destroy(pool);
 }
@@ -78,7 +77,8 @@ TEST(VariableMemoryPoolTest, destroy_nullptr)
 
 TEST(VariableMemoryPoolTest, allocate)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	VariableMemoryPool* pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	std::size_t size = 10;
 	mock().expectOneCall("allocate").onObject(pool).withParameter("size", size).andReturnValue(static_cast<void*>(poolBuf));
@@ -91,7 +91,8 @@ TEST(VariableMemoryPoolTest, allocate)
 
 TEST(VariableMemoryPoolTest, allocate_failed)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	VariableMemoryPool* pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	std::size_t size = 10;
 	mock().expectOneCall("allocate").onObject(pool).withParameter("size", size);
@@ -104,7 +105,8 @@ TEST(VariableMemoryPoolTest, allocate_failed)
 
 TEST(VariableMemoryPoolTest, deallocate)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	VariableMemoryPool* pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* p = poolBuf;
 	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
@@ -116,7 +118,8 @@ TEST(VariableMemoryPoolTest, deallocate)
 
 TEST(VariableMemoryPoolTest, deallocate_nullptr)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	VariableMemoryPool* pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* p = 0;
 	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);

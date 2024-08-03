@@ -24,8 +24,6 @@ using OSWrapper::OneShotTimer;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformOneShotTimerTest) {
-	OneShotTimer* timer;
-
 	void setup()
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
@@ -75,21 +73,21 @@ public:
 TEST(PlatformOneShotTimerTest, create_destroy)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 	OneShotTimer::destroy(timer);
 }
 
 TEST(PlatformOneShotTimerTest, create_failed_runnable_nullptr)
 {
-	timer = OneShotTimer::create(0, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(0, "TestOneShotTimer");
 	CHECK_FALSE(timer);
 }
 
 TEST(PlatformOneShotTimerTest, start_isStarted)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 	mock().expectOneCall("run").onObject(&runnable);
 
@@ -107,7 +105,7 @@ TEST(PlatformOneShotTimerTest, start_isStarted)
 TEST(PlatformOneShotTimerTest, start_isStarted_stop)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 
 	CHECK(!timer->isStarted());
@@ -124,7 +122,7 @@ TEST(PlatformOneShotTimerTest, start_isStarted_stop)
 TEST(PlatformOneShotTimerTest, repeat_start)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 	mock().expectOneCall("run").onObject(&runnable);
 
@@ -140,7 +138,7 @@ TEST(PlatformOneShotTimerTest, repeat_start)
 TEST(PlatformOneShotTimerTest, repeat_start_stop)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 	runnable.setStartTime(100);
 	timer->start(100);
@@ -157,7 +155,7 @@ TEST(PlatformOneShotTimerTest, repeat_start_stop)
 TEST(PlatformOneShotTimerTest, restart)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 
 	mock().expectOneCall("run").onObject(&runnable);
@@ -213,7 +211,7 @@ TEST(PlatformOneShotTimerTest, multiple_timers)
 TEST(PlatformOneShotTimerTest, start_stop_continuously_at_once)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 	runnable.setStartTime(100);
 
@@ -236,7 +234,7 @@ TEST(PlatformOneShotTimerTest, start_stop_continuously_at_once)
 TEST(PlatformOneShotTimerTest, start_destroy_at_once)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 	runnable.setStartTime(100);
 
@@ -247,7 +245,7 @@ TEST(PlatformOneShotTimerTest, start_destroy_at_once)
 TEST(PlatformOneShotTimerTest, name)
 {
 	TimerRunnable runnable;
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 
 	STRCMP_EQUAL("TestOneShotTimer", timer->getName());
@@ -297,7 +295,7 @@ public:
 TEST(PlatformOneShotTimerTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 
 	MyExceptionHandler handler("Exception Test");
@@ -314,7 +312,7 @@ TEST(PlatformOneShotTimerTest, exception_std)
 TEST(PlatformOneShotTimerTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 
 	MyExceptionHandler handler("CHECK_ASSERT_EXCEPTION_TEST");
@@ -331,7 +329,7 @@ TEST(PlatformOneShotTimerTest, exception_assert)
 TEST(PlatformOneShotTimerTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
-	timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(&runnable, "TestOneShotTimer");
 	CHECK(timer);
 
 	MyExceptionHandler handler("Unknown Exception");

@@ -62,7 +62,6 @@ public:
 
 TEST_GROUP(MutexTest) {
 	TestMutexFactory testFactory;
-	Mutex* mutex;
 
 	void setup()
 	{
@@ -77,14 +76,14 @@ TEST_GROUP(MutexTest) {
 
 TEST(MutexTest, create_destroy)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	Mutex::destroy(mutex);
 }
 
 TEST(MutexTest, create_destroy_priorityCeiling)
 {
-	mutex = Mutex::create(10);
+	Mutex* mutex = Mutex::create(10);
 	CHECK(mutex);
 	Mutex::destroy(mutex);
 }
@@ -96,7 +95,7 @@ TEST(MutexTest, destroy_nullptr)
 
 TEST(MutexTest, lock)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::OK);
 
@@ -108,7 +107,7 @@ TEST(MutexTest, lock)
 
 TEST(MutexTest, tryLock)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("tryLock").onObject(mutex).andReturnValue(OSWrapper::OK);
 
@@ -120,7 +119,7 @@ TEST(MutexTest, tryLock)
 
 TEST(MutexTest, timedLock)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("timedLock").onObject(mutex).withParameter("tmout", Timeout(100)).andReturnValue(OSWrapper::TimedOut);
 
@@ -132,7 +131,7 @@ TEST(MutexTest, timedLock)
 
 TEST(MutexTest, lock_recursive)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::OK);
 	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::OK);
@@ -148,7 +147,7 @@ TEST(MutexTest, lock_recursive)
 
 TEST(MutexTest, unlock)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::OK);
 	mock().expectOneCall("unlock").onObject(mutex).andReturnValue(OSWrapper::OK);
@@ -164,7 +163,7 @@ TEST(MutexTest, unlock)
 
 TEST(MutexTest, unlock_not_locked)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("unlock").onObject(mutex).andReturnValue(OSWrapper::NotLocked);
 
@@ -176,7 +175,7 @@ TEST(MutexTest, unlock_not_locked)
 
 TEST(MutexTest, LockGuard)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::OK);
 	mock().expectOneCall("unlock").onObject(mutex).andReturnValue(OSWrapper::OK);
@@ -190,7 +189,7 @@ TEST(MutexTest, LockGuard)
 
 TEST(MutexTest, LockGuard_recursive)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::OK);
 	mock().expectOneCall("lock").onObject(mutex).andReturnValue(OSWrapper::OK);
@@ -209,7 +208,7 @@ TEST(MutexTest, LockGuard_recursive)
 
 TEST(MutexTest, LockGuard_ADOPT_LOCK)
 {
-	mutex = Mutex::create();
+	Mutex* mutex = Mutex::create();
 	CHECK(mutex);
 	mock().expectOneCall("tryLock").onObject(mutex).andReturnValue(OSWrapper::OK);
 	mock().expectOneCall("unlock").onObject(mutex).andReturnValue(OSWrapper::OK);

@@ -24,8 +24,6 @@ using OSWrapper::PeriodicTimer;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformPeriodicTimerTest) {
-	PeriodicTimer* timer;
-
 	void setup()
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
@@ -81,28 +79,28 @@ public:
 TEST(PlatformPeriodicTimerTest, create_destroy)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	PeriodicTimer::destroy(timer);
 }
 
 TEST(PlatformPeriodicTimerTest, create_failed_runnable_nullptr)
 {
-	timer = PeriodicTimer::create(0, 100, "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(0, 100, "TestPeriodicTimer");
 	CHECK_FALSE(timer);
 }
 
 TEST(PlatformPeriodicTimerTest, create_failed_period_zero)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, 0, "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 0, "TestPeriodicTimer");
 	CHECK_FALSE(timer);
 }
 
 TEST(PlatformPeriodicTimerTest, getPeriodInMillis)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	LONGS_EQUAL(100, timer->getPeriodInMillis());
 	PeriodicTimer::destroy(timer);
@@ -111,7 +109,7 @@ TEST(PlatformPeriodicTimerTest, getPeriodInMillis)
 TEST(PlatformPeriodicTimerTest, start_isStarted_stop)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	CHECK(!timer->isStarted());
 	runnable.setStartTime();
@@ -131,7 +129,7 @@ TEST(PlatformPeriodicTimerTest, start_isStarted_stop)
 TEST(PlatformPeriodicTimerTest, repeat_start_stop)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	runnable.setStartTime();
 	timer->start();
@@ -148,7 +146,7 @@ TEST(PlatformPeriodicTimerTest, repeat_start_stop)
 TEST(PlatformPeriodicTimerTest, restart)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	runnable.setStartTime();
 
@@ -205,7 +203,7 @@ TEST(PlatformPeriodicTimerTest, multiple_timers)
 TEST(PlatformPeriodicTimerTest, start_stop_continuously_at_once)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	runnable.setStartTime();
 
@@ -229,7 +227,7 @@ TEST(PlatformPeriodicTimerTest, start_stop_continuously_at_once)
 TEST(PlatformPeriodicTimerTest, start_destroy)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	runnable.setStartTime();
 
@@ -243,7 +241,7 @@ TEST(PlatformPeriodicTimerTest, start_destroy)
 TEST(PlatformPeriodicTimerTest, start_destroy_at_once)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 	runnable.setStartTime();
 
@@ -254,7 +252,7 @@ TEST(PlatformPeriodicTimerTest, start_destroy_at_once)
 TEST(PlatformPeriodicTimerTest, name)
 {
 	TimerRunnable runnable(100);
-	timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, runnable.getPeriod(), "TestPeriodicTimer");
 	CHECK(timer);
 
 	STRCMP_EQUAL("TestPeriodicTimer", timer->getName());
@@ -304,7 +302,7 @@ public:
 TEST(PlatformPeriodicTimerTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
-	timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
 	CHECK(timer);
 
 	MyExceptionHandler handler("Exception Test");
@@ -321,7 +319,7 @@ TEST(PlatformPeriodicTimerTest, exception_std)
 TEST(PlatformPeriodicTimerTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
-	timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
 	CHECK(timer);
 
 	MyExceptionHandler handler("CHECK_ASSERT_EXCEPTION_TEST");
@@ -338,7 +336,7 @@ TEST(PlatformPeriodicTimerTest, exception_assert)
 TEST(PlatformPeriodicTimerTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
-	timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100, "TestPeriodicTimer");
 	CHECK(timer);
 
 	MyExceptionHandler handler("Unknown Exception");

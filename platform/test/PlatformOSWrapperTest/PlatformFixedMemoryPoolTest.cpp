@@ -11,9 +11,6 @@ using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;
 
 TEST_GROUP(PlatformFixedMemoryPoolTest) {
-	FixedMemoryPool* pool;
-	double poolBuf[100];
-
 	void setup()
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
@@ -29,21 +26,22 @@ TEST_GROUP(PlatformFixedMemoryPoolTest) {
 
 TEST(PlatformFixedMemoryPoolTest, create_destroy)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	FixedMemoryPool::destroy(pool);
 }
 
 TEST(PlatformFixedMemoryPoolTest, create_no_param_pool)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf);
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, 100);
 	CHECK(pool);
 	FixedMemoryPool::destroy(pool);
 }
 
 TEST(PlatformFixedMemoryPoolTest, create_failed_parameter)
 {
-	pool = FixedMemoryPool::create(0, 100);
+	FixedMemoryPool* pool = FixedMemoryPool::create(0, 100);
 	CHECK(!pool);
 
 	pool = FixedMemoryPool::create(16, 0);
@@ -63,7 +61,8 @@ TEST(PlatformFixedMemoryPoolTest, getRequiredMemorySize)
 
 TEST(PlatformFixedMemoryPoolTest, allocate_deallocate)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 
 	void* p = pool->allocate();
@@ -77,7 +76,7 @@ TEST(PlatformFixedMemoryPoolTest, allocate_deallocate)
 #if defined(PLATFORM_OS_ITRON)
 TEST(PlatformFixedMemoryPoolTest, allocate_failed)
 {
-	pool = FixedMemoryPool::create(16, 16);
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, 16);
 	CHECK(pool);
 
 	void* p = pool->allocate();
@@ -98,7 +97,8 @@ TEST(PlatformFixedMemoryPoolTest, allocate_failed)
 
 TEST(PlatformFixedMemoryPoolTest, deallocate_nullptr)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* p = 0;
 
@@ -109,7 +109,8 @@ TEST(PlatformFixedMemoryPoolTest, deallocate_nullptr)
 
 TEST(PlatformFixedMemoryPoolTest, getBlockSize)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 
 	LONGS_EQUAL(16, pool->getBlockSize());

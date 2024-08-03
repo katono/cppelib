@@ -84,8 +84,6 @@ private:
 
 TEST_GROUP(PeriodicTimerTest) {
 	TestPeriodicTimerFactory testFactory;
-	TestRunnable testRun;
-	PeriodicTimer* timer;
 
 	void setup()
 	{
@@ -100,20 +98,22 @@ TEST_GROUP(PeriodicTimerTest) {
 
 TEST(PeriodicTimerTest, create_destroy)
 {
-	timer = PeriodicTimer::create(&testRun, 100, "TestPeriodicTimer");
+	TestRunnable testRun;
+	PeriodicTimer* timer = PeriodicTimer::create(&testRun, 100, "TestPeriodicTimer");
 	CHECK(timer);
 	PeriodicTimer::destroy(timer);
 }
 
 TEST(PeriodicTimerTest, create_failed_runnable_nullptr)
 {
-	timer = PeriodicTimer::create(0, 100, "TestPeriodicTimer");
+	PeriodicTimer* timer = PeriodicTimer::create(0, 100, "TestPeriodicTimer");
 	CHECK_FALSE(timer);
 }
 
 TEST(PeriodicTimerTest, create_failed_period_is_zero)
 {
-	timer = PeriodicTimer::create(&testRun, 0, "TestPeriodicTimer");
+	TestRunnable testRun;
+	PeriodicTimer* timer = PeriodicTimer::create(&testRun, 0, "TestPeriodicTimer");
 	CHECK_FALSE(timer);
 }
 
@@ -124,7 +124,8 @@ TEST(PeriodicTimerTest, destroy_nullptr)
 
 TEST(PeriodicTimerTest, start_isStarted_stop)
 {
-	timer = PeriodicTimer::create(&testRun, 100);
+	TestRunnable testRun;
+	PeriodicTimer* timer = PeriodicTimer::create(&testRun, 100);
 	CHECK(timer);
 	mock().expectOneCall("run").onObject(&testRun);
 
@@ -139,7 +140,8 @@ TEST(PeriodicTimerTest, start_isStarted_stop)
 
 TEST(PeriodicTimerTest, getPeriodInMillis)
 {
-	timer = PeriodicTimer::create(&testRun, 100);
+	TestRunnable testRun;
+	PeriodicTimer* timer = PeriodicTimer::create(&testRun, 100);
 	CHECK(timer);
 
 	LONGS_EQUAL(100, timer->getPeriodInMillis());
@@ -149,7 +151,8 @@ TEST(PeriodicTimerTest, getPeriodInMillis)
 
 TEST(PeriodicTimerTest, name)
 {
-	timer = PeriodicTimer::create(&testRun, 100, "TestPeriodicTimer");
+	TestRunnable testRun;
+	PeriodicTimer* timer = PeriodicTimer::create(&testRun, 100, "TestPeriodicTimer");
 	CHECK(timer);
 
 	STRCMP_EQUAL("TestPeriodicTimer", timer->getName());
@@ -178,7 +181,7 @@ public:
 TEST(PeriodicTimerTest, default_handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
-	timer = PeriodicTimer::create(&runnable, 100);
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100);
 	CHECK(timer);
 
 	UnknownExceptionHandler handler;
@@ -196,7 +199,7 @@ TEST(PeriodicTimerTest, default_handle_unknown_exception)
 TEST(PeriodicTimerTest, handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
-	timer = PeriodicTimer::create(&runnable, 100);
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100);
 	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
@@ -235,7 +238,7 @@ public:
 TEST(PeriodicTimerTest, default_handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
-	timer = PeriodicTimer::create(&runnable, 100);
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100);
 	CHECK(timer);
 
 	AssertExceptionHandler handler;
@@ -253,7 +256,7 @@ TEST(PeriodicTimerTest, default_handle_assert_exception)
 TEST(PeriodicTimerTest, handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
-	timer = PeriodicTimer::create(&runnable, 100);
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100);
 	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
@@ -287,7 +290,7 @@ public:
 TEST(PeriodicTimerTest, default_handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
-	timer = PeriodicTimer::create(&runnable, 100);
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100);
 	CHECK(timer);
 
 	StdExceptionHandler handler;
@@ -305,7 +308,7 @@ TEST(PeriodicTimerTest, default_handle_std_exception)
 TEST(PeriodicTimerTest, handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
-	timer = PeriodicTimer::create(&runnable, 100);
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100);
 	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
@@ -330,7 +333,7 @@ public:
 TEST(PeriodicTimerTest, ExceptionHandler_throws_exception)
 {
 	StdExceptionTestRunnable runnable;
-	timer = PeriodicTimer::create(&runnable, 100);
+	PeriodicTimer* timer = PeriodicTimer::create(&runnable, 100);
 	CHECK(timer);
 
 	ThrowExceptionHandler handler;

@@ -11,9 +11,6 @@ using OSWrapper::VariableMemoryPool;
 using OSWrapper::VariableMemoryPoolFactory;
 
 TEST_GROUP(PlatformVariableMemoryPoolTest) {
-	VariableMemoryPool* pool;
-	double poolBuf[100];
-
 	void setup()
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
@@ -29,21 +26,22 @@ TEST_GROUP(PlatformVariableMemoryPoolTest) {
 
 TEST(PlatformVariableMemoryPoolTest, create_destroy)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	VariableMemoryPool* pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	VariableMemoryPool::destroy(pool);
 }
 
 TEST(PlatformVariableMemoryPoolTest, create_no_param_pool)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf);
+	VariableMemoryPool* pool = VariableMemoryPool::create(100);
 	CHECK(pool);
 	VariableMemoryPool::destroy(pool);
 }
 
 TEST(PlatformVariableMemoryPoolTest, create_failed_parameter)
 {
-	pool = VariableMemoryPool::create(0);
+	VariableMemoryPool* pool = VariableMemoryPool::create(0);
 	CHECK(!pool);
 }
 
@@ -54,7 +52,8 @@ TEST(PlatformVariableMemoryPoolTest, destroy_nullptr)
 
 TEST(PlatformVariableMemoryPoolTest, allocate)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	VariableMemoryPool* pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	std::size_t size = 10;
 
@@ -69,7 +68,7 @@ TEST(PlatformVariableMemoryPoolTest, allocate)
 #if defined(PLATFORM_OS_ITRON)
 TEST(PlatformVariableMemoryPoolTest, allocate_failed)
 {
-	pool = VariableMemoryPool::create(18);
+	VariableMemoryPool* pool = VariableMemoryPool::create(18);
 	CHECK(pool);
 	std::size_t size = 10;
 
@@ -91,7 +90,8 @@ TEST(PlatformVariableMemoryPoolTest, allocate_failed)
 
 TEST(PlatformVariableMemoryPoolTest, deallocate_nullptr)
 {
-	pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	VariableMemoryPool* pool = VariableMemoryPool::create(sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* p = 0;
 

@@ -53,8 +53,6 @@ public:
 
 TEST_GROUP(FixedMemoryPoolTest) {
 	TestFixedMemoryPoolFactory testFactory;
-	FixedMemoryPool* pool;
-	double poolBuf[100];
 
 	void setup()
 	{
@@ -69,14 +67,15 @@ TEST_GROUP(FixedMemoryPoolTest) {
 
 TEST(FixedMemoryPoolTest, create_destroy)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	FixedMemoryPool::destroy(pool);
 }
 
 TEST(FixedMemoryPoolTest, create_no_param_pool)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf);
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, 100);
 	CHECK(pool);
 	FixedMemoryPool::destroy(pool);
 }
@@ -94,7 +93,8 @@ TEST(FixedMemoryPoolTest, getRequiredMemorySize)
 
 TEST(FixedMemoryPoolTest, allocate)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	mock().expectOneCall("allocate").onObject(pool).andReturnValue(static_cast<void*>(poolBuf));
 
@@ -106,7 +106,8 @@ TEST(FixedMemoryPoolTest, allocate)
 
 TEST(FixedMemoryPoolTest, allocate_failed)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	mock().expectOneCall("allocate").onObject(pool);
 
@@ -118,7 +119,8 @@ TEST(FixedMemoryPoolTest, allocate_failed)
 
 TEST(FixedMemoryPoolTest, deallocate)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* p = poolBuf;
 	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
@@ -130,7 +132,8 @@ TEST(FixedMemoryPoolTest, deallocate)
 
 TEST(FixedMemoryPoolTest, deallocate_nullptr)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* p = 0;
 	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", p);
@@ -142,7 +145,8 @@ TEST(FixedMemoryPoolTest, deallocate_nullptr)
 
 TEST(FixedMemoryPoolTest, getBlockSize)
 {
-	pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
 	CHECK(pool);
 
 	LONGS_EQUAL(16, pool->getBlockSize());

@@ -26,8 +26,6 @@ using OSWrapper::Timeout;
 
 
 TEST_GROUP(PlatformThreadPoolTest) {
-	ThreadPool* threadPool;
-
 	void setup()
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
@@ -62,7 +60,7 @@ public:
 
 TEST(PlatformThreadPoolTest, create_destroy)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 	ThreadPool::destroy(threadPool);
 }
@@ -76,7 +74,7 @@ TEST(PlatformThreadPoolTest, start_nowaiter)
 {
 	TestRunnable runnable(1);
 	{
-		threadPool = ThreadPool::create(10, 4096);
+		ThreadPool* threadPool = ThreadPool::create(10, 4096);
 		CHECK(threadPool);
 
 		OSWrapper::Error err = threadPool->start(&runnable);
@@ -89,7 +87,7 @@ TEST(PlatformThreadPoolTest, start_nowaiter)
 
 TEST(PlatformThreadPoolTest, start_waiter_auto_release_by_dtor)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 
 	TestRunnable runnable(1);
@@ -108,7 +106,7 @@ TEST(PlatformThreadPoolTest, start_waiter_auto_release_by_dtor)
 
 TEST(PlatformThreadPoolTest, start_waiter_auto_wait_release_by_dtor)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 
 	TestRunnable runnable(1);
@@ -124,7 +122,7 @@ TEST(PlatformThreadPoolTest, start_waiter_auto_wait_release_by_dtor)
 
 TEST(PlatformThreadPoolTest, start_waiter_manual_release)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 
 	TestRunnable runnable(1);
@@ -140,7 +138,7 @@ TEST(PlatformThreadPoolTest, start_waiter_manual_release)
 
 TEST(PlatformThreadPoolTest, start_waiter_multi)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 
 	TestRunnable runnable1(1);
@@ -185,7 +183,7 @@ public:
 
 TEST(PlatformThreadPoolTest, start_waiter_tryWait)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 
 	SleepRunnable runnable(10);
@@ -205,7 +203,7 @@ TEST(PlatformThreadPoolTest, start_waiter_tryWait)
 
 TEST(PlatformThreadPoolTest, start_waiter_timedWait)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 
 	SleepRunnable runnable(50);
@@ -257,7 +255,7 @@ public:
 
 TEST(PlatformThreadPoolTest, exception)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 	MyExceptionHandler handler("Exception Test");
 	threadPool->setUncaughtExceptionHandler(&handler);
@@ -279,7 +277,7 @@ TEST(PlatformThreadPoolTest, exception)
 
 TEST(PlatformThreadPoolTest, start_runnable_nullptr)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 
 	OSWrapper::Error err = threadPool->start(0, 0);
@@ -290,7 +288,7 @@ TEST(PlatformThreadPoolTest, start_runnable_nullptr)
 
 TEST(PlatformThreadPoolTest, tryStart_failed)
 {
-	threadPool = ThreadPool::create(10, 4096);
+	ThreadPool* threadPool = ThreadPool::create(10, 4096);
 	CHECK(threadPool);
 
 	const int num = 100;
@@ -334,7 +332,7 @@ TEST(PlatformThreadPoolTest, check_priority_stackSize_threadName)
 			STRCMP_EQUAL("ThreadPool", m_thread->getName());
 		}
 	};
-	threadPool = ThreadPool::create(10, 4096, Thread::getHighestPriority(), "ThreadPool");
+	ThreadPool* threadPool = ThreadPool::create(10, 4096, Thread::getHighestPriority(), "ThreadPool");
 	CHECK(threadPool);
 	STRCMP_EQUAL("ThreadPool", threadPool->getThreadName());
 

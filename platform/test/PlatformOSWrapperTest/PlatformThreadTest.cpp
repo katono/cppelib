@@ -28,8 +28,6 @@ using OSWrapper::LockGuard;
 static Mutex* s_mutex;
 
 TEST_GROUP(PlatformThreadTest) {
-	Thread* thread;
-
 	void setup()
 	{
 		PlatformOSWrapperTestHelper::createAndRegisterOSWrapperFactories();
@@ -75,7 +73,7 @@ public:
 TEST(PlatformThreadTest, create_destroy)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK(thread);
 	Thread::destroy(thread);
 }
@@ -83,7 +81,7 @@ TEST(PlatformThreadTest, create_destroy)
 TEST(PlatformThreadTest, start_wait_isFinished)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK(thread);
 	runnable.setThread(thread);
 	thread->start();
@@ -106,7 +104,7 @@ TEST(PlatformThreadTest, start_wait_isFinished)
 
 TEST(PlatformThreadTest, create_failed_runnable_nullptr)
 {
-	thread = Thread::create(0, Thread::getNormalPriority(), 4096, 0, "TestThread");
+	Thread* thread = Thread::create(0, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK_FALSE(thread);
 }
 
@@ -151,7 +149,7 @@ TEST(PlatformThreadTest, many_threads)
 TEST(PlatformThreadTest, repeat_start)
 {
 	MockRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 	mock().expectNCalls(2, "run");
 
@@ -170,7 +168,7 @@ TEST(PlatformThreadTest, repeat_start)
 TEST(PlatformThreadTest, name)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK(thread);
 
 	STRCMP_EQUAL("TestThread", thread->getName());
@@ -182,7 +180,7 @@ TEST(PlatformThreadTest, name)
 TEST(PlatformThreadTest, priority)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
+	Thread* thread = Thread::create(&runnable, 1, 4096, 0, "TestThread");
 	CHECK(thread);
 	LONGS_EQUAL(1, thread->getPriority());
 	thread->setPriority(2);
@@ -233,7 +231,7 @@ public:
 TEST(PlatformThreadTest, getNativeHandle)
 {
 	NativeHandleTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 	thread->start();
 
@@ -244,7 +242,7 @@ TEST(PlatformThreadTest, getNativeHandle)
 TEST(PlatformThreadTest, stackSize)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority(), 4096, 0, "TestThread");
 	CHECK(thread);
 
 	LONGS_EQUAL(4096, thread->getStackSize());
@@ -254,7 +252,7 @@ TEST(PlatformThreadTest, stackSize)
 TEST(PlatformThreadTest, default_stackSize)
 {
 	StaticMethodTestRunnable runnable;
-	thread = Thread::create(&runnable);
+	Thread* thread = Thread::create(&runnable);
 	CHECK(thread);
 
 	CHECK(thread->getStackSize() > 0);
@@ -303,7 +301,7 @@ public:
 TEST(PlatformThreadTest, exception_std)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Std);
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 
 	MyExceptionHandler handler("Exception Test");
@@ -317,7 +315,7 @@ TEST(PlatformThreadTest, exception_std)
 TEST(PlatformThreadTest, exception_assert)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Assert);
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 
 	MyExceptionHandler handler("CHECK_ASSERT_EXCEPTION_TEST");
@@ -331,7 +329,7 @@ TEST(PlatformThreadTest, exception_assert)
 TEST(PlatformThreadTest, exception_unknown)
 {
 	ThrowExceptionRunnable runnable(ThrowExceptionRunnable::Integer);
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 
 	MyExceptionHandler handler("Unknown Exception");
@@ -369,7 +367,7 @@ TEST(PlatformThreadTest, setPriority_inherit)
 		}
 	};
 	Parent runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority() + 1);
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority() + 1);
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);
@@ -433,7 +431,7 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 	};
 
 	CheckPrioRangeRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);
@@ -496,7 +494,7 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 	};
 
 	CheckPrioRangeRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);
@@ -573,7 +571,7 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_max_value)
 	};
 
 	CheckPrioRangeRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);
@@ -650,7 +648,7 @@ TEST(PlatformThreadTest, setPriorityRange_highest_priority_is_min_value)
 	};
 
 	CheckPrioRangeRunnable runnable;
-	thread = Thread::create(&runnable, Thread::getNormalPriority());
+	Thread* thread = Thread::create(&runnable, Thread::getNormalPriority());
 	CHECK(thread);
 	thread->start();
 	Thread::destroy(thread);

@@ -82,8 +82,6 @@ private:
 
 TEST_GROUP(OneShotTimerTest) {
 	TestOneShotTimerFactory testFactory;
-	TestRunnable testRun;
-	OneShotTimer* timer;
 
 	void setup()
 	{
@@ -98,14 +96,15 @@ TEST_GROUP(OneShotTimerTest) {
 
 TEST(OneShotTimerTest, create_destroy)
 {
-	timer = OneShotTimer::create(&testRun, "TestOneShotTimer");
+	TestRunnable testRun;
+	OneShotTimer* timer = OneShotTimer::create(&testRun, "TestOneShotTimer");
 	CHECK(timer);
 	OneShotTimer::destroy(timer);
 }
 
 TEST(OneShotTimerTest, create_failed_runnable_nullptr)
 {
-	timer = OneShotTimer::create(0, "TestOneShotTimer");
+	OneShotTimer* timer = OneShotTimer::create(0, "TestOneShotTimer");
 	CHECK_FALSE(timer);
 }
 
@@ -116,7 +115,8 @@ TEST(OneShotTimerTest, destroy_nullptr)
 
 TEST(OneShotTimerTest, start_isStarted_stop)
 {
-	timer = OneShotTimer::create(&testRun);
+	TestRunnable testRun;
+	OneShotTimer* timer = OneShotTimer::create(&testRun);
 	CHECK(timer);
 
 	CHECK(!timer->isStarted());
@@ -130,7 +130,8 @@ TEST(OneShotTimerTest, start_isStarted_stop)
 
 TEST(OneShotTimerTest, start_stop_start)
 {
-	timer = OneShotTimer::create(&testRun);
+	TestRunnable testRun;
+	OneShotTimer* timer = OneShotTimer::create(&testRun);
 	CHECK(timer);
 	mock().expectOneCall("run").onObject(&testRun);
 
@@ -147,7 +148,8 @@ TEST(OneShotTimerTest, start_stop_start)
 
 TEST(OneShotTimerTest, name)
 {
-	timer = OneShotTimer::create(&testRun, "TestOneShotTimer");
+	TestRunnable testRun;
+	OneShotTimer* timer = OneShotTimer::create(&testRun, "TestOneShotTimer");
 	CHECK(timer);
 
 	STRCMP_EQUAL("TestOneShotTimer", timer->getName());
@@ -176,7 +178,7 @@ public:
 TEST(OneShotTimerTest, default_handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
-	timer = OneShotTimer::create(&runnable);
+	OneShotTimer* timer = OneShotTimer::create(&runnable);
 	CHECK(timer);
 
 	UnknownExceptionHandler handler;
@@ -194,7 +196,7 @@ TEST(OneShotTimerTest, default_handle_unknown_exception)
 TEST(OneShotTimerTest, handle_unknown_exception)
 {
 	UnknownExceptionTestRunnable runnable;
-	timer = OneShotTimer::create(&runnable);
+	OneShotTimer* timer = OneShotTimer::create(&runnable);
 	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
@@ -233,7 +235,7 @@ public:
 TEST(OneShotTimerTest, default_handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
-	timer = OneShotTimer::create(&runnable);
+	OneShotTimer* timer = OneShotTimer::create(&runnable);
 	CHECK(timer);
 
 	AssertExceptionHandler handler;
@@ -251,7 +253,7 @@ TEST(OneShotTimerTest, default_handle_assert_exception)
 TEST(OneShotTimerTest, handle_assert_exception)
 {
 	AssertExceptionTestRunnable runnable;
-	timer = OneShotTimer::create(&runnable);
+	OneShotTimer* timer = OneShotTimer::create(&runnable);
 	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
@@ -285,7 +287,7 @@ public:
 TEST(OneShotTimerTest, default_handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
-	timer = OneShotTimer::create(&runnable);
+	OneShotTimer* timer = OneShotTimer::create(&runnable);
 	CHECK(timer);
 
 	StdExceptionHandler handler;
@@ -303,7 +305,7 @@ TEST(OneShotTimerTest, default_handle_std_exception)
 TEST(OneShotTimerTest, handle_std_exception)
 {
 	StdExceptionTestRunnable runnable;
-	timer = OneShotTimer::create(&runnable);
+	OneShotTimer* timer = OneShotTimer::create(&runnable);
 	CHECK(timer);
 	POINTERS_EQUAL(0, timer->getUncaughtExceptionHandler());
 
@@ -328,7 +330,7 @@ public:
 TEST(OneShotTimerTest, ExceptionHandler_throws_exception)
 {
 	StdExceptionTestRunnable runnable;
-	timer = OneShotTimer::create(&runnable);
+	OneShotTimer* timer = OneShotTimer::create(&runnable);
 	CHECK(timer);
 
 	ThrowExceptionHandler handler;
