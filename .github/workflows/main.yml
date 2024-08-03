@@ -23,6 +23,11 @@ jobs:
         pip install "conan>=2"
     - name: Create a default conan profile
       run: conan profile detect
+    - name: Install cppcheck
+      run: sudo apt install cppcheck
+
+    - name: Run static analysis
+      run: sh ${{github.workspace}}/tool/cppcheck.sh ${{github.workspace}}
 
     - name: Run test
       run: sh ${{github.workspace}}/tool/run_test.sh ${{github.workspace}}
