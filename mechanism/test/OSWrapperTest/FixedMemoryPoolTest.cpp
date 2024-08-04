@@ -7,6 +7,7 @@ namespace FixedMemoryPoolTest {
 
 using OSWrapper::FixedMemoryPool;
 using OSWrapper::FixedMemoryPoolFactory;
+using OSWrapper::Timeout;
 
 class TestFixedMemoryPool : public FixedMemoryPool {
 private:
@@ -32,6 +33,47 @@ public:
 	}
 };
 
+class TestFixedMemoryPool2 : public TestFixedMemoryPool {
+public:
+	TestFixedMemoryPool2(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress)
+	: TestFixedMemoryPool(blockSize, memoryPoolSize, memoryPoolAddress) {}
+	OSWrapper::Error allocateMemory(void** memory)
+	{
+		return (OSWrapper::Error) mock().actualCall("allocateMemory")
+			.withOutputParameter("memory", memory)
+			.onObject(this)
+			.returnIntValueOrDefault(OSWrapper::OK);
+	}
+	OSWrapper::Error tryAllocateMemory(void** memory)
+	{
+		return (OSWrapper::Error) mock().actualCall("tryAllocateMemory")
+			.withOutputParameter("memory", memory)
+			.onObject(this)
+			.returnIntValueOrDefault(OSWrapper::OK);
+	}
+	OSWrapper::Error timedAllocateMemory(void** memory, Timeout tmout)
+	{
+		return (OSWrapper::Error) mock().actualCall("timedAllocateMemory")
+			.withOutputParameter("memory", memory)
+			.withParameter("tmout", tmout)
+			.onObject(this)
+			.returnIntValueOrDefault(OSWrapper::OK);
+	}
+	std::size_t getNumberOfAvailableBlocks() const
+	{
+		return mock().actualCall("getNumberOfAvailableBlocks")
+			.onObject(this)
+			.returnIntValue();
+	}
+
+	std::size_t getMaxNumberOfBlocks() const
+	{
+		return mock().actualCall("getMaxNumberOfBlocks")
+			.onObject(this)
+			.returnIntValue();
+	}
+};
+
 class TestFixedMemoryPoolFactory : public FixedMemoryPoolFactory {
 public:
 	FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress)
@@ -48,6 +90,19 @@ public:
 	std::size_t getRequiredMemorySize(std::size_t blockSize, std::size_t numBlocks)
 	{
 		return blockSize * numBlocks;
+	}
+};
+
+class TestFixedMemoryPoolFactory2 : public TestFixedMemoryPoolFactory {
+public:
+	FixedMemoryPool* create(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress)
+	{
+		FixedMemoryPool* p = new TestFixedMemoryPool2(blockSize, memoryPoolSize, memoryPoolAddress);
+		return p;
+	}
+	void destroy(FixedMemoryPool* p)
+	{
+		delete static_cast<TestFixedMemoryPool2*>(p);
 	}
 };
 
@@ -150,6 +205,129 @@ TEST(FixedMemoryPoolTest, getBlockSize)
 	CHECK(pool);
 
 	LONGS_EQUAL(16, pool->getBlockSize());
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(FixedMemoryPoolTest, allocateMemory_not_implemented)
+{
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+
+	void* p;
+	OSWrapper::Error err = pool->allocateMemory(&p);
+	LONGS_EQUAL(OSWrapper::OtherError, err);
+
+	err = pool->tryAllocateMemory(&p);
+	LONGS_EQUAL(OSWrapper::OtherError, err);
+
+	err = pool->timedAllocateMemory(&p, Timeout(100));
+	LONGS_EQUAL(OSWrapper::OtherError, err);
+
+	LONGS_EQUAL(0, pool->getNumberOfAvailableBlocks());
+	LONGS_EQUAL(0, pool->getMaxNumberOfBlocks());
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(FixedMemoryPoolTest, allocateMemory)
+{
+	TestFixedMemoryPoolFactory2 testFactory2;
+	OSWrapper::registerFixedMemoryPoolFactory(&testFactory2);
+
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	void* memory = poolBuf;
+	mock().expectOneCall("allocateMemory")
+		.withOutputParameterReturning("memory", &memory, sizeof(memory))
+		.onObject(pool)
+		.andReturnValue(OSWrapper::OK);
+
+	void* p;
+	OSWrapper::Error err = pool->allocateMemory(&p);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	POINTERS_EQUAL(poolBuf, p);
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(FixedMemoryPoolTest, tryAllocateMemory)
+{
+	TestFixedMemoryPoolFactory2 testFactory2;
+	OSWrapper::registerFixedMemoryPoolFactory(&testFactory2);
+
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	void* memory = poolBuf;
+	mock().expectOneCall("tryAllocateMemory")
+		.withOutputParameterReturning("memory", &memory, sizeof(memory))
+		.onObject(pool)
+		.andReturnValue(OSWrapper::OK);
+
+	void* p;
+	OSWrapper::Error err = pool->tryAllocateMemory(&p);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	POINTERS_EQUAL(poolBuf, p);
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(FixedMemoryPoolTest, timedAllocateMemory)
+{
+	TestFixedMemoryPoolFactory2 testFactory2;
+	OSWrapper::registerFixedMemoryPoolFactory(&testFactory2);
+
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	void* memory = poolBuf;
+	mock().expectOneCall("timedAllocateMemory")
+		.withOutputParameterReturning("memory", &memory, sizeof(memory))
+		.withParameter("tmout", Timeout(100))
+		.onObject(pool)
+		.andReturnValue(OSWrapper::OK);
+
+	void* p;
+	OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
+	LONGS_EQUAL(OSWrapper::OK, err);
+	POINTERS_EQUAL(poolBuf, p);
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(FixedMemoryPoolTest, getNumberOfAvailableBlocks)
+{
+	TestFixedMemoryPoolFactory2 testFactory2;
+	OSWrapper::registerFixedMemoryPoolFactory(&testFactory2);
+
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	mock().expectOneCall("getNumberOfAvailableBlocks")
+		.onObject(pool)
+		.andReturnValue(50);
+
+	LONGS_EQUAL(50, pool->getNumberOfAvailableBlocks());
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(FixedMemoryPoolTest, getMaxNumberOfBlocks)
+{
+	TestFixedMemoryPoolFactory2 testFactory2;
+	OSWrapper::registerFixedMemoryPoolFactory(&testFactory2);
+
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	mock().expectOneCall("getMaxNumberOfBlocks")
+		.onObject(pool)
+		.andReturnValue(50);
+
+	LONGS_EQUAL(50, pool->getMaxNumberOfBlocks());
 
 	FixedMemoryPool::destroy(pool);
 }
