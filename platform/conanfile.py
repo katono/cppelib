@@ -7,7 +7,7 @@ import re
 
 class cppelib_platformRecipe(ConanFile):
     name = "cppelib_platform"
-    version = "1.5.0"
+    version = "1.6.0"
 
     # Optional metadata
     license = "MIT"
@@ -35,7 +35,7 @@ class cppelib_platformRecipe(ConanFile):
         copy(self, "LICENSE", src=os.path.join(self.recipe_folder, ".."), dst=self.export_sources_folder)
 
     def requirements(self):
-        self.requires("cppelib_mechanism/1.5.0")
+        self.requires("cppelib_mechanism/1.6.0")
 
     def config_options(self):
         if self.settings.os == "Windows":
