@@ -2,6 +2,8 @@
 #define OS_WRAPPER_FIXED_MEMORY_POOL_H_INCLUDED
 
 #include <cstddef>
+#include "Timeout.h"
+#include "OSWrapperError.h"
 
 namespace OSWrapper {
 
@@ -71,6 +73,63 @@ public:
 	 * @return Number of bytes of one fixed-size memory block
 	 */
 	virtual std::size_t getBlockSize() const = 0;
+
+	/*!
+	 * @brief Block the current thread until a memory block is allocated from this FixedMemoryPool
+	 * @param[out] memory Pointer of pointer that stores the allocated memory
+	 * @retval OK Success. A memory is allocated
+	 * @retval InvalidParameter Parameter memory is null pointer
+	 * @retval CalledByNonThread Called from non thread context (interrupt handler, timer, etc)
+	 * @retval OtherError Not implemented in concrete class
+	 *
+	 * @note Call deallocate() to release a memory block allocated by this method
+	 * @note Same as timedAllocateMemory(memory, Timeout::FOREVER)
+	 */
+	virtual Error allocateMemory(void** memory);
+
+	/*!
+	 * @brief Try to allocate a memory block from this FixedMemoryPool without blocking
+	 * @param[out] memory Pointer of pointer that stores the allocated memory
+	 * @retval OK Success. A memory is allocated
+	 * @retval TimedOut Failed. No memory blocks available
+	 * @retval InvalidParameter Parameter memory is null pointer
+	 * @retval OtherError Not implemented in concrete class
+	 *
+	 * @note Call deallocate() to release a memory block allocated by this method
+	 * @note Same as timedAllocateMemory(memory, Timeout::POLLING)
+	 */
+	virtual Error tryAllocateMemory(void** memory);
+
+	/*!
+	 * @brief Block the current thread until a memory block is allocated from this FixedMemoryPool but only within the limited time
+	 * @param[out] memory Pointer of pointer that stores the allocated memory
+	 * @retval OK Success. A memory is allocated
+	 * @retval TimedOut The limited time was elapsed
+	 * @retval InvalidParameter Parameter memory is null pointer
+	 * @retval CalledByNonThread Called from non thread context (interrupt handler, timer, etc)
+	 * @retval OtherError Not implemented in concrete class
+	 *
+	 * @note Call deallocate() to release a memory block allocated by this method
+	 * @note If tmout is Timeout::POLLING then this method tries to allocate a memory block without blocking.
+	 * @note If tmout is Timeout::FOREVER then this method waits forever until a memory block is allocated.
+	 */
+	virtual Error timedAllocateMemory(void** memory, Timeout tmout);
+
+	/*!
+	 * @brief Get the remaining number of available blocks in this FixedMemoryPool
+	 * @return Remaining number of available blocks
+	 *
+	 * @note If the concrete class does not implement this method, this method returns 0
+	 */
+	virtual std::size_t getNumberOfAvailableBlocks() const;
+
+	/*!
+	 * @brief Get the max number of blocks in this FixedMemoryPool
+	 * @return Max number of blocks
+	 *
+	 * @note If the concrete class does not implement this method, this method returns 0
+	 */
+	virtual std::size_t getMaxNumberOfBlocks() const;
 };
 
 }
