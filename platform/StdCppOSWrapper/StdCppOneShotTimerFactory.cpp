@@ -56,7 +56,7 @@ private:
 							[this] { return !m_isActive || m_endThreadRequested; })) {
 					m_stopped = true;
 					m_condStopped.notify_all();
-					if (m_endThreadRequested) {
+					if (m_endThreadRequested) { // cppcheck-suppress knownConditionTrueFalse // false-positive
 						break;
 					}
 					continue;
