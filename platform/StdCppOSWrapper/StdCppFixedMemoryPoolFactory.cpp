@@ -62,6 +62,10 @@ public:
 	{
 	}
 
+	/*!
+	 * @deprecated The implementation of this method is not satisfied the specification.
+	 * Use allocateMemory(), tryAllocateMemory(), or timedAllocateMemory() instead of this.
+	 */
 	void* allocate()
 	{
 		return std::malloc(m_blockSize);
