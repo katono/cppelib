@@ -296,7 +296,7 @@ public:
 		splice(pos, x, i, j);
 	}
 
-	void splice(iterator pos, IntrusiveList& x, iterator first, iterator last)
+	void splice(iterator pos, IntrusiveList& x, iterator first, iterator last) // cppcheck-suppress constParameterReference
 	{
 		DEBUG_ASSERT(pos.m_node != 0);
 		DEBUG_ASSERT(first.m_node != 0);
