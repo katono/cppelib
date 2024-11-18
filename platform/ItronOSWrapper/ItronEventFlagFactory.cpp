@@ -157,7 +157,7 @@ public:
 		}
 	}
 
-	EventFlag::Pattern getCurrentPattern() const
+	EventFlag::Pattern getCurrentPattern() const // cppcheck-suppress duplInheritedMember
 	{
 		T_RFLG rflg = {0};
 		ER err = ref_flg(m_flgId, &rflg);
