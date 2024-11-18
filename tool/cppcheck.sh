@@ -27,6 +27,7 @@ mechanism/test/StaticAnalysis/StaticAnalysis.cpp \
 -I platform/ \
 --inline-suppr \
 --suppress=incorrectStringBooleanError \
+--check-level=exhaustive \
 -j 8 \
 --language=c++ \
 --std=c++03 \
