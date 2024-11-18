@@ -306,7 +306,7 @@ ThreadPool::WaitGuard::WaitGuard()
 
 ThreadPool::WaitGuard::~WaitGuard()
 {
-	release();
+	release(); // cppcheck-suppress throwInNoexceptFunction // release() throws no exception
 }
 
 void ThreadPool::WaitGuard::release()
