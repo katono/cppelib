@@ -103,6 +103,7 @@ public:
 	/*!
 	 * @brief Block the current thread until a memory block is allocated from this FixedMemoryPool but only within the limited time
 	 * @param[out] memory Pointer of pointer that stores the allocated memory
+	 * @param tmout The limited time
 	 * @retval OK Success. A memory is allocated
 	 * @retval TimedOut The limited time was elapsed
 	 * @retval InvalidParameter Parameter memory is null pointer
