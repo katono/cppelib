@@ -121,7 +121,7 @@ void StdCppThreadFactory::StdCppThread::setPriority(int priority)
 		return;
 	}
 	// INHERIT_PRIORITY
-	OSWrapper::Thread* t = OSWrapper::Thread::getCurrentThread();
+	OSWrapper::Thread* t = OSWrapper::Thread::getCurrentThread(); // cppcheck-suppress constVariablePointer
 	int this_priority;
 	if (t == nullptr) {
 		this_priority = OSWrapper::Thread::getNormalPriority();

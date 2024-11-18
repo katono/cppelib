@@ -36,7 +36,7 @@ void WindowsThreadFactory::WindowsThread::setPriority(int priority)
 	}
 
 	// INHERIT_PRIORITY
-	OSWrapper::Thread* t = OSWrapper::Thread::getCurrentThread();
+	OSWrapper::Thread* t = OSWrapper::Thread::getCurrentThread(); // cppcheck-suppress constVariablePointer
 	int this_priority;
 	if (t == nullptr) {
 		this_priority = OSWrapper::Thread::getNormalPriority();
