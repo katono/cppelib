@@ -21,7 +21,7 @@ PROFILES_STD98=${PROFILES_STD98}" tool/profiles/profile_cppstd98_coverage"
 PROFILES_STD98=${PROFILES_STD98}" tool/profiles/profile_cppstd98_coverage_noexceptions"
 
 for pr in ${PROFILES} ${PROFILES_STD98}; do
-	conan build mechanism/test --build=missing -pr ${pr} -of ${COVERAGE_BUILD_DIR}/${dir} -s build_type=Debug
+	conan build mechanism/test --build=missing -pr ${pr} -of ${COVERAGE_BUILD_DIR} -s build_type=Debug
 	if [ "$?" != "0" ]; then
 		EXIT_CODE=1
 	fi
@@ -31,14 +31,14 @@ PLATFORM_OS=${PLATFORM_OS}" POSIX"
 PLATFORM_OS=${PLATFORM_OS}" STDCPP"
 for pr in ${PROFILES}; do
 	for platform in ${PLATFORM_OS}; do
-		conan build platform/test --build=missing -pr ${pr} -of ${COVERAGE_BUILD_DIR}/${dir} -s build_type=Debug -o platform_os=${platform}
+		conan build platform/test --build=missing -pr ${pr} -of ${COVERAGE_BUILD_DIR} -s build_type=Debug -o platform_os=${platform}
 		if [ "$?" != "0" ]; then
 			EXIT_CODE=1
 		fi
 	done
 done
 
-lcov -d ${COVERAGE_BUILD_DIR} -c -o ${COVERAGE_BUILD_DIR}/coverage.info
+lcov --ignore-errors mismatch -d ${COVERAGE_BUILD_DIR} -c -o ${COVERAGE_BUILD_DIR}/coverage.info
 lcov -r ${COVERAGE_BUILD_DIR}/coverage.info "*/CppUTest*/*" "/usr/*" "*/test/*" -o ${COVERAGE_BUILD_DIR}/coverage.info
 genhtml -o ${COVERAGE_BUILD_DIR}/coverage_report --num-spaces 4 -s --legend ${COVERAGE_BUILD_DIR}/coverage.info
 
