@@ -11,7 +11,7 @@ class cppelib_platformTestConan(ConanFile):
 
     def requirements(self):
         self.requires(self.tested_reference_str)
-        self.requires("cppelib_mechanism/[>=1.6.0]")
+        self.requires("cppelib_mechanism/[>=1.7.0]")
 
     def build(self):
         cmake = CMake(self)

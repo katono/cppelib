@@ -7,7 +7,7 @@ import re
 
 class cppelib_mechanismRecipe(ConanFile):
     name = "cppelib_mechanism"
-    version = "1.6.0"
+    version = "1.7.0"
 
     # Optional metadata
     license = "MIT"
