@@ -41,11 +41,11 @@
  * }
  *
  * Thread <|-- ItronThread
- * ThreadFactory <|. ItronThreadFactory
+ * ThreadFactory <|.. ItronThreadFactory
  * Thread -> ThreadFactory
  * ItronThreadFactory ..> ItronThread : <<instantiate>>
  * Thread --> Runnable
- * Runnable <|.. UserTask
+ * UserTask .|> Runnable
  * Client --> Thread
  * Client ..> UserTask
  * note right of Client : This depends on OSWrapper, but does\n not depend on ItronOSWrapper.
