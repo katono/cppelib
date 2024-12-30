@@ -95,7 +95,8 @@ TEST(PlatformFixedMemoryPoolTest, allocate_deallocate)
 #if defined(PLATFORM_OS_ITRON)
 TEST(PlatformFixedMemoryPoolTest, allocate_failed)
 {
-	FixedMemoryPool* pool = FixedMemoryPool::create(16, 16);
+	const std::size_t blockSize = 16;
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, 1));
 	CHECK(pool);
 
 	void* p = pool->allocate();
@@ -217,7 +218,7 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_wait_for_available)
 {
 	const std::size_t blockSize = 16;
 	const std::size_t maxBlocks = 100;
-	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, blockSize * maxBlocks);
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, maxBlocks));
 	CHECK(pool);
 
 	EventFlag* ev = EventFlag::create(true);
@@ -293,7 +294,7 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_allocate_by_multi_threads)
 
 	const std::size_t blockSize = 16;
 	const std::size_t maxBlocks = 100;
-	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, blockSize * maxBlocks);
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, maxBlocks));
 	CHECK(pool);
 
 	MessageQueue<void*>* mq = MessageQueue<void*>::create(maxBlocks);
@@ -391,7 +392,7 @@ TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_timeout_by_use_max)
 {
 	const std::size_t blockSize = 16;
 	const std::size_t maxBlocks = 100;
-	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, blockSize * maxBlocks);
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, maxBlocks));
 	CHECK(pool);
 
 	LONGS_EQUAL(maxBlocks, pool->getMaxNumberOfBlocks());
@@ -483,7 +484,7 @@ TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_wait_for_available)
 {
 	const std::size_t blockSize = 16;
 	const std::size_t maxBlocks = 100;
-	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, blockSize * maxBlocks);
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, maxBlocks));
 	CHECK(pool);
 
 	EventFlag* ev = EventFlag::create(true);
@@ -514,7 +515,7 @@ TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_timeout_by_use_max)
 {
 	const std::size_t blockSize = 16;
 	const std::size_t maxBlocks = 100;
-	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, blockSize * maxBlocks);
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, maxBlocks));
 	CHECK(pool);
 
 	LONGS_EQUAL(maxBlocks, pool->getMaxNumberOfBlocks());
