@@ -17,10 +17,11 @@ private:
 	class ItronFixedMemoryPool : public OSWrapper::FixedMemoryPool {
 	private:
 		std::size_t m_blockSize;
+		std::size_t m_maxBlocks;
 		ID m_mpfId;
 
 	public:
-		ItronFixedMemoryPool() : m_blockSize(0U), m_mpfId(0) {}
+		ItronFixedMemoryPool() : m_blockSize(0U), m_maxBlocks(0U), m_mpfId(0) {}
 		~ItronFixedMemoryPool();
 
 		bool init(std::size_t blockSize, std::size_t memoryPoolSize, void* memoryPoolAddress);
@@ -30,6 +31,11 @@ private:
 		void* allocate();
 		void deallocate(void* p);
 		std::size_t getBlockSize() const { return m_blockSize; }
+		OSWrapper::Error allocateMemory(void** memory);
+		OSWrapper::Error tryAllocateMemory(void** memory);
+		OSWrapper::Error timedAllocateMemory(void** memory, OSWrapper::Timeout tmout);
+		std::size_t getNumberOfAvailableBlocks() const;
+		std::size_t getMaxNumberOfBlocks() const;
 	};
 	typedef Container::Array<ItronFixedMemoryPool, MAX_FIXED_MEMORY_POOLS> FixedMemoryPoolArray;
 	FixedMemoryPoolArray m_pools;

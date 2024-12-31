@@ -25,6 +25,7 @@ bool ItronFixedMemoryPoolFactory::ItronFixedMemoryPool::init(std::size_t blockSi
 	}
 	m_mpfId = mpf;
 	m_blockSize = blockSize;
+	m_maxBlocks = cmpf.blkcnt;
 	return true;
 }
 
@@ -50,6 +51,52 @@ void ItronFixedMemoryPoolFactory::ItronFixedMemoryPool::deallocate(void* p)
 	if (p != 0) {
 		rel_mpf(m_mpfId, p);
 	}
+}
+
+OSWrapper::Error ItronFixedMemoryPoolFactory::ItronFixedMemoryPool::allocateMemory(void** memory)
+{
+	return timedAllocateMemory(memory, OSWrapper::Timeout::FOREVER);
+}
+
+OSWrapper::Error ItronFixedMemoryPoolFactory::ItronFixedMemoryPool::tryAllocateMemory(void** memory)
+{
+	return timedAllocateMemory(memory, OSWrapper::Timeout::POLLING);
+}
+
+OSWrapper::Error ItronFixedMemoryPoolFactory::ItronFixedMemoryPool::timedAllocateMemory(void** memory, OSWrapper::Timeout tmout)
+{
+	if (memory == 0) {
+		return OSWrapper::InvalidParameter;
+	}
+	ER err = tget_mpf(m_mpfId, memory, static_cast<TMO>(tmout));
+	switch (err) {
+	case E_OK:
+		return OSWrapper::OK;
+	case E_TMOUT:
+		return OSWrapper::TimedOut;
+	case E_CTX:
+		return OSWrapper::CalledByNonThread;
+	case E_PAR:
+		return OSWrapper::InvalidParameter;
+	default:
+		return OSWrapper::OtherError;
+	}
+}
+
+std::size_t ItronFixedMemoryPoolFactory::ItronFixedMemoryPool::getNumberOfAvailableBlocks() const
+{
+	T_RMPF rmpf = {0};
+	ER err = ref_mpf(m_mpfId, &rmpf);
+	if (err == E_OK) {
+		return rmpf.fblkcnt;
+	} else {
+		return 0U;
+	}
+}
+
+std::size_t ItronFixedMemoryPoolFactory::ItronFixedMemoryPool::getMaxNumberOfBlocks() const
+{
+	return m_maxBlocks;
 }
 
 
