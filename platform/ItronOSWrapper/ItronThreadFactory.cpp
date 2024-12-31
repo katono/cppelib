@@ -150,7 +150,7 @@ public:
 				return;
 			}
 			clr_flg(m_evWait, ~EV_FINISHED);
-			ER err = sta_tsk(m_taskId, this);
+			ER err = sta_tsk(m_taskId, (VP_INT) this);
 			if (err != E_OK) {
 				return;
 			}

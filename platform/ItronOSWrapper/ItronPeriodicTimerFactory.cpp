@@ -28,7 +28,7 @@ public:
 	{
 		T_CCYC ccyc = {0};
 		ccyc.cycatr = TA_HLNG;
-		ccyc.exinf = this;
+		ccyc.exinf = (VP_INT) this;
 		ccyc.cychdr = (FP) &timerCallback;
 		ccyc.cyctim = periodInMillis;
 		ccyc.cycphs = 0U;
