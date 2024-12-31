@@ -231,13 +231,19 @@ TEST(FixedMemoryPoolTest, allocateMemory_not_implemented)
 	FixedMemoryPool::destroy(pool);
 }
 
+struct TestData {
+	unsigned int a;
+	unsigned short b;
+	unsigned char c;
+};
+
 TEST(FixedMemoryPoolTest, allocateMemory)
 {
 	TestFixedMemoryPoolFactory2 testFactory2;
 	OSWrapper::registerFixedMemoryPoolFactory(&testFactory2);
 
 	double poolBuf[100];
-	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	FixedMemoryPool* pool = FixedMemoryPool::create(sizeof(TestData), sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* memory = poolBuf;
 	mock().expectOneCall("allocateMemory")
@@ -245,10 +251,14 @@ TEST(FixedMemoryPoolTest, allocateMemory)
 		.onObject(pool)
 		.andReturnValue(OSWrapper::OK);
 
-	void* p;
+	void* p = 0;
 	OSWrapper::Error err = pool->allocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	POINTERS_EQUAL(poolBuf, p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -259,7 +269,7 @@ TEST(FixedMemoryPoolTest, tryAllocateMemory)
 	OSWrapper::registerFixedMemoryPoolFactory(&testFactory2);
 
 	double poolBuf[100];
-	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	FixedMemoryPool* pool = FixedMemoryPool::create(sizeof(TestData), sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* memory = poolBuf;
 	mock().expectOneCall("tryAllocateMemory")
@@ -267,10 +277,14 @@ TEST(FixedMemoryPoolTest, tryAllocateMemory)
 		.onObject(pool)
 		.andReturnValue(OSWrapper::OK);
 
-	void* p;
+	void* p = 0;
 	OSWrapper::Error err = pool->tryAllocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	POINTERS_EQUAL(poolBuf, p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -281,7 +295,7 @@ TEST(FixedMemoryPoolTest, timedAllocateMemory)
 	OSWrapper::registerFixedMemoryPoolFactory(&testFactory2);
 
 	double poolBuf[100];
-	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	FixedMemoryPool* pool = FixedMemoryPool::create(sizeof(TestData), sizeof poolBuf, poolBuf);
 	CHECK(pool);
 	void* memory = poolBuf;
 	mock().expectOneCall("timedAllocateMemory")
@@ -290,10 +304,14 @@ TEST(FixedMemoryPoolTest, timedAllocateMemory)
 		.onObject(pool)
 		.andReturnValue(OSWrapper::OK);
 
-	void* p;
+	void* p = 0;
 	OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
 	LONGS_EQUAL(OSWrapper::OK, err);
 	POINTERS_EQUAL(poolBuf, p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
 
 	FixedMemoryPool::destroy(pool);
 }

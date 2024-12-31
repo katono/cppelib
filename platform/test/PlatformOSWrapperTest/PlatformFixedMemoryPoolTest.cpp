@@ -6,6 +6,7 @@
 #include <set>
 #include <vector>
 #include <cstring>
+#include <cstdint>
 
 #include "PlatformOSWrapperTestHelper.h"
 
@@ -138,20 +139,81 @@ TEST(PlatformFixedMemoryPoolTest, getBlockSize)
 	FixedMemoryPool::destroy(pool);
 }
 
+struct TestData {
+	unsigned int a;
+	unsigned short b;
+	unsigned char c;
+};
+
 TEST(PlatformFixedMemoryPoolTest, allocateMemory)
 {
 	double poolBuf[100];
-	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	FixedMemoryPool* pool = FixedMemoryPool::create(sizeof(TestData), sizeof poolBuf, poolBuf);
 	CHECK(pool);
 
 	void* p = 0;
 	OSWrapper::Error err = pool->allocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
 
 	pool->deallocate(p);
 
 	FixedMemoryPool::destroy(pool);
+}
+
+TEST(PlatformFixedMemoryPoolTest, allocateMemory_using_os_prepared_memory)
+{
+	const std::size_t blockSize = sizeof(TestData);
+	const std::size_t maxBlocks = 100;
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, maxBlocks));
+	CHECK(pool);
+
+	LONGS_EQUAL(maxBlocks, pool->getMaxNumberOfBlocks());
+	LONGS_EQUAL(maxBlocks, pool->getNumberOfAvailableBlocks());
+
+	void* p = 0;
+	OSWrapper::Error err = pool->allocateMemory(&p);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	CHECK(p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
+
+	pool->deallocate(p);
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(PlatformFixedMemoryPoolTest, allocateMemory_allocated_address_is_aligned)
+{
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(1, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	std::size_t maxBlocks = pool->getMaxNumberOfBlocks();
+	for (std::size_t i = 0; i < maxBlocks; i++) {
+		void* p = 0;
+		OSWrapper::Error err = pool->allocateMemory(&p);
+		LONGS_EQUAL(OSWrapper::OK, err);
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+	}
+	FixedMemoryPool::destroy(pool);
+
+	FixedMemoryPool* pool2 = FixedMemoryPool::create(1, FixedMemoryPool::getRequiredMemorySize(1, 100));
+	CHECK(pool2);
+	std::size_t maxBlocks2 = pool2->getMaxNumberOfBlocks();
+	LONGS_EQUAL(100, maxBlocks2);
+	for (std::size_t i = 0; i < maxBlocks2; i++) {
+		void* p = 0;
+		OSWrapper::Error err = pool2->allocateMemory(&p);
+		LONGS_EQUAL(OSWrapper::OK, err);
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+	}
+	FixedMemoryPool::destroy(pool2);
 }
 
 TEST(PlatformFixedMemoryPoolTest, allocateMemory_within_memory_range)
@@ -169,7 +231,7 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_within_memory_range)
 		CHECK_COMPARE(poolBuf, <=, p);
 		CHECK_COMPARE(p, <, &poolBuf[100]);
 		std::memset(p, static_cast<unsigned char>(i), 16);
-		ptrVec[i] = reinterpret_cast<const unsigned char*>(p);
+		ptrVec[i] = static_cast<const unsigned char*>(p);
 	}
 	for (std::size_t i = 0; i < maxBlocks; i++) {
 		const unsigned char* p = ptrVec[i];
@@ -336,17 +398,72 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_allocate_by_multi_threads)
 TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory)
 {
 	double poolBuf[100];
-	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	FixedMemoryPool* pool = FixedMemoryPool::create(sizeof(TestData), sizeof poolBuf, poolBuf);
 	CHECK(pool);
 
 	void* p = 0;
 	OSWrapper::Error err = pool->tryAllocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
 
 	pool->deallocate(p);
 
 	FixedMemoryPool::destroy(pool);
+}
+
+TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_using_os_prepared_memory)
+{
+	const std::size_t blockSize = sizeof(TestData);
+	const std::size_t maxBlocks = 100;
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, maxBlocks));
+	CHECK(pool);
+
+	LONGS_EQUAL(maxBlocks, pool->getMaxNumberOfBlocks());
+	LONGS_EQUAL(maxBlocks, pool->getNumberOfAvailableBlocks());
+
+	void* p = 0;
+	OSWrapper::Error err = pool->tryAllocateMemory(&p);
+	LONGS_EQUAL(OSWrapper::OK, err);
+	CHECK(p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
+
+	pool->deallocate(p);
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_allocated_address_is_aligned)
+{
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(1, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	std::size_t maxBlocks = pool->getMaxNumberOfBlocks();
+	for (std::size_t i = 0; i < maxBlocks; i++) {
+		void* p = 0;
+		OSWrapper::Error err = pool->tryAllocateMemory(&p);
+		LONGS_EQUAL(OSWrapper::OK, err);
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+	}
+	FixedMemoryPool::destroy(pool);
+
+	FixedMemoryPool* pool2 = FixedMemoryPool::create(1, FixedMemoryPool::getRequiredMemorySize(1, 100));
+	CHECK(pool2);
+	std::size_t maxBlocks2 = pool2->getMaxNumberOfBlocks();
+	LONGS_EQUAL(100, maxBlocks2);
+	for (std::size_t i = 0; i < maxBlocks2; i++) {
+		void* p = 0;
+		OSWrapper::Error err = pool2->tryAllocateMemory(&p);
+		LONGS_EQUAL(OSWrapper::OK, err);
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+	}
+	FixedMemoryPool::destroy(pool2);
 }
 
 TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_within_memory_range)
@@ -364,7 +481,7 @@ TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_within_memory_range)
 		CHECK_COMPARE(poolBuf, <=, p);
 		CHECK_COMPARE(p, <, &poolBuf[100]);
 		std::memset(p, static_cast<unsigned char>(i), 16);
-		ptrVec[i] = reinterpret_cast<const unsigned char*>(p);
+		ptrVec[i] = static_cast<const unsigned char*>(p);
 	}
 	for (std::size_t i = 0; i < maxBlocks; i++) {
 		const unsigned char* p = ptrVec[i];
@@ -428,17 +545,72 @@ TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_timeout_by_use_max)
 TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory)
 {
 	double poolBuf[100];
-	FixedMemoryPool* pool = FixedMemoryPool::create(16, sizeof poolBuf, poolBuf);
+	FixedMemoryPool* pool = FixedMemoryPool::create(sizeof(TestData), sizeof poolBuf, poolBuf);
 	CHECK(pool);
 
 	void* p = 0;
 	OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
 
 	pool->deallocate(p);
 
 	FixedMemoryPool::destroy(pool);
+}
+
+TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_using_os_prepared_memory)
+{
+	const std::size_t blockSize = sizeof(TestData);
+	const std::size_t maxBlocks = 100;
+	FixedMemoryPool* pool = FixedMemoryPool::create(blockSize, FixedMemoryPool::getRequiredMemorySize(blockSize, maxBlocks));
+	CHECK(pool);
+
+	LONGS_EQUAL(maxBlocks, pool->getMaxNumberOfBlocks());
+	LONGS_EQUAL(maxBlocks, pool->getNumberOfAvailableBlocks());
+
+	void* p = 0;
+	OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
+	LONGS_EQUAL(OSWrapper::OK, err);
+	CHECK(p);
+	TestData* data = static_cast<TestData*>(p);
+	data->a = 0xFFFFFFFF;
+	data->b = 0xFFFF;
+	data->c = 0xFF;
+
+	pool->deallocate(p);
+
+	FixedMemoryPool::destroy(pool);
+}
+
+TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_allocated_address_is_aligned)
+{
+	double poolBuf[100];
+	FixedMemoryPool* pool = FixedMemoryPool::create(1, sizeof poolBuf, poolBuf);
+	CHECK(pool);
+	std::size_t maxBlocks = pool->getMaxNumberOfBlocks();
+	for (std::size_t i = 0; i < maxBlocks; i++) {
+		void* p = 0;
+		OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
+		LONGS_EQUAL(OSWrapper::OK, err);
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+	}
+	FixedMemoryPool::destroy(pool);
+
+	FixedMemoryPool* pool2 = FixedMemoryPool::create(1, FixedMemoryPool::getRequiredMemorySize(1, 100));
+	CHECK(pool2);
+	std::size_t maxBlocks2 = pool2->getMaxNumberOfBlocks();
+	LONGS_EQUAL(100, maxBlocks2);
+	for (std::size_t i = 0; i < maxBlocks2; i++) {
+		void* p = 0;
+		OSWrapper::Error err = pool2->timedAllocateMemory(&p, Timeout(100));
+		LONGS_EQUAL(OSWrapper::OK, err);
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+	}
+	FixedMemoryPool::destroy(pool2);
 }
 
 TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_within_memory_range)
@@ -456,7 +628,7 @@ TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_within_memory_range)
 		CHECK_COMPARE(poolBuf, <=, p);
 		CHECK_COMPARE(p, <, &poolBuf[100]);
 		std::memset(p, static_cast<unsigned char>(i), 16);
-		ptrVec[i] = reinterpret_cast<const unsigned char*>(p);
+		ptrVec[i] = static_cast<const unsigned char*>(p);
 	}
 	for (std::size_t i = 0; i < maxBlocks; i++) {
 		const unsigned char* p = ptrVec[i];
