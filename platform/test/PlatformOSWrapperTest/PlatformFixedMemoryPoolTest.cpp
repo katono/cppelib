@@ -3,7 +3,6 @@
 #include "OSWrapper/Thread.h"
 #include "OSWrapper/EventFlag.h"
 #include "OSWrapper/MessageQueue.h"
-#include <set>
 #include <vector>
 #include <cstring>
 #include <cstdint>
@@ -313,24 +312,21 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_allocate_by_multi_threads)
 	private:
 		FixedMemoryPool* m_pool;
 		MessageQueue<void*>* m_mq;
-		std::size_t m_num;
+		const std::size_t m_num;
 	public:
 		SendRunnable(FixedMemoryPool* pool, MessageQueue<void*>* mq, std::size_t num)
 			: m_pool(pool), m_mq(mq), m_num(num)
 		{}
 		void run()
 		{
-			std::set<void*> ptrSet;
 			for (std::size_t i = 0; i < m_num; i++) {
 				void* p = 0;
 				OSWrapper::Error err = m_pool->allocateMemory(&p);
 				LONGS_EQUAL(OSWrapper::OK, err);
 				CHECK(p);
-				ptrSet.insert(p);
 				err = m_mq->send(p);
 				LONGS_EQUAL(OSWrapper::OK, err);
 			}
-			LONGS_EQUAL(m_pool->getMaxNumberOfBlocks(), ptrSet.size());
 		}
 	};
 	class RecvRunnable : public Runnable {
@@ -344,11 +340,13 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_allocate_by_multi_threads)
 		{}
 		void run()
 		{
-			while (m_ev->getCurrentPattern().none()) {
+			while (true) {
 				void* p = 0;
 				OSWrapper::Error err = m_mq->timedReceive(&p, Timeout(10));
 				if (err == OSWrapper::OK) {
 					m_pool->deallocate(p);
+				} else if (err == OSWrapper::TimedOut && m_ev->getCurrentPattern().any()) {
+					break;
 				}
 			}
 		}
@@ -383,8 +381,13 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_allocate_by_multi_threads)
 	sendThread1->wait();
 	sendThread2->wait();
 	sendThread3->wait();
+
 	ev->setAll();
 	recvThread->wait();
+
+	// Check all blocks deallocated
+	LONGS_EQUAL(0, mq->getSize());
+	LONGS_EQUAL(maxBlocks, pool->getNumberOfAvailableBlocks());
 
 	Thread::destroy(recvThread);
 	Thread::destroy(sendThread1);
