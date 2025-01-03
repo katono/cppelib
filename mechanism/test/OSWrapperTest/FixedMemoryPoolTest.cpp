@@ -1,7 +1,12 @@
 #include "OSWrapper/FixedMemoryPool.h"
 #include "OSWrapper/FixedMemoryPoolFactory.h"
+#include <new>
+
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
+
+// Disable new macro of CppUTest
+#undef new
 
 namespace FixedMemoryPoolTest {
 
@@ -235,6 +240,8 @@ struct TestData {
 	unsigned int a;
 	unsigned short b;
 	unsigned char c;
+	TestData(): a(), b(), c() {}
+	~TestData() {}
 };
 
 TEST(FixedMemoryPoolTest, allocateMemory)
@@ -255,10 +262,15 @@ TEST(FixedMemoryPoolTest, allocateMemory)
 	OSWrapper::Error err = pool->allocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	POINTERS_EQUAL(poolBuf, p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
+
+	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", data);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -281,10 +293,15 @@ TEST(FixedMemoryPoolTest, tryAllocateMemory)
 	OSWrapper::Error err = pool->tryAllocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	POINTERS_EQUAL(poolBuf, p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
+
+	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", data);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -308,10 +325,15 @@ TEST(FixedMemoryPoolTest, timedAllocateMemory)
 	OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
 	LONGS_EQUAL(OSWrapper::OK, err);
 	POINTERS_EQUAL(poolBuf, p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
+
+	mock().expectOneCall("deallocate").onObject(pool).withParameter("p", data);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }

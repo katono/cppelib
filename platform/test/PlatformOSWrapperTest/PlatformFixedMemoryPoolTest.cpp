@@ -6,11 +6,15 @@
 #include <vector>
 #include <cstring>
 #include <cstdint>
+#include <new>
 
 #include "PlatformOSWrapperTestHelper.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
+
+// Disable new macro of CppUTest
+#undef new
 
 namespace PlatformFixedMemoryPoolTest {
 
@@ -142,6 +146,8 @@ struct TestData {
 	unsigned int a;
 	unsigned short b;
 	unsigned char c;
+	TestData(): a(), b(), c() {}
+	~TestData() {}
 };
 
 TEST(PlatformFixedMemoryPoolTest, allocateMemory)
@@ -154,12 +160,14 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory)
 	OSWrapper::Error err = pool->allocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
 
-	pool->deallocate(p);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -178,12 +186,14 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_using_os_prepared_memory)
 	OSWrapper::Error err = pool->allocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
 
-	pool->deallocate(p);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -408,12 +418,14 @@ TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory)
 	OSWrapper::Error err = pool->tryAllocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
 
-	pool->deallocate(p);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -432,12 +444,14 @@ TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_using_os_prepared_memory)
 	OSWrapper::Error err = pool->tryAllocateMemory(&p);
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
 
-	pool->deallocate(p);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -555,12 +569,14 @@ TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory)
 	OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
 
-	pool->deallocate(p);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }
@@ -579,12 +595,14 @@ TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_using_os_prepared_memory)
 	OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
 	LONGS_EQUAL(OSWrapper::OK, err);
 	CHECK(p);
-	TestData* data = static_cast<TestData*>(p);
+	TestData* data = new (p) TestData;
+	POINTERS_EQUAL(data, p);
 	data->a = 0xFFFFFFFF;
 	data->b = 0xFFFF;
 	data->c = 0xFF;
+	data->~TestData();
 
-	pool->deallocate(p);
+	pool->deallocate(data);
 
 	FixedMemoryPool::destroy(pool);
 }
