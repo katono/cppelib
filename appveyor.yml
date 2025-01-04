@@ -7,7 +7,6 @@ image:
 
 configuration:
 - Release
-- Debug
 
 environment:
   matrix:
