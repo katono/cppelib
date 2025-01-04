@@ -5,12 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.7.0] - 2025-01-04
 
 ### Added
 
-- Added methods in `FixedMemoryPool` to block until allocated memory
-- Added methods in `VariableMemoryPool` to block until allocated memory
+- Added methods in `OSWrapper::FixedMemoryPool`
+  - OSWrapper::FixedMemoryPool::allocateMemory
+  - OSWrapper::FixedMemoryPool::tryAllocateMemory
+  - OSWrapper::FixedMemoryPool::timedAllocateMemory
+  - OSWrapper::FixedMemoryPool::getNumberOfAvailableBlocks
+  - OSWrapper::FixedMemoryPool::getMaxNumberOfBlocks
+
+### Changed
+
+- Added cppcheck-suppress comments
 
 ## [1.6.0] - 2024-08-04
 
@@ -144,7 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Windows implementation of `OSWrapper`
 - Added ITRON implementation of `OSWrapper`
 
-[unreleased]: https://github.com/katono/cppelib/compare/1.6.0...HEAD
+[1.7.0]: https://github.com/katono/cppelib/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/katono/cppelib/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/katono/cppelib/compare/1.4.2...1.5.0
 [1.4.2]: https://github.com/katono/cppelib/compare/1.4.1...1.4.2
