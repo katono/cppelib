@@ -389,7 +389,7 @@ private:
 		}
 
 		const size_type num_elems_pos_to_end = end() - pos;
-		iterator old_end = end();
+		iterator old_end = end(); // cppcheck-suppress constVariablePointer
 		if (num_elems_pos_to_end > n) {
 			for (size_type i = 0U; i < n; ++i) {
 				construct(&*end());
