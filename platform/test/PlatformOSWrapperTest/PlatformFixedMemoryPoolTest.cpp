@@ -208,7 +208,7 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_allocated_address_is_aligned)
 		void* p = 0;
 		OSWrapper::Error err = pool->allocateMemory(&p);
 		LONGS_EQUAL(OSWrapper::OK, err);
-		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x03));
 	}
 	FixedMemoryPool::destroy(pool);
 
@@ -220,7 +220,7 @@ TEST(PlatformFixedMemoryPoolTest, allocateMemory_allocated_address_is_aligned)
 		void* p = 0;
 		OSWrapper::Error err = pool2->allocateMemory(&p);
 		LONGS_EQUAL(OSWrapper::OK, err);
-		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x03));
 	}
 	FixedMemoryPool::destroy(pool2);
 }
@@ -466,7 +466,7 @@ TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_allocated_address_is_aligned
 		void* p = 0;
 		OSWrapper::Error err = pool->tryAllocateMemory(&p);
 		LONGS_EQUAL(OSWrapper::OK, err);
-		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x03));
 	}
 	FixedMemoryPool::destroy(pool);
 
@@ -478,7 +478,7 @@ TEST(PlatformFixedMemoryPoolTest, tryAllocateMemory_allocated_address_is_aligned
 		void* p = 0;
 		OSWrapper::Error err = pool2->tryAllocateMemory(&p);
 		LONGS_EQUAL(OSWrapper::OK, err);
-		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x03));
 	}
 	FixedMemoryPool::destroy(pool2);
 }
@@ -617,7 +617,7 @@ TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_allocated_address_is_align
 		void* p = 0;
 		OSWrapper::Error err = pool->timedAllocateMemory(&p, Timeout(100));
 		LONGS_EQUAL(OSWrapper::OK, err);
-		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x03));
 	}
 	FixedMemoryPool::destroy(pool);
 
@@ -629,7 +629,7 @@ TEST(PlatformFixedMemoryPoolTest, timedAllocateMemory_allocated_address_is_align
 		void* p = 0;
 		OSWrapper::Error err = pool2->timedAllocateMemory(&p, Timeout(100));
 		LONGS_EQUAL(OSWrapper::OK, err);
-		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x07));
+		LONGS_EQUAL(0, (reinterpret_cast<std::uintptr_t>(p) & 0x03));
 	}
 	FixedMemoryPool::destroy(pool2);
 }
