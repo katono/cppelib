@@ -42,7 +42,7 @@ void registerThreadFactory(ThreadFactory* factory);
  * the state of current thread transits from RUNNING to WAITING.
  * Then the waiting condition is satisfied or timed out, the state transits from WAITING to READY.
  *
- * When the current thread runs through the end of Runnable::run() or calls Thread::exit(),
+ * When the current thread runs through the end of Runnable::run(),
  * the state of current thread transits from RUNNING to FINISHED.
  *
  * @note A Thread can not suspend, resume and stop other Thread.
